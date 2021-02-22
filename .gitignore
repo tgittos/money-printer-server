@@ -1,2 +1,4 @@
 config.py
+*.swp
+.ipynb_checkpoints
 __pycache__
