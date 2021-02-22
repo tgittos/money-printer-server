@@ -1,4 +1,7 @@
-import quandl as quandl
+import sys
+import pandas as pandas
+
+import lib.quandl as quandl
 import quandl_pandas as q_pandas
 
 data_path = "data/"
@@ -18,6 +21,8 @@ def run(ticker):
     write_historical_data(ticker, historical)
 
 def read_historical_data(ticker):
+    filename = "EOD_{0}.pkl".format(ticker)
+    pandas.read_pickle(os.path.join(data_path, filename))
 
 def write_historical_data(ticker, data):
-    data.to_pickle(os.path.join(data,"EOD_{0}".format(ticker)))
+    data.to_pickle(os.path.join(data_path,"EOD_{0}.pkl".format(ticker)))
