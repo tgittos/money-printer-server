@@ -29,9 +29,8 @@ class AlpacaWebsocket:
     def set_verbose(self, val):
         self.verbose = val
         if (self.verbose == True):
+            websocket.enableTrace(True)
             print("-- verbose mode on --")
-        else:
-            print("-- verbose mode off --")
 
     def set_tickers(self, tickers):
         self.tickers = tickers
@@ -47,11 +46,6 @@ class AlpacaWebsocket:
 
     def stop_stream(self):
         cancel = True
-
-    def load_config(self):
-        self.alpaca_url = config.api_urls['alpaca']
-        self.alpaca_key = config.api_keys['alpaca']['key_id']
-        self.alpaca_secret = config.api_keys['alpaca']['secret']
 
     def init_stream(self):
         if (self.verbose == True):
@@ -75,7 +69,6 @@ class AlpacaWebsocket:
 
     def ws_on_message(self, ws, message):
         json_msg = json.loads(message);
-        print("json_msg: {0}".format(json_msg))
         if (json_msg["stream"] == "authorization"):
             if (json_msg["data"]["action"] == "authenticate" and json_msg["data"]["status"] == "authorized"):
                 if (self.verbose == True):
@@ -108,8 +101,8 @@ class AlpacaWebsocket:
             if (self.verbose == True):
                 print("-- joining thread to end --")
             self.thread.join()
-            
-        print("-- starting listening thread --")
+        if (self.verbose == True): 
+            print("-- starting listening thread --")
         self.thread = threading.Thread(target=run, args=())
         self.thread.start()
 
@@ -151,17 +144,21 @@ class AlpacaWebsocket:
         self.ws.send(json.dumps(data))
         self.listening = True
 
+    def load_config(self):
+        self.alpaca_url = config.api_urls['alpaca']['paper']
+        self.alpaca_key = config.api_keys['alpaca']['paper']['key_id']
+        self.alpaca_secret = config.api_keys['alpaca']['paper']['secret']
+
 if __name__ == "__main__":
     print("-- starting in ticker mode --")
 
     tracking_tickers = tickers.get_tickers()
 
-    websocket.enableTrace(True)
     client = AlpacaWebsocket()
-    client.set_verbose(True)
+    client.set_verbose(False)
 
     def print_ticker(msg):
-        print("-- msg: --\n{0}".format(msg))
+        print(msg)
 
     client.ticker_callback = print_ticker
     client.set_tickers(tracking_tickers)
