@@ -1,38 +1,22 @@
-import pickle
-import os
+from lib.pickle_jar import PickleJar
 
-data_dir = "data"
 filename = "tickers.pkl"
-
-
-current_path = os.path.dirname(os.path.realpath(__file__))
-data_path = os.path.join(current_path, "../..", data_dir)
 
 def add_ticker(ticker):
     ticker = ticker.upper()
-    data = read_pickle_file()
+    jar = PickleJar()
+    data = jar.read_pickle_file(filename)
     data.append(ticker)
-    return write_pickle_file(data)
+    return pickle_jar.write_pickle_file(filename, data)
 
 def remove_ticker(ticker):
     ticker = ticker.upper()
-    data = read_pickle_file()
+    jar = PickleJar()
+    data = jar.read_pickle_file(filename)
     data.remove(ticker)
-    return write_pickle_file(data)
+    return jar.write_pickle_file(filename, data)
 
 def get_tickers():
-    return read_pickle_file()
+    jar = PickleJar()
+    return jar.read_pickle_file(filename)
 
-def read_pickle_file():
-    final_path = os.path.join(data_path, filename)
-    if os.path.exists(final_path):
-        with open(final_path, 'rb') as f:
-            return pickle.load(f)
-    else:
-        return []
-
-def write_pickle_file(data):
-    final_path = os.path.join(data_path, filename)
-    with open(final_path, 'w+b') as f:
-        pickle.dump(data, f)
-    return data
