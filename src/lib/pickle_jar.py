@@ -8,6 +8,10 @@ class PickleJar:
         current_path = os.path.dirname(os.path.realpath(__file__))
         self.base_path = os.path.join(current_path, "../..", 'pickle_jar')
 
+    def pickle_exists(self, filename):
+        final_path = os.path.join(self.base_path, filename)
+        return os.path.exists(final_path)
+
     def read_pickle_file(self, filename):
         final_path = os.path.join(self.base_path, filename)
         if os.path.exists(final_path):
@@ -29,7 +33,7 @@ class PickleJar:
             pickle.dump(data, f)
         return None
 
-    def write_pickle_dataframe(self, filename, pickle):
+    def write_pickle_dataframe(self, filename, dataframe):
         final_path = os.path.join(self.base_path, filename)
-        data.to_pickle(final_path)
+        dataframe.to_pickle(final_path)
         return None
