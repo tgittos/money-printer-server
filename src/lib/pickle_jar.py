@@ -1,6 +1,5 @@
 import pickle
 import os
-import pandas
 
 class PickleJar:
 
@@ -20,20 +19,16 @@ class PickleJar:
         else:
             return []
 
-    def read_pickle_dataframe(self, filename):
-        final_path = os.path.join(self.base_path, filename)
-        if os.path.exists(final_path):
-            return pandas.read_pickle(final_path)
-        else:
-            return []
-
     def write_pickle_file(self, filename, data):
         final_path = os.path.join(self.base_path, filename)
         with open(final_path, 'w+b') as f:
             pickle.dump(data, f)
         return None
 
-    def write_pickle_dataframe(self, filename, dataframe):
-        final_path = os.path.join(self.base_path, filename)
-        dataframe.to_pickle(final_path)
-        return None
+    def pickle_back(self, filename, fn, *fn_args):
+        if (self.pickle_exists(filename)):
+            return self.read_pickle_file(filename)
+        data = fn(*fn_args)
+        self.write_pickle_file(filename, data)
+        return data
+
