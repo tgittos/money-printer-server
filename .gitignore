@@ -2,3 +2,4 @@ config.py
 *.swp
 .ipynb_checkpoints
 __pycache__
+pickle_jar/*
