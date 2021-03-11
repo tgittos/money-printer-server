@@ -34,31 +34,46 @@ class FinnhubData:
     def __init__(self):
         self.finnhub_client = finnhub.Client(api_key=config.api_keys['finnhub']['live'])
         self.jar = None
+        self.sleep_for = 3
 
     def init_jar(self, ticker):
         self.jar = StonkJar(ticker)
 
-    def recommendation_trends_by_date(self, ticker, date):
+    def recommendation_trends_by_date(self, ticker, date, include_ah = True, pickle = True, debug = False):
         first_of_month = date.replace(day = 1)
-        if self.jar == None:
+        pickle_name = "{0}.recommendations.{1}.pkl".format(ticker, first_of_month.strftime('%Y-%m-%d'))
+        
+        if pickle and self.jar == None:
             self.init_jar(ticker)
-        recommendations = self.jar.pickle_back(
-            "{0}_recommendations.pkl".format(ticker),
-            finnhub_client.recommendation_trends,
-            ticker)
+            
+        if pickle:
+            recommendations = self.jar.pickle_back(
+                pickle_name,
+                self._api_call_with_sleep,
+                self.finnhub_client.recommendation_trends, ticker)
+        else:
+            recommendations = self.api_call_with_sleep(self.finnhub_client.recommendation_trends, ticker)
+            
         recommendation = [r for r in recommendations if datetime.strptime(r['period'], '%Y-%m-%d').date() == first_of_month]
         if (len(recommendation) > 0):
             return recommendation[0]
         return {}
 
-    def company_earnings_by_date(self, ticker, date):
+    def company_earnings_by_date(self, ticker, date, include_ah = True, pickle = True, debug = False):
         reporting_period = timedelta(days = 90)
-        if self.jar == None:
+        pickle_name = "{0}.earnings.{1}.pkl".format(ticker, date.strftime('%Y-%m-%d'))
+        
+        if pickle and self.jar == None:
             self.init_jar(ticker)
-        earnings = self.jar.pickle_back(
-            "{0}_earnings.pkl".format(ticker),
-            finnhub_client.company_earnings,
-            ticker)
+        
+        if pickle:
+            earnings = self.jar.pickle_back(
+                pickle_name,
+                self._api_call_with_sleep,
+                self.finnhub_client.company_earnings, ticker)
+        else:
+            earnings = self.finnhub_client.company_earnings(ticker)
+            
         earning = [r for r in earnings if datetime.strptime(r['period'], '%Y-%m-%d').date() + reporting_period > date]
         if (len(earning) > 0):
             return earning[0]
@@ -70,18 +85,20 @@ class FinnhubData:
         if debug:
             print("[get_candle_as_dataframe] fetching {0} data for {1} - {2}".format(
             time_period, datetime.fromtimestamp(start_ts), datetime.fromtimestamp(end_ts)))
+            
+        pickle_name = "{0}.{1}.candles.{2}.{3}.pkl".format(ticker, time_period, start_ts, end_ts)
 
         if pickle:
             if self.jar == None:
                 self.init_jar(ticker)
             candles = self.jar.pickle_back(
-                "{0}_candles.{1}.{2}-{3}.pkl".format(ticker, time_period, start_ts, end_ts),
-                self.finnhub_client.stock_candles,
-                ticker, time_period, start_ts, end_ts) 
+                pickle_name,
+                self._api_call_with_sleep,
+                self.finnhub_client.stock_candles, ticker, time_period, start_ts, end_ts)
             if debug:
                 print("[get_candle_as_dataframe] data from pickle: {0}".format(candles))
         else:
-            candles = self.finnhub_client.stock_candles(ticker, time_period, start_ts, end_ts)
+            candles = self._api_call_with_sleep(self.finnhub_client.stock_candles, ticker, time_period, start_ts, end_ts)
             if debug:
                 print("[get_candle_as_dataframe] data from finnhub: {0}".format(candles))
 
@@ -200,36 +217,31 @@ class FinnhubData:
 
         return df
 
-    def get_historical_data(self, ticker, fn, time_period = 60, days = 90, debug = False, include_ah = False, pickle = True):
-        # if this historical pickle file exists, just return it
-        historical_pickle_name = "{0}.{1}.{2}.historical.df.pkl".format(ticker, time_period, fn.__name__)
+    def get_historical_data(self, ticker, fn, time_period = 60, days = 90, debug = False, include_ah = False, pickle = True): 
         if self.jar == None:
             self.init_jar(ticker)
-        if pickle and self.jar.pickle_exists(historical_pickle_name):
-            return self.jar.read_pickle_dataframe(historical_pickle_name)
-        # if it doesn't, build it
         historical_data = pandas.DataFrame()
         today = datetime.today()
         x_days_ago = today + timedelta(days = -1 * days)
         current_date = x_days_ago
-        while current_date < today:
+        while current_date <= today:
             # look for pickle file for this days data for this day's ticker
-            pickle_name = "{0}.{1}.{2}.{3}.df.pkl".format(ticker, current_date.strftime("%m-%d-%Y"),
-                                                          time_period, fn.__name__)
-            if self.jar.pickle_exists(pickle_name):
+            pickle_name = "{0}.{1}.{3}.{2}.pkl".format(ticker, time_period, current_date.strftime("%m-%d-%Y"),
+                                                          fn.__name__)
+            if pickle and self.jar.pickle_exists(pickle_name):
                 data = self.jar.read_pickle_dataframe(pickle_name)
             else:
                 data = fn(ticker, current_date, debug = debug, include_ah = include_ah, pickle = pickle)
-                # pickle this day's data to cut down on API requests
                 self.jar.write_pickle_dataframe(pickle_name, data)
-                time.sleep(2) # sleep for 2 seconds so we don't hit the API limit
             historical_data = historical_data.append(data)
             current_date = current_date + timedelta(days = 1)
         # label & type the data frame
-        print(historical_data.head())
         historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v']
         historical_data['t'] = pandas.to_datetime(historical_data['t'], unit = 's')
         historical_data.index.name = 't'
-        # pickle this historical data
-        self.jar.write_pickle_dataframe(historical_pickle_name, historical_data)
         return historical_data
+    
+    def _api_call_with_sleep(self, fn, *args):
+        result = fn(*args)
+        time.sleep(self.sleep_for)
+        return result

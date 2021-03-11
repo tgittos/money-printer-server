@@ -9,10 +9,10 @@ import json
 import config
 import lib.tickers as tickers
 
-class AlpacaWebsocket:
+class FinnhubWebsocket:
 
     def __init__(self):
-        self.ws_url = "wss://data.alpaca.markets/stream"
+        self.ws_url = "wss://ws.finnhub.io"
         self.ws = None
 
         self.cancel = False
