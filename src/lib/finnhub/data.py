@@ -28,7 +28,7 @@ class FinnhubData:
     local_market_open_hour = 8
     local_market_open_min = 30
 
-    local_market_close_hour = 16
+    local_market_close_hour = 15
     local_market_close_min = 0
 
     def __init__(self):
