@@ -109,6 +109,7 @@ class FinnhubData:
         df = pandas.DataFrame.from_records(candle_rows)
         df[0] = pandas.to_datetime(df[0], unit = 's')
         df.sort_index
+        
         return df
 
     def get_daily_closings(self, ticker, date, include_ah = False, pickle = True, debug = False):
@@ -211,6 +212,15 @@ class FinnhubData:
             df.columns = ['t', 'o', 'l', 'h', 'c', 'v']
             df['t'] = pandas.to_datetime(df['t'], unit = 's')
             df.sort_index
+              
+        # generate returns for the day
+        returns = []
+        for i in range(0, len(candle_rows)):
+            if i == 0:
+                returns = returns + [0]
+            else:
+                returns = returns + [(df.iloc[i]['c'] - df.iloc[i-1]['c'])/df.iloc[i-1]['c']]
+        df['r'] = returns
 
         if debug and len(df.columns) > 0:
             print(df.describe())
