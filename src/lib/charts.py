@@ -15,13 +15,19 @@ def chart(ticker, data, oscillators = [], debug = False):
     blue_line = '-'
     red_line = 'r-'
     green_line = 'g-'
+    orange_line = 'o-'
     
     oscillator_colors = [
         red_line,
-        green_line
+        green_line,
+        orange_line
     ]
     
-    fig, axs = plt.subplots(len(data) + 1, sharex=True, sharey=False)
+    has_multi_osc = True in ['own_scale' in o for o in oscillators]
+    n = 1
+    if has_multi_osc:
+        n = 2
+    fig, axs = plt.subplots(len(data) + n, sharex=True, sharey=False)
     fig.set_size_inches(18.5, 10.5, forward=True)
     
     # extract data sets and axis names from the data
@@ -37,14 +43,28 @@ def chart(ticker, data, oscillators = [], debug = False):
         label = o['label']
         vals = o['data']
         c_type = o['chart']
+        scale = None
+        if 'own_scale' in o:
+            scale = o['own_scale']
         
-        # plot data
-        if c_type == 'line':
-            axs[len(data)].plot(vals, label = label)
-        
-        if c_type == 'bar':
-            x_pos = [i for i, _ in enumerate(vals)]
-            axs[len(data)].bar(x_pos, vals, label = label)
+        # generate new subplot, if requested
+        if not scale == None and scale:
+            # plot data
+            if c_type == 'line':
+                axs[len(data)+1].plot(vals, label = label)
+
+            if c_type == 'bar':
+                x_pos = [i for i, _ in enumerate(vals)]
+                axs[len(data)+1].bar(x_pos, vals, label = label)
+            axs[len(data)+1].legend()
+        else:      
+            # plot data
+            if c_type == 'line':
+                axs[len(data)].plot(vals, label = label)
+
+            if c_type == 'bar':
+                x_pos = [i for i, _ in enumerate(vals)]
+                axs[len(data)].bar(x_pos, vals, label = label)
         
     # label the x axis
     plt.xlabel("Days")

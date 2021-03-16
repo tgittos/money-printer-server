@@ -3,9 +3,13 @@ import os
 
 class PickleJar:
 
-    def __init__(self):
+    def __init__(self, sub_path = None):
         current_path = os.path.dirname(os.path.realpath(__file__))
         self.base_path = os.path.join(current_path, "../..", 'pickle_jar')
+        if not sub_path == None:
+            self.base_path = os.path.join(self.base_path, sub_path)
+        if not os.path.exists(self.base_path):
+            os.mkdir_p(self.base_path)
 
     def pickle_exists(self, filename):
         final_path = os.path.join(self.base_path, filename)

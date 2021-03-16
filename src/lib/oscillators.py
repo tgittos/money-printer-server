@@ -1,3 +1,6 @@
+import pandas
+import datetime
+
 def stochastic(vals, fastk_days = 7, slowk_days = 3, slowd_days = 3):
     fastk_val = fastk(vals[-fastk_days-1:-1])
     slowk_val = slowk(vals[-slowk_days-1:-1])
@@ -73,38 +76,28 @@ def obv(vals):
                 running_obv = running_obv + [running_obv[-1]]
     return running_obv
 
-def rsi(vals, period = 14, ep = 0.0001):
-    rsis = []
-    smoothed_rsis = []
-    # get the rsi for the period days _before_ requested period 
-    for i in range(0, period):
-        range_vals = vals[-1-period*2-i:-1-period-i]
-        deltas = list([(v[0]-v[1])/v[1] for v in range_vals])
-        avg_gain = max(sum(list([abs(v) for v in deltas if v > 0])) / period, ep)
-        avg_loss = max(sum(list([abs(v) for v in deltas if v < 0])) / period, ep)
-        rsis = rsis + [100.0 - (100.0 / (avg_gain / avg_loss))]
-    # use these rsis to calculate the actual request period
-    for i in range(0, period):
-        range_vals = vals[-1-period-i:-1-i]
-        prev_rsis = rsis[-1-period-i:-1-i]
-        delta = range_vals[-1][0] - range_vals[-1][1]
-        if delta > 0:
-            smoothed_gain = max(sum(prev_rsis + [delta]) / period, ep)
-            smoothed_loss = max(sum(prev_rsis) / period, ep)
-        else:
-            smoothed_gain = max(sum(pref_rsis) / period, ep)
-            smoothed_loss = max(sum(prev_rsis + [delta]) / period, ep)
-    smoothed_rsis = smoothed_rsis + [100.0 - (100.0 / (smoothed_gain / smoothed_loss))]
-    return smoothed_rsis[-1]
+# note! this function expects a pandas dataframe, not raw numbers
+def rsi(vals, window = 14):
+    close = vals['c']
+    delta = close.diff()
+    delta = delta[1:] 
+    up, down = delta.copy(), delta.copy()
+    up[up < 0] = 0
+    down[down > 0] = 0
+    # Calculate the EWMA
+    roll_up1 = up.ewm(span=window).mean()
+    roll_down1 = down.abs().ewm(span=window).mean()    
+    # Calculate the RSI based on EWMA
+    RS1 = roll_up1 / roll_down1
+    RSI1 = 100.0 - (100.0 / (1.0 + RS1))
+    # Calculate the SMA
+    roll_up2 = up.rolling(window).mean()
+    roll_down2 = down.abs().rolling(window).mean()
+    # Calculate the RSI based on SMA
+    RS2 = roll_up2 / roll_down2
+    RSI2 = 100.0 - (100.0 / (1.0 + RS2))
+    return RSI2
 
-def rsi_over_period(vals, period = 14):
-    start_i = period*2
-    rsi_vals = []
-    for i in range(start_i, len(vals)):
-        data_range = vals[-1-period*2-i:-1]
-        print(data_range)
-        rsi_vals = rsi_vals + [rsi(vals, period)]
-    return rsi_vals
 
 def smooth(fn1, fn2, vals):
     d = fn2(vals)
