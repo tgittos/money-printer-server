@@ -21,29 +21,10 @@ class Options:
         return K * exp(-r*T) - S + self.bs_call(S, K, T, r, sigma)
     
     def call_forecast(self, ticker, strike, expiry, std_devs = 1):
-        today = datetime.today()
-        data = self.fh.get_historical_data(ticker, self.fh.stock_candles_by_date)
-        dte = (datetime.strptime(expiry, "%m-%d-%Y") - today).days
-        last_close = data.tail(1)['c']
-        lower_b = last_close - (data['c'].std() * std_devs)
-        upper_b = last_close + (data['c'].std() * std_devs)
-        closes = np.linspace(lower_b, upper_b, dte)
-        closes = [item for sublist in closes for item in sublist]
-        uty = get_tnx()
-        sigma = self.sigma(ticker)
-
-        price_matrix = pd.DataFrame()
-        for i in range(0, dte):
-            l_t = (dte - i) / 365
-            expiry_prices = []
-            for j in closes:
-                price = self.bs_call(j, strike, l_t, uty, sigma)
-                expiry_prices = expiry_prices + [{'t': today + timedelta(days=i), 'c': j, 'v': price}]
-            price_matrix = price_matrix.append(expiry_prices)
-
-        price_matrix = price_matrix.pivot(index='t',columns='c', values='v')
-        
-        return price_matrix
+        return self._forecast(ticker, strike, expiry, self.bs_call, std_devs)
+    
+    def put_forecast(self, ticker, strike, expiry, std_devs = 1):
+        return self._forecast(ticker, strike, expiry, self.bs_put, std_devs)
 
     def sigma(self, ticker):
         data = self.fh.get_historical_data(ticker, self.fh.stock_candles_by_date)
@@ -61,3 +42,28 @@ class Options:
     
     def _d2(self, S, K, T, r, sigma):
         return self._d1(S, K, T, r, sigma)-sigma*sqrt(T)
+    
+    def _forecast(self, ticker, strike, expiry, fn, std_devs = 1):
+        today = datetime.today()
+        data = self.fh.get_historical_data(ticker, self.fh.stock_candles_by_date)
+        dte = (datetime.strptime(expiry, "%m-%d-%Y") - today).days
+        last_close = data.tail(1)['c']
+        lower_b = last_close - (data['c'].std() * std_devs)
+        upper_b = last_close + (data['c'].std() * std_devs)
+        closes = np.linspace(lower_b, upper_b, dte)
+        closes = [item for sublist in closes for item in sublist]
+        uty = get_tnx()
+        sigma = self.sigma(ticker)
+
+        price_matrix = pd.DataFrame()
+        for i in range(0, dte):
+            l_t = (dte - i) / 365
+            expiry_prices = []
+            for j in closes:
+                price = fn(j, strike, l_t, uty, sigma)
+                expiry_prices = expiry_prices + [{'t': today + timedelta(days=i), 'c': j, 'v': price}]
+            price_matrix = price_matrix.append(expiry_prices)
+
+        price_matrix = price_matrix.pivot(index='t',columns='c', values='v')
+        
+        return price_matrix
