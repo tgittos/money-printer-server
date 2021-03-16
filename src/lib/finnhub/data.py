@@ -215,7 +215,7 @@ class FinnhubData:
               
         # generate returns for the day
         returns = []
-        for i in range(0, len(candle_rows)):
+        for i in range(0, len(candles)):
             if i == 0:
                 returns = returns + [0]
             else:
@@ -246,7 +246,10 @@ class FinnhubData:
             historical_data = historical_data.append(data)
             current_date = current_date + timedelta(days = 1)
         # label & type the data frame
-        historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v']
+        if len(historical_data.columns) == 6:
+            historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v']
+        elif len(historical_data.columns) == 7:
+            historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v', 'r']
         historical_data['t'] = pandas.to_datetime(historical_data['t'], unit = 's')
         historical_data.index.name = 't'
         return historical_data
