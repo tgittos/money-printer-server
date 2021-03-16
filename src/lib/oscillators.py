@@ -53,6 +53,59 @@ def macd(vals, smoothing = 2):
     twelve_period_ema = ema(vals, 12, smoothing)
     return twelve_period_ema - two_six_period_ema
 
+def obv(vals):
+    running_obv = None
+    for i in range(0, len(vals)):
+        val = vals.iloc[i]
+        if running_obv == None:
+            if val['r'] > 0:
+                running_obv = [-val['v']]
+            elif val['r'] < 0:
+                running_obv = [val['v']]
+            else:
+                running_obv = [0]
+        else:
+            if val['r'] > 0:
+                running_obv = running_obv + [running_obv[-1] + val['v']]
+            elif val['r'] < 0:
+                running_obv = running_obv + [running_obv[-1] - val['v']]
+            else:
+                running_obv = running_obv + [running_obv[-1]]
+    return running_obv
+
+def rsi(vals, period = 14, ep = 0.0001):
+    rsis = []
+    smoothed_rsis = []
+    # get the rsi for the period days _before_ requested period 
+    for i in range(0, period):
+        range_vals = vals[-1-period*2-i:-1-period-i]
+        deltas = list([(v[0]-v[1])/v[1] for v in range_vals])
+        avg_gain = max(sum(list([abs(v) for v in deltas if v > 0])) / period, ep)
+        avg_loss = max(sum(list([abs(v) for v in deltas if v < 0])) / period, ep)
+        rsis = rsis + [100.0 - (100.0 / (avg_gain / avg_loss))]
+    # use these rsis to calculate the actual request period
+    for i in range(0, period):
+        range_vals = vals[-1-period-i:-1-i]
+        prev_rsis = rsis[-1-period-i:-1-i]
+        delta = range_vals[-1][0] - range_vals[-1][1]
+        if delta > 0:
+            smoothed_gain = max(sum(prev_rsis + [delta]) / period, ep)
+            smoothed_loss = max(sum(prev_rsis) / period, ep)
+        else:
+            smoothed_gain = max(sum(pref_rsis) / period, ep)
+            smoothed_loss = max(sum(prev_rsis + [delta]) / period, ep)
+    smoothed_rsis = smoothed_rsis + [100.0 - (100.0 / (smoothed_gain / smoothed_loss))]
+    return smoothed_rsis[-1]
+
+def rsi_over_period(vals, period = 14):
+    start_i = period*2
+    rsi_vals = []
+    for i in range(start_i, len(vals)):
+        data_range = vals[-1-period*2-i:-1]
+        print(data_range)
+        rsi_vals = rsi_vals + [rsi(vals, period)]
+    return rsi_vals
+
 def smooth(fn1, fn2, vals):
     d = fn2(vals)
     return fn1(list(map(lambda v: v / d, vals)))

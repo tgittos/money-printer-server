@@ -26,6 +26,18 @@ class Options:
         median_price = price_matrix.median().median()
         return [min_price, median_price]
 
+    def put_exit_window(self, ticker, strike, expiry, cost, std_devs = 1):
+        price_matrix = self.put_forecast(ticker, strike, expiry, std_devs)
+        max_price = price_matrix.max().max()
+        median_price = price_matrix.median().median()
+        return [median_price, max_price]
+    
+    def put_entry_window(self, ticker, strike, expiry, std_devs = 1):
+        price_matrix = self.put_forecast(ticker, strike, expiry, std_devs)
+        min_price = (price_matrix.median() - (price_matrix.std() * std_devs)).median()
+        median_price = price_matrix.median().median()
+        return [min_price, median_price]
+
     def bs_call(self, S,K,T,r,sigma):
         return S * norm.cdf(self._d1(S, K, T, r, sigma)) - K * exp(-r*T) * norm.cdf(self._d2(S, K, T, r, sigma))
   
