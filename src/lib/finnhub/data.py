@@ -112,7 +112,7 @@ class FinnhubData:
         
         return df
 
-    def get_daily_closings(self, ticker, date, include_ah = False, pickle = True, debug = False):
+    def get_daily_closings(self, ticker, date = datetime.today(), include_ah = False, pickle = True, debug = False):
         pre_candles = []
         post_candles = []
         start_ts = int(date.replace(hour=FinnhubData.local_market_open_hour, minute=FinnhubData.local_market_open_min, second=1).timestamp())

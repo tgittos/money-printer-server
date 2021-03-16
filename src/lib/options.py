@@ -14,6 +14,18 @@ class Options:
     def __init__(self):
         self.fh = fh()
     
+    def call_exit_window(self, ticker, strike, expiry, cost, std_devs = 1):
+        price_matrix = self.call_forecast(ticker, strike, expiry, std_devs)
+        max_price = price_matrix.max().max()
+        median_price = price_matrix.median().median()
+        return [median_price, max_price]
+    
+    def call_entry_window(self, ticker, strike, expiry, std_devs = 1):
+        price_matrix = self.call_forecast(ticker, strike, expiry, std_devs)
+        min_price = (price_matrix.median() - (price_matrix.std() * std_devs)).median()
+        median_price = price_matrix.median().median()
+        return [min_price, median_price]
+
     def bs_call(self, S,K,T,r,sigma):
         return S * norm.cdf(self._d1(S, K, T, r, sigma)) - K * exp(-r*T) * norm.cdf(self._d2(S, K, T, r, sigma))
   
@@ -56,6 +68,7 @@ class Options:
         sigma = self.sigma(ticker)
 
         price_matrix = pd.DataFrame()
+        
         for i in range(0, dte):
             l_t = (dte - i) / 365
             expiry_prices = []
