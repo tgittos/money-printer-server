@@ -144,11 +144,6 @@ class FinnhubWebsocket:
         self.ws.send(json.dumps(data))
         self.listening = True
 
-    def load_config(self):
-        self.alpaca_url = config.api_urls['alpaca']['paper']
-        self.alpaca_key = config.api_keys['alpaca']['paper']['key_id']
-        self.alpaca_secret = config.api_keys['alpaca']['paper']['secret']
-
 if __name__ == "__main__":
     print("-- starting in ticker mode --")
 

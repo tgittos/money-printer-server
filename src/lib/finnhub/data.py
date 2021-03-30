@@ -70,7 +70,7 @@ class FinnhubData:
                 
         df['r'] = returns
         
-        df.columns = ['t', 'o', 'l', 'h', 'c', 'v', 'r']
+        df.columns = ['t', 'o', 'l', 'h', 'c', 'r', 'v']
         df['t'] = pandas.to_datetime(df['t'], unit = 's')
         df.sort_index
 
@@ -102,7 +102,7 @@ class FinnhubData:
         if len(historical_data.columns) == 6:
             historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v']
         elif len(historical_data.columns) == 7:
-            historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v', 'r']
+            historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'r', 'v']
         historical_data['t'] = pandas.to_datetime(historical_data['t'], unit = 's')
         historical_data.index.name = 't'
         return historical_data

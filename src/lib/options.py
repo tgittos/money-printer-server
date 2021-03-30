@@ -6,13 +6,13 @@ import pandas as pd
 from pandas import DataFrame
 import pandas_datareader.data as web
 
-from lib.finnhub.data import FinnhubData as fh
+from lib.stores.mysql import Mysql
 from lib.yahoo.data import get_tnx
 
 class Options:
     
     def __init__(self):
-        self.fh = fh()
+        self.mysql = Mysql()
     
     def call_exit_window(self, ticker, strike, expiry, cost, std_devs = 1):
         price_matrix = self.call_forecast(ticker, strike, expiry, std_devs)
@@ -51,7 +51,7 @@ class Options:
         return self._forecast(ticker, strike, expiry, self.bs_put, std_devs)
 
     def sigma(self, ticker):
-        data = self.fh.get_historical_data(ticker, self.fh.stock_candles_by_date)
+        data = self.mysql.get_closes_by_symbol(ticker)
         returns = []
         for i in range(0, len(data)):
             if i == 0:
@@ -69,19 +69,19 @@ class Options:
     
     def _forecast(self, ticker, strike, expiry, fn, std_devs = 1):
         today = datetime.today()
-        data = self.fh.get_historical_data(ticker, self.fh.stock_candles_by_date)
-        dte = (datetime.strptime(expiry, "%m-%d-%Y") - today).days
+        data = self.mysql.get_candles_by_symbol(ticker, 60)
+        dte = (datetime.strptime(expiry, "%m-%d-%Y") - today).days+1
         last_close = data.tail(1)['c']
         lower_b = last_close - (data['c'].std() * std_devs)
         upper_b = last_close + (data['c'].std() * std_devs)
-        closes = np.linspace(lower_b, upper_b, dte)
+        closes = np.linspace(lower_b, upper_b, 10)
         closes = [item for sublist in closes for item in sublist]
         uty = get_tnx()
         sigma = self.sigma(ticker)
 
         price_matrix = pd.DataFrame()
         
-        for i in range(0, dte):
+        for i in range(0, dte+1):
             l_t = (dte - i) / 365
             expiry_prices = []
             for j in closes:

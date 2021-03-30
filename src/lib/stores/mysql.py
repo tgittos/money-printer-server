@@ -7,7 +7,8 @@ from sqlalchemy import and_, cast, Time
 
 from lib.finnhub.data import FinnhubData
 from models.candle import Candle
-from db import Db
+from models.sync import Sync
+from lib.db import Db
 
 class Mysql:
     
@@ -15,6 +16,22 @@ class Mysql:
         db = Db(echo=echo)
         self.fh = FinnhubData()
         self.db = db.get_session()
+    
+    def add_to_sync(self, symbol, resolution):
+        s = Sync(symbol=symbol, resolution=resolution)
+        self.db.add(s)
+        self.db.commit()
+        return s
+    
+    def remove_from_sync(self, symbol, resolution):
+        s = self.db.query(Sync).filter(Sync.symbol == symbol).all()
+        self.db.delete(s)
+        self.db.commit()
+        return None
+    
+    def get_sync(self):
+        db_data = list(self.db.query(Sync).all())
+        return db_data
     
     def update_candles(self, symbol, resolution, debug=False):
         historical_candles = self.fh.get_historical_data(symbol, self._incremental_save_candles_df, debug=debug)
