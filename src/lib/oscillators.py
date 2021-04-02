@@ -32,29 +32,16 @@ def slowk(vals):
 def slowd(vals):
     return smooth(slowk, sma, vals)
 
-def ema(d, period, smoothing):
-    k = smoothing / (1 + period)
-    vals = []
-    for i in range(0, period):
-        if i == 0:
-            sma_val = sma(d)
-            vals = vals + [int(d[-period]) * k + sma_val]
-        else:
-            y_ema = vals[i-1]
-            vals = vals + [(int(d[-period+i]) * k) + (y_ema * (1 - k))]
-    return vals[-1]
+def ema(d, period):
+    return d['c'].ewm(span=period)
 
-def macd_over_period(vals, period):
-    m_vals = list([macd(vals[:-i]) for i in range(len(vals)-26, 0, -1)])
-    ms_vals = list([ema(m_vals[:-i], 9, 2) for i in range(period, 0, -1)])
-    real_m_vals = m_vals[-period-1:-1]
-    histos = [t[0] - t[1] for t in list(zip(real_m_vals, ms_vals))]
-    return list(zip(real_m_vals, m_vals, histos))
-
-def macd(vals, smoothing = 2):
-    two_six_period_ema = ema(vals, 26, smoothing)
-    twelve_period_ema = ema(vals, 12, smoothing)
-    return twelve_period_ema - two_six_period_ema
+def macd(df):
+    exp1 = df['c'].ewm(span=12, adjust=False).mean()
+    exp2 = df['c'].ewm(span=26, adjust=False).mean()
+    macd = exp1-exp2
+    exp3 = macd.ewm(span=9, adjust=False).mean()
+    histo = macd-exp3
+    return (macd, exp3, histo)
 
 def obv(vals):
     running_obv = None

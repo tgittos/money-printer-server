@@ -2,7 +2,7 @@ import sys
 sys.path.append('./../../src')
 
 import pandas
-from datetime import timedelta
+from datetime import datetime, timedelta
 from sqlalchemy import and_, cast, Time
 
 from lib.finnhub.data import FinnhubData
@@ -23,19 +23,38 @@ class Mysql:
         self.db.commit()
         return s
     
-    def remove_from_sync(self, symbol, resolution):
+    def remove_from_sync(self, symbol):
         s = self.db.query(Sync).filter(Sync.symbol == symbol).all()
         self.db.delete(s)
         self.db.commit()
         return None
     
-    def get_sync(self):
-        db_data = list(self.db.query(Sync).all())
+    def get_sync(self, symbol = None):
+        if symbol == None:
+            db_data = list(self.db.query(Sync).all())
+        else:
+            db_data = self.db.query(Sync).filter(Sync.symbol == symbol).all()
         return db_data
     
+    def _update_sync(self, symbol):
+        s = self.db.query(Sync).filter(Sync.symbol == symbol).all()
+        if len(s) == 0:
+            s = Sync(symbol=symbol)
+            self.db.add(s)
+        else:
+            s[0].last_update = datetime.now()
+        self.db.commit()
+        return None
+    
     def update_candles(self, symbol, resolution, debug=False):
-        historical_candles = self.fh.get_historical_data(symbol, self._incremental_save_candles_df, debug=debug)
-        return historical_candles
+        s = self.get_sync(symbol)
+        if len(s) > 0 and s[0].last_update != None:
+            days = (datetime.today() - s[0].last_update).days
+            self.fh.get_historical_data(symbol, self._incremental_save_candles_df, days=days, debug=debug)
+        else:
+            self.fh.get_historical_data(symbol, self._incremental_save_candles_df, debug=debug)
+        self._update_sync(symbol)
+        return self.get_candles_by_symbol(symbol, resolution)
     
     def get_candles_by_symbol(self, symbol, resolution=FinnhubData.thirty_min):
         db_data = list(self.db.query(Candle).filter(and_(Candle.symbol == symbol,
@@ -45,6 +64,7 @@ class Mysql:
         return self._convert_to_dataframe(db_data)
     
     def get_closes_by_symbol(self, symbol):
+        self.update_candles(symbol, FinnhubData.thirty_min)
         db_data = list(self.db.query(Candle).filter(and_(Candle.symbol == symbol,
             cast(Candle.timestamp, Time) == '21:00:00')))
         if len(db_data) == 0:
@@ -54,20 +74,14 @@ class Mysql:
     def _incremental_save_candles_df(self, symbol, current_date, resolution, debug=False):
         if debug:
             print("checking db for {0} {1} candles for {2}".format(symbol, resolution, current_date))
-        df = self._get_candles_by_day(symbol, resolution, current_date, debug=debug)
-        if df.empty:
+        if not self._symbol_day_exists(symbol, resolution, current_date):
             if debug:
                 print("db miss, fetching from finnhub")
             df = self.fh.stock_candles_by_date(symbol, current_date, debug=debug)
-            if df.empty:
-                return df
-            if debug:
-                print("saving candle: {0}".format(df))
-            return self._save_candles_df(symbol, current_date, resolution, df)
-        else:
-            if debug:
-                print("found candle: {0}".format(df))
-            return df
+            if not df.empty:
+                if debug:
+                    print("saving candle: {0}".format(df))
+                return self._save_candles_df(symbol, current_date, resolution, df)
     
     def _save_candles_df(self, symbol, current_date, resolution, candles):
         new_rows = []
@@ -97,6 +111,14 @@ class Mysql:
         start_of_day = day.replace(hour=0, minute=0, second=0, microsecond=0)
         end_of_day = start_of_day + timedelta(days=1)
         return self._get_candles_by_time_window(symbol, start_of_day, end_of_day, resolution, debug=debug)
+    
+    def _symbol_day_exists(self, symbol, resolution, day):
+        start_of_day = day.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_day = start_of_day + timedelta(days=1)
+        db_data = self.db.query(Candle).filter(and_(Candle.symbol == symbol,
+            Candle.timestamp >= start_of_day,
+            Candle.timestamp <= end_of_day)).count()
+        return db_data > 0
     
     def _get_candle_by_timestamp(self, symbol, resolution, timestamp):
         db_data = list(self.db.query(Candle).filter(and_(Candle.symbol == symbol,

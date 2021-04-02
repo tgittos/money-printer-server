@@ -1,15 +1,16 @@
-from flask import Flask
-from flask_restful import Api
+import sys
+sys.path.append('./../src')
 
-from symbol import Tracking as SymbolTracking
+from flask import Flask, send_from_directory
+from flask_cors import CORS
 
 app = Flask(__name__)
-api = Api(app)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
-# add endpoints
-api.add_resource(SymbolTracking, '/symbols/tracking')
-api.add_resource(Candles, '/candles')
-api.add_resource(Options, '/options')
+from routes import *
 
 if __name__ == '__main__':
-    app.run()  # run our Flask app
+    # boot the scheduler
+    # run Flask app
+    app.run()

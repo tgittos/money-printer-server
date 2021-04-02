@@ -1,0 +1,34 @@
+#tracker-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 0 solid #42b983;
+    border-width: 0 0 1px 1px;
+}
+
+#tracker-list li {
+    font-size: x-small;
+    border: 0 solid #42b983;
+    border-width: 1px 1px 0 0;
+    border-collapse: collapse;
+    height: 20px;
+    padding: 0 2px;
+    cursor: pointer;
+}
+
+#tracker-list-add {
+    width: 100%;
+    padding: 0;
+    margin: 5px 0;
+    border: 1px solid #42b983;
+    height: 20px;
+    font-size: xx-small;
+    color: #42b983;
+}
+
+#tracker-list-add :hover {
+    padding: 0 2px;
+    background: #102711;
+    transition: background 0.3s;
+    cursor: pointer;
+}

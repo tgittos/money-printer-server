@@ -99,12 +99,15 @@ class FinnhubData:
                 current_date
             ))
         # label & type the data frame
-        if len(historical_data.columns) == 6:
-            historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v']
-        elif len(historical_data.columns) == 7:
-            historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'r', 'v']
-        historical_data['t'] = pandas.to_datetime(historical_data['t'], unit = 's')
-        historical_data.index.name = 't'
+        if not historical_data.empty:
+            if len(historical_data.columns) == 6:
+                historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v']
+            elif len(historical_data.columns) == 7:
+                historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'r', 'v']
+            else:
+                print("wtf! historical_data: {0}".format(historical_data))
+            historical_data['t'] = pandas.to_datetime(historical_data['t'], unit = 's')
+            historical_data.index.name = 't'
         return historical_data
     
     def _api_call_with_sleep(self, fn, *args):
