@@ -1,11 +1,11 @@
 <template>
   <ul id="tracker-list">
     <li v-for="sync in syncs" :key="sync.symbol" @click="graphSymbolToggle(sync)"
-      v-bind:class="isGraphed">
+      v-bind:class="trackerClass">
       {{ sync.symbol }} [{{ formatDate(sync.last_update) }}]
     </li>
   </ul>
-  <input v-if="addMode" v-model="symbolToAdd" name="symbol">
+  <input ref="trackerInput" id="tracker-input" v-if="addMode" v-model="symbolToAdd" name="symbol">
   <button id="tracker-list-add" v-if="!addMode" @click="showSymbolAdd">+</button>
   <button id="tracker-list-add" v-if="addMode" @click="submitSymbolAdd">Add</button>
 </template>
@@ -26,6 +26,11 @@ export default {
           }
         });
   },
+  updated() {
+    if (this.addMode) {
+      this.$refs.trackerInput.focus();
+    }
+  },
   data() {
     return {
       symbolToAdd: '',
@@ -37,7 +42,7 @@ export default {
   methods: {
     formatDate(date) {
       if (date) {
-        return moment(date).fromNow();
+        return moment.utc(date).fromNow();
       }
       return 'never';
     },
@@ -58,9 +63,9 @@ export default {
     },
   },
   computed: {
-    isGraphed: function(symbol) {
+    trackerClass: function() {
       return {
-        'graphed': this.graphs.includes(symbol)
+        'graphed': this.graphs.includes(this.symbol)
       };
     }
   }

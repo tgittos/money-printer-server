@@ -53,18 +53,15 @@ class Mysql:
             self.fh.get_historical_data(symbol, self._incremental_save_candles_df, days=days, debug=debug)
         else:
             self.fh.get_historical_data(symbol, self._incremental_save_candles_df, debug=debug)
+            self.add_to_sync(symbol, resolution)
         self._update_sync(symbol)
         return self.get_candles_by_symbol(symbol, resolution)
     
     def get_candles_by_symbol(self, symbol, resolution=FinnhubData.thirty_min):
-        db_data = list(self.db.query(Candle).filter(and_(Candle.symbol == symbol,
-            Candle.resolution == resolution)))
-        if len(db_data) == 0:
-            return pandas.DataFrame()
+        db_data = list(self.db.query(Candle).filter(Candle.symbol == symbol))
         return self._convert_to_dataframe(db_data)
     
     def get_closes_by_symbol(self, symbol):
-        self.update_candles(symbol, FinnhubData.thirty_min)
         db_data = list(self.db.query(Candle).filter(and_(Candle.symbol == symbol,
             cast(Candle.timestamp, Time) == '21:00:00')))
         if len(db_data) == 0:

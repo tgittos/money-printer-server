@@ -6,7 +6,8 @@ from flask import send_from_directory
 from flask_cors import cross_origin
 
 from server import app
-from lib.stores.mysql import Mysql;
+from lib.stores.mysql import Mysql
+from lib.oscillators import macd, rsi
 
 root_dir = path.abspath(path.join(path.dirname(__file__), '../client'))
 
@@ -44,12 +45,36 @@ def untrack_symbol(symbol):
     db.remove_from_sync(symbol)
 
 # candle data
+@app.route('/v1/candles/<symbol>')
 def get_candles(symbol):
     db = _get_db()
     data = db.get_candles_by_symbol(symbol)
-    return data
+    return {
+        'success': True,
+        'data': list([{
+            'symbol': symbol,
+            'candles': data.to_json()
+        }])
+    }
 
 # oscillators
+@app.route('/v1/oscillators/<oscillator>/<symbol>')
+def get_oscillator(oscillator, symbol):
+    db = _get_db()
+    data = db.get_candles_by_symbol(symbol)
+    try:
+        vals = getattr(self, oscillator)(data)
+        return {
+            'success': True,
+            'data': list([{
+                'symbol': symbol,
+                oscillator: vals.to_json()
+            }])
+        }
+    except:
+        return {
+            'success': False
+        }
 
 #
 

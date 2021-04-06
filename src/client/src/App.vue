@@ -19,6 +19,7 @@ import Tracker from './components/Tracker.vue'
 import "@/assets/css/reset.css";
 import "@/assets/css/app.css";
 import "@/assets/css/tracker-list.css";
+import "@/assets/css/chart.css";
 
 export default {
   name: 'App',

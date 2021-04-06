@@ -15,6 +15,7 @@
     "@vue/cli": "^4.5.12",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "d3": "^6.6.2",
     "moment": "^2.29.1",
     "vue": "^3.0.10"
   },
@@ -39,7 +40,10 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off",
+      "no-undef": "off"
+    }
   },
   "browserslist": [
     "> 1%",
