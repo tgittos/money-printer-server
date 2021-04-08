@@ -19,7 +19,7 @@ import config from "./../config";
 export default {
   name: "Tracker",
   mounted () {
-    axios.get(config.apiRoot + '/symbols')
+    axios.get(`${config.apiRoot}/symbols`)
         .then(response => {
           if (response.data.success) {
             this.syncs = response.data.data
@@ -50,15 +50,19 @@ export default {
       this.addMode = true;
     },
     submitSymbolAdd() {
-      this.addMode = false;
-      this.symbolToAdd = '';
+      axios.post(`${config.apiRoot}/symbols`, {
+        symbol: this.symbolToAdd
+      }).then(response => {
+          console.log(response);
+          if (response.data.success) {
+            this.syncs.push(response.data.data);
+          }
+          this.addMode = false;
+          this.symbolToAdd = '';
+        });
     },
     graphSymbolToggle(symbol) {
-      if (this.graphs.includes(symbol)) {
-        this.graphs = this.graphs.filter(r => r != symbol);
-      } else {
-        this.graphs = this.graphs.concat(symbol);
-      }
+      this.graphs = [symbol];
       this.$emit('graphsModified', this.graphs);
     },
   },

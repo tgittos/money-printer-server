@@ -27,7 +27,6 @@ def upgrade():
         sa.Column('close', sa.Float),
         sa.Column('high', sa.Float),
         sa.Column('low', sa.Float),
-        sa.Column('returns', sa.Float),
         sa.Column('volume', sa.Integer)
     )
 

@@ -21,7 +21,6 @@ def upgrade():
         'sync',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('symbol', sa.String(10)),
-        sa.Column('resolution', sa.String(3)),
         sa.Column('last_update', sa.DateTime)
     )
 

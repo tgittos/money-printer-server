@@ -26,7 +26,7 @@ class FinnhubData:
 
     def __init__(self):
         self.finnhub_client = finnhub.Client(api_key=config.api_keys['finnhub']['live'])
-        self.sleep_for = 3
+        self.sleep_for = 2
 
     def recommendation_trends_by_date(self, ticker, date, debug = False):
         first_of_month = date.replace(day = 1)
@@ -57,20 +57,9 @@ class FinnhubData:
         if 's' in candles and candles['s'] == 'no_data':
             return pandas.DataFrame()
 
-        candle_rows = list(zip(candles['t'], candles['l'], candles['o'], candles['c'], candles['h'], candles['v']))    
+        candle_rows = list(zip(candles['t'], candles['l'], candles['o'], candles['c'], candles['h'], candles['v']))
         df = pandas.DataFrame.from_records(candle_rows)
-              
-        # generate returns for the day
-        returns = []
-        for i in range(0, len(candle_rows)):
-            if i == 0:
-                returns = returns + [0]
-            else:
-                returns = returns + [(df.iloc[i][4] - df.iloc[i-1][4])/df.iloc[i-1][4]]
-                
-        df['r'] = returns
-        
-        df.columns = ['t', 'o', 'l', 'h', 'c', 'r', 'v']
+        df.columns = ['t', 'l', 'o', 'c', 'h', 'v']
         df['t'] = pandas.to_datetime(df['t'], unit = 's')
         df.sort_index
 
@@ -100,12 +89,7 @@ class FinnhubData:
             ))
         # label & type the data frame
         if not historical_data.empty:
-            if len(historical_data.columns) == 6:
-                historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'v']
-            elif len(historical_data.columns) == 7:
-                historical_data.columns = ['t', 'o', 'l', 'h', 'c', 'r', 'v']
-            else:
-                print("wtf! historical_data: {0}".format(historical_data))
+            historical_data.columns = ['t', 'l', 'o', 'c', 'h', 'v']
             historical_data['t'] = pandas.to_datetime(historical_data['t'], unit = 's')
             historical_data.index.name = 't'
         return historical_data

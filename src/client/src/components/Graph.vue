@@ -1,5 +1,5 @@
 <template>
-  <Single :data="singleData"></Single>
+  <Single :data="singleData" :symbol="charts[0]?.symbol"></Single>
 </template>
 
 <script>
@@ -22,9 +22,13 @@ export default {
   updated() {
     this.graphSymbols.map(sync => {
       if (!this.charts[sync.symbol]) {
+        // calculate time window
+        const end = Date.now() / 1000;
+        const now = new Date();
+        const start = now.setDate(now.getDate()-7) / 1000;
         // fetch data from server to draw charts
         console.log('fetching chart data for ticker:', sync.symbol)
-        axios.get(config.apiRoot + '/candles/' + sync.symbol)
+        axios.get(`${config.apiRoot}/candles/${sync.symbol}?start=${start}&end=${end}`)
             .then(response => {
               console.log(response);
               if (response.data.success) {
@@ -32,6 +36,8 @@ export default {
                 this.singleData = response.data.data;
               }
             });
+      } else {
+        this.singleData = this.charts[sync.symbol];
       }
     });
   }

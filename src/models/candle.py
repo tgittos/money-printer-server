@@ -14,7 +14,6 @@ class Candle(Base):
     close = Column(Float)
     high = Column(Float)
     low = Column(Float)
-    returns = Column(Float)
     volume = Column(Integer)
     
     def as_dict(self):
@@ -24,6 +23,5 @@ class Candle(Base):
             'c': self.close,
             'h': self.high,
             'l': self.low,
-            'r': self.returns,
             'v': self.volume
         }

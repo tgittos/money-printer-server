@@ -18,9 +18,11 @@ class Mysql:
         self.db = db.get_session()
     
     def add_to_sync(self, symbol, resolution):
-        s = Sync(symbol=symbol, resolution=resolution)
-        self.db.add(s)
-        self.db.commit()
+        s = self.get_sync(symbol)
+        if s != None:
+            s = Sync(symbol=symbol)
+            self.db.add(s)
+            self.db.commit()
         return s
     
     def remove_from_sync(self, symbol):
@@ -42,7 +44,8 @@ class Mysql:
             s = Sync(symbol=symbol)
             self.db.add(s)
         else:
-            s[0].last_update = datetime.now()
+            s = s[0]
+        s.last_update = datetime.now()
         self.db.commit()
         return None
     
@@ -57,9 +60,12 @@ class Mysql:
         self._update_sync(symbol)
         return self.get_candles_by_symbol(symbol, resolution)
     
-    def get_candles_by_symbol(self, symbol, resolution=FinnhubData.thirty_min):
+    def get_candles_by_symbol(self, symbol, resolution=FinnhubData.sixty_min):
         db_data = list(self.db.query(Candle).filter(Candle.symbol == symbol))
         return self._convert_to_dataframe(db_data)
+    
+    def get_candles_by_symbol_in_window(self, symbol, start, end, resolution=FinnhubData.sixty_min, debug=False):
+        return self._get_candles_by_time_window(symbol, start, end, resolution, debug=debug)
     
     def get_closes_by_symbol(self, symbol):
         db_data = list(self.db.query(Candle).filter(and_(Candle.symbol == symbol,
@@ -91,13 +97,13 @@ class Mysql:
             c = candles.iloc[i]
             if not c['t'] in existing:
                 new_candle = Candle(symbol=symbol, resolution=resolution, timestamp=c['t'], open=c['o'],
-                                  close=c['c'], high=c['h'], low=c['l'], returns=c['r'], volume=c['v'])
+                                  close=c['c'], high=c['h'], low=c['l'], volume=c['v'])
                 new_rows = new_rows + [new_candle]
                 rows = rows + [new_candle]
             else:
                 new_candle = Candle(symbol=symbol, resolution=resolution, timestamp=existing['t'],
                     open=existing['o'], close=existing['c'], high=existing['h'],
-                    low=existing['l'], returns=existing['r'], volume=existing['v'])
+                    low=existing['l'], volume=existing['v'])
                 rows = rows + [new_candle]
                 
         self.db.add_all(new_rows)

@@ -8,5 +8,4 @@ class Sync(Base):
 
     id = Column(Integer, primary_key=True)
     symbol = Column(String(10))
-    resolution = Column(String(3))
     last_update = Column(DateTime)
