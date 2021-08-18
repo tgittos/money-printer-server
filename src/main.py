@@ -1,4 +1,0 @@
-import scheduler
-
-scheduler.start()
-
