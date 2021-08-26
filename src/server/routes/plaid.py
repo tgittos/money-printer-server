@@ -4,10 +4,8 @@ from flask import request
 from core.apis.plaid.common import PlaidApiConfig
 from core.apis.plaid.oauth import Oauth, OauthConfig
 from core.apis.plaid.auth import Auth, AuthConfig
-
-
-# load the env config
 from server import load_config
+
 server_config = load_config()
 
 # define a plaid oauth client config

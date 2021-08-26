@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/requests/RegisterProfileRequest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/responses/AuthProfileResponse.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/responses/RegisterProfileResponse.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bin/api" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/api" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bin/client" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/client" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../bin/scheduler" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/scheduler" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/src.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/src.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/client.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generate-react-cli.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reportWebVitals.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/setupTests.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/plaid/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/plaid/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/account.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/plaid_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/plaid_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/account_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/account_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/routes/plaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/plaid.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="1xHCwzvvk7max1CFw6eZbxTDe5v" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../package.json.tim" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Profiles\components" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="" />
+      <created>1630002872469</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1630002872469</updated>
+      <workItem from="1630002874254" duration="8300000" />
+      <workItem from="1630011654402" duration="9104000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/repositories/ProfileRepository.ts</url>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

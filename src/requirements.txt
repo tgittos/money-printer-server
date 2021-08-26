@@ -59,6 +59,7 @@ plaid-python==8.0.0
 prometheus-client==0.11.0
 prompt-toolkit==3.0.19
 ptyprocess==0.7.0
+py-bcrypt==0.4
 pycparser==2.20
 Pygments==2.10.0
 pyparsing==2.4.7
