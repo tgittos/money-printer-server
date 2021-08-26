@@ -1,10 +1,5 @@
-import sys
-sys.path.append('./../../src')
-
-from routes.oauth import *
-from routes.symbols import *
-from routes.oscillators import *
-from routes.candles import *
+from os import path
+from flask import send_from_directory
 
 # static client site routes
 root_dir = path.abspath(path.join(path.dirname(__file__), '../client'))
@@ -13,6 +8,3 @@ root_dir = path.abspath(path.join(path.dirname(__file__), '../client'))
 def serve_client():
     return send_from_directory(root_dir, 'index.html')
 
-def _get_db():
-    mysql = Mysql()
-    return mysql

@@ -6,7 +6,6 @@ import threading
 import time
 import json
 
-import config
 import lib.tickers as tickers
 
 class FinnhubWebsocket:

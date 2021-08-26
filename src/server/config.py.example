@@ -1,0 +1,4 @@
+server = dict(
+    host="localhost",
+    port="8000"
+)

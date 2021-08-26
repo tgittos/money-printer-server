@@ -1,6 +1,6 @@
 from google_alerts import GoogleAlerts
 
-import config
+from server import config
 from lib.pickle_jar import PickleJar
 
 class Alerts:

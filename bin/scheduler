@@ -1,1 +1,1 @@
-python ./src/server/scheduler.py
+python3 ./src/server/scheduler.py

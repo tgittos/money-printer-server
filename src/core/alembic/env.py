@@ -15,9 +15,16 @@ fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+
+import sys
+print(" * path: {0}".format(sys.path))
+
+from core.models.account import Account
+from core.models.balance import Balance
+from core.models.plaid_item import PlaidItem
+
+from core.models.base import Base
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
