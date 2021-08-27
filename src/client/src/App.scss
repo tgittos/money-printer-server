@@ -1,6 +1,9 @@
+@import './variables';
 
 .App {
   text-align: center;
+  background: $background;
+  height: 100%;
 }
 
 .App-logo {

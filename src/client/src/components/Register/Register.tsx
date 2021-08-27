@@ -42,17 +42,10 @@ class Register extends React.Component<RegisterProps, RegisterState> {
 
         // initialize state
         this.state = {
-            email: '',
-            firstName: '',
-            lastName: '',
-            errors: []
         } as RegisterState;
 
         // re-bind internal handlers
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.onEmailChanged = this.onEmailChanged.bind(this);
-        this.onFirstNameChanged = this.onFirstNameChanged.bind(this);
-        this.onLastNameChanged = this.onLastNameChanged.bind(this);
 
         // bind parent subscribers
         const { onRegistration } = this.props;
@@ -67,17 +60,13 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         this._registrationSubscribers.forEach(sub => sub.unsubscribe());
     }
 
-    public async handleSubmit(event: Event) {
+    public async handleSubmit() {
         const { email, firstName, lastName } = this.state;
 
-        console.log('this.state:', this.state);
-
         if (!this._validateRegistration()) {
-            console.log('validation error');
             return false;
         }
 
-        console.log('doing register');
         const response: IRegisterProfileResponse = await this._profile.register({
             email, firstName, lastName
         } as IRegisterProfileRequest);
@@ -85,8 +74,6 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         if (response.success) {
             this._publishRegistration(response.data);
         }
-
-        event.preventDefault();
     }
 
     private _validateRegistration(): boolean {
@@ -104,33 +91,11 @@ class Register extends React.Component<RegisterProps, RegisterState> {
             errors.push(this._i18n.t("register_error_last_name_blank"));
         }
 
-        this.setState(prevState => {
-            prevState.errors = errors;
-            return prevState;
-        });
+        this.setState({
+            errors
+        } as RegisterState);
 
         return errors.length == 0;
-    }
-
-    public onEmailChanged(event: ChangeEvent) {
-        this.setState(prevState => {
-            prevState.email = event.target.value;
-            return prevState;
-        });
-    }
-
-    public onFirstNameChanged(event: ChangeEvent) {
-        this.setState(prevState => {
-            prevState.firstName = event.target.value;
-            return prevState;
-        });
-    }
-
-    public onLastNameChanged(event: ChangeEvent) {
-        this.setState(prevState => {
-            prevState.lastName = event.target.value;
-            return prevState;
-        });
     }
 
     renderErrors() {
@@ -149,17 +114,14 @@ class Register extends React.Component<RegisterProps, RegisterState> {
             <div>
                 <label>Email:</label>
                 <input placeholder={this._i18n.t('register_email_placeholder')}
-                       onChange={this.onEmailChanged}
                     value={this.state.email}></input>
 
                 <label>First Name:</label>
                 <input placeholder={this._i18n.t('register_first_name_placeholder')}
-                       onChange={this.onFirstNameChanged}
                     value={this.state.firstName}></input>
 
                 <label>Last Name:</label>
                 <input placeholder={this._i18n.t('register_last_name_placeholder')}
-                       onChange={this.onLastNameChanged}
                     value={this.state.lastName}></input>
 
                 {this.renderErrors()}

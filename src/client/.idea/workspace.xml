@@ -12,19 +12,24 @@
       <change beforePath="$PROJECT_DIR$/../.idea/src.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/src.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Nav/Nav.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Nav/Nav.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Nav/Nav.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login/MiniLogin.lazy.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login/MiniLogin.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login/MiniLogin.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Profiles/Profiles.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Profiles/Profiles.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Register/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Register/Register.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Profile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Profile.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" afterDir="false" />
@@ -33,6 +38,7 @@
       <change beforePath="$PROJECT_DIR$/src/requests/RegisterProfileRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/requests/RegisterProfileRequest.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/AuthProfileResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/AuthProfileResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/RegisterProfileResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/RegisterProfileResponse.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Header.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Header.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stories/Login.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Login.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stories/Profiles.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Profiles.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stories/Register.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Register.stories.tsx" afterDir="false" />
@@ -61,6 +67,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -81,6 +88,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/stories" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -102,7 +110,7 @@
       <option name="presentableId" value="Default" />
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
-      <workItem from="1630011654402" duration="22935000" />
+      <workItem from="1630011654402" duration="27692000" />
     </task>
     <servers />
   </component>

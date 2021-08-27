@@ -56,16 +56,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                          alt="logo" />{' '}
                     Money Printer
                 </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="header-nav-bar">
-                    <Nav className={cssClassName}>
-                        <Nav.Link href="#dashboard">Dashboard</Nav.Link>
-                        <Nav.Link href="#forecasting">Forecasting</Nav.Link>
-                        <NavDropdown title={this.getDropdownLabel()} id="profile-dropdown" className={styles.navItem}>
-                            <MiniLogin></MiniLogin>
-                        </NavDropdown>
-                    </Nav>
-                </Navbar.Collapse>
+                <Nav className={cssClassName}>
+                    <Nav.Link href="#dashboard">Dashboard</Nav.Link>
+                    <Nav.Link href="#forecasting">Forecasting</Nav.Link>
+                    <NavDropdown title={this.getDropdownLabel()} id="profile-dropdown" className={styles.navItem}>
+                        <MiniLogin></MiniLogin>
+                    </NavDropdown>
+                </Nav>
             </Container>
         </Navbar>
     }

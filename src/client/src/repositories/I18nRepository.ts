@@ -17,7 +17,7 @@ class I18nRepository {
     }
   }
 
-  public t(key, obj = {}) {
+  public t(key: string, obj: any = {}) {
     return i18next.t(key, obj);
   }
 

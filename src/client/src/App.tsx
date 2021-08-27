@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
+import './App.scss';
 
 import React from "react";
 import {
@@ -15,6 +15,7 @@ import ProfileRepository from "./repositories/ProfileRepository";
 import Register from "./components/Register/Register";
 import Profile from "./models/Profile";
 import Header from "./components/Header/Header";
+import BigLoader from "./components/shared/Loaders/BigLoader";
 
 type AppProps = {};
 type AppState = {
@@ -50,15 +51,6 @@ class App extends React.Component<AppProps, AppState> {
     } as AppState);
   }
 
-  renderGreeting() {
-    console.log('state:', this.state);
-    if (this.state?.authenticated) {
-      const currentProfile = this._profile.getCurrentProfile();
-      return <p>Welcome, {currentProfile.firstName}</p>;
-    }
-    return <p>Please login or register to create a profile</p>;
-  }
-
   render() {
     return (
       <Router>
@@ -70,7 +62,7 @@ class App extends React.Component<AppProps, AppState> {
                 <Register onRegistration={this.checkAuth} />
               </Route>
               <Route>
-                {this.renderGreeting()}
+                <BigLoader></BigLoader>
               </Route>
             </Switch>
           </div>

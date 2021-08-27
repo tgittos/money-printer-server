@@ -1,5 +1,4 @@
 import React, { lazy, Suspense } from 'react';
-import Header from "./Header";
 
 const LazyHeader = lazy(() => import('./Header'));
 
