@@ -1,14 +1,15 @@
 import styles from './Register.module.scss';
 
 import React, {ChangeEvent} from 'react';
-import PropTypes from 'prop-types';
-import {Observable, Subject, Subscription} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 
 import I18nRepository from '../../repositories/I18nRepository'
 import ProfileRepository from '../../repositories/ProfileRepository'
 import IRegisterProfileRequest from '../../requests/RegisterProfileRequest';
 import IRegisterProfileResponse from '../../responses/RegisterProfileResponse';
 import Profile from '../../models/Profile';
+
+import ErrorList from "../shared/ErrorList/ErrorList";
 
 type RegisterProps = {
     onRegistration: (profile?: Profile | null) => void;
@@ -138,7 +139,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         if (errors?.length > 0)
         {
             return <div className="errors">
-                {errors.join('\n')}
+                <ErrorList messages={errors} inline={false}></ErrorList>
             </div>
         }
     }
