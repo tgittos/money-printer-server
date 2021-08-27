@@ -4,6 +4,7 @@ import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import MiniLogin from "../Login/MiniLogin";
 import Profile from "../../models/Profile";
 import ProfileRepository from "../../repositories/ProfileRepository";
+import {Subscription} from "rxjs";
 
 type HeaderProps = {
 }
@@ -15,6 +16,7 @@ type HeaderState = {
 class Header extends React.Component<HeaderProps, HeaderState> {
 
     private _profileRepo: ProfileRepository;
+    private _subscriptions: Subscription[] = [];
 
     constructor(props: HeaderProps) {
         super(props);
@@ -27,10 +29,18 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     }
 
     componentDidMount() {
-        const currentProfile = this._profileRepo.getCurrentProfile();
+        this._subscriptions.push(
+        )
+    }
+
+    componentWillUnmount() {
+        this._subscriptions.forEach(sub => sub.unsubscribe());
+    }
+
+    private onProfileUpdated(profile: Profile | null) {
         this.setState({
-            currentProfile: currentProfile
-        });
+            currentProfile: profile
+        } as HeaderProps)
     }
 
     getDropdownLabel() {

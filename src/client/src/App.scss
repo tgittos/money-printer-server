@@ -4,6 +4,23 @@
   text-align: center;
   background: $background;
   height: 100%;
+  color: $text;
+}
+
+#unconfigured {
+  vertical-align: center;
+  padding-top: 200px;
+
+  img {
+    margin-bottom: 20px;
+  }
+
+  .code {
+    font-family: monospace;
+    background: $light-green;
+    color: $olive-green;
+    padding: 1px;
+  }
 }
 
 .App-logo {

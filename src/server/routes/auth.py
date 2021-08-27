@@ -38,6 +38,20 @@ def register():
 
     return result.to_dict
 
+@auth_bp.route('/v1/api/auth/unauthenticated', methods=['GET'])
+def get_unauthenticated_user():
+    repo = get_repository()
+    result = repo.get_unauthenticated_user()
+    if result is None:
+        return ({
+            'success': False,
+            'message': 'No unauthenticated user configured'
+        })
+    return ({
+        'success': True,
+        'data': result.to_dict()
+    })
+
 @auth_bp.route('/v1/api/auth/login', methods=['POST'])
 def login():
     username = request.form['username']

@@ -62,6 +62,10 @@ class ProfileRepository:
         db = MySql(self.config.mysql_config)
         self.db = db.get_session()
 
+    def get_unauthenticated_user(self):
+        empty_profile = Profile()
+        return empty_profile
+
     def register(self, request):
         # first, check if the request email is already taken
         existing_profile = self.get_by_email(request.email)

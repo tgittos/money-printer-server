@@ -6,9 +6,7 @@ import I18nRepository from "../../repositories/I18nRepository";
 import ProfileRepository from "../../repositories/ProfileRepository";
 
 type MiniLoginProps = {};
-type MiniLoginState = {
-    authenticated: boolean;
-};
+type MiniLoginState = {};
 
 class MiniLogin extends React.Component<MiniLoginProps, MiniLoginState> {
 
@@ -19,7 +17,6 @@ class MiniLogin extends React.Component<MiniLoginProps, MiniLoginState> {
         super(props);
 
         this.state = {
-            authenticated: false
         } as MiniLoginState;
 
         this._profileRepository = new ProfileRepository();
@@ -34,25 +31,12 @@ class MiniLogin extends React.Component<MiniLoginProps, MiniLoginState> {
         console.log('response:', response);
     }
 
-    renderAuthed() {
-        return <div className={styles.MiniLogin}>
-            Logged in as: { this._profileRepository.getCurrentProfile()?.firstName }
-        </div>
-    }
-
-    renderUnauthed() {
+    render() {
         return <div className={styles.MiniLogin}>
             <input placeholder={this._i18nRepository.t('login_username_placeholder')}></input>
             <input placeholder={this._i18nRepository.t('login_password_placeholder')}></input>
             <button>{this._i18nRepository.t('login_submit')}</button>
         </div>
-    }
-
-    render() {
-        if (this.state.authenticated) {
-            return this.renderAuthed();
-        }
-        return this.renderUnauthed();
     }
 }
 

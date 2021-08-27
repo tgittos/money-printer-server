@@ -7,22 +7,54 @@ import type IAuthProfileRequest from "../requests/AuthProfileRequest";
 import type IAuthProfileResponse from "../responses/AuthProfileResponse";
 import Profile from "../models/Profile";
 import Env from '../env';
+import IGetUnauthenticatedProfileResponse from "../responses/GetUnauthenticatedProfileResponse";
+import {BehaviorSubject, Observable } from "rxjs";
 
 class ProfileRepository extends BaseRepository {
 
-  private _currentProfile: Profile = new Profile();
+  public get currentProfile$(): Observable<Profile | null> {
+    return this._profileSubject.asObservable();
+  }
+  public get currentProfile(): Profile | null {
+    return this._profileSubject.getValue();
+  }
+  private _profileSubject: BehaviorSubject<Profile | null> = new BehaviorSubject<Profile | null>(null);
 
   constructor() {
     super();
 
     this.apiEndpoint = "auth/";
+
+    this.init();
   }
 
-  public getCurrentProfile(): Profile {
-    return this._currentProfile;
+  private async init(): Promise<void> {
+    if (Env.DEBUG) {
+      console.log("ProfileRepository::init - initializing unauthenticated user from server");
+    }
+    const response = await this.getUnauthenticatedProfile();
+    if (response.success) {
+      if (Env.DEBUG) {
+        console.log("ProfileRepository::init - server return success message, setting profile to", response.data);
+      }
+      this._profileSubject.next(response.data);
+      return;
+    }
+    if (Env.DEBUG) {
+      console.log("ProfileRepository::init - server return non-success message, setting profile to null");
+    }
+    this._profileSubject.next(null);
   }
 
-  public async register(request: IRegisterProfileRequest): Promise<IRegisterProfileResponse> {
+  public async getUnauthenticatedProfile(): Promise<IGetUnauthenticatedProfileResponse> {
+    const response: IGetUnauthenticatedProfileResponse =
+        await axios.request({
+          url: this.endpoint + "unauthenticated"
+        }).then(response => response.data) as IGetUnauthenticatedProfileResponse;
+    return response;
+  }
+
+  public async invite(request: IRegisterProfileRequest): Promise<IRegisterProfileResponse> {
     const response: any =
         await axios.request<IRegisterProfileRequest>({
           method: "POST",
@@ -33,8 +65,6 @@ class ProfileRepository extends BaseRepository {
             lastName: request.lastName
           }
         }).then(response => response.data);
-
-    this._setCurrentProfile(response);
 
     return response;
   }
@@ -58,17 +88,6 @@ class ProfileRepository extends BaseRepository {
 
   public reset_password(email: string) {
     throw new Error("not implemented");
-  }
-
-  private _setCurrentProfile(response: IRegisterProfileResponse) {
-    if (!response.success) {
-      if (Env.DEBUG) {
-        console.log('ProfileRepository::_setCurrentProfile error response from API:', response.message);
-      }
-      return;
-    }
-
-    this._currentProfile = response.data;
   }
 }
 

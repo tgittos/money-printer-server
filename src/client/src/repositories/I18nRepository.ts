@@ -13,7 +13,7 @@ class I18nRepository {
     });
 
     if (Env.DEBUG) {
-      console.log('I18nRepository:constructor - loaded language file:', i18next.t('register_login'));
+      console.log('I18nRepository:constructor - loaded language file', lang);
     }
   }
 
