@@ -5,7 +5,7 @@ class MailGunConfig(object):
     api_key=None
     domain=None
 
-    def __init__(self, api_key, domain):
+    def __init__(self, api_key=None, domain=None):
         self.api_key = api_key
         self.domain = domain
 
@@ -28,9 +28,10 @@ class MailGunMessage(object):
     subject=None
     html=None
 
-    def __init__(self, to, from_address, subject, html):
+    def __init__(self, to, subject, html, from_address=None):
         self.to_addresses = to
-        self.from_address = from_address
+        if from_address is not None:
+            self.from_address = from_address
         self.subject = subject
         self.html = html
 

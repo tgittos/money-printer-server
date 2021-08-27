@@ -6,7 +6,7 @@ class BaseRepository {
 
 
   public get endpoint() {
-    return Env.API_HOST + "/api/" + Env.API_VERSION + "/" + this.apiEndpoint;
+    return "http://" + Env.API_HOST + "/" + Env.API_VERSION + "/api/" + this.apiEndpoint;
   }
 }
 

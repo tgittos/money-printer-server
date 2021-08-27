@@ -12,17 +12,16 @@ class ProfileCreatedNotification(object):
 
 
 def notify_profile_created(config, notification):
-    notification = Path("core/templates/notifications/profile_created.html").read_text()
-    notification = notification.replace("{name}",
-                                        "{0} {1}".format(notification.profile.first_name, notification.profile.last_name))
-    notification = notification.replace("{username}", notification.profile.email)
-    notification = notification.replace("{password", notification.temp_password)
+    text = Path("core/templates/notifications/profile_created.html").read_text()
+    text = text.replace("{name}", "{0} {1}".format(notification.profile.first_name, notification.profile.last_name))
+    text = text.replace("{username}", notification.profile.email)
+    text = text.replace("{password", notification.temp_password)
 
     mg = MailGun(config)
     result = mg.send(MailGunMessage(
         to=[MailGunRecipient(name="{0} {1}".format(notification.profile.first_name, notification.profile.last_name),
                              email=notification.profile.email)],
         subject="New account created on Money Printer",
-        html=notification
+        html=text
     ))
     return result

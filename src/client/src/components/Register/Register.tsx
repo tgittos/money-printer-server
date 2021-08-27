@@ -1,6 +1,6 @@
 import styles from './Register.module.scss';
 
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import PropTypes from 'prop-types';
 import {Observable, Subject, Subscription} from "rxjs";
 
@@ -39,15 +39,18 @@ class Register extends React.Component<RegisterProps, RegisterState> {
     constructor(props: RegisterProps) {
         super(props);
 
-        // set initial state
-        this.setState({
+        // initialize state
+        this.state = {
             email: '',
             firstName: '',
-            lastName: '',
-        } as RegisterState);
+            lastName: ''
+        } as RegisterState;
 
         // re-bind internal handlers
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onEmailChanged = this.onEmailChanged.bind(this);
+        this.onFirstNameChanged = this.onFirstNameChanged.bind(this);
+        this.onLastNameChanged = this.onLastNameChanged.bind(this);
 
         // bind parent subscribers
         const { onRegistration } = this.props;
@@ -62,58 +65,79 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         this._registrationSubscribers.forEach(sub => sub.unsubscribe());
     }
 
-    public async handleSubmit() {
+    public async handleSubmit(event: Event) {
         const { email, firstName, lastName } = this.state;
 
+        console.log('this.state:', this.state);
+
         if (!this._validateRegistration()) {
-            return;
+            console.log('validation error');
+            return false;
         }
 
+        console.log('doing register');
         const response: IRegisterProfileResponse = await this._profile.register({
             email, firstName, lastName
         } as IRegisterProfileRequest);
 
         if (response.success) {
-
+            this._publishRegistration(response.data);
         }
+
+        event.preventDefault();
     }
 
     private _validateRegistration(): boolean {
-        const { email, firstName, lastName } = this.state;
         const errors: string[] = [];
 
-        if (!!email || email === '') {
+        if (this.state.email === '') {
             errors.push(this._i18n.t("register_error_email_blank"));
         }
 
-        if (!!firstName || firstName === '') {
+        if (this.state.firstName === '') {
             errors.push(this._i18n.t("register_error_first_name_blank"));
         }
 
-        if (!!lastName || lastName === '') {
+        if (this.state.lastName === '') {
             errors.push(this._i18n.t("register_error_last_name_blank"));
         }
 
-        if (errors.length > -1) {
-            this.setState({
-                errors
-            });
-        }
+        this.setState(prevState => {
+            prevState.errors = errors;
+            return prevState;
+        });
 
         return errors.length == 0;
+    }
+
+    public onEmailChanged(event: ChangeEvent) {
+        this.setState(prevState => {
+            prevState.email = event.target.value;
+            return prevState;
+        });
+    }
+
+    public onFirstNameChanged(event: ChangeEvent) {
+        this.setState(prevState => {
+            prevState.firstName = event.target.value;
+            return prevState;
+        });
+    }
+
+    public onLastNameChanged(event: ChangeEvent) {
+        this.setState(prevState => {
+            prevState.lastName = event.target.value;
+            return prevState;
+        });
     }
 
     renderErrors() {
         const { errors } = this.state;
 
-        if (errors.length > 0)
+        if (errors?.length > 0)
         {
-            const errorHtml = [];
-            for (const error in errors) {
-                errorHtml.push(<p>{error}</p>);
-            }
             return <div className="errors">
-                {errorHtml.join('\n')}
+                {errors.join('\n')}
             </div>
         }
     }
@@ -121,23 +145,24 @@ class Register extends React.Component<RegisterProps, RegisterState> {
     render() {
         return <div className={styles.Register}>
             <div>
-                <form onSubmit={this.handleSubmit}>
-                    <label>Email:</label>
-                    <input placeholder={this._i18n.t('register_email_placeholder')}
-                        value={this.state.email}></input>
+                <label>Email:</label>
+                <input placeholder={this._i18n.t('register_email_placeholder')}
+                       onChange={this.onEmailChanged}
+                    value={this.state.email}></input>
 
-                    <label>First Name:</label>
-                    <input placeholder={this._i18n.t('register_first_name_placeholder')}
-                        value={this.state.firstName}></input>
+                <label>First Name:</label>
+                <input placeholder={this._i18n.t('register_first_name_placeholder')}
+                       onChange={this.onFirstNameChanged}
+                    value={this.state.firstName}></input>
 
-                    <label>Last Name:</label>
-                    <input placeholder={this._i18n.t('register_last_name_placeholder')}
-                        value={this.state.lastName}></input>
+                <label>Last Name:</label>
+                <input placeholder={this._i18n.t('register_last_name_placeholder')}
+                       onChange={this.onLastNameChanged}
+                    value={this.state.lastName}></input>
 
-                    {this.renderErrors}
+                {this.renderErrors()}
 
-                    <button>{this._i18n.t('register_submit')}</button>
-                </form>
+                <button onClick={this.handleSubmit}>{this._i18n.t('register_submit')}</button>
             </div>
             <div>
                 <p>{this._i18n.t('register_login', { href: '/profile/login'})}</p>

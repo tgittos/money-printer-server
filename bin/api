@@ -1,1 +1,1 @@
-export MONEY_PRINTER_ENV=sandbox && ./src/.venv/bin/python3 ./src/server/server.py
+export MONEY_PRINTER_ENV=sandbox && ./src/.venv/bin/python3 ./src/server/app.py

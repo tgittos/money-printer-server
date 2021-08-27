@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/requests/RegisterProfileRequest.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/responses/AuthProfileResponse.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/responses/RegisterProfileResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../bin/api" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/api" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../bin/client" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/client" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../bin/scheduler" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/scheduler" afterDir="false" />
@@ -14,28 +11,46 @@
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/src.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/src.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/client.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate-react-cli.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.test.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/reportWebVitals.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/setupTests.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Register/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Register/Register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/Profile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Profile.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/ProfileRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/ProfileRepository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/requests/AuthProfileRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/requests/AuthProfileRequest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/requests/RegisterProfileRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/requests/RegisterProfileRequest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/responses/AuthProfileResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/AuthProfileResponse.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/responses/RegisterProfileResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/RegisterProfileResponse.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/mailgun.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/mailgun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/lib/notifications.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/notifications.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../core/models/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/account.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/plaid_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/plaid_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/account_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/account_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/routes/plaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/plaid.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/profile_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/profile_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/routes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/App.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/App.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/react-app-env.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/reportWebVitals.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../tim_src/setupTests.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +97,7 @@
       <option name="presentableId" value="Default" />
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
-      <workItem from="1630011654402" duration="9104000" />
+      <workItem from="1630011654402" duration="12883000" />
     </task>
     <servers />
   </component>

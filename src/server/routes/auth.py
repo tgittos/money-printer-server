@@ -1,17 +1,18 @@
 from flask import Blueprint
 from flask import request
+import json
 
 from core.repositories.profile_repository import *
 
-import server.config as server_config
+from server.config import config as server_config
 from server import load_config
 app_config = load_config()
 
 
 def get_repository():
     repo = ProfileRepository(ProfileRepositoryConfig(
-        mailgun_config=MailGunConfig(api_key=server_config.mailgun['api_key'],
-                                     domain=server_config.mailgun['domain']),
+        mailgun_config=MailGunConfig(api_key=server_config['mailgun']['api_key'],
+                                     domain=server_config['mailgun']['domain']),
         mysql_config=app_config['db']
     ))
     return repo
@@ -22,9 +23,10 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/v1/api/auth/register', methods=['POST'])
 def register():
-    username = request.form['username']
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
+    print("request.json: {0}".format(request.json))
+    username = request.json['username']
+    first_name = request.json['firstName']
+    last_name = request.json['lastName']
 
     repo = get_repository()
 
@@ -34,7 +36,7 @@ def register():
         email=username
     ))
 
-    return result_json
+    return json.dumps(result_json)
 
 @auth_bp.route('/v1/api/auth/login', methods=['POST'])
 def login():
@@ -45,7 +47,8 @@ def login():
         username=username,
         password=password
     ))
-    return result_json
+
+    return json.dumps(result_json)
 
 @auth_bp.route('/v1/api/auth/logout', methods=['POST'])
 def logout():

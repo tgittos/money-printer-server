@@ -23,15 +23,17 @@ class ProfileRepository extends BaseRepository {
   }
 
   public async register(request: IRegisterProfileRequest): Promise<IRegisterProfileResponse> {
+    console.log('registering, this.endpoint:', this.endpoint);
     const response: any =
         await axios.request<IRegisterProfileRequest>({
-        url: this.endpoint + "register",
-        data: {
-          username: request.email,
-          firstName: request.firstName,
-          lastName: request.lastName
-        }
-      }).then(response => response.data);
+          method: "POST",
+          url: this.endpoint + "register",
+          data: {
+            username: request.email,
+            firstName: request.firstName,
+            lastName: request.lastName
+          }
+        }).then(response => response.data);
 
     this._setCurrentProfile(response);
 
@@ -40,6 +42,7 @@ class ProfileRepository extends BaseRepository {
 
   public auth(request: IAuthProfileRequest): IAuthProfileResponse {
     const response = axios.request<IAuthProfileRequest>({
+      method: "POST",
       url: this.endpoint + "login",
       data: {
         username: request.username,

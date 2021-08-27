@@ -81,7 +81,7 @@ class ProfileRepository:
         new_profile.last_name = request.last_name
 
         self.db.add(new_profile)
-        self.db.commit
+        self.db.commit()
 
         notify_profile_created(self.config.mailgun_config, ProfileCreatedNotification(
             profile=new_profile,

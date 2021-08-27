@@ -7,7 +7,7 @@ class Profile(Base):
 
     id = Column(Integer, primary_key=True)
     email = Column(String(64), nullable=False)
-    password = Column(512, nullable=False)
+    password = Column(String(512), nullable=False)
     first_name = Column(String(32))
     last_name = Column(String(32))
     force_password_reset = Column(Boolean, nullable=False, default=True)

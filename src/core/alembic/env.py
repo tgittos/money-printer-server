@@ -19,6 +19,7 @@ fileConfig(config.config_file_name)
 import sys
 print(" * path: {0}".format(sys.path))
 
+from core.models.profile import Profile
 from core.models.account import Account
 from core.models.balance import Balance
 from core.models.plaid_item import PlaidItem
