@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 import React from "react";
@@ -13,6 +14,7 @@ import ProfileRepository from "./repositories/ProfileRepository";
 
 import Register from "./components/Register/Register";
 import Profile from "./models/Profile";
+import Header from "./components/Header/Header";
 
 type AppProps = {};
 type AppState = {
@@ -61,26 +63,19 @@ class App extends React.Component<AppProps, AppState> {
     return (
       <Router>
         <div className="App">
-        <div className="nav">
-            <ul>
-              <li>
-                <Link to="/profile/register">Register</Link>
-              </li>
-            </ul>
+          <Header></Header>
+          <div className="content">
+            <Switch>
+              <Route path="/profile/register">
+                <Register onRegistration={this.checkAuth} />
+              </Route>
+              <Route>
+                {this.renderGreeting()}
+              </Route>
+            </Switch>
+          </div>
         </div>
-        <div className="content">
-          <Switch>
-            <Route path="/profile/register">
-              <Register onRegistration={this.checkAuth} />
-            </Route>
-            <Route>
-              {this.renderGreeting()}
-            </Route>
-          </Switch>
-        </div>
-      </div>
-    </Router>
-  );
+      </Router>);
   }
 }
 
