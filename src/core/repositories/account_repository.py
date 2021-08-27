@@ -3,12 +3,14 @@ from datetime import datetime
 from core.stores import mysql
 from core.models import account
 
+
 class CreateAccountRequest:
     plaid_item_id = None
     account_id = None
     name = None
     official_name = None
     subtype = None
+
 
 class AccountRepository:
 

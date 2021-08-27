@@ -26,6 +26,17 @@ class RegisterProfileRequest(object):
         self.last_name = last_name
 
 
+class RegisterProfileResponse(object):
+    success = False
+    message = None
+    data = None
+
+    def __init__(self, success, message = None, data = None):
+        self.success = success
+        self.message = message
+        self.data = data
+
+
 class LoginRequest(object):
     email = None
     password = None
@@ -55,9 +66,15 @@ class ProfileRepository:
         # first, check if the request email is already taken
         existing_profile = self.get_by_email(request.email)
         if existing_profile is not None:
-            raise ProfileExistsException(request.email)
+            return RegisterProfileResponse(
+                success=False,
+                message="That email is not available"
+            )
         new_user = self.__create_profile(request)
-        return new_user
+        return RegisterProfileResponse(
+            success=new_user is not None,
+            data=new_user
+        )
 
     def login(self, email, password):
         raise Exception("not implemented")

@@ -43,7 +43,8 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         this.state = {
             email: '',
             firstName: '',
-            lastName: ''
+            lastName: '',
+            errors: []
         } as RegisterState;
 
         // re-bind internal handlers

@@ -23,7 +23,6 @@ class ProfileRepository extends BaseRepository {
   }
 
   public async register(request: IRegisterProfileRequest): Promise<IRegisterProfileResponse> {
-    console.log('registering, this.endpoint:', this.endpoint);
     const response: any =
         await axios.request<IRegisterProfileRequest>({
           method: "POST",

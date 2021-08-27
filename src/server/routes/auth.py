@@ -30,13 +30,13 @@ def register():
 
     repo = get_repository()
 
-    result_json = repo.register(RegisterProfileRequest(
+    result = repo.register(RegisterProfileRequest(
         first_name=first_name,
         last_name=last_name,
         email=username
     ))
 
-    return json.dumps(result_json)
+    return result.to_dict
 
 @auth_bp.route('/v1/api/auth/login', methods=['POST'])
 def login():
@@ -48,13 +48,14 @@ def login():
         password=password
     ))
 
-    return json.dumps(result_json)
+    return result_json
 
 @auth_bp.route('/v1/api/auth/logout', methods=['POST'])
 def logout():
     username = request.form['username']
     repo = get_repository()
     result_json = repo.logout(username=username)
+
     return result_json
 
 @auth_bp.route('/v1/api/auth/reset', methods=['POST'])

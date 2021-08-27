@@ -11,8 +11,9 @@
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/src.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/src.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../__init__.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Register/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Register/Register.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
@@ -37,20 +38,8 @@
       <change beforePath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/profile_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/profile_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/routes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/profile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/App.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/App.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/App.test.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/index.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/index.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/logo.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/react-app-env.d.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/reportWebVitals.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../tim_src/setupTests.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +86,7 @@
       <option name="presentableId" value="Default" />
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
-      <workItem from="1630011654402" duration="12883000" />
+      <workItem from="1630011654402" duration="14169000" />
     </task>
     <servers />
   </component>
