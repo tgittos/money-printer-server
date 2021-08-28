@@ -22,7 +22,7 @@ import BigLoader from "./components/shared/Loaders/BigLoader";
 type AppProps = {};
 type AppState = {
   loading: boolean,
-  currentProfile: Profile
+  currentProfile?: Profile
 };
 
 class App extends React.Component<AppProps, AppState> {
@@ -41,7 +41,7 @@ class App extends React.Component<AppProps, AppState> {
 
     this.state = {
       loading: true
-    } as AppProps;
+    };
 
     this._i18n = new I18nRepository();
     this._profileRepo = new ProfileRepository();
@@ -53,6 +53,10 @@ class App extends React.Component<AppProps, AppState> {
             .pipe(skip(1))
             .subscribe(this.onProfileUpdated.bind(this))
     )
+    this.setState((prev, props) => ({
+      ...prev,
+      loading: true
+    }));
   }
 
   componentWillUnmount() {
@@ -104,6 +108,9 @@ class App extends React.Component<AppProps, AppState> {
         <div className="App">
           <div className="content">
             <Switch>
+              <Route path="/login">
+                <Login></Login>
+              </Route>
               <PrivateRoute exact path="/" component={Dashboard} />
             </Switch>
           </div>

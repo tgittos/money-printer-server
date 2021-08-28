@@ -50,7 +50,7 @@ class MailGun:
                 "from": msg.from_address,
                 "to": msg.to_addresses,
                 "subject": msg.subject,
-                "text": msg.html
+                "html": msg.html
             }
         )
         return response

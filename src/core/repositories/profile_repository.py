@@ -1,6 +1,7 @@
 import secrets
 import string
 import bcrypt
+from datetime import datetime
 
 from core.stores.mysql import MySql
 from core.models.profile import Profile
@@ -31,7 +32,7 @@ class RegisterProfileResponse(object):
     message = None
     data = None
 
-    def __init__(self, success, message = None, data = None):
+    def __init__(self, success, message=None, data=None):
         self.success = success
         self.message = message
         self.data = data
@@ -47,8 +48,8 @@ class LoginRequest(object):
 
 
 class ProfileRepositoryConfig(object):
-    mailgun_config=MailGunConfig()
-    mysql_config=None
+    mailgun_config = MailGunConfig()
+    mysql_config = None
 
     def __init__(self, mailgun_config, mysql_config):
         self.mailgun_config = mailgun_config
@@ -80,8 +81,15 @@ class ProfileRepository:
             data=new_user
         )
 
-    def login(self, email, password):
-        raise Exception("not implemented")
+    def login(self, request):
+        profile = self.get_by_email(request.email)
+        if profile is not None:
+            print("found profile: {0}".format(profile.to_dict()))
+            if self.__check_password(profile.password, request.password):
+                return profile
+            else:
+                print("password didn't match")
+        return None
 
     def reset_password(self, email):
         raise Exception("not implemented")
@@ -100,6 +108,7 @@ class ProfileRepository:
         new_profile.password = self.__hash_password(new_pw)
         new_profile.first_name = request.first_name
         new_profile.last_name = request.last_name
+        new_profile.timestamp = datetime.utcnow()
 
         self.db.add(new_profile)
         self.db.commit()
@@ -112,10 +121,10 @@ class ProfileRepository:
         return new_profile
 
     def __hash_password(self, pt_password):
-        return bcrypt.hashpw(pt_password, bcrypt.gensalt())
+        return bcrypt.hashpw(pt_password.encode('utf8'), bcrypt.gensalt())
 
-    def __check_password(self, hash, candidate):
-        return bcrypt.checkpw(candidate, hash)
+    def __check_password(self, pw_hash, candidate):
+        return bcrypt.checkpw(candidate.encode('utf8'), pw_hash)
 
     def __generate_temp_password(self, len=16):
         alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_+=-'

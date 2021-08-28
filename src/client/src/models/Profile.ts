@@ -3,6 +3,7 @@ class Profile {
   public firstName: string;
   public lastName: string;
   public authenticated: boolean;
+  public timestamp: Date;
 
   constructor() {
     this.username =

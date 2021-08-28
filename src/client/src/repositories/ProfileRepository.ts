@@ -69,15 +69,30 @@ class ProfileRepository extends BaseRepository {
     return response;
   }
 
-  public auth(request: IAuthProfileRequest): IAuthProfileResponse {
-    const response = axios.request<IAuthProfileRequest>({
+  public async auth(request: IAuthProfileRequest): IAuthProfileResponse {
+    if (Env.DEBUG)
+    {
+      console.log('ProfileRepository::auth - performing auth with request:', request);
+    }
+
+    const response:IAuthProfileResponse = await axios.request<IAuthProfileRequest>({
       method: "POST",
       url: this.endpoint + "login",
       data: {
         username: request.username,
         password: request.password
       }
-    }).then(response => response.data);
+    }).then(response => response.data) as IAuthProfileResponse;
+
+    if (Env.DEBUG)
+    {
+      console.log('ProfileRepository::auth - response from server:', response);
+    }
+
+    if (response.success)
+    {
+      this._profileSubject.next(response.data);
+    }
 
     return response;
   }

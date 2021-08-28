@@ -15,7 +15,7 @@ def notify_profile_created(config, notification):
     text = Path("core/templates/notifications/profile_created.html").read_text()
     text = text.replace("{name}", "{0} {1}".format(notification.profile.first_name, notification.profile.last_name))
     text = text.replace("{username}", notification.profile.email)
-    text = text.replace("{password", notification.temp_password)
+    text = text.replace("{password}", notification.temp_password)
 
     mg = MailGun(config)
     result = mg.send(MailGunMessage(

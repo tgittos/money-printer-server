@@ -54,15 +54,22 @@ def get_unauthenticated_user():
 
 @auth_bp.route('/v1/api/auth/login', methods=['POST'])
 def login():
-    username = request.form['username']
-    password = request.form['password']
+    username = request.json['username']
+    password = request.json['password']
+    print("username: {0}, password: {1}".format(username, password))
     repo = get_repository()
-    result_json = repo.login(LoginRequest(
-        username=username,
+    result = repo.login(LoginRequest(
+        email=username,
         password=password
     ))
 
-    return result_json
+    if result is None:
+        return {
+            'success': False,
+            'message': 'Username/password combination not found'
+        }
+
+    return result.to_dict()
 
 @auth_bp.route('/v1/api/auth/logout', methods=['POST'])
 def logout():

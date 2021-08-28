@@ -12,7 +12,6 @@ import Profile from '../../models/Profile';
 import ErrorList from "../shared/ErrorList/ErrorList";
 
 type RegisterProps = {
-    onRegistration: (profile?: Profile | null) => void;
 }
 
 type RegisterState = {
@@ -24,40 +23,25 @@ type RegisterState = {
 
 class Register extends React.Component<RegisterProps, RegisterState> {
 
-    private _registrationSubject: Subject<Profile> = new Subject<Profile>();
-    private _publishRegistration = (profile: Profile) =>
-        this._registrationSubject.next(profile);
-    private _registrationSubscribers: Subscription[] = [];
-
     private _i18n: I18nRepository;
     private _profile: ProfileRepository;
-
-    public get onRegistration(): Subject<Profile>
-    {
-        return this._registrationSubject;
-    }
 
     constructor(props: RegisterProps) {
         super(props);
 
-        // initialize state
-        this.state = {
-        } as RegisterState;
-
         // re-bind internal handlers
         this.handleSubmit = this.handleSubmit.bind(this);
-
-        // bind parent subscribers
-        const { onRegistration } = this.props;
-        this._registrationSubscribers.push(this._registrationSubject.subscribe(onRegistration));
 
         // initialize repositories
         this._i18n = new I18nRepository();
         this._profile = new ProfileRepository();
     }
 
-    componentWillUnmount() {
-        this._registrationSubscribers.forEach(sub => sub.unsubscribe());
+    componentDidMount() {
+        this.setState((prev, props) => ({
+            ...prev,
+            errors: []
+        }));
     }
 
     public async handleSubmit() {
@@ -67,13 +51,9 @@ class Register extends React.Component<RegisterProps, RegisterState> {
             return false;
         }
 
-        const response: IRegisterProfileResponse = await this._profile.register({
+        const response: IRegisterProfileResponse = await this._profile.invite({
             email, firstName, lastName
         } as IRegisterProfileRequest);
-
-        if (response.success) {
-            this._publishRegistration(response.data);
-        }
     }
 
     private _validateRegistration(): boolean {
