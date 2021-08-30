@@ -69,7 +69,10 @@ def login():
             'message': 'Username/password combination not found'
         }
 
-    return result.to_dict()
+    return {
+        'success': True,
+        'data': result.to_dict()
+    }
 
 @auth_bp.route('/v1/api/auth/logout', methods=['POST'])
 def logout():

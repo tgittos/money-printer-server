@@ -44,11 +44,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     }
 
     getDropdownLabel() {
-        if (this.state.currentProfile?.authenticated)
-        {
-            return this.state.currentProfile.firstName;
-        }
-
         return "Login";
     }
 

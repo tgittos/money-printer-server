@@ -6,8 +6,11 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link, Redirect
 } from "react-router-dom";
+
+import AppStore from './AppStore';
+import { IAppState } from "./slices/AppSlice";
 
 import I18nRepository from "./repositories/I18nRepository";
 import ProfileRepository from "./repositories/ProfileRepository";
@@ -19,13 +22,11 @@ import Login from "./components/Login/Login";
 import {skip, Subscription} from "rxjs";
 import BigLoader from "./components/shared/Loaders/BigLoader";
 
-type AppProps = {};
-type AppState = {
-  loading: boolean,
-  currentProfile?: Profile
+interface IAppProps {
+
 };
 
-class App extends React.Component<AppProps, AppState> {
+class App extends React.Component<IAppProps, IAppState> {
 
   private _i18n: I18nRepository;
   private _profileRepo: ProfileRepository;
@@ -33,50 +34,43 @@ class App extends React.Component<AppProps, AppState> {
   private subscriptions: Subscription[] = [];
 
   public get loading(): boolean {
-    return this.state.loading;
+    return this.state?.profile?.loading === true;
   }
 
-  constructor(props: AppProps) {
+  public get currentProfile(): Profile | null {
+    return this.state?.profile?.current ?? null;
+  }
+
+  public get authenticated(): boolean {
+    return this.state?.profile.authenticated ?? false;
+  }
+
+  constructor(props: IAppProps) {
     super(props);
 
     this.state = {
-      loading: true
-    };
+    } as IAppState;
+
+    this.onStateUpdated = this.onStateUpdated.bind(this);
 
     this._i18n = new I18nRepository();
     this._profileRepo = new ProfileRepository();
+    this._profileRepo.init();
   }
 
   componentDidMount() {
-    this.subscriptions.push(
-        this._profileRepo.currentProfile$
-            .pipe(skip(1))
-            .subscribe(this.onProfileUpdated.bind(this))
-    )
-    this.setState((prev, props) => ({
-      ...prev,
-      loading: true
-    }));
+    AppStore.subscribe(this.onStateUpdated);
   }
 
   componentWillUnmount() {
+    console.log('unmounting');
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
-  private onProfileUpdated(profile: Profile | null) {
-    if (profile === null) {
-      console.log('warn: no unauthenticated user established on server');
-      this.setState((prev, props) => ({
-        ...prev,
-        loading: false
-      }));
-    } else {
-      this.setState((prev, props) => ({
-        ...prev,
-        loading: false,
-        currentProfile: profile
-      }));
-    }
+  private onStateUpdated() {
+    const newState = AppStore.getState();
+    console.log('app state updated:', newState);
+    this.setState(newState);
   }
 
   render() {
@@ -87,21 +81,24 @@ class App extends React.Component<AppProps, AppState> {
       <p>You'll be printing money in no time.</p>
     </div>;
 
-    if (this.state.loading)
-    {
+    if (this.loading) {
+      console.log('detected loading');
       return <div className="App">
         <BigLoader></BigLoader>
       </div>
     }
 
-    if (this.state.currentProfile == null)
-    {
+    if (this.currentProfile == null) {
+      console.log('detected unconfigured');
       return <div className="App">
         <div className="content">
           {unconfigured}
         </div>
       </div>
     }
+
+
+    console.log('rendering login');
 
     return (
       <Router>

@@ -1,15 +1,16 @@
 class Profile {
+  public id: number;
   public username: string;
   public firstName: string;
   public lastName: string;
-  public authenticated: boolean;
   public timestamp: Date;
 
   constructor() {
+    this.id = 0;
     this.username =
         this.firstName =
         this.lastName = '';
-    this.authenticated = false;
+    this.timestamp = new Date();
   }
 }
 

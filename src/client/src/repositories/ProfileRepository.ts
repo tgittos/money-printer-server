@@ -1,34 +1,25 @@
 import axios from 'axios';
 
+import AppStore from './../AppStore';
+import { setCurrentProfile } from "../slices/ProfileSlice";
+
 import BaseRepository from './BaseRepository'
 import type IRegisterProfileRequest from '../requests/RegisterProfileRequest';
 import type IRegisterProfileResponse from "../responses/RegisterProfileResponse";
 import type IAuthProfileRequest from "../requests/AuthProfileRequest";
 import type IAuthProfileResponse from "../responses/AuthProfileResponse";
-import Profile from "../models/Profile";
 import Env from '../env';
 import IGetUnauthenticatedProfileResponse from "../responses/GetUnauthenticatedProfileResponse";
-import {BehaviorSubject, Observable } from "rxjs";
 
 class ProfileRepository extends BaseRepository {
-
-  public get currentProfile$(): Observable<Profile | null> {
-    return this._profileSubject.asObservable();
-  }
-  public get currentProfile(): Profile | null {
-    return this._profileSubject.getValue();
-  }
-  private _profileSubject: BehaviorSubject<Profile | null> = new BehaviorSubject<Profile | null>(null);
 
   constructor() {
     super();
 
     this.apiEndpoint = "auth/";
-
-    this.init();
   }
 
-  private async init(): Promise<void> {
+  public async init(): Promise<void> {
     if (Env.DEBUG) {
       console.log("ProfileRepository::init - initializing unauthenticated user from server");
     }
@@ -37,13 +28,13 @@ class ProfileRepository extends BaseRepository {
       if (Env.DEBUG) {
         console.log("ProfileRepository::init - server return success message, setting profile to", response.data);
       }
-      this._profileSubject.next(response.data);
+      AppStore.dispatch(setCurrentProfile(response.data));
       return;
     }
+
     if (Env.DEBUG) {
-      console.log("ProfileRepository::init - server return non-success message, setting profile to null");
+      console.log("ProfileRepository::init - server return non-success message");
     }
-    this._profileSubject.next(null);
   }
 
   public async getUnauthenticatedProfile(): Promise<IGetUnauthenticatedProfileResponse> {
@@ -51,6 +42,9 @@ class ProfileRepository extends BaseRepository {
         await axios.request({
           url: this.endpoint + "unauthenticated"
         }).then(response => response.data) as IGetUnauthenticatedProfileResponse;
+    if (response.success) {
+      AppStore.dispatch(setCurrentProfile(response.data));
+    }
     return response;
   }
 
@@ -65,13 +59,11 @@ class ProfileRepository extends BaseRepository {
             lastName: request.lastName
           }
         }).then(response => response.data);
-
     return response;
   }
 
-  public async auth(request: IAuthProfileRequest): IAuthProfileResponse {
-    if (Env.DEBUG)
-    {
+  public async auth(request: IAuthProfileRequest): Promise<IAuthProfileResponse> {
+    if (Env.DEBUG) {
       console.log('ProfileRepository::auth - performing auth with request:', request);
     }
 
@@ -84,14 +76,15 @@ class ProfileRepository extends BaseRepository {
       }
     }).then(response => response.data) as IAuthProfileResponse;
 
-    if (Env.DEBUG)
-    {
+    if (Env.DEBUG) {
       console.log('ProfileRepository::auth - response from server:', response);
     }
 
-    if (response.success)
-    {
-      this._profileSubject.next(response.data);
+    if (response.success) {
+      if (Env.DEBUG) {
+        console.log('ProfileRepository::auth - setting next value on this._profileSubject:', response.data);
+      }
+      AppStore.dispatch(setCurrentProfile(response.data));
     }
 
     return response;
