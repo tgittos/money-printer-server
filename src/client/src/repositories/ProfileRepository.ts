@@ -1,4 +1,6 @@
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+import jwt from 'jwt-decode';
 
 import AppStore from './../AppStore';
 import { setCurrentProfile } from "../slices/ProfileSlice";
@@ -10,16 +12,35 @@ import type IAuthProfileRequest from "../requests/AuthProfileRequest";
 import type IAuthProfileResponse from "../responses/AuthProfileResponse";
 import Env from '../env';
 import IGetUnauthenticatedProfileResponse from "../responses/GetUnauthenticatedProfileResponse";
+import Profile from "../models/Profile";
 
 class ProfileRepository extends BaseRepository {
+
+  private JWT_TOKEN_KEY: string = "mp:jwt"
+
+  _cookies: Cookies;
 
   constructor() {
     super();
 
     this.apiEndpoint = "auth/";
+    this._cookies = new Cookies();
   }
 
   public async init(): Promise<void> {
+    if (Env.DEBUG) {
+      console.log("ProfileRepository::init - checking cookies for stored token");
+    }
+
+    const tokenProfile = this.hydrateJWTToken();
+    if (tokenProfile) {
+      if (Env.DEBUG) {
+        console.log("ProfileRepository::init - found profile in token, setting profile to", tokenProfile);
+      }
+      AppStore.dispatch(setCurrentProfile(tokenProfile));
+      return;
+    }
+
     if (Env.DEBUG) {
       console.log("ProfileRepository::init - initializing unauthenticated user from server");
     }
@@ -84,7 +105,9 @@ class ProfileRepository extends BaseRepository {
       if (Env.DEBUG) {
         console.log('ProfileRepository::auth - setting next value on this._profileSubject:', response.data);
       }
-      AppStore.dispatch(setCurrentProfile(response.data));
+
+      this._cookies.set(this.JWT_TOKEN_KEY, response.data.token);
+      AppStore.dispatch(setCurrentProfile(response.data.profile));
     }
 
     return response;
@@ -96,6 +119,17 @@ class ProfileRepository extends BaseRepository {
 
   public reset_password(email: string) {
     throw new Error("not implemented");
+  }
+
+  private hydrateJWTToken(): Profile | null {
+    const fetchedToken = this._cookies.get(this.JWT_TOKEN_KEY);
+    if (fetchedToken) {
+      const jwtProfile: Profile = jwt(fetchedToken);
+      if (jwtProfile) {
+        return jwtProfile;
+      }
+    }
+    return null;
   }
 }
 

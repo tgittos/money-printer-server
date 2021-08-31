@@ -4,6 +4,7 @@ from flask import request
 from core.apis.plaid.common import PlaidApiConfig
 from core.apis.plaid.oauth import Oauth, OauthConfig
 from core.apis.plaid.auth import Auth, AuthConfig
+from server.routes.decorators import authed
 from server import load_config
 
 server_config = load_config()
@@ -27,28 +28,31 @@ auth_config.plaid_config = plaid_config
 oauth_bp = Blueprint('plaid_oauth', __name__)
 
 @oauth_bp.route('/v1/api/plaid/info', methods=['POST'])
+@authed
 def info():
     client = Oauth(oauth_config)
     result_json = client.info()
     return result_json
 
 @oauth_bp.route('/v1/api/plaid/create_link_token', methods=['POST'])
+@authed
 def create_link_token():
     client = Oauth(oauth_config)
     result_json = client.create_link_token()
     return result_json
 
 @oauth_bp.route('/v1/api/plaid/set_access_token', methods=['POST'])
+@authed
 def get_access_token():
     public_token = request.form['public_token']
     client = Oauth(oauth_config)
     result_json = client.get_access_token(public_token)
-    print("result_json: {0}".format(result_json))
     access_token = result_json['access_token']
     item_id = result_json['item_id']
     return result_json
 
 @oauth_bp.route('/v1/api/plaid/auth', methods=['GET'])
+@authed
 def get_auth():
     client = Auth(auth_config)
     result_json = client.get_auth(access_token)

@@ -34,15 +34,18 @@ class App extends React.Component<IAppProps, IAppState> {
   private subscriptions: Subscription[] = [];
 
   public get loading(): boolean {
-    return this.state?.profile?.loading === true;
+    // return this.state?.profile?.loading === true;
+    return AppStore.getState()?.profile?.loading == true;
   }
 
   public get currentProfile(): Profile | null {
-    return this.state?.profile?.current ?? null;
+    // return this.state?.profile?.current ?? null;
+    return AppStore.getState()?.profile?.current;
   }
 
   public get authenticated(): boolean {
-    return this.state?.profile.authenticated ?? false;
+    // return this.state?.profile.authenticated ?? false;
+    return AppStore.getState()?.profile.authenticated ?? false;
   }
 
   constructor(props: IAppProps) {
@@ -98,17 +101,15 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 
 
-    console.log('rendering login');
-
     return (
       <Router>
         <div className="App">
           <div className="content">
             <Switch>
+              <PrivateRoute exact path="/" component={Dashboard} />
               <Route path="/login">
                 <Login></Login>
               </Route>
-              <PrivateRoute exact path="/" component={Dashboard} />
             </Switch>
           </div>
         </div>

@@ -2,10 +2,27 @@ import secrets
 import string
 import bcrypt
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
+import jwt
+import json
 
+from server.config import config as server_config
 from core.stores.mysql import MySql
 from core.models.profile import Profile
-from core.lib.notifications import notify_profile_created, ProfileCreatedNotification, MailGunConfig
+from core.models.reset_token import ResetToken
+from core.lib.notifications import notify_profile_created, ProfileCreatedNotification, MailGunConfig,\
+    PasswordResetNotification, notify_password_reset
+
+
+def get_repository():
+    from server import load_config
+    app_config = load_config()
+    repo = ProfileRepository(ProfileRepositoryConfig(
+        mailgun_config=MailGunConfig(api_key=server_config['mailgun']['api_key'],
+                                     domain=server_config['mailgun']['domain']),
+        mysql_config=app_config['db']
+    ))
+    return repo
 
 
 class ProfileExistsException(Exception):
@@ -28,6 +45,28 @@ class RegisterProfileRequest(object):
 
 
 class RegisterProfileResponse(object):
+    success = False
+    message = None
+    data = None
+
+    def __init__(self, success, message=None, data=None):
+        self.success = success
+        self.message = message
+        self.data = data
+
+
+class ResetProfilePasswordRequest(object):
+    profile = None
+    token = None
+    password = None
+
+    def __init__(self, profile, token, password):
+        self.profile = profile
+        self.token = token
+        self.password = password
+
+
+class ResetProfilePasswordResponse(object):
     success = False
     message = None
     data = None
@@ -65,6 +104,7 @@ class ProfileRepository:
 
     def get_unauthenticated_user(self):
         empty_profile = Profile()
+        empty_profile.timestamp = datetime.utcnow()
         return empty_profile
 
     def register(self, request):
@@ -84,15 +124,40 @@ class ProfileRepository:
     def login(self, request):
         profile = self.get_by_email(request.email)
         if profile is not None:
-            print("found profile: {0}".format(profile.to_dict()))
             if self.__check_password(profile.password, request.password):
-                return profile
-            else:
-                print("password didn't match")
+                jwt_token = self.__encode_jwt(profile)
+                return {
+                    "profile": profile.to_dict(),
+                    "token": jwt_token
+                }
         return None
 
     def reset_password(self, email):
-        raise Exception("not implemented")
+        profile = self.get_by_email(email)
+        if profile is not None:
+            self.__create_reset_token(profile)
+            return True
+        return False
+
+    def continue_reset_password(self, request):
+        profile = request.profile
+        token = request.token
+        token_entry = self.__get_reset_token(token)
+        if token_entry is not None and token_entry.expiry > datetime.utcnow():
+            profile.password = self.__hash_password(request.password)
+            self.db.add(token_entry)
+            self.db.commit()
+            return ResetProfilePasswordResponse(
+                success=True
+            )
+        if token_entry is not None and token_entry.expiry < datetime.utcnow():
+            return ResetProfilePasswordResponse(
+                success=False,
+                message="Password reset token has expired"
+            )
+        return ResetProfilePasswordResponse(
+            success=False
+        )
 
     def logout(self, email):
         raise Exception("not implemented")
@@ -100,6 +165,10 @@ class ProfileRepository:
     def get_by_email(self, email):
         record = self.db.query(Profile).filter(Profile.email==email).first()
         return record
+
+    def is_token_valid(self, token):
+        decoded = self.__decode_jwt(token)
+        return decoded['exp'] < datetime.utcnow()
 
     def __create_profile(self, request):
         new_pw = self.__generate_temp_password()
@@ -120,6 +189,26 @@ class ProfileRepository:
 
         return new_profile
 
+    def __create_reset_token(self, profile):
+        temp_pw = self.__generate_temp_password()
+        reset_token = ResetToken()
+        reset_token.profile_id = profile.id
+        reset_token.token = temp_pw
+        reset_token.timestamp = datetime.utcnow()
+        reset_token.expiry = datetime.utcnow() + relativedelta(days=1)
+
+        self.db.add(reset_token)
+        self.db.commit()
+
+        notify_password_reset(self.config.mailgun_config, PasswordResetNotification(
+            profile=profile,
+            token=reset_token
+        ))
+
+    def __get_reset_token(self, token_string):
+        record = self.db.query(ResetToken).filter(ResetToken.token==token_string).first()
+        return record
+
     def __hash_password(self, pt_password):
         return bcrypt.hashpw(pt_password.encode('utf8'), bcrypt.gensalt())
 
@@ -135,3 +224,15 @@ class ProfileRepository:
                     and sum(c.isdigit() for c in password) >= 1):
                 break
         return password
+
+    def __encode_jwt(self, profile):
+        token = jwt.encode({
+            "profile": profile.to_dict(),
+            "authenticated": True,
+            "exp": (datetime.utcnow() + relativedelta(months=1)).isoformat()
+        }, server_config['server']['secret'])
+        return token
+
+    def __decode_jwt(self, token):
+        raw = jwt.decode(token, server_config['server']['secret'])
+        return raw

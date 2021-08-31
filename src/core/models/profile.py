@@ -19,6 +19,6 @@ class Profile(Base):
             'email': self.email,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'timestamp': self.timestamp
+            'timestamp': self.timestamp.isoformat()
         }
 
