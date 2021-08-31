@@ -107,7 +107,7 @@ class ProfileRepository extends BaseRepository {
       }
 
       this._cookies.set(this.JWT_TOKEN_KEY, response.data.token);
-      AppStore.dispatch(setCurrentProfile(response.data.profile));
+      AppStore.dispatch(setCurrentProfile(new Profile(response.data.profile)));
     }
 
     return response;
@@ -124,9 +124,12 @@ class ProfileRepository extends BaseRepository {
   private hydrateJWTToken(): Profile | null {
     const fetchedToken = this._cookies.get(this.JWT_TOKEN_KEY);
     if (fetchedToken) {
-      const jwtProfile: Profile = jwt(fetchedToken);
-      if (jwtProfile) {
-        return jwtProfile;
+      const jwtProfile = jwt(fetchedToken);
+      if (Env.DEBUG) {
+        console.log('ProfileRepository::hydrateJWTToken - found profile:', jwtProfile);
+      }
+      if (jwtProfile?.profile) {
+        return new Profile(jwtProfile.profile);
       }
     }
     return null;

@@ -34,17 +34,14 @@ class App extends React.Component<IAppProps, IAppState> {
   private subscriptions: Subscription[] = [];
 
   public get loading(): boolean {
-    // return this.state?.profile?.loading === true;
     return AppStore.getState()?.profile?.loading == true;
   }
 
   public get currentProfile(): Profile | null {
-    // return this.state?.profile?.current ?? null;
     return AppStore.getState()?.profile?.current;
   }
 
   public get authenticated(): boolean {
-    // return this.state?.profile.authenticated ?? false;
     return AppStore.getState()?.profile.authenticated ?? false;
   }
 
@@ -66,13 +63,11 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   componentWillUnmount() {
-    console.log('unmounting');
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   private onStateUpdated() {
     const newState = AppStore.getState();
-    console.log('app state updated:', newState);
     this.setState(newState);
   }
 
@@ -85,14 +80,12 @@ class App extends React.Component<IAppProps, IAppState> {
     </div>;
 
     if (this.loading) {
-      console.log('detected loading');
       return <div className="App">
         <BigLoader></BigLoader>
       </div>
     }
 
     if (this.currentProfile == null) {
-      console.log('detected unconfigured');
       return <div className="App">
         <div className="content">
           {unconfigured}

@@ -5,8 +5,11 @@ import Env from "../../env";
 
 export const PrivateRoute = ({ component: Component, ...rest }: any) => (
     <Route {...rest} render={props => {
-        const currentProfile = AppStore.getState().profile;
-        if (currentProfile?.authenticated == true) {
+        const profileState = AppStore.getState().profile;
+        if (Env.DEBUG) {
+            console.log('PrivateRoute - profileState:', profileState);
+        }
+        if (!profileState?.authenticated) {
             if (Env.DEBUG) {
                 console.log('PrivateRoute - user not authenticated, redirecting to login');
             }

@@ -5,12 +5,13 @@ import MiniLogin from "../Login/MiniLogin";
 import Profile from "../../models/Profile";
 import ProfileRepository from "../../repositories/ProfileRepository";
 import {Subscription} from "rxjs";
+import AppStore from '../../AppStore';
+import Env from "../../env";
 
 type HeaderProps = {
 }
 
 type HeaderState = {
-    currentProfile?: Profile
 }
 
 class Header extends React.Component<HeaderProps, HeaderState> {
@@ -18,12 +19,22 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     private _profileRepo: ProfileRepository;
     private _subscriptions: Subscription[] = [];
 
+    public get authenticated(): boolean {
+        return AppStore.getState()?.profile?.authenticated;
+    }
+
+    public get currentProfile(): Profile | null {
+        return AppStore.getState()?.profile?.current;
+    }
+
     constructor(props: HeaderProps) {
         super(props);
 
         this.state = {
             currentProfile: null
         } as HeaderProps;
+
+        this.getDropdownLabel = this.getDropdownLabel.bind(this);
 
         this._profileRepo = new ProfileRepository();
     }
@@ -44,6 +55,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     }
 
     getDropdownLabel() {
+        if (Env.DEBUG) {
+            console.log('Header::getDropdownLabel - authenticated?', this.authenticated);
+            console.log('Header::getDropdownLabel - currentProfile:', this.currentProfile);
+        }
+        if (this.authenticated) {
+            return "Logged in as: " + this.currentProfile?.firstName;
+        }
         return "Login";
     }
 

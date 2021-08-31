@@ -1,9 +1,11 @@
 import Profile from "../models/Profile";
 import {createSlice} from "@reduxjs/toolkit";
+import Env from "../env";
 
 export interface IProfileState {
     loading: boolean;
     authenticated: boolean;
+    exp: Date;
     current: Profile | null;
 }
 
@@ -18,10 +20,13 @@ const ProfileSlice = createSlice({
     reducers: {
         setCurrentProfile: {
             reducer(state: IProfileState, action: IProfileAction) {
+                if (Env.DEBUG) {
+                    console.log('ProfileSlice::setCurrentProfile::reducer - got action:', action)
+                }
                 return {
                     ...state,
                     current: action.payload,
-                    authenticated: !!action.payload?.id,
+                    authenticated: action.payload?.id !== undefined,
                     loading: false
                 }
             },
