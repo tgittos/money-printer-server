@@ -5,7 +5,6 @@ import ProfileRepository from '../../repositories/ProfileRepository';
 import I18nRepository from './../../repositories/I18nRepository';
 import IAuthProfileRequest from './../../requests/AuthProfileRequest';
 import IAuthProfileResponse from "../../responses/AuthProfileResponse";
-import ErrorList from "../shared/ErrorList/ErrorList";
 import ErrorMessage from "../shared/ErrorMessage/ErrorMessage";
 
 type LoginProps = {};

@@ -1,9 +1,9 @@
-import Profile from "../models/Profile";
+import Profile, {IServerProfile} from "../models/Profile";
 
 interface IRegisterProfileResponse {
   success: boolean;
   message: string;
-  data: Profile;
+  data: IServerProfile;
 }
 
 export default IRegisterProfileResponse;

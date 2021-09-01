@@ -3,8 +3,6 @@ import styles from './Header.module.scss';
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import MiniLogin from "../Login/MiniLogin";
 import Profile from "../../models/Profile";
-import ProfileRepository from "../../repositories/ProfileRepository";
-import {Subscription} from "rxjs";
 import AppStore from '../../AppStore';
 import Env from "../../env";
 
@@ -15,9 +13,6 @@ type HeaderState = {
 }
 
 class Header extends React.Component<HeaderProps, HeaderState> {
-
-    private _profileRepo: ProfileRepository;
-    private _subscriptions: Subscription[] = [];
 
     public get authenticated(): boolean {
         return AppStore.getState()?.profile?.authenticated;
@@ -35,23 +30,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         } as HeaderProps;
 
         this.getDropdownLabel = this.getDropdownLabel.bind(this);
-
-        this._profileRepo = new ProfileRepository();
     }
 
     componentDidMount() {
-        this._subscriptions.push(
-        )
     }
 
     componentWillUnmount() {
-        this._subscriptions.forEach(sub => sub.unsubscribe());
-    }
-
-    private onProfileUpdated(profile: Profile | null) {
-        this.setState({
-            currentProfile: profile
-        } as HeaderProps)
     }
 
     getDropdownLabel() {

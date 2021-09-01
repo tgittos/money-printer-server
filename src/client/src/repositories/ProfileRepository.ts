@@ -12,7 +12,7 @@ import type IAuthProfileRequest from "../requests/AuthProfileRequest";
 import type IAuthProfileResponse from "../responses/AuthProfileResponse";
 import Env from '../env';
 import IGetUnauthenticatedProfileResponse from "../responses/GetUnauthenticatedProfileResponse";
-import Profile from "../models/Profile";
+import Profile, {IServerProfile} from "../models/Profile";
 
 class ProfileRepository extends BaseRepository {
 
@@ -32,7 +32,7 @@ class ProfileRepository extends BaseRepository {
       console.log("ProfileRepository::init - checking cookies for stored token");
     }
 
-    const tokenProfile = this.hydrateJWTToken();
+    const tokenProfile: Profile | null = this.hydrateJWTToken();
     if (tokenProfile) {
       if (Env.DEBUG) {
         console.log("ProfileRepository::init - found profile in token, setting profile to", tokenProfile);
@@ -49,7 +49,8 @@ class ProfileRepository extends BaseRepository {
       if (Env.DEBUG) {
         console.log("ProfileRepository::init - server return success message, setting profile to", response.data);
       }
-      AppStore.dispatch(setCurrentProfile(response.data));
+      const data: IServerProfile = response.data;
+      AppStore.dispatch(setCurrentProfile(new Profile(data)));
       return;
     }
 
@@ -64,7 +65,8 @@ class ProfileRepository extends BaseRepository {
           url: this.endpoint + "unauthenticated"
         }).then(response => response.data) as IGetUnauthenticatedProfileResponse;
     if (response.success) {
-      AppStore.dispatch(setCurrentProfile(response.data));
+      const data: IServerProfile = response.data;
+      AppStore.dispatch(setCurrentProfile(new Profile(data)));
     }
     return response;
   }
@@ -102,23 +104,29 @@ class ProfileRepository extends BaseRepository {
     }
 
     if (response.success) {
-      if (Env.DEBUG) {
-        console.log('ProfileRepository::auth - setting next value on this._profileSubject:', response.data);
-      }
-
-      this._cookies.set(this.JWT_TOKEN_KEY, response.data.token);
-      AppStore.dispatch(setCurrentProfile(new Profile(response.data.profile)));
+      const data = response.data.profile as IServerProfile;
+      this.storeToken(response.data.token);
+      AppStore.dispatch(setCurrentProfile(new Profile(data)));
     }
 
     return response;
   }
 
   public logout(email: string) {
-    throw new Error("not implemented");
+    this.clearToken();
+    this.getUnauthenticatedProfile();
   }
 
   public reset_password(email: string) {
     throw new Error("not implemented");
+  }
+
+  private storeToken(token: string) {
+    this._cookies.set(this.JWT_TOKEN_KEY, token);
+  }
+
+  private clearToken() {
+    this._cookies.set(this.JWT_TOKEN_KEY, null);
   }
 
   private hydrateJWTToken(): Profile | null {

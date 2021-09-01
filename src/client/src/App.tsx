@@ -6,7 +6,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link, Redirect
 } from "react-router-dom";
 
 import AppStore from './AppStore';
@@ -19,7 +18,7 @@ import Profile from "./models/Profile";
 import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from "./components/shared/PrivateRoute";
 import Login from "./components/Login/Login";
-import {skip, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import BigLoader from "./components/shared/Loaders/BigLoader";
 
 interface IAppProps {
@@ -34,7 +33,7 @@ class App extends React.Component<IAppProps, IAppState> {
   private subscriptions: Subscription[] = [];
 
   public get loading(): boolean {
-    return AppStore.getState()?.profile?.loading == true;
+    return AppStore.getState()?.profile?.loading === true;
   }
 
   public get currentProfile(): Profile | null {
