@@ -104,9 +104,9 @@ class ProfileRepository extends BaseRepository {
     }
 
     if (response.success) {
-      const data = response.data.profile as IServerProfile;
+      const data = response.data.profile as unknown;
       this.storeToken(response.data.token);
-      AppStore.dispatch(setCurrentProfile(new Profile(data)));
+      AppStore.dispatch(setCurrentProfile(new Profile(data as IServerProfile)));
     }
 
     return response;
@@ -132,12 +132,12 @@ class ProfileRepository extends BaseRepository {
   private hydrateJWTToken(): Profile | null {
     const fetchedToken = this._cookies.get(this.JWT_TOKEN_KEY);
     if (fetchedToken) {
-      const jwtProfile = jwt(fetchedToken);
+      const jwtProfile: any = jwt(fetchedToken);
       if (Env.DEBUG) {
         console.log('ProfileRepository::hydrateJWTToken - found profile:', jwtProfile);
       }
       if (jwtProfile?.profile) {
-        return new Profile(jwtProfile.profile);
+        return new Profile(jwtProfile.profile as IServerProfile);
       }
     }
     return null;

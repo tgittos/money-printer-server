@@ -3,6 +3,7 @@ import styles from './Dashboard.module.scss';
 import BigLoader from "../shared/Loaders/BigLoader";
 import Header from "../Header/Header";
 import { IProfile } from "../../models/Profile";
+import MultiLineChart from "../Charts/MultiLineChart/MultiLineChart";
 
 type DashboardProps = {
     profile: IProfile
@@ -25,7 +26,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     render() {
         return <div className={styles.Dashboard}>
             <Header profile={this.state.profile}></Header>
-            <BigLoader></BigLoader>
+            <MultiLineChart></MultiLineChart>
         </div>
     }
 };

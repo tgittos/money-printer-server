@@ -13,6 +13,8 @@
       <change beforePath="$PROJECT_DIR$/../.idea/src.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/src.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AppStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppStore.ts" afterDir="false" />
@@ -22,9 +24,9 @@
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" afterDir="false" />
@@ -66,11 +68,15 @@
       <change beforePath="$PROJECT_DIR$/../core/repositories/profile_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/profile_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/routes.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/init.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/transports/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/transports/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/transports/websocket.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/transports/websocket.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +139,7 @@
       <option name="presentableId" value="Default" />
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
-      <workItem from="1630011654402" duration="65399000" />
+      <workItem from="1630011654402" duration="73096000" />
     </task>
     <servers />
   </component>

@@ -44,7 +44,7 @@ if __name__ == '__main__':
     from server.config import config as server_config
     import routes
 
-    print(" * running money-printer server with config: {0}".format(server_config['server']))
+    print(" * running money-printer api server with config: {0}".format(server_config['server']))
     app = create_app()
     app.run(host=server_config['server']['host'],
             port=server_config['server']['port'])

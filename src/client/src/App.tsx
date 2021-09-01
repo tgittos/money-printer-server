@@ -7,6 +7,7 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
+import {io, Socket} from 'socket.io-client';
 
 import AppStore from './AppStore';
 import { IAppState } from "./slices/AppSlice";
@@ -18,7 +19,6 @@ import Profile from "./models/Profile";
 import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from "./components/shared/PrivateRoute";
 import Login from "./components/Login/Login";
-import {Subscription} from "rxjs";
 import BigLoader from "./components/shared/Loaders/BigLoader";
 
 interface IAppProps {
@@ -27,10 +27,9 @@ interface IAppProps {
 
 class App extends React.Component<IAppProps, IAppState> {
 
+  private _ws: Socket;
   private _i18n: I18nRepository;
   private _profileRepo: ProfileRepository;
-
-  private subscriptions: Subscription[] = [];
 
   public get loading(): boolean {
     return AppStore.getState()?.profile?.loading === true;
@@ -52,8 +51,17 @@ class App extends React.Component<IAppProps, IAppState> {
 
     this.onStateUpdated = this.onStateUpdated.bind(this);
 
+    this._ws = io('ws://127.0.0.1:5000', { transports: ["websocket", "polling"]});
+    this._ws.on('connect', () => {
+      console.log('connection to ws established');
+    });
+    this._ws.on('reconnect', () => console.log('reconnected'));
+    this._ws.on('connect_error', () => console.log('connection error'));
+    this._ws.on('disconnect', () => console.log('disconnected'));
+
     this._i18n = new I18nRepository();
     this._profileRepo = new ProfileRepository();
+
     this._profileRepo.init();
   }
 
@@ -62,7 +70,6 @@ class App extends React.Component<IAppProps, IAppState> {
   }
 
   componentWillUnmount() {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   private onStateUpdated() {
