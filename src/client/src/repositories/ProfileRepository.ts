@@ -112,7 +112,7 @@ class ProfileRepository extends BaseRepository {
     return response;
   }
 
-  public logout(email: string) {
+  public logout() {
     this.clearToken();
     this.getUnauthenticatedProfile();
   }

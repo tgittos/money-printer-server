@@ -22,10 +22,9 @@
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Login/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login/Login.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login/MiniLogin.lazy.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login/MiniLogin.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Login/MiniLogin.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Login/MiniLogin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" afterDir="false" />
@@ -121,6 +120,7 @@
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stories" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\MiniProfile" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Profiles\components" />
     </key>
   </component>
@@ -133,7 +133,7 @@
       <option name="presentableId" value="Default" />
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
-      <workItem from="1630011654402" duration="63495000" />
+      <workItem from="1630011654402" duration="65399000" />
     </task>
     <servers />
   </component>

@@ -19,6 +19,7 @@ export const PrivateRoute = ({ component: Component, ...rest }: any) => (
         if (Env.DEBUG) {
             console.log('PrivateRoute - user authenticated, passing to requested uri');
         }
+        console.log('props:', props);
         return <Component {...props} />
     }} />
 )

@@ -1,32 +1,29 @@
 import React from 'react';
 import styles from './Header.module.scss';
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
-import MiniLogin from "../Login/MiniLogin";
-import Profile from "../../models/Profile";
-import AppStore from '../../AppStore';
+import MiniProfile from "../MiniProfile/MiniProfile";
+import Profile, {IProfile} from "../../models/Profile";
 import Env from "../../env";
 
 type HeaderProps = {
+    profile: IProfile
 }
 
 type HeaderState = {
+    profile: IProfile
 }
 
 class Header extends React.Component<HeaderProps, HeaderState> {
 
-    public get authenticated(): boolean {
-        return AppStore.getState()?.profile?.authenticated;
-    }
-
-    public get currentProfile(): Profile | null {
-        return AppStore.getState()?.profile?.current;
+    public get currentProfile(): Profile {
+        return this.state.profile
     }
 
     constructor(props: HeaderProps) {
         super(props);
 
         this.state = {
-            currentProfile: null
+            profile: props.profile
         } as HeaderProps;
 
         this.getDropdownLabel = this.getDropdownLabel.bind(this);
@@ -40,13 +37,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
     getDropdownLabel() {
         if (Env.DEBUG) {
-            console.log('Header::getDropdownLabel - authenticated?', this.authenticated);
             console.log('Header::getDropdownLabel - currentProfile:', this.currentProfile);
         }
-        if (this.authenticated) {
-            return "Logged in as: " + this.currentProfile?.firstName;
-        }
-        return "Login";
+
+        return "Logged in as: " + this.currentProfile?.firstName;
     }
 
     render() {
@@ -67,7 +61,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                     <Nav.Link href="#dashboard">Dashboard</Nav.Link>
                     <Nav.Link href="#forecasting">Forecasting</Nav.Link>
                     <NavDropdown title={this.getDropdownLabel()} id="profile-dropdown" className={styles.navItem}>
-                        <MiniLogin></MiniLogin>
+                        <MiniProfile profile={this.state.profile}></MiniProfile>
                     </NavDropdown>
                 </Nav>
             </Container>

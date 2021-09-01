@@ -98,7 +98,9 @@ class App extends React.Component<IAppProps, IAppState> {
         <div className="App">
           <div className="content">
             <Switch>
-              <PrivateRoute exact path="/" component={Dashboard} />
+              <PrivateRoute exact path="/">
+                <Dashboard profile={this.currentProfile} />
+              </PrivateRoute>
               <Route path="/login">
                 <Login></Login>
               </Route>
