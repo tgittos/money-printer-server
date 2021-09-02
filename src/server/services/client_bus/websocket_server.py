@@ -1,8 +1,12 @@
-import os, sys
-from flask import Flask, render_template
+#import eventlet
+#eventlet.monkey_patch()
+
+import os
+import sys
+
+from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
-
 
 app = None
 socket_app = None
@@ -23,26 +27,6 @@ def create_app():
     return temp_app
 
 
-def augment_app():
-
-    @app.route('/')
-    def index():
-        return 'please upgrade to ws connection'
-
-    @socket_app.on('connect')
-    def connect():
-        print("ws client connected")
-
-    # default handler
-    @socket_app.on('json')
-    def handle_json_message(data):
-        print("received message: {0}".format(data))
-
-    @socket_app.on('subscribe_symbols')
-    def subscribe_symbols(data):
-        print("received subscribe_symbols message: {0}".format(data))
-
-
 if __name__ == '__main__':
     # echo the environment we're passing in
     env_string = os.environ['MONEY_PRINTER_ENV']
@@ -50,7 +34,7 @@ if __name__ == '__main__':
 
     # sometimes we run with whacky paths, so lets set the python runtime
     # pwd to something sane
-    pwd = os.path.abspath(os.path.dirname(__file__) + "/../")
+    pwd = os.path.abspath(os.path.dirname(__file__) + "/../../../")
 
     print(" * changing pwd to {0}".format(pwd))
     os.chdir(pwd)
@@ -60,14 +44,30 @@ if __name__ == '__main__':
     sys.path.append(pwd)
     print(" * path: {0}".format(sys.path))
 
+    # todo - spin this out into a background thread
+    # subscribe to redis?
+    import redis
+
+    def poc_handler(message):
+        print('debug: got message: {0}'.format(message))
+        emit('upstream-symbols', message)
+
+    r = redis.Redis(host='localhost', port=6379, db=0)
+    p = r.pubsub()
+    p.subscribe(**{'upstream-symbols': poc_handler})
+    print(" * subscribing to upstream-symbols pubsub in thread")
+    thread = p.run_in_thread(sleep_time=0.1)
+
+
     # create the app
     from server.config import config as server_config
-    app = create_app()
+    from server.services.client_bus.handlers import augment_app
 
-    socket_app = SocketIO(app, cors_allowed_origins='*')
+    app = create_app()
+    socket_app = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
 
     print(" * augmenting money-printer websocket server with message handlers")
-    augment_app()
+    augment_app(socket_app)
 
     print(" * running money-printer websocket server with config: {0}".format(server_config['server']))
     socket_app.run(app)

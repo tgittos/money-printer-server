@@ -4,8 +4,8 @@ from flask import request
 from core.apis.plaid.common import PlaidApiConfig
 from core.apis.plaid.oauth import Oauth, OauthConfig
 from core.apis.plaid.auth import Auth, AuthConfig
-from server.routes.decorators import authed
-from server import load_config
+from server.services.api.routes.decorators import authed
+from server.services.api import load_config
 
 server_config = load_config()
 

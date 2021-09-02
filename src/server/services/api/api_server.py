@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # sometimes we run with whacky paths, so lets set the python runtime
     # pwd to something sane
-    pwd = os.path.abspath(os.path.dirname(__file__) + "/../")
+    pwd = os.path.abspath(os.path.dirname(__file__) + "/../../../")
 
     print(" * changing pwd to {0}".format(pwd))
     os.chdir(pwd)
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     print(" * path: {0}".format(sys.path))
 
     # fetch the environment we need to be loading
-    from server import load_config
+    from server.services.api import load_config
     app_config = load_config()
 
     # now require stuff

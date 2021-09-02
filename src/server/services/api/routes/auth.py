@@ -4,9 +4,9 @@ import json
 
 from core.repositories.profile_repository import *
 
-from server.routes.decorators import authed
+from server.services.api.routes.decorators import authed
 from server.config import config as server_config
-from server import load_config
+from server.services.api import load_config
 app_config = load_config()
 
 
