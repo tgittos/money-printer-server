@@ -56,6 +56,7 @@ class App extends React.Component<IAppProps, IAppState> {
       console.log('connection to ws established');
       this._ws.emit("subscribe_symbols", ['VOO']);
     });
+    this._ws.on('upstream-symbols', (data) => console.log(data));
     this._ws.on('reconnect', () => console.log('reconnected'));
     this._ws.on('connect_error', () => console.log('connection error'));
     this._ws.on('disconnect', () => console.log('disconnected'));

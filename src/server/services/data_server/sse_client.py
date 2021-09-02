@@ -1,5 +1,8 @@
 import os
 import sys
+import signal
+import time
+
 import sseclient
 import requests
 import redis
@@ -29,15 +32,28 @@ if env_string == 'sandbox':
 else:
     url = "https://cloud-sse.iexapis.com/stable/stocksUS?symbols=spy&token={0}".format(secret_token)
 
-headers = { 'Accept': 'text/event-stream' }
+headers = {
+    'Connection': 'keep-alive',
+    'Cache-Control': 'no-cache',
+    'Accept': 'text/event-stream'
+}
 
-print(" * starting SSE stream to url: {0}".format(url))
-response = requests.get(url, stream=True, headers=headers)
-
-print(" * got response from SSE stream: [{0}] {1}".format(response.status_code, response.text))
-client = sseclient.SSEClient(response)
+params = {
+    'name': 'mp-data-server'
+}
 
 r = redis.Redis(host='localhost', port=6379, db=0)
-for event in client.events():
-    print(" * publishing event to upstream-symbols pubsub: {0}".format(event))
-    redis.publish('upstream-symbols', event)
+
+
+while True:
+    print(" * starting SSE stream to url: {0}".format(url))
+    stream_response = requests.get(url, stream=True, headers=headers, params=params)
+    client = sseclient.SSEClient(stream_response)
+
+    for event in client.events():
+        event_data = event.data
+        print(" * publishing event to upstream-symbols pubsub: {0}".format(event_data))
+        r.publish('upstream-symbols', event_data)
+
+    print(" * connection reset, sleep for 1 min")
+    time.sleep(60)

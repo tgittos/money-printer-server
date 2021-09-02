@@ -2,17 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../bin/api" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/api" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../bin/client" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/client" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../bin/init" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/init" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../bin/scheduler" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/scheduler" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../bin/websocket" beforeDir="false" afterPath="$PROJECT_DIR$/../../bin/websocket" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/src.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/src.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/api" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/api" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/client" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/client" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/client-bus" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/client-bus" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/data-server" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/data-server" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/task-runner" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/task-runner" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
@@ -70,13 +70,13 @@
       <change beforePath="$PROJECT_DIR$/../core/repositories/profile_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/profile_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/decorators.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/routes/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/init.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/transports/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/transports/websocket.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/websocket.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/websocket.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/client_bus/handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/client_bus/websocket_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/websocket_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +139,7 @@
       <option name="presentableId" value="Default" />
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
-      <workItem from="1630011654402" duration="74447000" />
+      <workItem from="1630011654402" duration="75060000" />
     </task>
     <servers />
   </component>
