@@ -54,6 +54,7 @@ class App extends React.Component<IAppProps, IAppState> {
     this._ws = io('ws://127.0.0.1:5000', { transports: ["websocket", "polling"]});
     this._ws.on('connect', () => {
       console.log('connection to ws established');
+      this._ws.emit("subscribe_symbols", ['VOO']);
     });
     this._ws.on('reconnect', () => console.log('reconnected'));
     this._ws.on('connect_error', () => console.log('connection error'));
