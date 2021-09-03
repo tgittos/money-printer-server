@@ -24,43 +24,68 @@ class SSEClient:
         self.secret_token = server_config[env_string]['iexcloud']['secret']
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         self.p = self.redis.pubsub()
-        self.p.subscribe(**{'sse-control': self.__track_symbol})
+        self.p.subscribe(**{'sse-control': self.__handle_sse_control})
         self.thread = self.p.run_in_thread(sleep_time=0.1)
         self.tracked_symbols = []
-        self.halt = False
+        self.running = False
 
     def start(self):
-        while not self.halt:
+        print(" * starting upstream")
+        self.running = True
+        while self.running:
             if len(self.tracked_symbols) > 0:
                 url = self.__gen_api_url(self.tracked_symbols)
                 print(" * starting SSE stream to url: {0}".format(url))
                 stream_response = requests.get(url, stream=True, headers=self.headers, params=self.params)
                 client = sseclient.SSEClient(stream_response)
                 for event in client.events():
-                    if self.halt:
+                    if not self.running:
                         break
                     event_data = event.data
                     print(" * publishing event to upstream-symbols pubsub: {0}".format(event_data))
                     self.redis.publish('upstream-symbols', event_data)
             print(" * not tracking any symbols, sleep for 1s")
             time.sleep(1)
-        print(" * stopping SSE stream")
+        print(" * stopping upstream")
 
     def stop(self):
-        self.halt = True
+        self.running = False
 
     def restart(self):
-        self.halt = False
+        self.running = False
         self.start()
 
-    def __track_symbol(self, data):
+    def __handle_sse_control(self, data):
         json_data = json.loads(data['data'])
-        for symbol in json_data['data']:
+        command = json_data['command']
+
+        if command == "start":
+            print(" * start command received, starting starting upstream server")
+            self.start()
+            return
+
+        if command == "stop":
+            print(" * stop command received, stopping upstream server")
+            self.stop()
+            return
+
+        if command == "add-symbol":
+            symbol = json_data['data']
             if symbol not in self.tracked_symbols:
+                print(" * adding {0} to tracking list".format(symbol))
                 self.tracked_symbols.append(symbol)
-        self.halt = True
-        print(" * restarting SSE server")
-        self.restart()
+
+        elif command == "remove-symbol":
+            symbol = json_data['data']
+            if symbol in self.tracked_symbols:
+                print(" * removing {0} from tracking list".format(symbol))
+                self.tracked_symbols = self.tracked_symbols - symbol
+
+        if self.running:
+            self.stop()
+
+        if len(self.tracked_symbols) > 0:
+            self.start()
 
     def __gen_api_url(self, symbols):
         if env_string == 'sandbox':
@@ -92,4 +117,4 @@ if __name__ == '__main__':
     from server.config import config as server_config
 
     sse_client = SSEClient()
-    sse_client.start()
+    print(" * data-server listening for commands")

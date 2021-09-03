@@ -32,7 +32,7 @@ def create_app():
 def curry_sigint_handler(client_bus):
     def sigint_handler(signal, frame):
         print(" * requested client-bus shutdown")
-        client_bus.unsubscribe_symbols
+        # client_bus.unsubscribe_symbols
         sys.exit(0)
     return sigint_handler
 
