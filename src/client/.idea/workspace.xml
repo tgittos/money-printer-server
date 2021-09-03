@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/repositories/ClientHubRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
@@ -41,7 +42,7 @@
       <change beforePath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/ProfileRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/ProfileRepository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/SymbolRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/SymbolRepository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/SymbolRepository.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/requests/AuthProfileRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/requests/AuthProfileRequest.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/requests/RegisterProfileRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/requests/RegisterProfileRequest.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/AuthProfileResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/AuthProfileResponse.ts" afterDir="false" />
@@ -139,7 +140,7 @@
       <option name="presentableId" value="Default" />
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
-      <workItem from="1630011654402" duration="75060000" />
+      <workItem from="1630011654402" duration="88356000" />
     </task>
     <servers />
   </component>

@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     # create the app
     from server.config import config as server_config
-    from server.services.client_bus.handlers import ClientBus
+    from server.services.client_bus.client_bus import ClientBus
 
     app = create_app()
     socket_app = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")

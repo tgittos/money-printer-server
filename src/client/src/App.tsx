@@ -27,7 +27,6 @@ interface IAppProps {
 
 class App extends React.Component<IAppProps, IAppState> {
 
-  private _ws: Socket;
   private _i18n: I18nRepository;
   private _profileRepo: ProfileRepository;
 
@@ -50,16 +49,6 @@ class App extends React.Component<IAppProps, IAppState> {
     } as IAppState;
 
     this.onStateUpdated = this.onStateUpdated.bind(this);
-
-    this._ws = io('ws://127.0.0.1:5000', { transports: ["websocket", "polling"]});
-    this._ws.on('connect', () => {
-      console.log('connection to ws established');
-      this._ws.emit("subscribe_symbols", ['VOO']);
-    });
-    this._ws.on('upstream-symbols', (data) => console.log(data));
-    this._ws.on('reconnect', () => console.log('reconnected'));
-    this._ws.on('connect_error', () => console.log('connection error'));
-    this._ws.on('disconnect', () => console.log('disconnected'));
 
     this._i18n = new I18nRepository();
     this._profileRepo = new ProfileRepository();
