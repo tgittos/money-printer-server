@@ -22,12 +22,13 @@ class SSEClient:
 
     def __init__(self):
         self.secret_token = server_config[env_string]['iexcloud']['secret']
+        self.tracked_symbols = []
+        self.running = False
+
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         self.p = self.redis.pubsub()
         self.p.subscribe(**{'sse-control': self.__handle_sse_control})
         self.thread = self.p.run_in_thread(sleep_time=0.1)
-        self.tracked_symbols = []
-        self.running = False
 
     def start(self):
         print(" * starting upstream")
@@ -39,11 +40,15 @@ class SSEClient:
                 stream_response = requests.get(url, stream=True, headers=self.headers, params=self.params)
                 client = sseclient.SSEClient(stream_response)
                 for event in client.events():
+                    event_data = event.data
+                    # print(" * publishing event to upstream-symbols pubsub: {0}".format(event_data))
+                    self.redis.publish('upstream-symbols', event_data)
+                    message = self.p.get_message()
+                    while message is not None:
+                        self.__handle_sse_control(message)
+                        message = self.p.get_message()
                     if not self.running:
                         break
-                    event_data = event.data
-                    print(" * publishing event to upstream-symbols pubsub: {0}".format(event_data))
-                    self.redis.publish('upstream-symbols', event_data)
             print(" * not tracking any symbols, sleep for 1s")
             time.sleep(1)
         print(" * stopping upstream")
@@ -79,7 +84,7 @@ class SSEClient:
             symbol = json_data['data']
             if symbol in self.tracked_symbols:
                 print(" * removing {0} from tracking list".format(symbol))
-                self.tracked_symbols = self.tracked_symbols - symbol
+                self.tracked_symbols.remove(symbol)
 
         if self.running:
             self.stop()
