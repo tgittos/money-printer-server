@@ -8,7 +8,7 @@ import {Axis, ScaleBand, ScaleLinear} from "d3";
 type NullableDate = Date | null;
 
 export interface IChart {
-
+    new(props: IChartProps): IChart;
 }
 
 export abstract class BaseChart {
@@ -17,7 +17,7 @@ export abstract class BaseChart {
     protected _dates: NullableDate[];
     protected _dimensions: IChartDimensions;
     protected _svgRef: MutableRefObject<null>;
-    protected _svg: Selection<SVGGElement, unknown, null, undefined>;
+    protected _svg: Selection;
     protected xScale: ScaleLinear<number, number>;
     protected xAxis: Axis<any>;
     protected yAxis: Axis<any>;
@@ -42,8 +42,10 @@ export abstract class BaseChart {
     protected constructor(props: IChartProps) {
         this._props = props;
         this._data = props.data;
+        this._dates = [];
         this._dimensions = props.dimensions;
         this._svgRef = props.svgRef;
+        this._svg = null;
 
         this._fixData();
         this.draw();
@@ -68,7 +70,7 @@ export abstract class BaseChart {
         this._renderFigures();
     }
 
-    protected abstract _renderfigures();
+    protected abstract _renderFigures();
 
     private _fixData() {
         const dateFormat = d3.timeParse("%Y-%m-%d");
