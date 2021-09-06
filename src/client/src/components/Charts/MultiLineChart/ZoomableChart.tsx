@@ -1,41 +1,146 @@
 import React, {MutableRefObject} from 'react';
 import * as d3 from 'd3';
 import IChartProps from "../interfaces/IChartProps";
-import { zoom } from 'd3-zoom';
+import {ISymbol} from "../../../models/Symbol";
+import IChartDimensions from "../interfaces/IChartDimensions";
+import {ScaleBand, ScaleLinear} from "d3";
 
-// TODO - rename this, or change it to a mapped fn or something
-const months = {
-    0 : 'Jan',
-    1 : 'Feb',
-    2 : 'Mar',
-    3 : 'Apr',
-    4 : 'May',
-    5 : 'Jun',
-    6 : 'Jul',
-    7 : 'Aug',
-    8 : 'Sep',
-    9 : 'Oct',
-    10 : 'Nov',
-    11 : 'Dec'
-};
+type NullableDate = Date | null;
 
-function renderChart(svgRef: MutableRefObject<null>, props: IChartProps) {
-    const { data, dimensions } = props;
-    const { width, height, margin } = dimensions;
-    const svgWidth = dimensions.margin.left + dimensions.margin.right + dimensions.width;
-    const svgHeight = dimensions.margin.top + dimensions.margin.bottom + dimensions.height;
+class CandleChart {
 
-    console.log('got data:', data);
+    // TODO - rename this, or change it to a mapped fn or something
+    private months = {
+        0 : 'Jan',
+        1 : 'Feb',
+        2 : 'Mar',
+        3 : 'Apr',
+        4 : 'May',
+        5 : 'Jun',
+        6 : 'Jul',
+        7 : 'Aug',
+        8 : 'Sep',
+        9 : 'Oct',
+        10 : 'Nov',
+        11 : 'Dec'
+    };
 
+    private _data: ISymbol[];
+    private _dates: NullableDate[];
+    private _dimensions: IChartDimensions;
+    private _svgRef: MutableRefObject<null>;
+    private xScale: ScaleLinear<number, number>;
+    private xBand: ScaleBand<any>;
+    private yScale: ScaleLinear<number, number>;
 
-    const dateFormat = d3.timeParse("%Y-%m-%d");
+    constructor(props: IChartProps) {
+        this._data = props.data;
+        this._dimensions = props.dimensions;
+        this._svgRef = props.svgRef;
 
-    for (let i = 0; i < data.length; i++) {
-        data[i].date = dateFormat(data[i].date?.toString() ?? '')
+        this._fixData();
+        this.draw();
     }
-    let dates = data.map(d => d.date);
 
-    function wrap(text, width) {
+    public draw() {
+        const data = this._data;
+        const dimensions = this._dimensions;
+        const { width, height, margin } = this._dimensions;
+        const svgWidth = dimensions.margin.left + dimensions.margin.right + dimensions.width;
+        const svgHeight = dimensions.margin.top + dimensions.margin.bottom + dimensions.height;
+
+        const svg = d3.select(this._svgRef.current)
+            .attr("width", svgWidth)
+            .attr("height", svgHeight)
+            .append("g")
+            .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");
+
+        svg.append("rect")
+            .attr("id","rect")
+            .attr("width", width)
+            .attr("height", height)
+            .style("fill", "none")
+            .style("pointer-events", "all")
+            .attr("clip-path", "url(#clip)")
+
+        this._createScales();
+        this._addAxes(svg);
+
+        const chartBody = svg.append("g")
+            .attr("class", "chartBody")
+            .attr("clip-path", "url(#clip)");
+
+        this._addCandles(chartBody);
+
+        svg.append("defs")
+            .append("clipPath")
+            .attr("id", "clip")
+            .append("rect")
+            .attr("width", width)
+            .attr("height", height)
+    };
+
+    private _fixData() {
+        const dateFormat = d3.timeParse("%Y-%m-%d");
+        for (let i = 0; i < this._data.length; i++) {
+            this._data[i].date = dateFormat(this._data[i].date?.toString() ?? '')
+        }
+        this._dates = this._data.map(d => d.date);
+    }
+
+    private _createScales() {
+        const { width, height } = this._dimensions;
+        const data = this._data;
+        const dates = this._dates;
+
+        this.xScale = d3.scaleLinear().domain([-1, dates.length])
+            .range([0, width])
+
+        const yMin = d3.min(data.map(r => r.low));
+        const yMax = d3.max(data.map(r => r.high));
+
+        this.yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]).nice();
+    }
+
+    private _addAxes(svg: d3.Selection<SVGGElement, unknown, null, undefined>) {
+        const { width, height } = this._dimensions;
+        const dates = this._dates;
+        const months = this.months;
+        const xScale = this.xScale;
+        const yScale = this.yScale;
+        const wrap = this._wrap;
+
+        this.xBand = d3.scaleBand().domain(
+            d3.range(-1, dates.length)
+                .map(r => r.toString())
+        ).range([0, width]).padding(0.3);
+
+        const xAxis = d3.axisBottom()
+            .scale(xScale)
+            .tickFormat(function (d) {
+                let date = dates[d];
+                let hours = date.getHours()
+                let minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
+                let amPM = hours < 13 ? 'am' : 'pm'
+                return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear()
+            });
+
+        const gX = svg.append("g")
+            .attr("class", "axis x-axis") //Assign "axis" class
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+
+        gX.selectAll(".tick text")
+            .call(wrap, this.xBand.bandwidth())
+
+        const yAxis = d3.axisLeft().scale(yScale);
+
+        const gY = svg.append("g")
+            .attr("class", "axis y-axis")
+            .call(yAxis);
+    };
+
+    private _wrap(text: string[], width: number) {
         text.each(function() {
             const text = d3.select(this),
                 words = text.text().split(/\s+/).reverse(),
@@ -59,7 +164,12 @@ function renderChart(svgRef: MutableRefObject<null>, props: IChartProps) {
         });
     }
 
-    function candle() {
+    private _addCandles(chartBody: d3.Selection<SVGGElement, unknown, null, undefined>) {
+        const data = this._data;
+        const xScale = this.xScale;
+        const xBand = this.xBand;
+        const yScale = this.yScale;
+
         // draw rectangles
         const candles = chartBody.selectAll(".candle")
             .data(data)
@@ -84,74 +194,6 @@ function renderChart(svgRef: MutableRefObject<null>, props: IChartProps) {
             .attr("y2", d => yScale(d.low))
             .attr("stroke", d => (d.open === d.close) ? "white" : (d.open > d.close) ? "red" : "green");
     }
-
-        const svg = d3.select(svgRef.current)
-            .attr("width", svgWidth)
-            .attr("height", svgHeight)
-            .append("g")
-            .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");
-
-        console.log('dates:', dates);
-
-            const xScale = d3.scaleLinear().domain([-1, dates.length])
-                .range([0, width])
-            const xBand = d3.scaleBand().domain(
-                d3.range(-1, dates.length)
-                    .map(r => r.toString())
-            ).range([0, width]).padding(0.3)
-            const xAxis = d3.axisBottom()
-                .scale(xScale)
-                .tickFormat(function (d) {
-                    let date = dates[d];
-                    let hours = date.getHours()
-                    let minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
-                    let amPM = hours < 13 ? 'am' : 'pm'
-                    return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear()
-                });
-
-
-            const gX = svg.append("g")
-                .attr("class", "axis x-axis") //Assign "axis" class
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis)
-
-            gX.selectAll(".tick text")
-                .call(wrap, xBand.bandwidth())
-
-
-        svg.append("rect")
-            .attr("id","rect")
-            .attr("width", width)
-            .attr("height", height)
-            .style("fill", "none")
-            .style("pointer-events", "all")
-            .attr("clip-path", "url(#clip)")
-
-        const yMin = d3.min(data.map(r => r.low));
-        const yMax = d3.max(data.map(r => r.high));
-        const yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]).nice();
-        const yAxis = d3.axisLeft().scale(yScale);
-
-        const gY = svg.append("g")
-            .attr("class", "axis y-axis")
-            .call(yAxis);
-
-        const chartBody = svg.append("g")
-            .attr("class", "chartBody")
-            .attr("clip-path", "url(#clip)");
-
-        candle();
-
-        svg.append("defs")
-            .append("clipPath")
-            .attr("id", "clip")
-            .append("rect")
-            .attr("width", width)
-            .attr("height", height)
-
-        const extent = [[0, 0], [width, height]];
-
-
 }
 
 const ZoomableChart = (props: IChartProps) => {
@@ -163,7 +205,10 @@ const ZoomableChart = (props: IChartProps) => {
     const svgRef = React.useRef(null);
 
     React.useEffect(() => {
-        renderChart(svgRef, props);
+        const chart = new CandleChart({
+            ...props,
+            svgRef: svgRef
+        });
     }, [data]);
 
     return <svg ref={svgRef} width={svgWidth} height={svgHeight} />;
