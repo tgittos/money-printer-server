@@ -3,7 +3,7 @@ import {ISymbol} from "../../../models/Symbol";
 import {MutableRefObject} from "react";
 import IChartDimensions from "../interfaces/IChartDimensions";
 import * as d3 from "d3";
-import {ScaleBand, ScaleLinear} from "d3";
+import {Axis, ScaleBand, ScaleLinear} from "d3";
 
 type NullableDate = Date | null;
 
@@ -13,11 +13,12 @@ export default abstract class BaseChart {
     protected _dimensions: IChartDimensions;
     protected _svgRef: MutableRefObject<null>;
     protected xScale: ScaleLinear<number, number>;
-    protected xBand: ScaleBand<any>;
+    protected xAxis: Axis<any>;
+    protected yAxis: Axis<any>;
     protected yScale: ScaleLinear<number, number>;
 
     // TODO - rename this, or change it to a mapped fn or something
-    private months = {
+    protected months = {
         0 : 'Jan',
         1 : 'Feb',
         2 : 'Mar',
@@ -65,20 +66,14 @@ export default abstract class BaseChart {
         this.yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]).nice();
     }
 
-    protected _addAxes(svg: d3.Selection<SVGGElement, unknown, null, undefined>) {
+    protected _addAxes() {
         const { width, height } = this._dimensions;
         const dates = this._dates;
         const months = this.months;
         const xScale = this.xScale;
         const yScale = this.yScale;
-        const wrap = this._wrap;
 
-        this.xBand = d3.scaleBand().domain(
-            d3.range(-1, dates.length)
-                .map(r => r.toString())
-        ).range([0, width]).padding(0.3);
-
-        const xAxis = d3.axisBottom()
+        this.xAxis = d3.axisBottom()
             .scale(xScale)
             .tickFormat(function (d) {
                 let date = dates[d];
@@ -88,20 +83,24 @@ export default abstract class BaseChart {
                 return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear()
             });
 
+        this.yAxis = d3.axisLeft().scale(yScale);
+    };
+
+    protected _renderAxes(svg: d3.Selection<SVGGElement, unknown, null, undefined>) {
+        const { height } = this._dimensions;
+        const xAxis = this.xAxis;
+        const yAxis = this.yAxis;
+
         const gX = svg.append("g")
             .attr("class", "axis x-axis") //Assign "axis" class
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis)
 
-        gX.selectAll(".tick text")
-            .call(wrap, this.xBand.bandwidth())
-
-        const yAxis = d3.axisLeft().scale(yScale);
-
         const gY = svg.append("g")
             .attr("class", "axis y-axis")
             .call(yAxis);
-    };
+    }
+
 
     protected _wrap(text: string[], width: number) {
         text.each(function() {

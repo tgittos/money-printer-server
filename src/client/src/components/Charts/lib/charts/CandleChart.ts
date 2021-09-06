@@ -6,6 +6,8 @@ import * as d3 from "d3";
 
 class CandleChart extends BaseChart {
 
+    protected xBand: ScaleBand<any>;
+
     constructor(props: IChartProps) {
         super(props);
 
@@ -33,7 +35,8 @@ class CandleChart extends BaseChart {
             .attr("clip-path", "url(#clip)")
 
         this._createScales();
-        this._addAxes(svg);
+        this._addAxes();
+        this._renderAxes(svg)
 
         const chartBody = svg.append("g")
             .attr("class", "chartBody")
@@ -48,6 +51,38 @@ class CandleChart extends BaseChart {
             .attr("width", width)
             .attr("height", height)
     };
+
+    protected override _addAxes() {
+        super._addAxes();
+
+        const dates = this._dates;
+        const { width } = this._dimensions;
+
+        this.xBand = d3.scaleBand().domain(
+            d3.range(-1, dates.length)
+                .map(r => r.toString())
+        ).range([0, width]).padding(0.3);
+    }
+
+    protected override _renderAxes(svg: d3.Selection<SVGGElement, unknown, null, undefined>) {
+        const { height } = this._dimensions;
+        const xAxis = this.xAxis;
+        const xBand = this.xBand;
+        const yAxis = this.yAxis;
+        const wrap = this._wrap;
+
+        const gX = svg.append("g")
+            .attr("class", "axis x-axis") //Assign "axis" class
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+
+        gX.selectAll(".tick text")
+            .call(wrap, xBand.bandwidth())
+
+        const gY = svg.append("g")
+            .attr("class", "axis y-axis")
+            .call(yAxis);
+    }
 
     private _addCandles(chartBody: d3.Selection<SVGGElement, unknown, null, undefined>) {
         const data = this._data;

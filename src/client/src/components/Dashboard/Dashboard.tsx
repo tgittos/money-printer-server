@@ -6,13 +6,13 @@ import ClientHubRepository, { NullableSymbol } from "../../repositories/ClientHu
 import {filter, Subscription} from "rxjs";
 import SymbolTracker from "../SymbolTracker/SymbolTracker";
 import Symbol, {ISymbol} from "../../models/Symbol";
-import ZoomableChart from "../Charts/MultiLineChart/ZoomableChart";
 
 import testData from '../../testData.csv';
 import * as d3 from 'd3';
 import BigLoader from "../shared/Loaders/BigLoader";
 import Chart from "../Charts/Chart";
 import CandleChart from "../Charts/lib/charts/CandleChart";
+import LineChart from "../Charts/lib/charts/LineChart";
 import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 
 interface IDashboardProps {
@@ -21,6 +21,7 @@ interface IDashboardProps {
 
 interface IDashboardState {
     profile: IProfile,
+    loading: boolean,
     chartData: Symbol[];
 }
 
@@ -40,7 +41,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
         this.state = {
             profile: props.profile,
-            chartData: []
+            chartData: [],
+            loading: true
         } as IDashboardState;
 
         this._onQuoteData = this._onQuoteData.bind(this)
@@ -50,6 +52,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         // TEST JUNK
         loadTestData().then(data => this.setState(prev => ({
             ...prev,
+            loading: false,
             chartData: data
         })));
     }
@@ -79,7 +82,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     render() {
-        if (this.state.chartData.length == 0) {
+        if (this.state.loading) {
             return <BigLoader></BigLoader>
         }
 
@@ -87,7 +90,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             <Header profile={this.state.profile}></Header>
             <SymbolTracker />
             <Chart
-                chart={CandleChart}
+                chart={LineChart}
                 data={this.state.chartData}
                 dimensions={{
                     width: 1200,
