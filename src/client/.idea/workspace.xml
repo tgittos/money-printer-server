@@ -16,9 +16,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AppStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppStore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/MultiLineChart.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/MultiLineChart.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/MultiLineChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/MultiLineChart.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/ZoomableChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/ZoomableChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/MultiLineChart.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/MultiLineChart.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/MultiLineChart/ZoomableChart.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartDimensions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartDimensions.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartMargin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartMargin.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartProps.ts" afterDir="false" />
@@ -150,7 +150,7 @@
       <option name="presentableId" value="Default" />
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
-      <workItem from="1630011654402" duration="123792000" />
+      <workItem from="1630011654402" duration="124520000" />
     </task>
     <servers />
   </component>

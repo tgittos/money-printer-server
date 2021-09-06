@@ -11,6 +11,9 @@ import ZoomableChart from "../Charts/MultiLineChart/ZoomableChart";
 import testData from '../../testData.csv';
 import * as d3 from 'd3';
 import BigLoader from "../shared/Loaders/BigLoader";
+import Chart from "../Charts/Chart";
+import CandleChart from "../Charts/lib/charts/CandleChart";
+import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 
 interface IDashboardProps {
     profile: IProfile
@@ -83,7 +86,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         return <div className={styles.Dashboard}>
             <Header profile={this.state.profile}></Header>
             <SymbolTracker />
-            <ZoomableChart
+            <Chart
+                chart={CandleChart}
                 data={this.state.chartData}
                 dimensions={{
                     width: 1200,
@@ -95,7 +99,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                         right: 30
                     }
                 } as IChartDimensions}
-            ></ZoomableChart>
+            ></Chart>
         </div>
     }
 };
