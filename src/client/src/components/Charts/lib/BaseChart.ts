@@ -7,11 +7,17 @@ import {Axis, ScaleBand, ScaleLinear} from "d3";
 
 type NullableDate = Date | null;
 
-export default abstract class BaseChart {
+export interface IChart {
+
+}
+
+export abstract class BaseChart {
+    protected _props: IChartProps;
     protected _data: ISymbol[];
     protected _dates: NullableDate[];
     protected _dimensions: IChartDimensions;
     protected _svgRef: MutableRefObject<null>;
+    protected _svg: Selection<SVGGElement, unknown, null, undefined>;
     protected xScale: ScaleLinear<number, number>;
     protected xAxis: Axis<any>;
     protected yAxis: Axis<any>;
@@ -34,6 +40,7 @@ export default abstract class BaseChart {
     };
 
     protected constructor(props: IChartProps) {
+        this._props = props;
         this._data = props.data;
         this._dimensions = props.dimensions;
         this._svgRef = props.svgRef;
@@ -42,7 +49,26 @@ export default abstract class BaseChart {
         this.draw();
     }
 
-    abstract draw();
+    public draw() {
+        const dimensions = this._dimensions;
+        const { margin } = this._dimensions;
+        const svgWidth = dimensions.margin.left + dimensions.margin.right + dimensions.width;
+        const svgHeight = dimensions.margin.top + dimensions.margin.bottom + dimensions.height;
+
+        this._svg = d3.select(this._svgRef.current)
+            .attr("width", svgWidth)
+            .attr("height", svgHeight)
+            .append("g")
+            .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");
+
+        this._createScales();
+        this._addAxes();
+        this._renderAxes()
+
+        this._renderFigures();
+    }
+
+    protected abstract _renderfigures();
 
     private _fixData() {
         const dateFormat = d3.timeParse("%Y-%m-%d");
@@ -53,7 +79,7 @@ export default abstract class BaseChart {
     }
 
     protected _createScales() {
-        const { width, height } = this._dimensions;
+        const { width, height, margin } = this._dimensions;
         const data = this._data;
         const dates = this._dates;
 
@@ -63,33 +89,41 @@ export default abstract class BaseChart {
         const yMin = d3.min(data.map(r => r.low));
         const yMax = d3.max(data.map(r => r.high));
 
-        this.yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]).nice();
+        this.yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]).nice()
+            .range([height - margin.bottom, margin.top]);
+    }
+
+    protected _tickFormat(d) {
+        const dates = this._dates;
+        const months = this.months;
+
+        let date = dates[d];
+        let hours = date.getHours()
+        let minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
+        let amPM = hours < 13 ? 'am' : 'pm'
+        return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear()
     }
 
     protected _addAxes() {
         const { width, height } = this._dimensions;
         const dates = this._dates;
-        const months = this.months;
         const xScale = this.xScale;
         const yScale = this.yScale;
+        const tf = this._tickFormat.bind(this);
 
         this.xAxis = d3.axisBottom()
             .scale(xScale)
-            .tickFormat(function (d) {
-                let date = dates[d];
-                let hours = date.getHours()
-                let minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
-                let amPM = hours < 13 ? 'am' : 'pm'
-                return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear()
-            });
+            .tickFormat(tf);
 
         this.yAxis = d3.axisLeft().scale(yScale);
     };
 
-    protected _renderAxes(svg: d3.Selection<SVGGElement, unknown, null, undefined>) {
+    protected _renderAxes() {
         const { height } = this._dimensions;
         const xAxis = this.xAxis;
         const yAxis = this.yAxis;
+
+        const svg = this._svg;
 
         const gX = svg.append("g")
             .attr("class", "axis x-axis") //Assign "axis" class
@@ -100,29 +134,6 @@ export default abstract class BaseChart {
             .attr("class", "axis y-axis")
             .call(yAxis);
     }
-
-
-    protected _wrap(text: string[], width: number) {
-        text.each(function() {
-            const text = d3.select(this),
-                words = text.text().split(/\s+/).reverse(),
-                lineHeight = 1.1, // ems
-                y = text.attr("y"),
-                dy = parseFloat(text.attr("dy"));
-            let line = [],
-                word,
-                lineNumber = 0,
-                tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-            while (word = words.pop()) {
-                line.push(word);
-                tspan.text(line.join(" "));
-                if (tspan.node().getComputedTextLength() ?? 0 > width) {
-                    line.pop();
-                    tspan.text(line.join(" "));
-                    line = [word];
-                    tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-                }
-            }
-        });
-    }
 }
+
+export default BaseChart;

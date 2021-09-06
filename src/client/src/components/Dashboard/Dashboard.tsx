@@ -90,7 +90,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             <Header profile={this.state.profile}></Header>
             <SymbolTracker />
             <Chart
-                chart={LineChart}
+                chart={CandleChart}
                 data={this.state.chartData}
                 dimensions={{
                     width: 1200,

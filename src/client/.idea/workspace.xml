@@ -23,6 +23,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/BaseChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/BaseChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/CandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/CandleChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/LineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/LineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.tsx" afterDir="false" />
