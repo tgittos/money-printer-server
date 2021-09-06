@@ -2,7 +2,7 @@ import BaseRepository from "./BaseRepository";
 import {io, Socket} from "socket.io-client";
 import {BehaviorSubject, observable, Observable, Subject} from "rxjs";
 import Env from "../env";
-import {ISymbol} from "../models/Symbol";
+import Symbol, {ISymbol} from "../models/Symbol";
 
 export type NullableSymbol = ISymbol | Symbol | null;
 type NullableChannel = IChannel | null;
@@ -17,6 +17,7 @@ class ClientHubRepository extends BaseRepository {
 
     private LIVE_QUOTES: string = "live_quotes";
 
+    private _connected: boolean;
     private _ws: Socket;
     private _openedChannels: IChannel[] = [];
     private _subscribedSymbols: string[] = [];
@@ -60,6 +61,8 @@ class ClientHubRepository extends BaseRepository {
         this._ws.on('connect_error', this._ws_on_connect_error.bind(this));
         this._ws.on('disconnect', this._ws_on_disconnect.bind(this));
 
+        this._connected = true;
+
         // subscribe to the live quotes channel
         this._subscribe_to_channel(this.LIVE_QUOTES);
     }
@@ -77,6 +80,9 @@ class ClientHubRepository extends BaseRepository {
     }
 
     private _subscribe_to_channel(channelName: string, data: any = null): IChannel {
+        if (!this._connected) {
+            this.connect();
+        }
         const existingChannel = this._get_channel(channelName);
         if (existingChannel != null) {
             return existingChannel;
@@ -91,7 +97,8 @@ class ClientHubRepository extends BaseRepository {
             const json_data = JSON.parse(data);
             for (let i = 0; i < json_data.length; i++)
             {
-                newSubject.next(json_data[i]);
+                const newSymbol = new Symbol(json_data[i]);
+                newSubject.next(newSymbol);
             }
         });
         if (Env.DEBUG) {
@@ -115,6 +122,10 @@ class ClientHubRepository extends BaseRepository {
         }
 
         this._openedChannels = this._openedChannels.filter(channel => channel.name !== channelName);
+
+        if (!this._connected) {
+            return;
+        }
 
         const { subject } = openChannel;
         if (Env.DEBUG) {
@@ -149,6 +160,10 @@ class ClientHubRepository extends BaseRepository {
     }
 
     private _message_channel(channelName: string, message: string, data: any) {
+        if (!this._connected) {
+            this.connect();
+        }
+
         const openedChannel = this._get_channel(channelName);
 
         if (openedChannel == null) {

@@ -1,1 +1,13 @@
-.SymbolTracker {}
+@import './../../variables';
+
+.SymbolTracker {
+
+  width: 600px;
+  margin: 20px auto 20px auto;
+
+  .SymbolChipList {
+    margin: 20px auto 20px auto;
+    align-content: center;
+    border: 1px solid $olive-green;
+  }
+}

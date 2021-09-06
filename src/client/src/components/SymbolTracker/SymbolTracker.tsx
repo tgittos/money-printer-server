@@ -43,13 +43,15 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
         if (Env.DEBUG) {
             console.log('SymbolTracker::componentDidMount - subscribing to live quotes');
         }
+        /*
         this._liveData = this._clientHubRepo.liveQuotes$.subscribe(symbol => {
             console.log('SymbolTracker::liveQuote listener - got data:', symbol);
         });
+         */
     }
 
     componentWillUnmount() {
-        this._liveData?.unsubscribe();
+        // this._liveData?.unsubscribe();
         this._clientHubRepo.disconnect();
     }
 
@@ -96,7 +98,7 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
 
         return <div className={styles.SymbolTracker}>
             <h2>Subscribed symbols:</h2>
-            <ListGroup horizontal>
+            <ListGroup horizontal className={styles.SymbolChipList}>
                 {symbolListItems}
             </ListGroup>
             <input placeholder="SPY"

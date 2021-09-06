@@ -17,7 +17,8 @@ export interface ISymbol {
     latestVolume: number;
     lastTime: string;
     latestUpdate: number;
-    currency: string
+    currency: string;
+    date: Date | null;
 }
 
 class Symbol implements ISymbol {
@@ -39,7 +40,30 @@ class Symbol implements ISymbol {
     latestVolume: number;
     lastTime: string;
     latestUpdate: number;
-    currency: string
+    currency: string;
+    date: Date | null;
+
+    constructor(serverObj: ISymbol = {} as ISymbol) {
+        this.symbol = serverObj.symbol;
+        this.open = serverObj.open;
+        this.openTime = serverObj.openTime;
+        this.change = serverObj.change;
+        this.changePercent = serverObj.changePercent;
+        this.high = serverObj.high;
+        this.highTime = serverObj.highTime;
+        this.low = serverObj.low;
+        this.lowTime = serverObj.lowTime;
+        this.close = serverObj.close;
+        this.closeTime = serverObj.closeTime;
+        this.week52High = serverObj.week52High;
+        this.week52Low = serverObj.week52Low;
+        this.ytdChange = serverObj.ytdChange;
+        this.latestPrice = serverObj.latestPrice;
+        this.latestVolume = serverObj.latestVolume;
+        this.lastTime = serverObj.lastTime;
+        this.latestUpdate = serverObj.latestUpdate;
+        this.currency = serverObj.currency;
+    }
 }
 
 export default Symbol;
