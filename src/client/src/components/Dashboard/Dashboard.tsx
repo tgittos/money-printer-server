@@ -23,7 +23,6 @@ interface IDashboardState {
 
 const loadTestData = (async () => {
         const data = await d3.csv(testData);
-        console.log('returning data:', data);
         return data;
     });
 
