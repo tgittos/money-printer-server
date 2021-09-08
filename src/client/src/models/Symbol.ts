@@ -41,7 +41,10 @@ class Symbol implements ISymbol {
     lastTime: string;
     latestUpdate: number;
     currency: string;
-    date: Date | null;
+
+    get date(): Date {
+        return new Date(this.closeTime);
+    }
 
     constructor(serverObj: ISymbol = {} as ISymbol) {
         this.symbol = serverObj.symbol;

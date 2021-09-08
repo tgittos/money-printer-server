@@ -1,43 +1,35 @@
 import IChartProps from "../interfaces/IChartProps";
-import {ISymbol} from "../../../models/Symbol";
 import {MutableRefObject} from "react";
 import IChartDimensions from "../interfaces/IChartDimensions";
 import * as d3 from "d3";
-import {Axis, ScaleBand, ScaleLinear} from "d3";
+import {Axis, ScaleLinear} from "d3";
+import Symbol from '../../../models/Symbol';
+import moment from 'moment';
 
 type NullableDate = Date | null;
 
-export interface IChart {
+export interface IChartFactory {
     new(props: IChartProps): IChart;
+}
+
+export interface IChart {
+}
+
+export const createChart = (chartFactory: IChartFactory, props: IChartProps): IChart => {
+    return new chartFactory(props);
 }
 
 export abstract class BaseChart {
     protected _props: IChartProps;
-    protected _data: ISymbol[];
+    protected _data: Symbol[];
     protected _dates: NullableDate[];
     protected _dimensions: IChartDimensions;
     protected _svgRef: MutableRefObject<null>;
-    protected _svg: Selection;
-    protected xScale: ScaleLinear<number, number>;
-    protected xAxis: Axis<any>;
-    protected yAxis: Axis<any>;
-    protected yScale: ScaleLinear<number, number>;
-
-    // TODO - rename this, or change it to a mapped fn or something
-    protected months = {
-        0 : 'Jan',
-        1 : 'Feb',
-        2 : 'Mar',
-        3 : 'Apr',
-        4 : 'May',
-        5 : 'Jun',
-        6 : 'Jul',
-        7 : 'Aug',
-        8 : 'Sep',
-        9 : 'Oct',
-        10 : 'Nov',
-        11 : 'Dec'
-    };
+    protected _svg: d3.Selection<SVGGElement, unknown, HTMLElement, any> | null;
+    protected xScale: any;
+    protected xAxis: Axis<any> | null;
+    protected yAxis: Axis<any> | null;
+    protected yScale: ScaleLinear<number, number> | null;
 
     protected constructor(props: IChartProps) {
         this._props = props;
@@ -46,6 +38,10 @@ export abstract class BaseChart {
         this._dimensions = props.dimensions;
         this._svgRef = props.svgRef;
         this._svg = null;
+        this.xScale = null;
+        this.xAxis = null;
+        this.yScale = null;
+        this.yAxis = null;
 
         this._fixData();
         this.draw();
@@ -70,12 +66,12 @@ export abstract class BaseChart {
         this._renderFigures();
     }
 
-    protected abstract _renderFigures();
+    protected abstract _renderFigures(): void;
 
     private _fixData() {
         const dateFormat = d3.timeParse("%Y-%m-%d");
         for (let i = 0; i < this._data.length; i++) {
-            this._data[i].date = dateFormat(this._data[i].date?.toString() ?? '')
+            // this._data[i].date = dateFormat(this._data[i].date?.toString() ?? '')
         }
         this._dates = this._data.map(d => d.date);
     }
@@ -91,19 +87,23 @@ export abstract class BaseChart {
         const yMin = d3.min(data.map(r => r.low));
         const yMax = d3.max(data.map(r => r.high));
 
-        this.yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]).nice()
+        this.yScale = d3.scaleLinear().domain([yMin as number, yMax as number]).range([height, 0]).nice()
             .range([height - margin.bottom, margin.top]);
     }
 
-    protected _tickFormat(d) {
+    protected _tickFormat(d: any) {
         const dates = this._dates;
-        const months = this.months;
 
+        console.log('dates:', dates);
+        console.log('d:', d);
         let date = dates[d];
-        let hours = date.getHours()
-        let minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
-        let amPM = hours < 13 ? 'am' : 'pm'
-        return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear()
+        console.log('date:', date);
+
+        if (date == null) {
+            return 'fucked';
+        }
+
+        return moment(date).format("YYYY:MM:dd hh:MM:SS");
     }
 
     protected _addAxes() {
@@ -113,11 +113,10 @@ export abstract class BaseChart {
         const yScale = this.yScale;
         const tf = this._tickFormat.bind(this);
 
-        this.xAxis = d3.axisBottom()
-            .scale(xScale)
+        this.xAxis = d3.axisBottom(xScale)
             .tickFormat(tf);
 
-        this.yAxis = d3.axisLeft().scale(yScale);
+        this.yAxis = d3.axisLeft(yScale);
     };
 
     protected _renderAxes() {

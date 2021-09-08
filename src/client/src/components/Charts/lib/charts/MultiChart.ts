@@ -2,7 +2,7 @@ import BaseChart from "../BaseChart";
 import IChartDimensions from "../../interfaces/IChartDimensions";
 import {ISymbol} from "../../../../models/Symbol";
 import IChartProps from "../../interfaces/IChartProps";
-import {IChart} from "../base/BaseChart";
+import { IChart} from "../BaseChart";
 
 interface MultiChartData {
     chart: typeof BaseChart;
@@ -25,9 +25,7 @@ class MultiChart extends BaseChart implements IChart {
         super(superProps);
     }
 
-    protected override
-
-    public draw() {
+    protected override _renderFigures() {
     }
 }
 

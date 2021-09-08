@@ -7,69 +7,64 @@ import Symbol, {ISymbol} from "../models/Symbol";
 export type NullableSymbol = ISymbol | Symbol | null;
 type NullableChannel = IChannel | null;
 
-interface IChannel {
+export interface IChannel {
     name: string;
-    subject: BehaviorSubject<NullableSymbol>;
+    subject: BehaviorSubject<ISymbol>;
     observable: Observable<NullableSymbol>;
+    emitter: (message: string, data?: any) => void,
+}
+
+export interface ISubscriptionRequest {
+    channelName: string;
+    handler: (data: any) => void,
+    data: any
 }
 
 class ClientHubRepository extends BaseRepository {
 
-    private LIVE_QUOTES: string = "live_quotes";
-
     private _connected: boolean;
     private _ws: Socket;
     private _openedChannels: IChannel[] = [];
-    private _subscribedSymbols: string[] = [];
+    private _connectionStateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private _connectionStateObservable: Observable<boolean> = this._connectionStateSubject.asObservable();
 
-    public get subscribedSymbols(): string[] {
-        return this._subscribedSymbols;
+    public get connected$(): Observable<boolean> {
+        return this._connectionStateObservable;
     }
 
-    public get liveQuotes$(): Observable<NullableSymbol> {
-        let channel = this._get_channel(this.LIVE_QUOTES);
-        if (channel == null) {
-            channel = this._subscribe_to_channel(this.LIVE_QUOTES);
+    private static _instance: ClientHubRepository;
+    public static get instance(): ClientHubRepository {
+        if (!this._instance) {
+            this._instance = new ClientHubRepository();
         }
-        return channel.observable;
+        return this._instance;
     }
 
-    constructor() {
+    private constructor() {
         super();
 
         this.apiEndpoint = "symbols/"
     }
 
-    public subscribeToSymbol(symbolTicker: string): void {
-        if (!this._subscribedSymbols.includes(symbolTicker)) {
-            this._subscribedSymbols.push(symbolTicker);
-            this._message_channel(this.LIVE_QUOTES, 'subscribe-symbol', symbolTicker);
-        }
-    }
-
-    public unsubscribeFromSymbol(symbolTicker: string): void {
-        if (this._subscribedSymbols.includes(symbolTicker)) {
-            this._subscribedSymbols = this._subscribedSymbols.filter(symbol => symbol !== symbolTicker);
-            this._message_channel(this.LIVE_QUOTES, 'unsubscribe-symbol', symbolTicker);
-        }
-    }
-
     public connect() {
-        this._ws = io('ws://127.0.0.1:5000', { transports: ["websocket", "polling"]});
-        this._ws.on('connect', this._ws_on_connect.bind(this));
-        this._ws.on('reconnect', this._ws_on_reconnect.bind(this));
-        this._ws.on('connect_error', this._ws_on_connect_error.bind(this));
-        this._ws.on('disconnect', this._ws_on_disconnect.bind(this));
+        if (!this._connected) {
+            this._ws = io('ws://127.0.0.1:5000', {transports: ["websocket", "polling"]});
+            this._ws.on('connect', this._ws_on_connect.bind(this));
+            this._ws.on('reconnect', this._ws_on_reconnect.bind(this));
+            this._ws.on('connect_error', this._ws_on_connect_error.bind(this));
+            this._ws.on('disconnect', this._ws_on_disconnect.bind(this));
+            this._ws.on('close', this._ws_on_close.bind(this));
+        }
 
         this._connected = true;
-
-        // subscribe to the live quotes channel
-        this._subscribe_to_channel(this.LIVE_QUOTES);
-    }
+        this._connectionStateSubject.next(this._connected);
+}
 
     public disconnect() {
         if (this._ws.connected) {
             this._ws.disconnect();
+            this._connected = false;
+            this._connectionStateSubject.next(this._connected);
         }
     }
 
@@ -79,11 +74,12 @@ class ClientHubRepository extends BaseRepository {
         }
     }
 
-    private _subscribe_to_channel(channelName: string, data: any = null): IChannel {
+    public subscribeToChannel(request: ISubscriptionRequest): IChannel {
+        const { channelName, data, handler } = request;
         if (!this._connected) {
             this.connect();
         }
-        const existingChannel = this._get_channel(channelName);
+        const existingChannel = this.getChannel(channelName);
         if (existingChannel != null) {
             return existingChannel;
         }
@@ -93,30 +89,26 @@ class ClientHubRepository extends BaseRepository {
         if (Env.DEBUG) {
             console.log('ClientHubRepository::_subscribe_to_channel - subscribing to channel:', channelName);
         }
-        this._ws.on(channelName, (data: string) => {
-            const json_data = JSON.parse(data);
-            for (let i = 0; i < json_data.length; i++)
-            {
-                const newSymbol = new Symbol(json_data[i]);
-                newSubject.next(newSymbol);
-            }
-        });
+        this._ws.on(channelName, handler);
         if (Env.DEBUG) {
-            console.log('ClientHubRepository::_subscribe_to_channel - emitting subscription request:', 'subscribe_' + channelName, data);
+            console.log('ClientHubRepository::_subscribe_to_channel - emitting subscription request:', 'subscribe_' + channelName);
         }
         this._ws.emit('subscribe_' + channelName, data);
         const channel = {
             name: channelName,
             subject: newSubject,
-            observable: newObservable
+            observable: newObservable,
+            emitter: (message: string, data: any = null) => {
+                this._messageSubscribedChannel(channelName, message, data);
+            }
         } as IChannel;
         this._openedChannels.push(channel)
 
         return channel
     }
 
-    private _unsubscribe_from_channel(channelName: string) {
-        const openChannel = this._get_channel(channelName);
+    public unsubscribeFromChannel(channelName: string) {
+        const openChannel = this.getChannel(channelName);
         if (openChannel == null) {
             return;
         }
@@ -138,7 +130,7 @@ class ClientHubRepository extends BaseRepository {
         subject.unsubscribe();
     }
 
-    private _get_channel(channelName: string): NullableChannel {
+    public getChannel(channelName: string): NullableChannel {
         const openedChannel: IChannel[] = this._openedChannels.filter(channel => channel.name == channelName);
 
         if (openedChannel.length == 0) {
@@ -154,27 +146,38 @@ class ClientHubRepository extends BaseRepository {
         return openChannel;
     }
 
-    private _is_subscribed_to_channel(channelName: string): boolean {
+    private _isSubscribedToChannel(channelName: string): boolean {
         const openedChannel: IChannel[] = this._openedChannels.filter(channel => channel.name == channelName);
         return openedChannel.length > 0;
     }
 
-    private _message_channel(channelName: string, message: string, data: any) {
+    private _messageSubscribedChannel(channelName: string, message: string, data: any = null) {
         if (!this._connected) {
             this.connect();
         }
 
-        const openedChannel = this._get_channel(channelName);
+        const openedChannel = this.getChannel(channelName);
 
         if (openedChannel == null) {
             // trying to send a message to a channel we haven't subscribed to
             throw new Error("trying to send a message to an unopened channel");
         }
 
-        if (Env.DEBUG) {
-            console.log(`ClientHubRepository::_message_channel - sending ${channelName}:${message} with data:`, data);
+        this._message_unsubscribed_channel(channelName, message, data);
+    }
+
+    private _message_unsubscribed_channel(channelName: string, message: string, data: any = null) {
+        if (data == null) {
+            if (Env.DEBUG) {
+                console.log(`ClientHubRepository::_message_channel - sending ${channelName}:${message}`);
+            }
+            this._ws.emit(`${channelName}:${message}`);
+        } else {
+            if (Env.DEBUG) {
+                console.log(`ClientHubRepository::_message_channel - sending ${channelName}:${message} with data:`, data);
+            }
+            this._ws.emit(`${channelName}:${message}`, data);
         }
-        this._ws.emit(`${channelName}:${message}`, data);
     }
 
     private _ws_on_connect() {
@@ -198,6 +201,12 @@ class ClientHubRepository extends BaseRepository {
     private _ws_on_reconnect() {
         if (Env.DEBUG) {
             console.log('SymbolRepository::_ws_on_reconnect - reconnected to client-hub');
+        }
+    }
+
+    private _ws_on_close() {
+        if (Env.DEBUG) {
+            console.log('SymbolRepository::_ws_on_close - closing connection to client-hub');
         }
     }
 }

@@ -17,7 +17,14 @@ class ClientBus:
     def handle_json_message(self, data):
         print("received message: {0}".format(data))
 
-    def subscribe_symbol(self, data):
+    def get_symbols(self):
+        print(" * requesting tracking state from upstream")
+        if self.r is not None:
+            self.r.publish('sse-control', json.dumps({
+                'command': 'list-symbols'
+            }))
+
+    def subscribe_symbol(self, data=None):
         print(" * subscribing to upstream-symbols pubsub in thread: {0}".format(data))
         self.p.subscribe(**{'upstream-symbols': self.__proxy})
         self.thread = self.p.run_in_thread(sleep_time=0.1)
@@ -27,12 +34,21 @@ class ClientBus:
                 'data': data
             }))
 
-    def unsubscribe_symbol(self, data):
+    def unsubscribe_symbol(self, data=None):
         if self.p is not None:
             print(" * unsubscribing from upstream-symbols pubsub in thread")
             if data is not None:
                 self.r.publish('sse-control', json.dumps({
                     'command': 'remove-symbol',
+                    'data': data
+                }))
+
+    def fetch_historical_data(self, data=None):
+        if self.p is not None:
+            print(" * requesting historical data fetch using command {0}".format(data))
+            if data is not None:
+                self.r.publish('historical_quotes', json.dumps({
+                    'command': 'fetch',
                     'data': data
                 }))
 
@@ -45,6 +61,8 @@ class ClientBus:
         self.socketio.on_event('connect', self.connect)
         self.socketio.on_event('json', self.handle_json_message)
         self.socketio.on_event('subscribe_live_quotes', self.subscribe_symbol)
+        self.socketio.on_event('live_quotes:tracking', self.get_symbols)
         self.socketio.on_event('live_quotes:subscribe-symbol', self.subscribe_symbol)
         self.socketio.on_event('live_quotes:unsubscribe-symbol', self.unsubscribe_symbol)
         self.socketio.on_event('unsubscribe_live_quotes', self.unsubscribe_symbol)
+        self.socketio.on_event('historical_quotes:fetch', self.fetch_historical_data)

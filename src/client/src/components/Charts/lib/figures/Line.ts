@@ -8,7 +8,7 @@ class Line {
         this.props = props;
     }
 
-    public draw(svg: d3.Selection<SVGElement, unknown, null, undefined>) {
+    public draw(svg: d3.Selection<SVGGElement, unknown, HTMLElement, undefined>) {
         const { data, xScale, yScale } = this.props;
 
         const line = d3.line()

@@ -3,8 +3,9 @@ import styles from './SymbolTracker.module.scss';
 import { IProfile } from "../../models/Profile";
 import ClientHubRepository, { NullableSymbol } from "../../repositories/ClientHubRepository";
 import Env from "../../env";
-import {Observable, Subscription} from "rxjs";
+import {filter, Observable, Subscription} from "rxjs";
 import {CloseButton, ListGroup} from "react-bootstrap";
+import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 
 interface ISymbolTrackerProps {
 }
@@ -17,11 +18,11 @@ interface ISymbolTrackerState {
 
 class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerState> {
 
-    private _clientHubRepo: ClientHubRepository;
-    private _liveData: Subscription;
+    private _liveQuotes: LiveQuoteRepository;
+    private _subscriptions: Subscription[] = [];
 
     public get subscribedSymbols(): string[] {
-        return this._clientHubRepo.subscribedSymbols;
+        return this._liveQuotes.subscribedSymbols;
     }
 
     constructor(props: ISymbolTrackerProps) {
@@ -29,8 +30,9 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
 
         this.handleSubscribe = this.handleSubscribe.bind(this);
         this.handleUnsubscribe = this.handleUnsubscribe.bind(this);
+        this.handleSymbolData = this.handleSymbolData.bind(this);
 
-        this._clientHubRepo = new ClientHubRepository();
+        this._liveQuotes = LiveQuoteRepository.instance;
 
         this.state = {
             profile: props.profile,
@@ -39,15 +41,17 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
     }
 
     componentDidMount() {
-        this._clientHubRepo.connect();
-        if (Env.DEBUG) {
-            console.log('SymbolTracker::componentDidMount - subscribing to live quotes');
-        }
-        /*
-        this._liveData = this._clientHubRepo.liveQuotes$.subscribe(symbol => {
-            console.log('SymbolTracker::liveQuote listener - got data:', symbol);
-        });
-         */
+        this._subscriptions.push(
+            this._liveQuotes.connected$.subscribe(connected => {
+                if (connected) {
+                    this._subscriptions.push(
+                        this._liveQuotes.liveQuotes$
+                            .pipe(filter(data => !!data))
+                            .subscribe(this.handleSymbolData)
+                    )
+                }
+            })
+        )
     }
 
     componentWillUnmount() {
@@ -60,7 +64,7 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
             console.log('SymbolTracker::handleSubscribe - subscribing to', this.state.newSymbol);
         }
 
-        this._clientHubRepo.subscribeToSymbol(symbol);
+        this._liveQuotes.subscribeToSymbol(symbol);
 
         this.setState((prev: ISymbolTrackerState) => {
             const { subscribedSymbols } = prev;
@@ -77,7 +81,7 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
             console.log('Dashboard::handleUnsubscribe - unsubscribing from symbol:', symbol);
         }
 
-        this._clientHubRepo.unsubscribeFromSymbol(symbol);
+        this._liveQuotes.unsubscribeFromSymbol(symbol);
 
         this.setState((prev: ISymbolTrackerState) => {
             const { subscribedSymbols } = prev;
@@ -87,6 +91,10 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
                 subscribedSymbols: subscribedSymbols.filter(s => s !== symbol)
             }
         });
+    }
+
+    private handleSymbolData(data: any) {
+        console.log('got data:', data);
     }
 
     render() {

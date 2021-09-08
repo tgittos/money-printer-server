@@ -20,8 +20,9 @@ class SSEClient:
         'name': 'mp-data-server'
     }
 
-    def __init__(self):
-        self.secret_token = server_config[env_string]['iexcloud']['secret']
+    def __init__(self, env_string, iexcloud_secret):
+        self.env_string = env_string
+        self.secret_token = iexcloud_secret
         self.tracked_symbols = []
         self.running = False
 
@@ -42,7 +43,7 @@ class SSEClient:
                 for event in client.events():
                     event_data = event.data
                     # print(" * publishing event to upstream-symbols pubsub: {0}".format(event_data))
-                    self.redis.publish('upstream-symbols', event_data)
+                    self.__stream_data(event_data)
                     message = self.p.get_message()
                     while message is not None:
                         self.__handle_sse_control(message)
@@ -74,6 +75,12 @@ class SSEClient:
             self.stop()
             return
 
+        if command == "list-symbols":
+            self.redis.publish('upstream-symbols', json.dumps({
+                'command': 'list-symbols',
+                'data': self.tracked_symbols
+            }))
+
         if command == "add-symbol":
             symbol = json_data['data']
             if symbol not in self.tracked_symbols:
@@ -92,34 +99,17 @@ class SSEClient:
         if len(self.tracked_symbols) > 0:
             self.start()
 
+    def __stream_data(self, event_data):
+        self.redis.publish('upstream-symbols', json.dumps({
+            'command': 'live-quote',
+            'data': event_data
+        }))
+
     def __gen_api_url(self, symbols):
-        if env_string == 'sandbox':
+        if self.env_string == 'sandbox':
             url = "https://sandbox-sse.iexapis.com/stable/stocksUS1Second?symbols={0}&token={1}"\
                 .format(','.join(symbols), self.secret_token)
         else:
             url = "https://cloud-sse.iexapis.com/stable/stocksUS1Second?symbols={0}&token={1}"\
                 .format(','.join(symbols), self.secret_token)
         return url
-
-
-if __name__ == '__main__':
-    # echo the environment we're passing in
-    env_string = os.environ['MONEY_PRINTER_ENV']
-    print(" * setting env to {0}".format(env_string))
-
-    # sometimes we run with whacky paths, so lets set the python runtime
-    # pwd to something sane
-    pwd = os.path.abspath(os.path.dirname(__file__) + "/../../../")
-
-    print(" * changing pwd to {0}".format(pwd))
-    os.chdir(pwd)
-
-    # also add the core dir to the path so we can include from it
-    print(" * augmenting path with core")
-    sys.path.append(pwd)
-    print(" * path: {0}".format(sys.path))
-
-    from server.config import config as server_config
-
-    sse_client = SSEClient()
-    print(" * data-server listening for commands")

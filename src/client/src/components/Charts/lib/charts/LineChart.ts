@@ -2,6 +2,7 @@ import BaseChart, {IChart} from "../BaseChart";
 import * as d3 from "d3";
 import IChartProps from "../../interfaces/IChartProps";
 import Line from "../figures/Line";
+import moment from 'moment';
 
 class LineChart extends BaseChart implements IChart {
 
@@ -26,19 +27,12 @@ class LineChart extends BaseChart implements IChart {
         const { width, height, margin } = this._dimensions;
         const dates = this._dates;
 
-        this.xScale = d3.scaleUtc()
-            .domain(d3.extent(dates))
-            .range([margin.left, width - margin.right]);
+        this.xScale = d3.scaleUtc(d3.extent(dates));
     }
 
-    protected override _tickFormat(d): string {
-        const months = this.months;
-
+    protected override _tickFormat(d: any): string {
         let date = new Date(d);
-        let hours = date.getHours()
-        let minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
-        let amPM = hours < 13 ? 'am' : 'pm'
-        return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear()
+        return moment(date).format("YYYY:MM:dd hh:MM:SS");
     }
 }
 

@@ -1,5 +1,6 @@
 import IChartProps from "./interfaces/IChartProps";
 import React from "react";
+import { createChart } from "./lib/BaseChart";
 
 const Chart = (props: IChartProps) => {
     const { data, dimensions, chart } = props;
@@ -8,10 +9,10 @@ const Chart = (props: IChartProps) => {
     const svgRef = React.useRef(null);
 
     React.useEffect(() => {
-        const c = new chart({
+        const c = createChart(chart, ({
             ...props,
             svgRef: svgRef
-        });
+        }));
     }, [data]);
 
     return <svg ref={svgRef} width={svgWidth} height={svgHeight} />;

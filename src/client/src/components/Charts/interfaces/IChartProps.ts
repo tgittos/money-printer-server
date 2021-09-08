@@ -1,10 +1,10 @@
 import Symbol from "../../../models/Symbol";
 import IChartDimensions from "./IChartDimensions";
 import {MutableRefObject} from "react";
-import { IChart } from "../lib/BaseChart";
+import {IChart, IChartFactory} from "../lib/BaseChart";
 
 export default interface IChartProps {
-    chart: IChart;
+    chart: IChartFactory;
     svgRef: MutableRefObject<null>;
     data: Symbol[],
     dimensions: IChartDimensions;
