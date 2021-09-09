@@ -29,6 +29,7 @@ class ClientHubRepository extends BaseRepository {
     private _openedChannels: IChannel[] = [];
     private _connectionStateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _connectionStateObservable: Observable<boolean> = this._connectionStateSubject.asObservable();
+    private _connectFailureCount: number = 0;
 
     public get connected$(): Observable<boolean> {
         return this._connectionStateObservable;
@@ -57,10 +58,7 @@ class ClientHubRepository extends BaseRepository {
             this._ws.on('disconnect', this._ws_on_disconnect.bind(this));
             this._ws.on('close', this._ws_on_close.bind(this));
         }
-
-        this._connected = true;
-        this._connectionStateSubject.next(this._connected);
-}
+    }
 
     public disconnect() {
         if (this._ws.connected) {
@@ -186,17 +184,37 @@ class ClientHubRepository extends BaseRepository {
         if (Env.DEBUG) {
             console.log('ClientHubRepository::_ws_on_connect - connection to client-hub established');
         }
+
+        this._connectFailureCount = 0;
+        this._connected = true;
+        this._connectionStateSubject.next(this._connected);
     }
 
     private _ws_on_disconnect() {
         if (Env.DEBUG) {
             console.log('ClientHubRepository::_ws_on_disconnect - disconnected from client-hub');
         }
+
+        this._connectFailureCount = 0;
+        this._connected = false;
+        this._connectionStateSubject.next(this._connected);
     }
 
     private _ws_on_connect_error() {
         if (Env.DEBUG) {
-            console.log('ClientHubRepository::_ws_on_connect_error - error establishing connection');
+            console.log('ClientHubRepository::_ws_on_connect_error - error establishing connection, retry count:', 5 - this._connectFailureCount);
+        }
+        this._connectFailureCount += 1;
+
+        if (this._connectFailureCount > 5) {
+            // give up, it ain't happening for some reason
+            if (Env.DEBUG) {
+                console.log('ClientHubRepository::_ws_on_connect_error - giving up on connecting');
+            }
+            this._ws.disconnect();
+            this._ws = null;
+            this._connected = false;
+            this._connectionStateSubject.next(this._connected);
         }
     }
 
@@ -207,8 +225,16 @@ class ClientHubRepository extends BaseRepository {
 
         for (let i = 0; i < this._openedChannels.length; i++) {
             const channel = this._openedChannels[i];
+
+            if (Env.DEBUG) {
+                console.log('SymbolRepository::_ws_on_reconnect - resubscribing to channel', channel);
+            }
             this._ws.emit('subscribe_' + channel.name);
         }
+
+        this._connectFailureCount = 0;
+        this._connected = true;
+        this._connectionStateSubject.next(this._connected);
     }
 
     private _ws_on_close() {

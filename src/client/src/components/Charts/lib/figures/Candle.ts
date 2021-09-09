@@ -1,25 +1,32 @@
 import IFigureProps from "../../interfaces/IFigureProps";
 import * as d3 from "d3";
 import {ScaleBand} from "d3";
+import Symbol from './../../../../models/Symbol'
 
 interface ICandleProps extends IFigureProps {
     xBand: ScaleBand<any>;
 }
 
 class Candle {
-    private props: ICandleProps;
+    readonly props: ICandleProps;
 
     constructor(props: ICandleProps) {
         this.props = props;
     }
 
-    public draw(svg: d3.Selection<SVGGElement, unknown, HTMLElement, undefined>) {
-        const { data, xScale, xBand, yScale } = this.props;
+    public draw(svg: d3.Selection<SVGGElement, Symbol[], HTMLElement, undefined>) {
+        const { data, xScale, xBand, yScale, dimensions } = this.props;
+        const { margin } = dimensions;
 
-        console.log('data:', data);
+        // gotta reverse the data?
+        const reversed = data.reverse();
+
+        const mySvg = svg.append("g")
+            .attr("class", "candles")
+            .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");
 
         // draw rectangles
-        const candles = svg.selectAll(".candle")
+        const candles = mySvg.selectAll(".candle")
             .data(data)
             .enter()
             .append("rect")
@@ -31,7 +38,7 @@ class Candle {
             .attr("fill", d => (d.open === d.close) ? "silver" : (d.open > d.close) ? "red" : "green")
 
         // draw high and low
-        const stems = svg.selectAll("g.line")
+        const stems = mySvg.selectAll("g.line")
             .data(data)
             .enter()
             .append("line")

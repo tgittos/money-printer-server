@@ -2,10 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigure.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/PriceYAxis.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
@@ -22,17 +18,18 @@
       <change beforePath="$PROJECT_DIR$/src/AppStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppStore.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/Chart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/Chart.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxisProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxisProps.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartDimensions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartDimensions.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartMargin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartMargin.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartProps.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigure.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigure.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigureProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigureProps.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/BaseChart.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartFactory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartFactory.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/PriceYAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/PriceYAxis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicChart.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/CandleChart.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/LineChart.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiChart.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" afterDir="false" />
@@ -76,7 +73,6 @@
       <change beforePath="$PROJECT_DIR$/src/stories/Register.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Register.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/testData.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/testData.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/mailgun.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/mailgun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/auth.py" afterDir="false" />
@@ -143,7 +139,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/stories" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/components/Charts/lib/charts" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -151,6 +147,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Charts\lib\charts" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stories" />
     </key>
     <key name="MoveFile.RECENT_KEYS">

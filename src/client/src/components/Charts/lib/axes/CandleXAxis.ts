@@ -2,20 +2,20 @@ import * as d3 from "d3";
 import Symbol from "../../../../models/Symbol";
 import IAxisProps from "../../interfaces/IAxisProps";
 import moment from "moment";
-import {Axis, ScaleTime} from "d3";
+import {Axis, ScaleLinear, ScaleTime} from "d3";
 import IAxis from "../../interfaces/IAxis";
 
-class RealtimeXAxis implements IAxis {
+class CandleXAxis implements IAxis {
     readonly props: IAxisProps;
 
-    private _scale: ScaleTime<any, any>;
+    private _scale: ScaleLinear<any, any>;
     private _axis: Axis<any>;
 
-    public get scale(): ScaleTime<any, any> {
+    public get scale(): ScaleLinear<any, any> {
         return this._scale;
     }
 
-    public get domain(): Date[] {
+    public get domain(): number[] {
         return this._scale.domain();
     }
 
@@ -43,22 +43,18 @@ class RealtimeXAxis implements IAxis {
     private _createScale() {
         const { width } = this.props.dimensions;
 
-        const now = new Date();
-        now.setMinutes(now.getMinutes() + 15);
-        const windowStart = moment(now).subtract(1, 'hour');
-
-        this._scale = d3.scaleTime()
-            .domain([windowStart, now])
+        this._scale = d3.scaleLinear()
+            .domain([-1, this.props.data.length])
             .range([0, width]);
     }
 
     private _createAxis() {
         const scale = this._scale;
-        
+
         this._axis = d3.axisBottom(scale)
             .ticks(d3.timeMinute.every(2))
             .tickFormat(d3.timeFormat('%H:%M'));
     }
 }
 
-export default RealtimeXAxis;
+export default CandleXAxis;

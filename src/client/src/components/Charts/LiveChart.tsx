@@ -5,12 +5,11 @@ import Symbol, {ISymbol} from "../../models/Symbol";
 
 import BigLoader from "../shared/Loaders/BigLoader";
 import Chart from "../Charts/Chart";
-import CandleChart from "../Charts/lib/charts/CandleChart";
-import LineChart from "../Charts/lib/charts/LineChart";
 import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import BasicChart from "./lib/charts/BasicChart";
 import Line from "./lib/figures/Line";
+import BasicCandleChart from "./lib/charts/BasicCandleChart";
 
 interface ILiveChartProps {
 }
@@ -86,7 +85,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
 
         if (this.state.chartData.length > 0) {
             return <Chart
-                chart={BasicChart}
+                chart={BasicCandleChart}
                 dimensions={{
                     width: 1200,
                     height: 600,

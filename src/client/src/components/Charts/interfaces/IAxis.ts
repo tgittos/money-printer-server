@@ -1,4 +1,6 @@
+import {Axis, AxisScale} from "d3";
+
 export default interface IAxis {
-    scale: any;
-    axis: any;
+    scale: AxisScale<any>;
+    axis: Axis<any>;
 }
