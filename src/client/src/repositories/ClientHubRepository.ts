@@ -1,6 +1,6 @@
 import BaseRepository from "./BaseRepository";
 import {io, Socket} from "socket.io-client";
-import {BehaviorSubject, observable, Observable, Subject} from "rxjs";
+import {BehaviorSubject, observable, Observable, ReplaySubject, Subject} from "rxjs";
 import Env from "../env";
 import Symbol, {ISymbol} from "../models/Symbol";
 
@@ -21,6 +21,8 @@ export interface ISubscriptionRequest {
 }
 
 class ClientHubRepository extends BaseRepository {
+
+    private MESSAGE_BUFFER_SIZE: number = 1000;
 
     private _connected: boolean;
     private _ws: Socket;
@@ -84,7 +86,7 @@ class ClientHubRepository extends BaseRepository {
             return existingChannel;
         }
 
-        const newSubject: BehaviorSubject<NullableSymbol> = new BehaviorSubject<NullableSymbol>(null);
+        const newSubject: ReplaySubject<NullableSymbol> = new ReplaySubject<NullableSymbol>(this.MESSAGE_BUFFER_SIZE);
         const newObservable: Observable<NullableSymbol> = newSubject.asObservable();
         if (Env.DEBUG) {
             console.log('ClientHubRepository::_subscribe_to_channel - subscribing to channel:', channelName);
@@ -201,6 +203,11 @@ class ClientHubRepository extends BaseRepository {
     private _ws_on_reconnect() {
         if (Env.DEBUG) {
             console.log('SymbolRepository::_ws_on_reconnect - reconnected to client-hub');
+        }
+
+        for (let i = 0; i < this._openedChannels.length; i++) {
+            const channel = this._openedChannels[i];
+            this._ws.emit('subscribe_' + channel.name);
         }
     }
 

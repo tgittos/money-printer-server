@@ -9,6 +9,7 @@ import CandleChart from "../Charts/lib/charts/CandleChart";
 import LineChart from "../Charts/lib/charts/LineChart";
 import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
+import BasicChart from "./lib/charts/BasicChart";
 
 interface ILiveChartProps {
 }
@@ -31,7 +32,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
             chartData: [],
         } as ILiveChartState;
 
-        this._onQuoteData = this._onQuoteData.bind(this)
+        this._onQuoteData = this._onQuoteData.bind(this);
 
         this._liveQuotes = LiveQuoteRepository.instance;
     }
@@ -42,7 +43,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                 if (connected) {
                     this._subscriptions.push(
                         this._liveQuotes.liveQuotes$
-                            .pipe(filter(val => !!val))
+                            .pipe(filter(val => val !== undefined))
                             .subscribe(this._onQuoteData)
                     );
                 }
@@ -59,12 +60,21 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
             subscription.unsubscribe());
     }
 
-    private _onQuoteData(data: ISymbol) {
+    private _onQuoteData(data: Symbol) {
         const { chartData } = this.state;
         this.setState(prev => ({
             ...prev,
             loading: false,
-            chartData: [].concat(chartData).concat(data as Symbol)
+            chartData: [].concat(chartData)
+                .concat(data as Symbol)
+                .sort((s1, s2) => {
+                    return s2.date < s1.date
+                        ? -1
+                        : s1.date < s2.date
+                            ? 1
+                            : 0;
+                })
+                .slice(0, 500)
         }));
     }
 
@@ -75,7 +85,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
 
         if (this.state.chartData.length > 0) {
             return <Chart
-                chart={CandleChart}
+                chart={BasicChart}
                 data={this.state.chartData}
                 dimensions={{
                     width: 1200,

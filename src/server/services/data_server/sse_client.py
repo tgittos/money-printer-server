@@ -56,9 +56,11 @@ class SSEClient:
 
     def stop(self):
         self.running = False
+        # sleep for a few ticks to allow the redis pubsub to pick up that we're shutting down
+        time.sleep(0.2)
 
     def restart(self):
-        self.running = False
+        self.stop()
         self.start()
 
     def __handle_sse_control(self, data):
@@ -107,9 +109,9 @@ class SSEClient:
 
     def __gen_api_url(self, symbols):
         if self.env_string == 'sandbox':
-            url = "https://sandbox-sse.iexapis.com/stable/stocksUS1Second?symbols={0}&token={1}"\
+            url = "https://sandbox-sse.iexapis.com/stable/stocksUSNoUTP?symbols={0}&token={1}&chartIEXOnly=true"\
                 .format(','.join(symbols), self.secret_token)
         else:
-            url = "https://cloud-sse.iexapis.com/stable/stocksUS1Second?symbols={0}&token={1}"\
+            url = "https://cloud-sse.iexapis.com/stable/stocksUSNoUTP?symbols={0}&token={1}&chartIEXOnly=true"\
                 .format(','.join(symbols), self.secret_token)
         return url

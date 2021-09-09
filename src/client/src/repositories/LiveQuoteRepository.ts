@@ -1,15 +1,16 @@
 import BaseRepository from "./BaseRepository";
-import {Observable, Subject, Subscription} from "rxjs";
+import {BehaviorSubject, from, Observable, ObservedValueOf, Subject, Subscription} from "rxjs";
 import ClientHubRepository, {IChannel, ISubscriptionRequest, NullableSymbol} from "./ClientHubRepository";
 import Symbol from "../models/Symbol";
 import Env from "../env";
+import {fromArrayLike} from "rxjs/dist/types/internal/observable/from";
 
 class LiveQuoteRepository extends BaseRepository {
 
     private LIVE_QUOTES: string = "live_quotes";
 
     private _chRepo: ClientHubRepository | null = null;
-    private _subscribedSymbols: string[] = [];
+    private _subscribedSymbolsSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     private _subscriptions: Subscription[] = [];
     private _liveQuoteChannel: IChannel | null = null;
 
@@ -24,8 +25,11 @@ class LiveQuoteRepository extends BaseRepository {
         return this._liveQuoteChannel.observable;
     }
 
+    public get subscribedSymbols$(): Observable<string[]> {
+        return this._subscribedSymbolsSubject.asObservable();
+    }
     public get subscribedSymbols(): string[] {
-        return this._subscribedSymbols;
+        return this._subscribedSymbolsSubject.getValue();
     }
 
     private static _instance: LiveQuoteRepository | null = null;
@@ -51,16 +55,18 @@ class LiveQuoteRepository extends BaseRepository {
 
 
     public subscribeToSymbol(symbolTicker: string): void {
-        if (!this._subscribedSymbols.includes(symbolTicker)) {
-            this._subscribedSymbols.push(symbolTicker);
+        if (!this.subscribedSymbols.includes(symbolTicker)) {
+            this._subscribedSymbolsSubject.next(
+                this.subscribedSymbols.concat([symbolTicker]));
             this._liveQuoteChannel.emitter('symbol-history', symbolTicker);
             this._liveQuoteChannel.emitter('subscribe-symbol', symbolTicker);
         }
     }
 
     public unsubscribeFromSymbol(symbolTicker: string): void {
-        if (this._subscribedSymbols.includes(symbolTicker)) {
-            this._subscribedSymbols = this._subscribedSymbols.filter(symbol => symbol !== symbolTicker);
+        if (this.subscribedSymbols.includes(symbolTicker)) {
+            this._subscribedSymbolsSubject.next(
+                this.subscribedSymbols.filter(symbol => symbol !== symbolTicker));
             this._liveQuoteChannel.emitter('unsubscribe-symbol', symbolTicker);
         }
     }
@@ -94,6 +100,9 @@ class LiveQuoteRepository extends BaseRepository {
             const commandData = JSON.parse(message["data"]);
             for (let i = 0; i < commandData.length; i++) {
                 const newSymbol = new Symbol(commandData[i]);
+                // fudge the dates so that it looks like a real time stream of data
+                // instead of the chaotic mess IEX sandbox gives us
+                newSymbol.date = new Date();
                 this._liveQuoteChannel.subject.next(newSymbol);
             }
         }
@@ -105,8 +114,10 @@ class LiveQuoteRepository extends BaseRepository {
                     if (Env.DEBUG) {
                         console.log('ClientHubRepository::_handle_live_quote_message - updating tracked list with', symbolTicker);
                     }
-                    if (!this._subscribedSymbols.includes(symbolTicker)) {
-                        this._subscribedSymbols.push(symbolTicker);
+                    if (!this.subscribedSymbols.includes(symbolTicker)) {
+                        this._subscribedSymbolsSubject.next(
+                            this.subscribedSymbols.concat([symbolTicker])
+                        );
                     }
                 }
             } else {

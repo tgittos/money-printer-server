@@ -3,7 +3,7 @@ import styles from './SymbolTracker.module.scss';
 import { IProfile } from "../../models/Profile";
 import ClientHubRepository, { NullableSymbol } from "../../repositories/ClientHubRepository";
 import Env from "../../env";
-import {filter, Observable, Subscription} from "rxjs";
+import {filter, Observable, ObservedValueOf, Subscription} from "rxjs";
 import {CloseButton, ListGroup} from "react-bootstrap";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 
@@ -22,7 +22,7 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
     private _subscriptions: Subscription[] = [];
 
     public get subscribedSymbols(): string[] {
-        return this._liveQuotes.subscribedSymbols;
+        return this.state.subscribedSymbols;
     }
 
     constructor(props: ISymbolTrackerProps) {
@@ -31,32 +31,31 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
         this.handleSubscribe = this.handleSubscribe.bind(this);
         this.handleUnsubscribe = this.handleUnsubscribe.bind(this);
         this.handleSymbolData = this.handleSymbolData.bind(this);
+        this.handleSubscribedSymbolsUpdate = this.handleSubscribedSymbolsUpdate.bind(this);
 
         this._liveQuotes = LiveQuoteRepository.instance;
 
         this.state = {
             profile: props.profile,
-            subscribedSymbols: this.subscribedSymbols,
+            subscribedSymbols: [],
         } as ISymbolTrackerState;
     }
 
     componentDidMount() {
         this._subscriptions.push(
-            this._liveQuotes.connected$.subscribe(connected => {
-                if (connected) {
-                    this._subscriptions.push(
-                        this._liveQuotes.liveQuotes$
-                            .pipe(filter(data => !!data))
-                            .subscribe(this.handleSymbolData)
-                    )
-                }
-            })
-        )
+            this._liveQuotes.subscribedSymbols$.subscribe(this.handleSubscribedSymbolsUpdate)
+        );
     }
 
     componentWillUnmount() {
-        // this._liveData?.unsubscribe();
-        this._clientHubRepo.disconnect();
+    }
+
+    private handleSubscribedSymbolsUpdate(symbols: string[]) {
+        console.log('got subscribed symbols:', symbols);
+        this.setState(prev => ({
+            ...prev,
+            subscribedSymbols: [].concat(symbols)
+        }))
     }
 
     private handleSubscribe(symbol: string) {
