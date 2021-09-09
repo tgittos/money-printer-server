@@ -1,0 +1,1 @@
+export MONEY_PRINTER_ENV=sandbox && ./.venv/bin/python3 ./server/services/data_server/data_server.py

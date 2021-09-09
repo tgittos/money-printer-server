@@ -1,0 +1,19 @@
+{
+  "en": {
+    "translation": {
+      "login_username_placeholder": "Username",
+      "login_password_placeholder": "Password",
+      "login_submit": "Login",
+      "login_create_account": "If you don't have a Money Printer account, I dunno what to tell ya.",
+
+      "register_email_placeholder": "Email",
+      "register_first_name_placeholder": "First name",
+      "register_last_name_placeholder": "Last name",
+      "register_submit": "Register",
+      "register_login": "If you already have a profile, login instead",
+      "register_error_email_blank": "Email address cannot be blank",
+      "register_error_first_name_blank": "First name cannot be blank",
+      "register_error_last_name_blank": "Last name cannot be blank"
+    }
+  }
+}
