@@ -1,11 +1,9 @@
-import {ISymbol} from "../../../models/Symbol";
-import {ScaleContinuousNumeric, ScaleLinear, ScaleLogarithmic} from "d3";
+import Symbol from "../../../models/Symbol";
+import IChartDimensions from "./IChartDimensions";
 
 interface IAxisProps {
-    data: ISymbol[];
-    chartWidth: number;
-    chartHeight: number;
-    scale: ScaleLinear<any, any>;
+    data: Symbol[];
+    dimensions: IChartDimensions;
 }
 
 export default IAxisProps;

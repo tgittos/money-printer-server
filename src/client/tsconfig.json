@@ -20,7 +20,10 @@
     "noEmit": true,
     "jsx": "react-jsx",
     // just while im deving, fuuuuuck
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    // disabling cause TS has bugs apparently
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false
   },
   "include": [
     "src"

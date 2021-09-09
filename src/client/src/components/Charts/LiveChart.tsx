@@ -10,6 +10,7 @@ import LineChart from "../Charts/lib/charts/LineChart";
 import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import BasicChart from "./lib/charts/BasicChart";
+import Line from "./lib/figures/Line";
 
 interface ILiveChartProps {
 }
@@ -86,7 +87,6 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
         if (this.state.chartData.length > 0) {
             return <Chart
                 chart={BasicChart}
-                data={this.state.chartData}
                 dimensions={{
                     width: 1200,
                     height: 600,
@@ -97,6 +97,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                         right: 30
                     }
                 } as IChartDimensions}
+                data={this.state.chartData}
             ></Chart>
         }
 

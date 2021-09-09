@@ -1,8 +1,9 @@
 import * as d3 from "d3";
 import IFigureProps from "../../interfaces/IFigureProps";
 import Symbol from "../../../../models/Symbol";
+import IFigure from "../../interfaces/IFigure";
 
-class Line {
+class Line implements IFigure {
     readonly props: IFigureProps;
 
     constructor(props: IFigureProps) {
@@ -12,18 +13,18 @@ class Line {
     public draw(svg: d3.Selection<SVGElement, Symbol[], HTMLElement, undefined>) {
         const { data, xScale, yScale } = this.props;
 
-        const g = svg.append("g");
-
-        g.append("path")
-            .datum(data)
+        svg.append("g").append("path")
+            .datum(this.props.data)
             .attr("fill", "none")
             .attr("stroke", "steelblue")
             .attr("stroke-width", 1.5)
-            // .attr("stroke-linejoin", "round")
-            // .attr("stroke-linecap", "round")
             .attr("d", d3.line()
-                .x((d: Symbol) => xScale(d.date))
-                .y((d: Symbol) => yScale(d.latestPrice)));
+                .x((d: Symbol) => {
+                    return xScale(d.date)
+                })
+                .y((d: Symbol) => {
+                    return yScale(d.latestPrice);
+                }));
     }
 }
 

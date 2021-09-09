@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicChart.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigure.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/PriceYAxis.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
@@ -24,11 +27,12 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartMargin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartMargin.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartProps.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigureProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigureProps.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/BaseChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/BaseChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/BaseChart.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/CandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/CandleChart.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/LineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/LineChart.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/CandleChart.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/LineChart.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiChart.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" afterDir="false" />
@@ -72,6 +76,7 @@
       <change beforePath="$PROJECT_DIR$/src/stories/Register.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Register.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/testData.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/testData.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/mailgun.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/mailgun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/auth.py" afterDir="false" />
