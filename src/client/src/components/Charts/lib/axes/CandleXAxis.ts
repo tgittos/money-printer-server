@@ -50,10 +50,18 @@ class CandleXAxis implements IAxis {
 
     private _createAxis() {
         const scale = this._scale;
+        const data = this.props.data;
 
         this._axis = d3.axisBottom(scale)
             .ticks(d3.timeMinute.every(2))
-            .tickFormat(d3.timeFormat('%H:%M'));
+            .tickFormat(function(d) {
+                const date = data[d.valueOf()].date;
+                console.log(date);
+                const hours = date.getHours()
+                const minutes = (date.getMinutes()<10?'0':'') + date.getMinutes()
+                const amPM = hours < 13 ? 'am' : 'pm'
+                return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + date.getFullYear()
+            });
     }
 }
 

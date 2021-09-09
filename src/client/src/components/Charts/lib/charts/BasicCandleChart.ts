@@ -5,15 +5,15 @@ import RealtimeXAxis from "../axes/RealtimeXAxis";
 import PriceYAxis from "../axes/PriceYAxis";
 import Candle from "../figures/Candle";
 import CandleXAxis from "../axes/CandleXAxis";
-
+import IChart from "../../interfaces/IChart";
 
 const BasicCandleChart = function(props: IChartProps) {
-    (this as any).props = props;
+    this.props = props;
     this.svgRef = props.svgRef;
     this.svg = d3.select(this.svgRef.current);
 
     this.draw();
-}
+} as IChart
 
 BasicCandleChart.prototype.draw = function() {
     this._reset();
@@ -28,6 +28,8 @@ BasicCandleChart.prototype._init = function() {
     const { margin, width, height } = this.props.dimensions;
     const svgWidth = margin.left + margin.right + width;
     const svgHeight = margin.top + margin.bottom + height;
+
+    this.props.data = this.props.data.reverse();
 
     this.xAxis = new CandleXAxis({
         data: this.props.data,

@@ -18,9 +18,6 @@ class Candle {
         const { data, xScale, xBand, yScale, dimensions } = this.props;
         const { margin } = dimensions;
 
-        // gotta reverse the data?
-        const reversed = data.reverse();
-
         const mySvg = svg.append("g")
             .attr("class", "candles")
             .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");

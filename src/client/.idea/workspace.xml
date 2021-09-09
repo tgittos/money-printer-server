@@ -27,8 +27,10 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigureProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IFigureProps.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartFactory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartFactory.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/PriceYAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/PriceYAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" afterDir="false" />

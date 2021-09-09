@@ -3,15 +3,15 @@ import * as d3 from "d3";
 import Line from "../figures/Line";
 import RealtimeXAxis from "../axes/RealtimeXAxis";
 import PriceYAxis from "../axes/PriceYAxis";
-
+import IChart from "../../interfaces/IChart";
 
 const BasicChart = function(props: IChartProps) {
-    (this as any).props = props;
+    this.props = props;
     this.svgRef = props.svgRef;
     this.svg = d3.select(this.svgRef.current);
 
     this.draw();
-}
+} as IChart;
 
 BasicChart.prototype.draw = function() {
     this._reset();
