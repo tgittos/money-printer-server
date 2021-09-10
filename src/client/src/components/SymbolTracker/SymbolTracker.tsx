@@ -11,7 +11,6 @@ interface ISymbolTrackerProps {
 }
 
 interface ISymbolTrackerState {
-    profile: IProfile,
     subscribedSymbols: string[],
     newSymbol: string;
 }
@@ -36,7 +35,6 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
         this._liveQuotes = LiveQuoteRepository.instance;
 
         this.state = {
-            profile: props.profile,
             subscribedSymbols: [],
         } as ISymbolTrackerState;
     }

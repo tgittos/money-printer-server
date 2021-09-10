@@ -9,7 +9,7 @@ type NullableChannel = IChannel | null;
 
 export interface IChannel {
     name: string;
-    subject: BehaviorSubject<ISymbol>;
+    subject: ReplaySubject<NullableSymbol>;
     observable: Observable<NullableSymbol>;
     emitter: (message: string, data?: any) => void,
 }

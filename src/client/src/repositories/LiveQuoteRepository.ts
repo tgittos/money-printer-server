@@ -3,7 +3,6 @@ import {BehaviorSubject, from, Observable, ObservedValueOf, Subject, Subscriptio
 import ClientHubRepository, {IChannel, ISubscriptionRequest, NullableSymbol} from "./ClientHubRepository";
 import Symbol from "../models/Symbol";
 import Env from "../env";
-import {fromArrayLike} from "rxjs/dist/types/internal/observable/from";
 
 class LiveQuoteRepository extends BaseRepository {
 

@@ -26,8 +26,8 @@ class CandleXAxis implements IAxis {
     constructor(props: IAxisProps) {
         this.props = props;
 
-        this._createScale();
-        this._createAxis();
+        this.createScale();
+        this.createAxis();
     }
 
     public draw(svg: d3.Selection<SVGElement, Symbol[], HTMLElement, undefined>) {
@@ -40,7 +40,7 @@ class CandleXAxis implements IAxis {
             .call(xAxis)
     }
 
-    private _createScale() {
+    private createScale() {
         const { width } = this.props.dimensions;
 
         this._scale = d3.scaleLinear()
@@ -48,19 +48,21 @@ class CandleXAxis implements IAxis {
             .range([0, width]);
     }
 
-    private _createAxis() {
+    private createAxis() {
         const scale = this._scale;
         const data = this.props.data;
 
         this._axis = d3.axisBottom(scale)
-            .ticks(d3.timeMinute.every(2))
-            .tickFormat(function(d) {
-                const date = data[d.valueOf()].date;
-                console.log(date);
-                const hours = date.getHours()
-                const minutes = (date.getMinutes()<10?'0':'') + date.getMinutes()
-                const amPM = hours < 13 ? 'am' : 'pm'
-                return hours + ':' + minutes + amPM + ' ' + date.getDate() + ' ' + date.getFullYear()
+            .tickFormat(function(d, i) {
+                const datum = data[d];
+                if (datum) {
+                    const date = datum.date;
+                    const hours = date.getHours();
+                    const minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
+                    const seconds = date.getSeconds();
+                    return `${hours}:${minutes}:${seconds}`
+                };
+                return '';
             });
     }
 }

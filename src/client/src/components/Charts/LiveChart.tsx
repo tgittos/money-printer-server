@@ -85,7 +85,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
 
         if (this.state.chartData.length > 0) {
             return <Chart
-                chart={BasicChart}
+                chart={BasicCandleChart}
                 dimensions={{
                     width: 1200,
                     height: 600,

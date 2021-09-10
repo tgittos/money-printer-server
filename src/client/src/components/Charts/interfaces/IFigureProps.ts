@@ -1,4 +1,5 @@
 import IChartDimensions from "./IChartDimensions";
+import Symbol from "../../../models/Symbol";
 
 interface IFigureProps {
     data: Symbol[];

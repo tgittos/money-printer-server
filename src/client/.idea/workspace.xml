@@ -20,6 +20,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxisProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxisProps.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartDimensions.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartDimensions.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartMargin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartMargin.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChartProps.ts" afterDir="false" />

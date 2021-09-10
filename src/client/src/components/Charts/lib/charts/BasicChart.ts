@@ -4,53 +4,71 @@ import Line from "../figures/Line";
 import RealtimeXAxis from "../axes/RealtimeXAxis";
 import PriceYAxis from "../axes/PriceYAxis";
 import IChart from "../../interfaces/IChart";
+import {IChartFactory} from "../ChartFactory";
+import Symbol from "../../../../models/Symbol";
+import {MutableRefObject} from "react";
+import IAxis from "../../interfaces/IAxis";
+import IFigureProps from "../../interfaces/IFigureProps";
 
-const BasicChart = function(props: IChartProps) {
-    this.props = props;
-    this.svgRef = props.svgRef;
-    this.svg = d3.select(this.svgRef.current);
+class BasicChart implements IChart {
+    readonly svg: d3.Selection<SVGElement, Symbol[], HTMLElement, undefined>;
 
-    this.draw();
-} as IChart;
+    private props: IChartProps;
+    private svgRef: MutableRefObject<null>;
+    private xAxis: IAxis;
+    private yAxis: IAxis;
+    private line: Line;
 
-BasicChart.prototype.draw = function() {
-    this._reset();
+    constructor(props: IChartProps) {
+        this.props = props;
+        this.svgRef = props.svgRef;
+        this.svg = d3.select(this.svgRef.current);
 
-    this.xAxis.draw(this.svg);
-    this.yAxis.draw(this.svg);
-    this.line.draw(this.svg);
-}
+        this.draw();
+    }
 
-BasicChart.prototype._init = function() {
-    const { margin, width, height } = this.props.dimensions;
-    const svgWidth = margin.left + margin.right + width;
-    const svgHeight = margin.top + margin.bottom + height;
+    public draw() {
+        this.reset();
 
-    this.xAxis = new RealtimeXAxis({
-        data: this.props.data,
-        dimensions: this.props.dimensions
-    });
-    this.yAxis = new PriceYAxis({
-        data: this.props.data,
-        dimensions: this.props.dimensions
-    });
+        this.xAxis.draw(this.svg);
+        this.yAxis.draw(this.svg);
 
-    this.line = new Line({
-        data: this.props.data,
-        xScale: this.xAxis.scale,
-        yScale: this.yAxis.scale
-    });
+        this.line.draw(this.svg);
+    }
 
-    this.svg
-        .attr("width", svgWidth)
-        .attr("height", svgHeight)
-        .append("g")
-        .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");
-}
+    private init() {
+        const { margin, width, height } = this.props.dimensions;
+        const svgWidth = margin.left + margin.right + width;
+        const svgHeight = margin.top + margin.bottom + height;
 
-BasicChart.prototype._reset = function() {
-    this.svg.selectAll('*').remove();
-    this._init();
+        this.props.data = this.props.data.reverse();
+
+        this.xAxis = new RealtimeXAxis({
+            data: this.props.data,
+            dimensions: this.props.dimensions
+        });
+        this.yAxis = new PriceYAxis({
+            data: this.props.data,
+            dimensions: this.props.dimensions
+        });
+
+        this.line = new Line({
+            data: this.props.data,
+            xScale: this.xAxis.scale,
+            yScale: this.yAxis.scale
+        } as IFigureProps);
+
+        this.svg
+            .attr("width", svgWidth)
+            .attr("height", svgHeight)
+            .append("g")
+            .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");
+    }
+
+    private reset() {
+        this.svg.selectAll('*').remove();
+        this.init();
+    }
 }
 
 export default BasicChart;
