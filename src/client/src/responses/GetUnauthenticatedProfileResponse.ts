@@ -1,9 +1,9 @@
-import Profile, {IServerProfile} from "../models/Profile";
+import IAuthedProfile from "../interfaces/IAuthedProfile";
 
 interface IGetUnauthenticatedProfileResponse {
     success: boolean;
     message: string;
-    data: IServerProfile;
+    data: IAuthedProfile;
 }
 
 export default IGetUnauthenticatedProfileResponse;

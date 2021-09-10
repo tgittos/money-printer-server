@@ -1,9 +1,5 @@
-import Profile from "../models/Profile";
+import IAuthedProfile from "../interfaces/IAuthedProfile";
 
-export interface IAuthedProfile {
-    profile: Profile
-    token: string
-}
 
 interface IAuthProfileResponse {
     success: boolean;

@@ -4,14 +4,13 @@ import Line from "../figures/Line";
 import RealtimeXAxis from "../axes/RealtimeXAxis";
 import PriceYAxis from "../axes/PriceYAxis";
 import IChart from "../../interfaces/IChart";
-import {IChartFactory} from "../ChartFactory";
-import Symbol from "../../../../models/Symbol";
 import {MutableRefObject} from "react";
 import IAxis from "../../interfaces/IAxis";
 import IFigureProps from "../../interfaces/IFigureProps";
+import ISymbol from "../../../../interfaces/ISymbol";
 
 class BasicChart implements IChart {
-    readonly svg: d3.Selection<SVGElement, Symbol[], HTMLElement, undefined>;
+    readonly svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>;
 
     private props: IChartProps;
     private svgRef: MutableRefObject<null>;
@@ -41,8 +40,6 @@ class BasicChart implements IChart {
         const svgWidth = margin.left + margin.right + width;
         const svgHeight = margin.top + margin.bottom + height;
 
-        this.props.data = this.props.data.reverse();
-
         this.xAxis = new RealtimeXAxis({
             data: this.props.data,
             dimensions: this.props.dimensions
@@ -54,6 +51,7 @@ class BasicChart implements IChart {
 
         this.line = new Line({
             data: this.props.data,
+            dimensions: this.props.dimensions,
             xScale: this.xAxis.scale,
             yScale: this.yAxis.scale
         } as IFigureProps);

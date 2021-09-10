@@ -1,8 +1,8 @@
-import Symbol from "../../../models/Symbol";
 import IChartDimensions from "./IChartDimensions";
+import ISymbol from "../../../interfaces/ISymbol";
 
 interface IAxisProps {
-    data: Symbol[];
+    data: ISymbol[];
     dimensions: IChartDimensions;
 }
 

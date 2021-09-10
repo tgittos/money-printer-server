@@ -1,7 +1,7 @@
 import BaseRepository from "./BaseRepository";
 import {BehaviorSubject, from, Observable, ObservedValueOf, Subject, Subscription} from "rxjs";
 import ClientHubRepository, {IChannel, ISubscriptionRequest, NullableSymbol} from "./ClientHubRepository";
-import Symbol from "../models/Symbol";
+import RealtimeSymbol from "../models/symbols/RealtimeSymbol";
 import Env from "../env";
 
 class LiveQuoteRepository extends BaseRepository {
@@ -98,7 +98,7 @@ class LiveQuoteRepository extends BaseRepository {
         if (command == 'live-quote') {
             const commandData = JSON.parse(message["data"]);
             for (let i = 0; i < commandData.length; i++) {
-                const newSymbol = new Symbol(commandData[i]);
+                const newSymbol = new RealtimeSymbol(commandData[i]);
                 // fudge the dates so that it looks like a real time stream of data
                 // instead of the chaotic mess IEX sandbox gives us
                 newSymbol.date = new Date();

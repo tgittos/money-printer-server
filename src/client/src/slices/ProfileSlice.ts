@@ -6,26 +6,46 @@ export interface IProfileState {
     loading: boolean;
     authenticated: boolean;
     exp: Date;
-    current: Profile | null;
+    current: IProfile | null;
+    unauthenticated: IProfile | null;
 }
 
-export interface IProfileAction {
-    type: string,
-    payload: Profile | null
+function profileToIProfile(profile: Profile): IProfile {
+    if (profile == null) {
+        return null;
+    }
+
+    return {
+        id: profile.id,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        username: profile.username,
+    } as IProfile;
 }
 
 const ProfileSlice = createSlice({
     name: 'Profile',
     initialState: {
         authenticated: false,
-        current: null
+        current: null,
+        unauthenticated: null
     } as IProfileState,
     reducers: {
+        setUnauthenticatedProfile: {
+          reducer: (state: IProfileState, action: PayloadAction<IProfile>) => {
+              return {
+                  ...state,
+                  unauthenticated: action.payload
+              };
+          },
+          prepare: (profile: Profile) => {
+              return {
+                  payload: profileToIProfile(profile)
+              };
+          }
+        },
         setCurrentProfile: {
             reducer: (state : IProfileState, action: PayloadAction<IProfile>) => {
-                if (Env.DEBUG) {
-                    console.log('ProfileSlice::setCurrentProfile - got action:', action)
-                }
                 return {
                     ...state,
                     current: action.payload,
@@ -33,25 +53,16 @@ const ProfileSlice = createSlice({
                     loading: false
                 };
             },
-            prepare: (profile: IProfile) => {
+            prepare: (profile: Profile) => {
                 return {
-                    payload: {
-                        id: profile.id,
-                        firstName: profile.firstName,
-                        lastName: profile.lastName,
-                        username: profile.username,
-                        timestamp: profile.timestamp
-                    } as IProfile
+                    payload: profileToIProfile(profile)
                 };
             }
         },
         clearCurrentProfile: (state: IProfileState) => {
-            if (Env.DEBUG) {
-                console.log('ProfileSlice::clearCurrentProfile');
-            }
             return {
                 ...state,
-                current: null,
+                current: state.unauthenticated,
                 authenticated: false,
                 loading: false
             }
@@ -59,5 +70,9 @@ const ProfileSlice = createSlice({
     }
 });
 
-export const { setCurrentProfile, clearCurrentProfile } = ProfileSlice.actions;
+export const {
+    setUnauthenticatedProfile,
+    setCurrentProfile,
+    clearCurrentProfile
+} = ProfileSlice.actions;
 export default ProfileSlice.reducer;

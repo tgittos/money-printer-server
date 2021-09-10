@@ -29,7 +29,6 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
 
         this.handleSubscribe = this.handleSubscribe.bind(this);
         this.handleUnsubscribe = this.handleUnsubscribe.bind(this);
-        this.handleSymbolData = this.handleSymbolData.bind(this);
         this.handleSubscribedSymbolsUpdate = this.handleSubscribedSymbolsUpdate.bind(this);
 
         this._liveQuotes = LiveQuoteRepository.instance;
@@ -49,7 +48,6 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
     }
 
     private handleSubscribedSymbolsUpdate(symbols: string[]) {
-        console.log('got subscribed symbols:', symbols);
         this.setState(prev => ({
             ...prev,
             subscribedSymbols: [].concat(symbols)
@@ -88,10 +86,6 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
                 subscribedSymbols: subscribedSymbols.filter(s => s !== symbol)
             }
         });
-    }
-
-    private handleSymbolData(data: any) {
-        console.log('got data:', data);
     }
 
     render() {

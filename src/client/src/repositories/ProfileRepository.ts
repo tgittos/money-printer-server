@@ -3,7 +3,7 @@ import Cookies from 'universal-cookie';
 import jwt from 'jwt-decode';
 
 import AppStore from './../AppStore';
-import { setCurrentProfile } from "../slices/ProfileSlice";
+import {setCurrentProfile, setUnauthenticatedProfile} from "../slices/ProfileSlice";
 
 import BaseRepository from './BaseRepository'
 import type IRegisterProfileRequest from '../requests/RegisterProfileRequest';
@@ -13,75 +13,73 @@ import type IAuthProfileResponse from "../responses/AuthProfileResponse";
 import Env from '../env';
 import IGetUnauthenticatedProfileResponse from "../responses/GetUnauthenticatedProfileResponse";
 import Profile, {IServerProfile} from "../models/Profile";
+import AuthService, {NullableProfile} from "../services/AuthService";
 
 class ProfileRepository extends BaseRepository {
-
-  private JWT_TOKEN_KEY: string = "mp:jwt"
-
-  _cookies: Cookies;
 
   constructor() {
     super();
 
     this.apiEndpoint = "auth/";
-    this._cookies = new Cookies();
+
+    this.authService = new AuthService();
   }
 
   public async init(): Promise<void> {
+
+    let profileToSet: Profile;
+
     if (Env.DEBUG) {
       console.log("ProfileRepository::init - checking cookies for stored token");
     }
-
-    const tokenProfile: Profile | null = this.hydrateJWTToken();
-    if (tokenProfile) {
+    if (this.authService.currentProfile) {
       if (Env.DEBUG) {
-        console.log("ProfileRepository::init - found profile in token, setting profile to", tokenProfile);
+        console.log("ProfileRepository::init - found profile in token, setting profile to", this.authService.currentProfile);
       }
-      AppStore.dispatch(setCurrentProfile(tokenProfile));
-      return;
+      profileToSet = this.authService.currentProfile;
     }
 
     if (Env.DEBUG) {
       console.log("ProfileRepository::init - initializing unauthenticated user from server");
     }
     const response = await this.getUnauthenticatedProfile();
-    if (response.success) {
+    if (response !== null) {
+      const { token, profile } = response.data;
+
       if (Env.DEBUG) {
-        console.log("ProfileRepository::init - server return success message, setting profile to", response.data);
+        console.log("ProfileRepository::init - server return success message, setting profile to", profile);
       }
-      const data: IServerProfile = response.data;
-      AppStore.dispatch(setCurrentProfile(new Profile(data)));
-      return;
+
+      const unauthenticatedProfile = new Profile(profile);
+      if (!profileToSet) {
+        this.authService.setProfile(token);
+        profileToSet = unauthenticatedProfile;
+      }
+      AppStore.dispatch(setUnauthenticatedProfile(unauthenticatedProfile));
     }
 
-    if (Env.DEBUG) {
-      console.log("ProfileRepository::init - server return non-success message");
-    }
+    AppStore.dispatch(setCurrentProfile(profileToSet));
   }
 
   public async getUnauthenticatedProfile(): Promise<IGetUnauthenticatedProfileResponse> {
-    const response: IGetUnauthenticatedProfileResponse =
-        await axios.request({
+    const response = await this.unauthenticatedRequest<null, IGetUnauthenticatedProfileResponse>({
           url: this.endpoint + "unauthenticated"
-        }).then(response => response.data) as IGetUnauthenticatedProfileResponse;
+        }).then(response => (response.data as unknown) as IGetUnauthenticatedProfileResponse);
     if (response.success) {
-      const data: IServerProfile = response.data;
-      AppStore.dispatch(setCurrentProfile(new Profile(data)));
+      AppStore.dispatch(setCurrentProfile(new Profile(response.data.profile)));
     }
     return response;
   }
 
   public async invite(request: IRegisterProfileRequest): Promise<IRegisterProfileResponse> {
-    const response: any =
-        await axios.request<IRegisterProfileRequest>({
+    const response = this.unauthenticatedRequest<IRegisterProfileRequest,IRegisterProfileResponse>({
           method: "POST",
           url: this.endpoint + "register",
           data: {
             username: request.email,
             firstName: request.firstName,
             lastName: request.lastName
-          }
-        }).then(response => response.data);
+          }});
     return response;
   }
 
@@ -90,57 +88,35 @@ class ProfileRepository extends BaseRepository {
       console.log('ProfileRepository::auth - performing auth with request:', request);
     }
 
-    const response:IAuthProfileResponse = await axios.request<IAuthProfileRequest>({
+    const response = await this.unauthenticatedRequest<IAuthProfileRequest, IAuthProfileResponse>({
       method: "POST",
       url: this.endpoint + "login",
       data: {
         username: request.username,
         password: request.password
       }
-    }).then(response => response.data) as IAuthProfileResponse;
+    }).then(response => (response.data as unknown) as IAuthProfileResponse);
 
     if (Env.DEBUG) {
       console.log('ProfileRepository::auth - response from server:', response);
     }
 
     if (response.success) {
-      const data = response.data.profile as unknown;
-      this.storeToken(response.data.token);
-      AppStore.dispatch(setCurrentProfile(new Profile(data as IServerProfile)));
+      const serverProfile = response.data.profile;
+      this.authService.setProfile(response.data.token);
+      AppStore.dispatch(setCurrentProfile(new Profile(serverProfile)));
     }
 
     return response;
   }
 
   public logout() {
-    this.clearToken();
+    this.authService.clearProfile();
     this.getUnauthenticatedProfile();
   }
 
   public reset_password(email: string) {
     throw new Error("not implemented");
-  }
-
-  private storeToken(token: string) {
-    this._cookies.set(this.JWT_TOKEN_KEY, token);
-  }
-
-  private clearToken() {
-    this._cookies.set(this.JWT_TOKEN_KEY, null);
-  }
-
-  private hydrateJWTToken(): Profile | null {
-    const fetchedToken = this._cookies.get(this.JWT_TOKEN_KEY);
-    if (fetchedToken) {
-      const jwtProfile: any = jwt(fetchedToken);
-      if (Env.DEBUG) {
-        console.log('ProfileRepository::hydrateJWTToken - found profile:', jwtProfile);
-      }
-      if (jwtProfile?.profile) {
-        return new Profile(jwtProfile.profile as IServerProfile);
-      }
-    }
-    return null;
   }
 }
 

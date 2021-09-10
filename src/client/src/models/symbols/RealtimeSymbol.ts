@@ -1,4 +1,6 @@
-export interface ISymbol {
+import ISymbol from "../../interfaces/ISymbol";
+
+export interface IServerRealtimeSymbol {
     symbol: string;
     open: number;
     openTime: number;
@@ -18,29 +20,28 @@ export interface ISymbol {
     lastTime: string;
     latestUpdate: number;
     currency: string;
-    date: Date | null;
 }
 
-class Symbol implements ISymbol {
-    symbol: string;
-    open: number;
-    openTime: number;
-    change: number;
-    changePercent: number;
-    high: number;
-    highTime: number;
-    low: number;
-    lowTime: number;
-    close: number;
-    closeTime: number;
-    week52High: number;
-    week52Low: number;
-    ytdChange: number
-    latestPrice: number;
-    latestVolume: number;
-    lastTime: string;
-    latestUpdate: number;
-    currency: string;
+class RealtimeSymbol implements ISymbol {
+    public symbol: string;
+    public open: number;
+    public openTime: number;
+    public change: number;
+    public changePercent: number;
+    public high: number;
+    public highTime: number;
+    public low: number;
+    public lowTime: number;
+    public close: number;
+    public closeTime: number;
+    public week52High: number;
+    public week52Low: number;
+    public ytdChange: number
+    public latestPrice: number;
+    public latestVolume: number;
+    public lastTime: string;
+    public latestUpdate: number;
+    public currency: string;
 
     private _date: Date = null;
     get date(): Date {
@@ -50,7 +51,7 @@ class Symbol implements ISymbol {
         this._date = val;
     }
 
-    constructor(serverObj: ISymbol = {} as ISymbol) {
+    constructor(serverObj: IServerRealtimeSymbol) {
         this.symbol = serverObj.symbol;
         this.open = serverObj.open;
         this.openTime = serverObj.openTime;
@@ -71,9 +72,10 @@ class Symbol implements ISymbol {
         this.latestUpdate = serverObj.latestUpdate;
         this.currency = serverObj.currency;
     }
+
 }
 
-export default Symbol;
+export default RealtimeSymbol;
 
 
 /*

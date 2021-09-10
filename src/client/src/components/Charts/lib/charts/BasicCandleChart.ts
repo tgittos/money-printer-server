@@ -5,12 +5,12 @@ import Candle, {ICandleProps} from "../figures/Candle";
 import CandleXAxis from "../axes/CandleXAxis";
 import IChart from "../../interfaces/IChart";
 import {MutableRefObject} from "react";
-import Symbol from "../../../../models/Symbol";
 import IAxis from "../../interfaces/IAxis";
 import {ScaleBand} from "d3";
+import ISymbol from "../../../../interfaces/ISymbol";
 
 class BasicCandleChart implements IChart {
-    readonly svg: d3.Selection<SVGElement, Symbol[], HTMLElement, undefined>;
+    readonly svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>;
 
     private props: IChartProps;
     private svgRef: MutableRefObject<null>;

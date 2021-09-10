@@ -40,7 +40,7 @@ def get_unauthenticated_user():
         })
     return ({
         'success': True,
-        'data': result.to_dict()
+        'data': result
     })
 
 @auth_bp.route('/v1/api/auth/login', methods=['POST'])

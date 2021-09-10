@@ -1,9 +1,9 @@
 import * as d3 from "d3";
-import Symbol from "../../../../models/Symbol";
 import IAxisProps from "../../interfaces/IAxisProps";
 import moment from "moment";
 import {Axis, ScaleTime} from "d3";
 import IAxis from "../../interfaces/IAxis";
+import ISymbol from "../../../../interfaces/ISymbol";
 
 class RealtimeXAxis implements IAxis {
     readonly props: IAxisProps;
@@ -30,7 +30,7 @@ class RealtimeXAxis implements IAxis {
         this._createAxis();
     }
 
-    public draw(svg: d3.Selection<SVGElement, Symbol[], HTMLElement, undefined>) {
+    public draw(svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>) {
         const xAxis = this._axis;
         const { margin, height } = this.props.dimensions;
 
@@ -43,12 +43,11 @@ class RealtimeXAxis implements IAxis {
     private _createScale() {
         const { width } = this.props.dimensions;
 
-        const now = new Date();
-        now.setMinutes(now.getMinutes() + 15);
-        const windowStart = moment(now).subtract(1, 'hour');
+        const timeExtent = d3.extent(this.props.data,
+            (s: ISymbol) => s.date);
 
         this._scale = d3.scaleTime()
-            .domain([windowStart, now])
+            .domain(timeExtent)
             .range([0, width]);
     }
 
@@ -56,7 +55,6 @@ class RealtimeXAxis implements IAxis {
         const scale = this._scale;
         
         this._axis = d3.axisBottom(scale)
-            .ticks(d3.timeMinute.every(2))
             .tickFormat(d3.timeFormat('%H:%M'));
     }
 }

@@ -1,9 +1,8 @@
 import * as d3 from "d3";
-import Symbol from "../../../../models/Symbol";
 import IAxisProps from "../../interfaces/IAxisProps";
-import moment from "moment";
-import {Axis, ScaleLinear, ScaleTime} from "d3";
+import {Axis, ScaleLinear} from "d3";
 import IAxis from "../../interfaces/IAxis";
+import ISymbol from "../../../../interfaces/ISymbol";
 
 class CandleXAxis implements IAxis {
     readonly props: IAxisProps;
@@ -30,7 +29,7 @@ class CandleXAxis implements IAxis {
         this.createAxis();
     }
 
-    public draw(svg: d3.Selection<SVGElement, Symbol[], HTMLElement, undefined>) {
+    public draw(svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>) {
         const xAxis = this._axis;
         const { margin, height } = this.props.dimensions;
 
@@ -54,7 +53,7 @@ class CandleXAxis implements IAxis {
 
         this._axis = d3.axisBottom(scale)
             .tickFormat(function(d, i) {
-                const datum = data[d];
+                const datum = data[d.valueOf()];
                 if (datum) {
                     const date = datum.date;
                     const hours = date.getHours();

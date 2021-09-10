@@ -6,6 +6,10 @@ import SymbolTracker from "../SymbolTracker/SymbolTracker";
 
 import BigLoader from "../shared/Loaders/BigLoader";
 import LiveChart from "../Charts/LiveChart";
+import BasicChart from "../Charts/lib/charts/BasicChart";
+import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
+import {Subscription} from "rxjs";
+import BasicCandleChart from "../Charts/lib/charts/BasicCandleChart";
 
 interface IDashboardProps {
     profile: IProfile
@@ -13,35 +17,53 @@ interface IDashboardProps {
 
 interface IDashboardState {
     profile: IProfile,
-    loading: boolean,
+    chartedSymbols: string[];
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
+
+    private _liveQuotes: LiveQuoteRepository;
+    private _subscriptions: Subscription[] = [];
 
     constructor(props: IDashboardProps) {
         super(props);
 
         this.state = {
             profile: props.profile,
-            loading: false
+            chartedSymbols: []
         } as IDashboardState;
+
+        this._onSubscribedSymbolsUpdated = this._onSubscribedSymbolsUpdated.bind(this);
+
+        this._liveQuotes = LiveQuoteRepository.instance;
     }
 
     componentDidMount() {
+        this._subscriptions.push(
+            this._liveQuotes.subscribedSymbols$.subscribe(this._onSubscribedSymbolsUpdated)
+        );
     }
 
     componentWillUnmount() {
+        this._subscriptions.forEach(sub => sub.unsubscribe());
+    }
+
+    private _onSubscribedSymbolsUpdated(trackedSymbols: string[]) {
+        this.setState(prev => ({
+            ...prev,
+            chartedSymbols: trackedSymbols
+        }));
     }
 
     render() {
-        if (this.state.loading) {
-            return <BigLoader></BigLoader>
-        }
+        const charts = this.state.chartedSymbols.map(ticker =>
+            <LiveChart key={ticker} ticker={ticker} chart={BasicCandleChart}></LiveChart>
+        );
 
         return <div className={styles.Dashboard}>
             <Header profile={this.state.profile}></Header>
             <SymbolTracker />
-            <LiveChart></LiveChart>
+            { charts }
         </div>
     }
 };

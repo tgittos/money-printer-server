@@ -2,9 +2,9 @@ import BaseRepository from "./BaseRepository";
 import {io, Socket} from "socket.io-client";
 import {BehaviorSubject, observable, Observable, ReplaySubject, Subject} from "rxjs";
 import Env from "../env";
-import Symbol, {ISymbol} from "../models/Symbol";
+import ISymbol from "../interfaces/ISymbol";
 
-export type NullableSymbol = ISymbol | Symbol | null;
+export type NullableSymbol = ISymbol | null;
 type NullableChannel = IChannel | null;
 
 export interface IChannel {

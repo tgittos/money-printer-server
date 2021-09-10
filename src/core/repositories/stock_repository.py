@@ -1,6 +1,6 @@
 import os
 from pandas import DataFrame
-from datetime import time, date, timedelta
+from datetime import time, date, timedelta, datetime
 from iexfinance.stocks import get_historical_data, get_historical_intraday
 
 from core.stores.mysql import MySql
@@ -30,6 +30,8 @@ class StockRepository:
         secret = config.iex_config['secret']
         mysql_config = config.mysql_config
         os.environ['IEX_TOKEN'] = secret
+        if config.iex_config['env'] == 'sandbox':
+            os.environ['IEX_API_VERSION'] = 'iexcloud-sandbox'
         db = MySql(mysql_config)
         self.db = db.get_session()
 
@@ -51,8 +53,8 @@ class StockRepository:
         return None
 
     def __fetch_historical_daily(self, symbol, start=None, end=None, close_only=True):
-        start = start or date.today()
-        end = end or start - timedelta(days=30)
+        start = datetime.fromtimestamp(start) or date.today()
+        end = datetime.fromtimestamp(end) or start - timedelta(days=30)
         df = get_historical_data(symbol, start=start, end=end, close_only=close_only)
         return df
 
@@ -73,8 +75,9 @@ class StockRepository:
         return None
 
     def __fetch_historical_intraday(self, symbol, start=None):
-        start = start or date.today() - timedelta(days=1)
-        df = get_historical_intraday(symbol, start)
+        start = datetime.fromtimestamp(start) or date.today()
+        # df = get_historical_intraday(symbol, start)
+        df = get_historical_intraday(symbol)
         return df
 
     def __to_dataframe(self, data):

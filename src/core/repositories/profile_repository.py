@@ -15,7 +15,7 @@ from core.lib.notifications import notify_profile_created, ProfileCreatedNotific
 
 
 def get_repository():
-    from server import load_config
+    from server.services.api import load_config
     app_config = load_config()
     repo = ProfileRepository(ProfileRepositoryConfig(
         mailgun_config=MailGunConfig(api_key=server_config['mailgun']['api_key'],
@@ -105,7 +105,13 @@ class ProfileRepository:
     def get_unauthenticated_user(self):
         empty_profile = Profile()
         empty_profile.timestamp = datetime.utcnow()
-        return empty_profile
+        empty_profile.first_name = "Anonymous"
+        empty_profile.last_name = "Money-Printer"
+        jwt_token = self.__encode_jwt(empty_profile)
+        return {
+            "profile": empty_profile.to_dict(),
+            "token": jwt_token
+        }
 
     def register(self, request):
         # first, check if the request email is already taken
@@ -168,7 +174,7 @@ class ProfileRepository:
 
     def is_token_valid(self, token):
         decoded = self.__decode_jwt(token)
-        return decoded['exp'] < datetime.utcnow()
+        return datetime.fromtimestamp(decoded['exp']) > datetime.utcnow()
 
     def __create_profile(self, request):
         new_pw = self.__generate_temp_password()
@@ -229,10 +235,11 @@ class ProfileRepository:
         token = jwt.encode({
             "profile": profile.to_dict(),
             "authenticated": True,
-            "exp": (datetime.utcnow() + relativedelta(months=1)).isoformat()
+            "exp": (datetime.utcnow() + relativedelta(months=1)).timestamp(),
+            "algorithm": "HS256"
         }, server_config['server']['secret'])
         return token
 
     def __decode_jwt(self, token):
-        raw = jwt.decode(token, server_config['server']['secret'])
+        raw = jwt.decode(token, server_config['server']['secret'], algorithms=["HS256"])
         return raw
