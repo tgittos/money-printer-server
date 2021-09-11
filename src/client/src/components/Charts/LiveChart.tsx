@@ -2,7 +2,7 @@ import React from 'react';
 import {filter, Subscription} from "rxjs";
 
 import BigLoader from "../shared/Loaders/BigLoader";
-import StaticChart from "../Charts/Chart";
+import StaticChart from "../Charts/StaticChart";
 import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import {IChartFactory} from "./lib/ChartFactory";
@@ -49,7 +49,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
             cachedHistoricalData: [],
             cachedRealtimeData: [],
             chartData: [],
-            start: props.start ?? moment().subtract('days', 1);
+            start: props.start ?? moment().subtract('days', 1)
         } as ILiveChartState;
 
         this._onLiveData = this._onLiveData.bind(this);

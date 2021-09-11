@@ -18,8 +18,9 @@
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AppStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/AppStore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/Chart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/DynamicChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/DynamicChart.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxisProps.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxisProps.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IChart.ts" afterDir="false" />
@@ -34,7 +35,8 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/PriceYAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/PriceYAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/SparklineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/SparklineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" afterDir="false" />
@@ -46,14 +48,9 @@
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Plaid.lazy.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Plaid.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Plaid.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/components/Link/Link.lazy.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/components/Link/Link.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/components/Link/Link.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/dataUtilities.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/dataUtilities.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" afterDir="false" />
@@ -169,11 +166,11 @@
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stories" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\shared" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Charts" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\models\symbols" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\MiniProfile" />
-      <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Profiles\components" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

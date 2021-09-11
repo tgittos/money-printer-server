@@ -5,7 +5,6 @@ import I18nRepository from "../../repositories/I18nRepository";
 import Profile, {IProfile} from "../../models/Profile";
 import ProfileRepository from "../../repositories/ProfileRepository";
 import {Modal} from "react-bootstrap";
-import Plaid from "../Plaid/Plaid";
 
 interface MiniProfileProps {
     profile: IProfile
@@ -83,7 +82,6 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
                     <Modal.Title>Profile</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Plaid></Plaid>
                 </Modal.Body>
             </Modal>
         </div>

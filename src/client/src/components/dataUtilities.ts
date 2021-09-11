@@ -1,3 +1,17 @@
+import {
+  AuthGetResponse,
+  TransactionsGetResponse,
+  IdentityGetResponse,
+  InvestmentsHoldingsGetResponse,
+  AccountsGetResponse,
+  ItemGetResponse,
+  InstitutionsGetByIdResponse,
+  LiabilitiesGetResponse,
+  PaymentInitiationPaymentGetResponse,
+  AssetReportGetResponse,
+  AssetReport,
+} from "plaid/dist/api";
+
 const formatCurrency = (
   number: number | null | undefined,
   code: string | null | undefined

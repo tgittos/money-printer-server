@@ -6,7 +6,7 @@ import SymbolTracker from "../SymbolTracker/SymbolTracker";
 
 import BigLoader from "../shared/Loaders/BigLoader";
 import LiveChart from "../Charts/LiveChart";
-import BasicLineChart from "../Charts/lib/charts/BasicChart";
+import BasicLineChart from "../Charts/lib/charts/BasicLineChart";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import {Subscription} from "rxjs";
 import BasicCandleChart from "../Charts/lib/charts/BasicCandleChart";
