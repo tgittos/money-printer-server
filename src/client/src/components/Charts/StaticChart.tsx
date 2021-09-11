@@ -2,7 +2,7 @@ import IChartProps from "./interfaces/IChartProps";
 import React from "react";
 import ChartFactory from "./lib/ChartFactory";
 
-const Chart = (props: IChartProps) => {
+const StaticChart = (props: IChartProps) => {
     const { data, dimensions, chart } = props;
     const svgWidth = dimensions.margin.left + dimensions.margin.right + dimensions.width;
     const svgHeight = dimensions.margin.top + dimensions.margin.bottom + dimensions.height;
@@ -18,4 +18,4 @@ const Chart = (props: IChartProps) => {
     return <svg ref={svgRef} width={svgWidth} height={svgHeight} />;
 }
 
-export default Chart;
+export default StaticChart;

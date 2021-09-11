@@ -9,7 +9,7 @@ import IAxis from "../../interfaces/IAxis";
 import IFigureProps from "../../interfaces/IFigureProps";
 import ISymbol from "../../../../interfaces/ISymbol";
 
-class BasicChart implements IChart {
+class BasicLineChart implements IChart {
     readonly svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>;
 
     private props: IChartProps;
@@ -69,4 +69,4 @@ class BasicChart implements IChart {
     }
 }
 
-export default BasicChart;
+export default BasicLineChart;
