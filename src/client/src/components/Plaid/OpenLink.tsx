@@ -18,7 +18,7 @@ const OpenLink: FunctionComponent<IOpenLinkProps> = ({ token }) => {
         async (public_token: string, metadata: any) => {
         const result = await plaidRepository.setAccessToken(public_token);
         if (result.success) {
-
+            localStorage.setItem('link_token', undefined);
         }
     }, []);
 

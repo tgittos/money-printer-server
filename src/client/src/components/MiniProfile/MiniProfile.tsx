@@ -53,15 +53,6 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
         this._i18nRepository = new I18nRepository();
     }
 
-    componentDidUpdate(prevProps: Readonly<MiniProfileProps>, prevState: Readonly<MiniProfileState>, snapshot?: any) {
-        if (prevProps.profile.id != this.props.profile.id) {
-            this.setState({
-                ...prevState,
-                profile: this.props.profile
-            });
-        }
-    }
-
     private async handleLogin() {
         const response = await this._profileRepository.auth({
             username: this.state.username,
@@ -140,7 +131,7 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
         const dropdownTitle = (<PersonCircle></PersonCircle>);
         return <NavDropdown title={dropdownTitle} id="profile-dropdown" className={styles.navItem}>
 
-            { this.state.authenticated
+            { this.props.authenticated
                 ? this.renderAuthenticated()
                 : this.renderUnauthenticated() }
 

@@ -14,6 +14,7 @@ class SyncAccounts:
         plaid_link = self.__fetch_plaid_link()
         plaid_auth_api = Auth()
         plaid_auths = plaid_auth_api.get_auth(plaid_link.access_token)
+        print('got plaid_auths: {0}'.format(plaid_auths))
 
 
     def __fetch_profile(self):

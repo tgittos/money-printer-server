@@ -20,8 +20,11 @@ class Runner:
     def __fetch_jobs(self):
         message = self.pubsub.get_message()
         if message is not None:
+            print(" * found message on worker queue: {0}".format(message))
             job = message['job']
             if job is not None:
                 # todo - figure out some way to dynamically dispatch this
                 if job == 'account_sync':
+                    print(" * syncing accounts for plaid access item")
                     job = SyncAccounts(message)
+                    job.run()

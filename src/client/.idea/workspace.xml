@@ -12,6 +12,7 @@
       <change beforePath="$PROJECT_DIR$/../bin/client" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/client" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/client-bus" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/client-bus" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/data-server" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/data-server" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/money-printer" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/money-printer" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/task-runner" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/task-runner" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/client.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
@@ -53,7 +54,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Notifications/Notifications.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications/Notifications.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Notifications/Notifications.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications/Notifications.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Link/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Plaid/Link/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/OpenLink.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Plaid/OpenLink.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.module.scss" afterDir="false" />
@@ -140,6 +141,9 @@
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/data_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/data_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/historical_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/historical_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/runner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

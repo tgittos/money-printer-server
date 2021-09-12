@@ -52,7 +52,6 @@ class App extends React.Component<{}, IAppState> {
 
   render() {
     const profileState = getProfileState();
-    console.log('profileState:', profileState);
 
     if (this.state.loading) {
       return <div className="App">

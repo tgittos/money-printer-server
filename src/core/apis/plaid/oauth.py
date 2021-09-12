@@ -32,7 +32,6 @@ class Oauth:
     def create_link_token(self):
         try:
             plaid_config = self.config.plaid_config
-            print("client_id: {0}, secret: {1}".format(plaid_config.client_id, plaid_config.secret))
             request = LinkTokenCreateRequest(
                 products=PLAID_PRODUCTS,
                 client_name=plaid_config.product_name,
@@ -58,7 +57,7 @@ class Oauth:
             item_id = exchange_response['item_id']
             request_id = exchange_response['request_id']
             plaid_item = self.__store_link(profile_id, request_id, item_id, access_token)
-            return plaid_item.to_dict()
+            return plaid_item
         except ApiException as e:
             return json.loads(e.body)
 

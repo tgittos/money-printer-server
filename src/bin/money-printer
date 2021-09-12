@@ -1,2 +1,2 @@
-echo 'MONEY PRINGER GOING BRRR'
+echo 'MONEY PRINTER GOING BRRR'
 (trap 'kill 0' SIGINT; export MONEY_PRINTER_ENV=sandbox && ((./bin/data-server > ./logs/data-server.log) & (./bin/client-bus > ./logs/client-bus.log) & (./bin/task-runner > ./logs/task-runner) & (./bin/api > ./logs/api.log)))

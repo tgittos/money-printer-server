@@ -1,5 +1,6 @@
 from datetime import datetime
 import redis
+import json
 
 from core.stores.mysql import MySql
 from core.models.account import Account
@@ -52,9 +53,9 @@ class AccountRepository:
         return r
 
     def schedule_account_sync(self, profile_id, plaid_item_id):
-        self.redis.publish(ACCOUNT_WORKER_QUEUE, {
+        self.redis.publish(WORKER_QUEUE, json.dumps({
             'job': 'account_sync',
             'profile_id': profile_id,
             'plaid_item_id': plaid_item_id
-        })
+        }))
 
