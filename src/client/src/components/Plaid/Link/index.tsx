@@ -3,48 +3,30 @@ import { usePlaidLink } from "react-plaid-link";
 import Button from "plaid-threads/Button";
 
 import Context from "../../Context";
+import PlaidRepository from "../../../repositories/PlaidRepository";
+import AppStore from "../../../stores/AppStore";
 
 const Link = () => {
-  const { linkToken, dispatch } = useContext(Context);
+  const plaidRepository = new PlaidRepository();
+  const { dispatch } = useContext(Context);
+  const { linkToken } = AppStore.getState().plaid;
 
-  const onSuccess = React.useCallback(
-    (public_token: string) => {
-      // send public_token to server
-      const setToken = async () => {
-        const response = await fetch("/api/set_access_token", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-          },
-          body: `public_token=${public_token}`,
-        });
-        if (!response.ok) {
-          dispatch({
-            type: "SET_STATE",
-            state: {
-              itemId: `no item_id retrieved`,
-              accessToken: `no access_token retrieved`,
-              isItemAccess: false,
-            },
-          });
-          return;
-        }
-        const data = await response.json();
-        dispatch({
-          type: "SET_STATE",
-          state: {
-            itemId: data.item_id,
-            accessToken: data.access_token,
-            isItemAccess: true,
-          },
-        });
-      };
-      setToken();
-      dispatch({ type: "SET_STATE", state: { linkSuccess: true } });
-      window.history.pushState("", "", "/");
-    },
-    [dispatch]
-  );
+  const onSuccess = async (public_token: string) => {
+    // send public_token to server
+    const response = await plaidRepository.setAccessToken(public_token);
+    if (!response) {
+      // let the plaid app know that we failed to set an access token
+      return;
+    }
+    dispatch({
+      type: "SET_STATE",
+      state: {
+        itemId: response.item_id,
+        accessToken: response.access_token,
+        isItemAccess: true,
+      },
+    });
+  };
 
   let isOauth = false;
   const config: Parameters<typeof usePlaidLink>[0] = {

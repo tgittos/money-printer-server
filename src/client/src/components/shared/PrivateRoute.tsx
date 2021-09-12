@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import AppStore from './../../AppStore';
+import AppStore from './../../stores/AppStore';
 import Env from "../../env";
 
 export const PrivateRoute = ({ component: Component, ...rest }: any) => (

@@ -5,7 +5,7 @@ import Cookies from "universal-cookie";
 import Profile, {IProfile, IServerProfile} from "../models/Profile";
 import jwt from "jwt-decode";
 import AuthService from "../services/AuthService";
-import AppStore from "../AppStore";
+import AppStore from "../stores/AppStore";
 import {clearCurrentProfile, setCurrentProfile} from "../slices/ProfileSlice";
 
 class BaseRepository {

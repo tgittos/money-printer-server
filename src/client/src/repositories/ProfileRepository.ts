@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import jwt from 'jwt-decode';
 
-import AppStore from './../AppStore';
+import AppStore from './../stores/AppStore';
 import {setCurrentProfile, setUnauthenticatedProfile} from "../slices/ProfileSlice";
 
 import BaseRepository from './BaseRepository'

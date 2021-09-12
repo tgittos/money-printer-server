@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint
 from flask import request
 
@@ -44,12 +46,13 @@ def create_link_token():
 @oauth_bp.route('/v1/api/plaid/set_access_token', methods=['POST'])
 @authed
 def get_access_token():
-    public_token = request.form['public_token']
+    public_token = request.json['public_token']
     client = Oauth(oauth_config)
-    result_json = client.get_access_token(public_token)
-    access_token = result_json['access_token']
-    item_id = result_json['item_id']
-    return result_json
+    account = client.get_access_token(public_token)
+    return {
+        'success': account is not None,
+        'data': account
+    }
 
 @oauth_bp.route('/v1/api/plaid/auth', methods=['GET'])
 @authed

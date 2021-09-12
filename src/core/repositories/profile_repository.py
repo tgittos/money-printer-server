@@ -173,7 +173,7 @@ class ProfileRepository:
         return record
 
     def is_token_valid(self, token):
-        decoded = self.__decode_jwt(token)
+        decoded = self.decode_jwt(token)
         return datetime.fromtimestamp(decoded['exp']) > datetime.utcnow()
 
     def __create_profile(self, request):
@@ -240,6 +240,6 @@ class ProfileRepository:
         }, server_config['server']['secret'])
         return token
 
-    def __decode_jwt(self, token):
+    def decode_jwt(self, token):
         raw = jwt.decode(token, server_config['server']['secret'], algorithms=["HS256"])
         return raw

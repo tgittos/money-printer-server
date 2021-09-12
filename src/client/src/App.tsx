@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import {io, Socket} from 'socket.io-client';
 
-import AppStore from './AppStore';
+import AppStore from './stores/AppStore';
 import { IAppState } from "./slices/AppSlice";
 
 import I18nRepository from "./repositories/I18nRepository";
