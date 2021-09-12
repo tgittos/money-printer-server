@@ -6,7 +6,8 @@ from flask import request
 from core.apis.plaid.common import PlaidApiConfig
 from core.apis.plaid.oauth import Oauth, OauthConfig
 from core.apis.plaid.auth import Auth, AuthConfig
-from server.services.api.routes.decorators import authed
+from core.repositories.account_repository import get_repository as get_account_repository
+from server.services.api.routes.decorators import authed, get_identity
 from server.services.api import load_config
 
 server_config = load_config()
@@ -52,10 +53,13 @@ def create_link_token():
 @oauth_bp.route('/v1/api/plaid/set_access_token', methods=['POST'])
 @authed
 def get_access_token():
+    profile = get_identity()
     public_token = request.json['public_token']
     client = Oauth(oauth_config)
-    account = client.get_access_token(public_token)
+    plaid_item = client.get_access_token(profile['id'], public_token)
+    account_repo = get_account_repository()
+    account_repo.schedule_account_sync(profile['id'], plaid_item['id'])
     return {
-        'success': account is not None,
-        'data': account
+        'success': plaid_item is not None,
+        'message': 'Fetching accounts'
     }

@@ -8,14 +8,12 @@ from core.repositories.plaid_repository import PlaidRepository
 
 class AuthConfig(object):
     plaid_config = PlaidApiConfig()
-    mysql_config = None
 
 
 class Auth:
-    def __init__(self, auth_config):
-        self.config = auth_config
+    def __init__(self, auth_config=None):
+        self.config = auth_config or AuthConfig()
         self.client = get_plaid_api_client(self.config.plaid_config)
-        self.repository = PlaidRepository(self.config.mysql_config)
 
     def get_auth(self, access_token):
         try:

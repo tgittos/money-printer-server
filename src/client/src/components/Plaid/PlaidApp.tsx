@@ -105,10 +105,10 @@ class PlaidApp extends React.Component<IPlaidAppProps, IPlaidAppState> {
 
       this.setState(prev => ({
         ...prev,
-        linkToken: response.link_token
+        linkToken: response.data.link_token
       }));
 
-      localStorage.setItem("link_token", response.link_token); //to use later for Oauth
+      localStorage.setItem("link_token", response.data.link_token); //to use later for Oauth
   }
 
   render() {

@@ -48,7 +48,7 @@ class Oauth:
         except ApiException as e:
             return json.loads(e.body)
 
-    def get_access_token(self, public_token):
+    def get_access_token(self, profile_id, public_token):
         try:
             exchange_request = ItemPublicTokenExchangeRequest(
                 public_token=public_token
@@ -57,19 +57,20 @@ class Oauth:
             access_token = exchange_response['access_token']
             item_id = exchange_response['item_id']
             request_id = exchange_response['request_id']
-            account = self.__store_link(request_id, item_id, access_token)
-            return account.to_dict()
+            plaid_item = self.__store_link(profile_id, request_id, item_id, access_token)
+            return plaid_item.to_dict()
         except ApiException as e:
             return json.loads(e.body)
 
 
-    def __store_link(self, request_id, item_id, access_token):
-        account = self.repository.create_plaid_item(CreatePlaidItem(
+    def __store_link(self, profile_id, request_id, item_id, access_token):
+        plaid_item = self.repository.create_plaid_item(CreatePlaidItem(
+            profile_id=profile_id,
             item_id=item_id,
             access_token=access_token,
             request_id=request_id
         ))
-        return account
+        return plaid_item
 
     def __fetch_link(self, item_id):
         self.repository.get_plaid_item(GetPlaidItem(

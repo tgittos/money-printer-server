@@ -73,21 +73,11 @@ class App extends React.Component<{}, IAppState> {
       </div>
     }
 
-    return (
-      <Router>
-        <div className="App">
+    return <div className="App">
           <div className="content">
-            <Switch>
-              <PrivateRoute exact path="/">
-                <Dashboard profile={profileState.current} authenticated={profileState.authenticated} />
-              </PrivateRoute>
-              <Route path="/login">
-                <Login></Login>
-              </Route>
-            </Switch>
+            <Dashboard profile={profileState.current} authenticated={profileState.authenticated} />
           </div>
-        </div>
-      </Router>);
+        </div>;
   }
 }
 

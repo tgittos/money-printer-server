@@ -172,6 +172,10 @@ class ProfileRepository:
         record = self.db.query(Profile).filter(Profile.email==email).first()
         return record
 
+    def get_by_id(self, id):
+        record = self.db.query(Profile).filter(Profile.id==id).first()
+        return record
+
     def is_token_valid(self, token):
         decoded = self.decode_jwt(token)
         return datetime.fromtimestamp(decoded['exp']) > datetime.utcnow()

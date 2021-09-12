@@ -1,0 +1,5 @@
+ * setting env to sandbox
+ * changing pwd to /mnt/c/Users/Tim/src/money-printer/src
+ * augmenting path with core
+ * path: ['/mnt/c/Users/Tim/src/money-printer/src/server/services/task_runner', '/usr/lib/python38.zip', '/usr/lib/python3.8', '/usr/lib/python3.8/lib-dynload', '/mnt/c/Users/Tim/src/money-printer/src/.venv/lib/python3.8/site-packages', '/mnt/c/Users/Tim/src/money-printer/src']
+ * task runner listening for jobs

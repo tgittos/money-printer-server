@@ -11,22 +11,14 @@ type HeaderProps = {
 }
 
 type HeaderState = {
-    profile: IProfile,
-    authenticated: boolean
 }
 
 class Header extends React.Component<HeaderProps, HeaderState> {
-
-    public get currentProfile(): Profile {
-        return this.state.profile
-    }
 
     constructor(props: HeaderProps) {
         super(props);
 
         this.state = {
-            profile: props.profile,
-            authenticated: props.authenticated
         } as HeaderProps;
     }
 
@@ -53,7 +45,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 <Nav className={cssClassName}>
                     <Nav.Link href="#dashboard">Dashboard</Nav.Link>
                     <Nav.Link href="#forecasting">Forecasting</Nav.Link>
-                    <MiniProfile profile={this.state.profile} authenticated={this.state.authenticated}></MiniProfile>
+                    <MiniProfile profile={this.props.profile} authenticated={this.props.authenticated}></MiniProfile>
                </Nav>
             </Container>
         </Navbar>

@@ -1,4 +1,5 @@
 from datetime import datetime
+import redis
 
 from core.stores.mysql import MySql
 from core.models.account import Account
@@ -21,9 +22,12 @@ def get_repository():
     return repo
 
 
+WORKER_QUEUE = "mp:worker"
+
 class AccountRepository:
 
     def __init__(self, mysql_config):
+        self.redis = redis.Redis(host='localhost', port=6379, db=0)
         db = MySql(mysql_config)
         self.db = db.get_session()
 
@@ -46,3 +50,11 @@ class AccountRepository:
     def get_account_by_id(self, id):
         r = self.db.query(Account).filter(Account.id == id).single()
         return r
+
+    def schedule_account_sync(self, profile_id, plaid_item_id):
+        self.redis.publish(ACCOUNT_WORKER_QUEUE, {
+            'job': 'account_sync',
+            'profile_id': profile_id,
+            'plaid_item_id': plaid_item_id
+        })
+

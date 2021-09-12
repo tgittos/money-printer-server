@@ -9,7 +9,6 @@ import {addAccount, setAccounts} from "../../../slices/AccountSlice";
 
 const Link = () => {
   const plaidRepository = new PlaidRepository();
-  const { dispatch } = useContext(Context);
   const { linkToken } = AppStore.getState().plaid;
 
   const onSuccess = async (public_token: string) => {

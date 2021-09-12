@@ -12,7 +12,6 @@ interface ISymbolTrackerProps {
 }
 
 interface ISymbolTrackerState {
-    disabled: boolean;
     subscribedSymbols: string[];
     newSymbol: string;
 }
@@ -37,7 +36,6 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
 
         this.state = {
             subscribedSymbols: [],
-            disabled: props.disabled ?? false,
         } as ISymbolTrackerState;
     }
 
@@ -103,7 +101,7 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
             <ListGroup horizontal className={styles.SymbolChipList}>
                 {symbolListItems}
             </ListGroup>
-            {!this.state.disabled && <div>
+            {!(this.props.disabled ?? false) && <div>
               <input placeholder="SPY"
                      value={this.state.newSymbol}
                      onChange={(event) => this.setState(prev => ({
