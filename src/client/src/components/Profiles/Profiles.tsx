@@ -4,17 +4,24 @@ import {Col, Nav, Row, Tab} from "react-bootstrap";
 import ProfileDetails from "../ProfileDetails/ProfileDetails";
 import Accounts from "../Accounts/Accounts";
 import Notifications from "../Notifications/Notifications";
+import {IProfile} from "../../models/Profile";
 
 interface IProfilesProps {
+    profile: IProfile
 }
 
 interface IProfilesState {
+    profile: IProfile
 }
 
 class Profiles extends React.Component<IProfilesProps, IProfilesState> {
 
     constructor(props: IProfilesProps) {
         super(props);
+
+        this.state = {
+            profile: props.profile
+        }
     }
 
     render() {
@@ -37,7 +44,7 @@ class Profiles extends React.Component<IProfilesProps, IProfilesState> {
                     <Col sm={8}>
                         <Tab.Content>
                             <Tab.Pane eventKey="first">
-                                <ProfileDetails></ProfileDetails>
+                                <ProfileDetails profile={this.props.profile}></ProfileDetails>
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
                                 <Accounts></Accounts>

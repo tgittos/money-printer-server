@@ -7,9 +7,8 @@ import {
   Switch,
   Route,
 } from "react-router-dom";
-import {io, Socket} from 'socket.io-client';
 
-import AppStore from './stores/AppStore';
+import AppStore, {getAppState, getProfileState} from './stores/AppStore';
 import { IAppState } from "./slices/AppSlice";
 
 import I18nRepository from "./repositories/I18nRepository";
@@ -21,75 +20,58 @@ import PrivateRoute from "./components/shared/PrivateRoute";
 import Login from "./components/Login/Login";
 import BigLoader from "./components/shared/Loaders/BigLoader";
 
-interface IAppProps {
-
-};
-
-class App extends React.Component<IAppProps, IAppState> {
+class App extends React.Component<{}, IAppState> {
 
   private _i18n: I18nRepository;
   private _profileRepo: ProfileRepository;
 
-  public get loading(): boolean {
-    return AppStore.getState()?.profile?.loading === true;
-  }
-
-  public get currentProfile(): Profile | null {
-    return AppStore.getState()?.profile?.current;
-  }
-
-  public get authenticated(): boolean {
-    return AppStore.getState()?.profile.authenticated ?? false;
-  }
-
-  constructor(props: IAppProps) {
+  constructor(props: {}) {
     super(props);
 
-    this.state = {
-    } as IAppState;
-
-    this.onStateUpdated = this.onStateUpdated.bind(this);
+    this.state = getAppState();
 
     this._i18n = new I18nRepository();
     this._profileRepo = new ProfileRepository();
+
+    AppStore.subscribe(() => {
+      const newState = getAppState();
+      this.setState(prev => ({
+        ...prev,
+        ...newState
+      }));
+    });
 
     this._profileRepo.init();
   }
 
   componentDidMount() {
-    AppStore.subscribe(this.onStateUpdated);
   }
 
   componentWillUnmount() {
   }
 
-  private onStateUpdated() {
-    const newState = AppStore.getState();
-    this.setState(newState);
-  }
-
   render() {
-    const unconfigured = <div id="unconfigured">
-      <img src="/loaders/nyan.gif" width="350" height="350" alt="nyan!" />
-      <p>Uh oh! It looks like your install of Money Printer hasn't been initialized!</p>
-      <p>Pop over to your server, and run <span className="code">bin/init</span> command to set 'er up.</p>
-      <p>You'll be printing money in no time.</p>
-    </div>;
+    const profileState = getProfileState();
+    console.log('profileState:', profileState);
 
-    if (this.loading) {
+    if (this.state.loading) {
       return <div className="App">
         <BigLoader></BigLoader>
       </div>
     }
 
-    if (this.currentProfile == null) {
+    if (!this.state.initialized) {
       return <div className="App">
         <div className="content">
-          {unconfigured}
+          <div id="unconfigured">
+            <img src="/loaders/nyan.gif" width="350" height="350" alt="nyan!" />
+            <p>Uh oh! It looks like your install of Money Printer hasn't been initialized!</p>
+            <p>Pop over to your server, and run <span className="code">bin/init</span> command to set 'er up.</p>
+            <p>You'll be printing money in no time.</p>
+          </div>;
         </div>
       </div>
     }
-
 
     return (
       <Router>
@@ -97,7 +79,7 @@ class App extends React.Component<IAppProps, IAppState> {
           <div className="content">
             <Switch>
               <PrivateRoute exact path="/">
-                <Dashboard profile={this.currentProfile} />
+                <Dashboard profile={profileState.current} authenticated={profileState.authenticated} />
               </PrivateRoute>
               <Route path="/login">
                 <Login></Login>

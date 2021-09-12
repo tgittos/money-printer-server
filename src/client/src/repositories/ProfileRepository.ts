@@ -12,8 +12,9 @@ import type IAuthProfileRequest from "../requests/AuthProfileRequest";
 import type IAuthProfileResponse from "../responses/AuthProfileResponse";
 import Env from '../env';
 import IGetUnauthenticatedProfileResponse from "../responses/GetUnauthenticatedProfileResponse";
-import Profile, {IServerProfile} from "../models/Profile";
+import Profile, {IProfile, IServerProfile} from "../models/Profile";
 import AuthService, {NullableProfile} from "../services/AuthService";
+import {setAppInitialized} from "../slices/AppSlice";
 
 class ProfileRepository extends BaseRepository {
 
@@ -46,18 +47,18 @@ class ProfileRepository extends BaseRepository {
     if (response !== null) {
       const { token, profile } = response.data;
 
-      if (Env.DEBUG) {
-        console.log("ProfileRepository::init - server return success message, setting profile to", profile);
-      }
-
       const unauthenticatedProfile = new Profile(profile);
       if (!profileToSet) {
         this.authService.setProfile(token);
         profileToSet = unauthenticatedProfile;
       }
+      AppStore.dispatch(setAppInitialized());
       AppStore.dispatch(setUnauthenticatedProfile(unauthenticatedProfile));
     }
 
+    if (Env.DEBUG) {
+      console.log("ProfileRepository::init - setting profile to", profileToSet);
+    }
     AppStore.dispatch(setCurrentProfile(profileToSet));
   }
 
@@ -66,7 +67,8 @@ class ProfileRepository extends BaseRepository {
           url: this.endpoint + "unauthenticated"
         }).then(response => (response.data as unknown) as IGetUnauthenticatedProfileResponse);
     if (response.success) {
-      AppStore.dispatch(setCurrentProfile(new Profile(response.data.profile)));
+      const unauthedProfile = new Profile(response.data.profile);
+      AppStore.dispatch(setCurrentProfile(unauthedProfile));
     }
     return response;
   }
@@ -103,8 +105,9 @@ class ProfileRepository extends BaseRepository {
 
     if (response.success) {
       const serverProfile = response.data.profile;
+      const authedProfile = new Profile(serverProfile);
       this.authService.setProfile(response.data.token);
-      AppStore.dispatch(setCurrentProfile(new Profile(serverProfile)));
+      AppStore.dispatch(setCurrentProfile(authedProfile));
     }
 
     return response;

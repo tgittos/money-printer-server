@@ -1,7 +1,8 @@
 import IAccount from "../interfaces/IAccount";
 
 interface IPlaidSetAccessTokenResponse {
-    account: IAccount;
+    success: boolean;
+    data: IAccount;
 }
 
 export default IPlaidSetAccessTokenResponse;

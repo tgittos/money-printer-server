@@ -8,10 +8,12 @@ import {CloseButton, ListGroup} from "react-bootstrap";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 
 interface ISymbolTrackerProps {
+    disabled?: boolean;
 }
 
 interface ISymbolTrackerState {
-    subscribedSymbols: string[],
+    disabled: boolean;
+    subscribedSymbols: string[];
     newSymbol: string;
 }
 
@@ -35,6 +37,7 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
 
         this.state = {
             subscribedSymbols: [],
+            disabled: props.disabled ?? false,
         } as ISymbolTrackerState;
     }
 
@@ -100,15 +103,18 @@ class SymbolTracker extends React.Component<ISymbolTrackerProps, ISymbolTrackerS
             <ListGroup horizontal className={styles.SymbolChipList}>
                 {symbolListItems}
             </ListGroup>
-            <input placeholder="SPY"
-                value={this.state.newSymbol}
-                onChange={(event) => this.setState(prev => ({
-                    ...prev,
-                    newSymbol: event.target?.value ?? ''
-                }))}/>
-            <button onClick={() => this.handleSubscribe(this.state.newSymbol)}>
+            {!this.state.disabled && <div>
+              <input placeholder="SPY"
+                     value={this.state.newSymbol}
+                     onChange={(event) => this.setState(prev => ({
+                         ...prev,
+                         newSymbol: event.target?.value ?? ''
+                     }))}/>
+              <button onClick={() => this.handleSubscribe(this.state.newSymbol)}>
                 Add to subscriptions
-            </button>
+              </button>
+            </div>
+            }
         </div>
     }
 };

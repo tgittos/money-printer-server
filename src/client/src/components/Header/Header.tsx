@@ -6,11 +6,13 @@ import Profile, {IProfile} from "../../models/Profile";
 import Env from "../../env";
 
 type HeaderProps = {
-    profile: IProfile
+    profile: IProfile,
+    authenticated: boolean
 }
 
 type HeaderState = {
-    profile: IProfile
+    profile: IProfile,
+    authenticated: boolean
 }
 
 class Header extends React.Component<HeaderProps, HeaderState> {
@@ -23,24 +25,15 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         super(props);
 
         this.state = {
-            profile: props.profile
+            profile: props.profile,
+            authenticated: props.authenticated
         } as HeaderProps;
-
-        this.getDropdownLabel = this.getDropdownLabel.bind(this);
     }
 
     componentDidMount() {
     }
 
     componentWillUnmount() {
-    }
-
-    getDropdownLabel() {
-        if (Env.DEBUG) {
-            console.log('Header::getDropdownLabel - currentProfile:', this.currentProfile);
-        }
-
-        return "Logged in as: " + this.currentProfile?.firstName;
     }
 
     render() {
@@ -60,10 +53,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 <Nav className={cssClassName}>
                     <Nav.Link href="#dashboard">Dashboard</Nav.Link>
                     <Nav.Link href="#forecasting">Forecasting</Nav.Link>
-                    <NavDropdown title={this.getDropdownLabel()} id="profile-dropdown" className={styles.navItem}>
-                        <MiniProfile profile={this.state.profile}></MiniProfile>
-                    </NavDropdown>
-                </Nav>
+                    <MiniProfile profile={this.state.profile} authenticated={this.state.authenticated}></MiniProfile>
+               </Nav>
             </Container>
         </Navbar>
     }

@@ -45,20 +45,24 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
     }
 
     renderAccounts() {
-        return <div>
+        return this.state.accounts.length > 0
+            ? <div>
             {
                 this.state.accounts.map(account => {
                     return <AccountItem account={account}></AccountItem>
                 })
             }
         </div>
+            : <div>
+                    No accounts, add one now
+                    <QuickstartProvider>
+                        <PlaidApp></PlaidApp>
+                    </QuickstartProvider>
+            </div>
     }
 
     render() {
         return <div className={Styles.Accounts}>
-            <QuickstartProvider>
-                <PlaidApp></PlaidApp>
-            </QuickstartProvider>
             { this.renderAccounts() }
         </div>
     }

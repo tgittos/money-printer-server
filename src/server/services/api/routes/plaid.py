@@ -34,14 +34,20 @@ oauth_bp = Blueprint('plaid_oauth', __name__)
 def info():
     client = Oauth(oauth_config)
     result_json = client.info()
-    return result_json
+    return {
+        'success': result_json is not None,
+        'data': result_json
+    }
 
 @oauth_bp.route('/v1/api/plaid/create_link_token', methods=['POST'])
 @authed
 def create_link_token():
     client = Oauth(oauth_config)
     result_json = client.create_link_token()
-    return result_json
+    return {
+        'success': result_json is not None,
+        'data': result_json
+    }
 
 @oauth_bp.route('/v1/api/plaid/set_access_token', methods=['POST'])
 @authed
@@ -53,10 +59,3 @@ def get_access_token():
         'success': account is not None,
         'data': account
     }
-
-@oauth_bp.route('/v1/api/plaid/auth', methods=['GET'])
-@authed
-def get_auth():
-    client = Auth(auth_config)
-    result_json = client.get_auth(access_token)
-    return result_json

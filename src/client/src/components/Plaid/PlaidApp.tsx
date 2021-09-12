@@ -72,16 +72,16 @@ class PlaidApp extends React.Component<IPlaidAppProps, IPlaidAppState> {
     await this.generateToken(paymentInitiation);
   };
 
-  private async getInfo(): any {
+  private async getInfo(): Promise<{ paymentInitiation: boolean }> {
       const response = await this.plaidRepo.getInfoFromServer();
-      if (!response.ok) {
+      if (!response.success) {
         this.setState(prev => ({
           ...prev,
           backend: false
         }));
         return { paymentInitiation: false };
       }
-      const data = await response;
+      const data = response.data;
       const paymentInitiation: boolean = data.products.includes(
           "payment_initiation"
       );
@@ -92,7 +92,7 @@ class PlaidApp extends React.Component<IPlaidAppProps, IPlaidAppState> {
       return { paymentInitiation };
   }
 
-  private async generateToken(paymentInitiation) {
+  private async generateToken(paymentInitiation: boolean) {
       const response = await this.plaidRepo.createLinkToken();
       console.log('got response:', response);
       if (!response) {
@@ -112,7 +112,6 @@ class PlaidApp extends React.Component<IPlaidAppProps, IPlaidAppState> {
   }
 
   render() {
-    console.log('this.state:', this.state);
     return <div>
       <div className={styles.container}>
         <Link />

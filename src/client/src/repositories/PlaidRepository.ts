@@ -21,7 +21,7 @@ class PlaidRepository extends BaseRepository {
         const response = await this.authenticatedRequest<null, PlaidGetInfoResponse>({
             url: this.endpoint + "info",
             method: "POST"
-        }).then(response => (response as unknown).data as PlaidGetInfoResponse);
+        }).then(response => (response as any).data as PlaidGetInfoResponse);
         return response;
     }
 
@@ -33,7 +33,7 @@ class PlaidRepository extends BaseRepository {
         const response = await this.authenticatedRequest<null, PlaidCreateLinkTokenResponse>({
             url: this.endpoint + "create_link_token",
             method: "POST"
-        }).then(response => (response as unknown).data as PlaidCreateLinkTokenResponse);
+        }).then(response => (response as any).data as PlaidCreateLinkTokenResponse);
 
         return response;
     }
@@ -50,7 +50,7 @@ class PlaidRepository extends BaseRepository {
             data: {
                 public_token: publicToken,
             }
-        }).then(response => (response as unknown).data as PlaidSetAccessTokenResponse);
+        }).then(response => (response as any).data as PlaidSetAccessTokenResponse);
 
         if (response) {
             console.log('got response, should do something with it?', response);

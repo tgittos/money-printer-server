@@ -12,11 +12,13 @@ import {Subscription} from "rxjs";
 import BasicCandleChart from "../Charts/lib/charts/BasicCandleChart";
 
 interface IDashboardProps {
-    profile: IProfile
+    profile: IProfile;
+    authenticated: boolean;
 }
 
 interface IDashboardState {
-    profile: IProfile,
+    profile: IProfile;
+    authenticated: boolean;
     chartedSymbols: string[];
 }
 
@@ -30,6 +32,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
         this.state = {
             profile: props.profile,
+            authenticated: props.authenticated,
             chartedSymbols: []
         } as IDashboardState;
 
@@ -61,8 +64,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         );
 
         return <div className={styles.Dashboard}>
-            <Header profile={this.state.profile}></Header>
-            <SymbolTracker />
+            <Header profile={this.state.profile} authenticated={this.state.authenticated}></Header>
+            <SymbolTracker disabled={!this.state.authenticated} />
             { charts }
         </div>
     }

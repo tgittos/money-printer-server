@@ -5,6 +5,7 @@ import Button from "plaid-threads/Button";
 import Context from "../../Context";
 import PlaidRepository from "../../../repositories/PlaidRepository";
 import AppStore from "../../../stores/AppStore";
+import {addAccount, setAccounts} from "../../../slices/AccountSlice";
 
 const Link = () => {
   const plaidRepository = new PlaidRepository();
@@ -14,18 +15,11 @@ const Link = () => {
   const onSuccess = async (public_token: string) => {
     // send public_token to server
     const response = await plaidRepository.setAccessToken(public_token);
-    if (!response) {
+    if (!response.success) {
       // let the plaid app know that we failed to set an access token
       return;
     }
-    dispatch({
-      type: "SET_STATE",
-      state: {
-        itemId: response.item_id,
-        accessToken: response.access_token,
-        isItemAccess: true,
-      },
-    });
+    AppStore.dispatch(addAccount(response.data));
   };
 
   let isOauth = false;

@@ -5,7 +5,8 @@ const LazyMiniProfile = lazy(() => import('./MiniProfile'));
 
 const MiniProfile = (props: JSX.IntrinsicAttributes & {
     children?: React.ReactNode;
-    profile: Profile
+    profile: Profile;
+    authenticated: boolean;
 }) => (
     <Suspense fallback={null}>
         <LazyMiniProfile {...props} />

@@ -13,7 +13,7 @@ class AccountRepository extends BaseRepository {
         const response = await this.authenticatedRequest<null, ListAccountsResponse>({
             url: this.endpoint,
             method: "GET"
-        }).then(response => (response as unknown).data as ListAccountsResponse);
+        }).then(response => (response as any).data as ListAccountsResponse);
 
         if (response.success) {
             return response.data.map(serverObj => new Account(serverObj));
