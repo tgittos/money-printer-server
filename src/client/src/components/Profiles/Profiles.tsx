@@ -5,22 +5,45 @@ import ProfileDetails from "../ProfileDetails/ProfileDetails";
 import Accounts from "../Accounts/Accounts";
 import Notifications from "../Notifications/Notifications";
 import {IProfile} from "../../models/Profile";
+import AccountRepository from "../../repositories/AccountRepository";
+import Account from "../../models/Account";
 
 interface IProfilesProps {
     profile: IProfile
 }
 
 interface IProfilesState {
-    profile: IProfile
+    profile: IProfile,
+    accounts: Account[]
 }
 
 class Profiles extends React.Component<IProfilesProps, IProfilesState> {
+
+    private accountRepository: AccountRepository;
 
     constructor(props: IProfilesProps) {
         super(props);
 
         this.state = {
-            profile: props.profile
+            profile: props.profile,
+            accounts: []
+        }
+
+        this._onAccountListUpdated = this._onAccountListUpdated.bind(this);
+
+        this.accountRepository = new AccountRepository();
+    }
+
+    componentDidMount() {
+        this.accountRepository.listAccounts().then(this._onAccountListUpdated);
+    }
+
+    private _onAccountListUpdated(accounts: Account[]) {
+        if (accounts) {
+            this.setState(prev => ({
+                ...prev,
+                accounts: accounts
+            }));
         }
     }
 
@@ -47,7 +70,7 @@ class Profiles extends React.Component<IProfilesProps, IProfilesState> {
                                 <ProfileDetails profile={this.props.profile}></ProfileDetails>
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
-                                <Accounts></Accounts>
+                                <Accounts accounts={this.state.accounts}></Accounts>
                             </Tab.Pane>
                             <Tab.Pane eventKey="third">
                                 <Notifications></Notifications>

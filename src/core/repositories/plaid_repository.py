@@ -1,13 +1,12 @@
 from datetime import datetime
 
+from core.apis.plaid.accounts import Accounts, AccountsConfig
 from core.stores.mysql import MySql
 from core.models.plaid_item import PlaidItem
 
 
-def get_repository():
-    from server.services.api import load_config
-    app_config = load_config()
-    repo = PlaidRepository(sql_config=app_config['db'])
+def get_repository(sql_config, plaid_api_config):
+    repo = PlaidRepository(sql_config=sql_config, plaid_api_config=plaid_api_config)
     return repo
 
 
@@ -25,15 +24,16 @@ class CreatePlaidItem:
 
 
 class GetPlaidItem:
-    item_id = None
+    id = None
 
-    def __init__(self, item_id):
-        self.item_id = item_id
+    def __init__(self, id):
+        self.id = id
 
 
 class PlaidRepository:
 
-    def __init__(self, sql_config):
+    def __init__(self, sql_config, plaid_api_config):
+        self.plaid_api_config = plaid_api_config
         db = MySql(sql_config)
         self.db = db.get_session()
 
@@ -50,6 +50,14 @@ class PlaidRepository:
 
         return r
 
+    def sync_accounts(self, plaid_item_id):
+        plaid_accounts_api = Accounts(AccountsConfig(
+            plaid_config=self.plaid_api_config
+        ))
+        plaid_link = self.get_plaid_item(GetPlaidItem(id=plaid_item_id))
+        print(" * fetching auths from Plaid using access token: {0}".format(plaid_link.access_token))
+        plaid_auths = plaid_accounts_api.get_accounts(plaid_link.access_token)
+
     def get_plaid_item(self, params):
-        r = self.db.query(PlaidItem).filter(PlaidItem.item_id==params.item_id).single()
+        r = self.db.query(PlaidItem).filter(PlaidItem.id==params.id).first()
         return r

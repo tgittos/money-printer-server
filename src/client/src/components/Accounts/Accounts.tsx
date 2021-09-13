@@ -13,18 +13,16 @@ import {linkTo} from "@storybook/addon-links";
 import Env from "../../env";
 
 export interface IAccountProps {
-
+    accounts: Account[]
 }
 
 export interface IAccountState {
     token: string;
     openPlaidLink: boolean;
-    accounts: Account[];
 }
 
 class Accounts extends React.Component<IAccountProps, IAccountState> {
 
-    private accountRepository: AccountRepository;
     private plaidRepository: PlaidRepository;
 
     constructor(props: IAccountProps) {
@@ -33,27 +31,14 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         this.state = {
             token: '',
             openPlaidLink: false,
-            accounts: []
         };
 
-        this._onAccountListUpdated = this._onAccountListUpdated.bind(this);
         this._onRequestLinkAccount = this._onRequestLinkAccount.bind(this);
 
-        this.accountRepository = new AccountRepository();
         this.plaidRepository = new PlaidRepository();
     }
 
     componentDidMount() {
-        this.accountRepository.listAccounts().then(this._onAccountListUpdated);
-    }
-
-    private _onAccountListUpdated(accounts: Account[]) {
-        if (accounts) {
-            this.setState(prev => ({
-                ...prev,
-                accounts: accounts
-            }));
-        }
     }
 
     private async _onRequestLinkAccount() {
@@ -80,10 +65,10 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
     }
 
     renderAccounts() {
-        return this.state.accounts.length > 0
+        return this.props.accounts.length > 0
             ? <div>
             {
-                this.state.accounts.map(account => {
+                this.props.accounts.map(account => {
                     return <AccountItem account={account}></AccountItem>
                 })
             }

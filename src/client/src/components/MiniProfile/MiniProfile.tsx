@@ -135,7 +135,7 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
                 ? this.renderAuthenticated()
                 : this.renderUnauthenticated() }
 
-            <Modal show={this.showProfileModal} onHide={this.handleProfileModalHide}>
+            <Modal dialogClassName={styles.MiniLoginProfileModal} show={this.showProfileModal} onHide={this.handleProfileModalHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>Profile</Modal.Title>
                 </Modal.Header>

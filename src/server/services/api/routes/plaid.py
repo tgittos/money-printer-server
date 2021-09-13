@@ -5,7 +5,6 @@ from flask import request
 
 from core.apis.plaid.common import PlaidApiConfig
 from core.apis.plaid.oauth import Oauth, OauthConfig
-from core.apis.plaid.auth import Auth, AuthConfig
 from core.repositories.account_repository import get_repository as get_account_repository
 from server.services.api.routes.decorators import authed, get_identity
 from server.services.api import load_config
@@ -21,11 +20,6 @@ plaid_config.secret = server_config['plaid']['secret']
 oauth_config = OauthConfig()
 oauth_config.mysql_config = server_config['db']
 oauth_config.plaid_config = plaid_config
-
-auth_config = AuthConfig()
-auth_config.mysql_config = server_config['db']
-auth_config.plaid_config = plaid_config
-
 
 # define the blueprint for plaid oauth
 oauth_bp = Blueprint('plaid_oauth', __name__)

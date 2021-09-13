@@ -2,12 +2,10 @@ from flask import Blueprint
 from flask import request
 import json
 
+from core.apis.plaid.common import PlaidApiConfig
 from core.repositories.account_repository import *
 
 from server.services.api.routes.decorators import authed, get_identity
-from server.config import config as server_config
-from server.services.api import load_config
-app_config = load_config()
 
 
 # define the blueprint for plaid oauth
