@@ -1,1 +1,23 @@
-.Profiles {}
+.Profiles {
+  height: 100%;
+
+
+  .ProfilesMainRow {
+    height :100%;
+  }
+
+  .ProfileTabs {
+    padding-right: 0;
+
+    border-right: black solid 1px;
+
+    .ProfileTabIcon {
+      margin-right: 5px;
+    }
+  }
+
+  .ProfilePanes {
+    padding: 1rem;
+  }
+
+}

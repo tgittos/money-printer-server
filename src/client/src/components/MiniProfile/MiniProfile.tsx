@@ -4,7 +4,7 @@ import styles from './MiniProfile.module.scss';
 import I18nRepository from "../../repositories/I18nRepository";
 import Profile, {IProfile} from "../../models/Profile";
 import ProfileRepository from "../../repositories/ProfileRepository";
-import {Modal, NavDropdown } from "react-bootstrap";
+import {Button, Modal, NavDropdown} from "react-bootstrap";
 import Profiles from "../Profiles/Profiles";
 import Env from "../../env";
 import {Person, PersonCircle} from "react-bootstrap-icons";
@@ -135,13 +135,16 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
                 ? this.renderAuthenticated()
                 : this.renderUnauthenticated() }
 
-            <Modal dialogClassName={styles.MiniLoginProfileModal} show={this.showProfileModal} onHide={this.handleProfileModalHide}>
+            <Modal dialogClassName="accounts-modal" show={this.showProfileModal} onHide={this.handleProfileModalHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>Profile</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Profiles profile={this.state.profile}></Profiles>
                 </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={this.handleProfileModalHide}>Close</Button>
+                </Modal.Footer>
             </Modal>
 
         </NavDropdown>

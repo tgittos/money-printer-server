@@ -7,6 +7,7 @@ import Notifications from "../Notifications/Notifications";
 import {IProfile} from "../../models/Profile";
 import AccountRepository from "../../repositories/AccountRepository";
 import Account from "../../models/Account";
+import {ChatLeftText, Journals, PersonLinesFill} from "react-bootstrap-icons";
 
 interface IProfilesProps {
     profile: IProfile
@@ -50,21 +51,30 @@ class Profiles extends React.Component<IProfilesProps, IProfilesState> {
     render() {
         return <div className={styles.Profiles}>
             <Tab.Container id="profiles" defaultActiveKey="first">
-                <Row>
-                    <Col sm={4}>
-                        <Nav className="flex-column">
+                <Row className={styles.ProfilesMainRow}>
+                    <Col sm={2} className={styles.ProfileTabs}>
+                        <Nav>
                             <Nav.Item>
-                                <Nav.Link eventKey="first">Personal Details</Nav.Link>
+                                <Nav.Link eventKey="first">
+                                    <PersonLinesFill className={styles.ProfileTabIcon}></PersonLinesFill>
+                                    Personal Details
+                                </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey="second">Accounts</Nav.Link>
+                                <Nav.Link eventKey="second">
+                                    <Journals className={styles.ProfileTabIcon}></Journals>
+                                    Accounts
+                                </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey="third">Notifications</Nav.Link>
+                                <Nav.Link eventKey="third">
+                                    <ChatLeftText className={styles.ProfileTabIcon}></ChatLeftText>
+                                    Notifications
+                                </Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={10} className={styles.ProfilePanes}>
                         <Tab.Content>
                             <Tab.Pane eventKey="first">
                                 <ProfileDetails profile={this.props.profile}></ProfileDetails>
