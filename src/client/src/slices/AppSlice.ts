@@ -1,31 +1,35 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {IProfileState} from "./ProfileSlice";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export interface IAppState {
-    profile: IProfileState
-}
-
-export interface IAppAction {
-    type: string,
-    payload: any
+    loading: boolean;
+    initialized: boolean;
 }
 
 const AppSlice = createSlice({
     name: 'App',
     initialState: {
-        profile: {
-            loading: true
-        }
+        loading: true,
+        initialized: false
     } as IAppState,
     reducers: {
-        setLoading(state: IAppState, action: IAppAction) {
+        setAppInitialized(state: IAppState) {
             return {
                 ...state,
+                initialized: true,
                 loading: false
+            }
+        },
+        setAppLoading(state: IAppState, action: PayloadAction<boolean>) {
+            return {
+                ...state,
+                loading: action.payload
             }
         }
     }
 });
 
-export const { setLoading } = AppSlice.actions;
+export const {
+    setAppInitialized,
+    setAppLoading
+} = AppSlice.actions;
 export default AppSlice.reducer;

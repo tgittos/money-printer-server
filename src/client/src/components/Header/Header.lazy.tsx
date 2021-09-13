@@ -6,6 +6,7 @@ const LazyHeader = lazy(() => import('./Header'));
 const Header = (props: JSX.IntrinsicAttributes & {
     children?: React.ReactNode;
     profile: Profile;
+    authenticated: boolean;
 }) => (
     <Suspense fallback={null}>
         <LazyHeader {...props} />

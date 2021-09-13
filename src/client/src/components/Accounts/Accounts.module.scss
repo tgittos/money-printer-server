@@ -1,0 +1,28 @@
+@import './../../variables';
+
+.Accounts {
+
+  .AccountItem {
+
+    border: $rich-green solid 1px;
+    padding: 3px 5px;
+
+    .AccountItemIcon {
+    }
+
+    .AccountItemName {
+      margin: 0 10px;
+    }
+
+    .AccountItemBalance {
+      font-weight: bolder;
+    }
+
+    .AccountItemTimestamp {
+      margin-left: 10px;
+      font-size: 0.7em;
+      font-weight: lighter;
+      font-style: italic;
+    }
+  }
+}

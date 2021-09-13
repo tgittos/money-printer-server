@@ -1,10 +1,12 @@
+import json
+
 from flask import Blueprint
 from flask import request
 
 from core.apis.plaid.common import PlaidApiConfig
 from core.apis.plaid.oauth import Oauth, OauthConfig
-from core.apis.plaid.auth import Auth, AuthConfig
-from server.services.api.routes.decorators import authed
+from core.repositories.account_repository import get_repository as get_account_repository
+from server.services.api.routes.decorators import authed, get_identity
 from server.services.api import load_config
 
 server_config = load_config()
@@ -19,11 +21,6 @@ oauth_config = OauthConfig()
 oauth_config.mysql_config = server_config['db']
 oauth_config.plaid_config = plaid_config
 
-auth_config = AuthConfig()
-auth_config.mysql_config = server_config['db']
-auth_config.plaid_config = plaid_config
-
-
 # define the blueprint for plaid oauth
 oauth_bp = Blueprint('plaid_oauth', __name__)
 
@@ -32,28 +29,31 @@ oauth_bp = Blueprint('plaid_oauth', __name__)
 def info():
     client = Oauth(oauth_config)
     result_json = client.info()
-    return result_json
+    return {
+        'success': result_json is not None,
+        'data': result_json
+    }
 
 @oauth_bp.route('/v1/api/plaid/create_link_token', methods=['POST'])
 @authed
 def create_link_token():
     client = Oauth(oauth_config)
     result_json = client.create_link_token()
-    return result_json
+    return {
+        'success': result_json is not None,
+        'data': result_json
+    }
 
 @oauth_bp.route('/v1/api/plaid/set_access_token', methods=['POST'])
 @authed
 def get_access_token():
-    public_token = request.form['public_token']
+    profile = get_identity()
+    public_token = request.json['public_token']
     client = Oauth(oauth_config)
-    result_json = client.get_access_token(public_token)
-    access_token = result_json['access_token']
-    item_id = result_json['item_id']
-    return result_json
-
-@oauth_bp.route('/v1/api/plaid/auth', methods=['GET'])
-@authed
-def get_auth():
-    client = Auth(auth_config)
-    result_json = client.get_auth(access_token)
-    return result_json
+    plaid_item = client.get_access_token(profile['id'], public_token)
+    account_repo = get_account_repository()
+    account_repo.schedule_account_sync(profile['id'], plaid_item.id)
+    return {
+        'success': plaid_item is not None,
+        'message': 'Fetching accounts'
+    }

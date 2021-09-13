@@ -29,3 +29,13 @@ def authed(func):
             "success": False
         }, status=401, mimetype='application/json')
     return decorated
+
+
+def get_identity():
+    token = request.headers.get('Authorization')
+    if token is not None:
+        parts = token.split(' ')
+        token = parts[len(parts) - 1]
+    repo = get_repository()
+    profile_dict = repo.decode_jwt(token)['profile']
+    return profile_dict

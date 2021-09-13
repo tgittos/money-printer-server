@@ -1,4 +1,38 @@
-server = dict(
-    host="localhost",
-    port="8000"
+config = dict(
+    server = dict(
+        host="localhost",
+        port="8000",
+        secret="omg money printer go brr hahaha"
+    ),
+
+    mailgun = dict(
+        api_key="",
+        domain=""
+    ),
+
+    sandbox = dict(
+        plaid = dict(
+            env="sandbox",
+            client_id="",
+            secret="",
+            version="2020-09-14",
+            country_codes=["US"],
+            language="en"
+        ),
+
+        iexcloud = dict(
+            env="sandbox",
+            secret="",
+            publishable=""
+        ),
+
+        db = dict(
+            host="127.0.0.1",
+            port="3306",
+            username="",
+            password="",
+            schema="",
+            debug=False
+        )
+    )
 )

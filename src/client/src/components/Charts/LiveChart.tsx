@@ -1,9 +1,8 @@
 import React from 'react';
 import {filter, Subscription} from "rxjs";
-import RealtimeSymbol  from "../../models/symbols/RealtimeSymbol";
 
 import BigLoader from "../shared/Loaders/BigLoader";
-import Chart from "../Charts/Chart";
+import StaticChart from "../Charts/StaticChart";
 import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import {IChartFactory} from "./lib/ChartFactory";
@@ -16,7 +15,9 @@ import { SortDescending } from "../../interfaces/ISymbol";
 
 interface ILiveChartProps {
     ticker: string;
-    chart: IChartFactory
+    chart: IChartFactory;
+    start?: Date;
+    end?: Date;
 }
 
 interface ILiveChartState {
@@ -25,6 +26,8 @@ interface ILiveChartState {
     cachedRealtimeData: ISymbol[];
     cachedHistoricalData: ISymbol[];
     chartData: ISymbol[];
+    start: Date;
+    end?: Date;
 }
 
 class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
@@ -46,6 +49,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
             cachedHistoricalData: [],
             cachedRealtimeData: [],
             chartData: [],
+            start: props.start ?? moment().subtract('days', 1)
         } as ILiveChartState;
 
         this._onLiveData = this._onLiveData.bind(this);
@@ -131,7 +135,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
             loadingRealtime: loadingRealtime,
             cachedHistoricalData: cachedHistoricalData,
             cachedRealtimeData: cachedRealtimeData,
-            chartData: chartData.sort(SortDescending)
+            chartData: this.expireData(chartData).sort(SortDescending)
         }));
     }
 
@@ -180,7 +184,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                 loadingHistorical: loadingHistorical,
                 cachedHistoricalData: cachedHistoricalData,
                 cachedRealtimeData: cachedRealtimeData,
-                chartData: chartData.sort(SortDescending)
+                chartData: this.expireData(chartData).sort(SortDescending)
             }));
         } else {
             console.log(`LiveChart::_onHistoricalData - warning! historical intraday for ${this.props.ticker} failed: ${response.message}`);
@@ -191,13 +195,24 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
         }
     }
 
+    private expireData(data: ISymbol[]): ISymbol[] {
+        const { start, end } = this.state;
+
+        // remove data older than the set chart start date,
+        // and if an end date is defined, data that's newer
+        // than the end date
+        return data.filter(datum =>
+            datum.date >= start &&
+                (!end ||  datum.date <= end));
+    }
+
     render() {
         if (this.loading) {
             return <BigLoader></BigLoader>
         }
 
         if (this.state.chartData.length > 0) {
-            return <Chart
+            return <StaticChart
                 chart={this.props.chart}
                 dimensions={{
                     width: 1200,
@@ -210,7 +225,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                     }
                 } as IChartDimensions}
                 data={this.state.chartData}
-            ></Chart>
+            ></StaticChart>
         }
 
         return <div>No data found (live or historical!)</div>;

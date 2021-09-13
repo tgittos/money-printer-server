@@ -1,18 +1,24 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import styles from './MiniProfile.module.scss';
 
 import I18nRepository from "../../repositories/I18nRepository";
 import Profile, {IProfile} from "../../models/Profile";
 import ProfileRepository from "../../repositories/ProfileRepository";
-import {Modal} from "react-bootstrap";
-import Plaid from "../Plaid/Plaid";
+import {Modal, NavDropdown } from "react-bootstrap";
+import Profiles from "../Profiles/Profiles";
+import Env from "../../env";
+import {Person, PersonCircle} from "react-bootstrap-icons";
 
 interface MiniProfileProps {
-    profile: IProfile
+    profile: IProfile;
+    authenticated: boolean;
 };
 interface MiniProfileState {
-    profile: IProfile,
-    showProfileModal: boolean
+    profile: IProfile;
+    authenticated: boolean;
+    showProfileModal: boolean;
+    username: string;
+    password: string;
 };
 
 class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
@@ -33,20 +39,40 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
 
         this.state = {
             profile: props.profile,
+            authenticated: props.authenticated,
             showProfileModal: false
         } as MiniProfileState;
 
+        this.handleLogin = this.handleLogin.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
         this.handleProfileModalShow = this.handleProfileModalShow.bind(this);
         this.handleProfileModalHide = this.handleProfileModalHide.bind(this);
+        this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
 
         this._profileRepository = new ProfileRepository();
         this._i18nRepository = new I18nRepository();
     }
 
+    private async handleLogin() {
+        const response = await this._profileRepository.auth({
+            username: this.state.username,
+            password: this.state.password
+        });
+        if (response.success) {
+            const authedProfile = new Profile(response.data.profile);
+            this.setState(prev => ({
+                ...prev,
+                profile: authedProfile,
+                authenticated: true
+            }));
+        }
+    }
+
     private handleLogout() {
+        if (Env.DEBUG) {
+            console.log('MiniProfile::handleLogout - performing logout');
+        }
         this._profileRepository.logout()
-        return false;
     }
 
     private handleProfileModalShow() {
@@ -63,7 +89,7 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
         }));
     }
 
-    render() {
+    public renderAuthenticated() {
         return <div className={styles.MiniLogin}>
             <ul>
                 <li>
@@ -77,16 +103,48 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
                     </button>
                 </li>
             </ul>
+        </div>
+    }
 
-            <Modal show={this.showProfileModal} onHide={this.handleProfileModalHide}>
+    private handleLoginFormChange(prop: string, ev: ChangeEvent<HTMLInputElement>) {
+        this.setState(prev => ({
+            ...prev,
+            [prop]: ev.target.value
+        }));
+        ev.preventDefault();
+    }
+
+    public renderUnauthenticated() {
+        return <div className={styles.MiniLogin}>
+            <input name="miniProfileUsername" placeholder="Username"
+                   onChange={(e) => this.handleLoginFormChange('username', e)}
+                    />
+            <input name="miniProfilePassword" placeholder="Password"
+                   type="password"
+                   onChange={(e) => this.handleLoginFormChange('password', e)}
+                   />
+            <button onClick={this.handleLogin}>Login</button>
+        </div>
+    }
+
+    render() {
+        const dropdownTitle = (<PersonCircle></PersonCircle>);
+        return <NavDropdown title={dropdownTitle} id="profile-dropdown" className={styles.navItem}>
+
+            { this.props.authenticated
+                ? this.renderAuthenticated()
+                : this.renderUnauthenticated() }
+
+            <Modal dialogClassName={styles.MiniLoginProfileModal} show={this.showProfileModal} onHide={this.handleProfileModalHide}>
                 <Modal.Header closeButton>
                     <Modal.Title>Profile</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Plaid></Plaid>
+                    <Profiles profile={this.state.profile}></Profiles>
                 </Modal.Body>
             </Modal>
-        </div>
+
+        </NavDropdown>
     }
 }
 

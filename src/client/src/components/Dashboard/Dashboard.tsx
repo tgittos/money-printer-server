@@ -6,17 +6,17 @@ import SymbolTracker from "../SymbolTracker/SymbolTracker";
 
 import BigLoader from "../shared/Loaders/BigLoader";
 import LiveChart from "../Charts/LiveChart";
-import BasicChart from "../Charts/lib/charts/BasicChart";
+import BasicLineChart from "../Charts/lib/charts/BasicLineChart";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import {Subscription} from "rxjs";
 import BasicCandleChart from "../Charts/lib/charts/BasicCandleChart";
 
 interface IDashboardProps {
-    profile: IProfile
+    profile: IProfile;
+    authenticated: boolean;
 }
 
 interface IDashboardState {
-    profile: IProfile,
     chartedSymbols: string[];
 }
 
@@ -29,7 +29,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         super(props);
 
         this.state = {
-            profile: props.profile,
             chartedSymbols: []
         } as IDashboardState;
 
@@ -61,8 +60,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         );
 
         return <div className={styles.Dashboard}>
-            <Header profile={this.state.profile}></Header>
-            <SymbolTracker />
+            <Header profile={this.props.profile} authenticated={this.props.authenticated}></Header>
+            <SymbolTracker disabled={!this.props.authenticated} />
             { charts }
         </div>
     }
