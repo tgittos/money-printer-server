@@ -20,7 +20,7 @@ class Oauth:
     def __init__(self, oauth_config):
         self.config = oauth_config
         self.client = get_plaid_api_client(self.config.plaid_config)
-        self.repository = PlaidRepository(self.config.mysql_config)
+        self.repository = PlaidRepository(self.config.mysql_config, self.config.plaid_config)
 
     def info(self):
         return {

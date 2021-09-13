@@ -2,7 +2,9 @@ import React, {FunctionComponent, useEffect, useCallback} from "react";
 import {
     usePlaidLink,
     PlaidLinkOptions,
-    PlaidLinkOnSuccess
+    PlaidLinkOnSuccess,
+    PlaidLinkOnExit,
+    PlaidLinkError
 } from "react-plaid-link";
 import Env from '../../env';
 import PlaidRepository from "../../repositories/PlaidRepository";
@@ -18,8 +20,16 @@ const OpenLink: FunctionComponent<IOpenLinkProps> = ({ token }) => {
         async (public_token: string, metadata: any) => {
         const result = await plaidRepository.setAccessToken(public_token);
         if (result.success) {
-            localStorage.setItem('link_token', undefined);
+            localStorage.removeItem('link_token');
         }
+    }, []);
+
+    const onExit = useCallback<PlaidLinkOnExit>(
+    (error: PlaidLinkError) => {
+        if (error) {
+            console.log(' * OpenLink::onExit - got error:', error);
+        }
+        localStorage.removeItem('link_token');
     }, []);
 
     let isOauth = false;
@@ -27,6 +37,7 @@ const OpenLink: FunctionComponent<IOpenLinkProps> = ({ token }) => {
     const config: Parameters<typeof usePlaidLink>[0] = {
         token: token!,
         onSuccess,
+        onExit
     };
 
     if (window.location.href.includes("?oauth_state_id=")) {

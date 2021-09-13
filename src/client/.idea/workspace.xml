@@ -13,13 +13,13 @@
       <change beforePath="$PROJECT_DIR$/../bin/client-bus" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/client-bus" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/data-server" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/data-server" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/money-printer" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/money-printer" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bin/mp.log" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/mp.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/mp.log&#10;" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/task-runner" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/task-runner" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/client.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.tsx" afterDir="false" />
@@ -55,13 +55,26 @@
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Notifications/Notifications.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications/Notifications.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Notifications/Notifications.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications/Notifications.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Endpoint/index.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Endpoint/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Error/index.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Error/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Headers/index.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Headers/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Link/index.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Plaid/OpenLink.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Plaid/OpenLink.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/ProductTypes/Items.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/ProductTypes/ProductTypesContainer/index.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/ProductTypes/ProductTypesContainer/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/ProductTypes/Products.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Table/Identity.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Table/Identity.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Table/index.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Table/index.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Profiles/Profiles.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Profiles/Profiles.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Profiles/Profiles.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Profiles/Profiles.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" afterDir="false" />
@@ -119,6 +132,7 @@
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/plaid/oauth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/oauth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/notifications.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/notifications.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />

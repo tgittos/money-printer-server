@@ -1,4 +1,4 @@
-import Styles from "./Accounts.module.scss";
+import styles from "./Accounts.module.scss";
 import React from "react";
 import Header from "../Plaid/Headers";
 import {QuickstartProvider} from "../Context";
@@ -65,7 +65,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
     }
 
     renderAccounts() {
-        return this.props.accounts.length > 0
+        const accountList = this.props.accounts.length > 0
             ? <div>
             {
                 this.props.accounts.map(account => {
@@ -73,16 +73,20 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
                 })
             }
         </div>
-            : <div>
-                <button onClick={this._onRequestLinkAccount}>
-                    <CashCoin></CashCoin>
-                    Link account
-                </button>
-            </div>
+            : <></>
+
+        return <>
+                { accountList }
+                <div className={styles.AccountsAddButtonContainer}>
+                    <button onClick={this._onRequestLinkAccount}>
+                        Link account
+                    </button>
+                </div>
+            </>
     }
 
     render() {
-        return <div className={Styles.Accounts}>
+        return <div className={styles.Accounts}>
             { this.renderAccounts() }
             { this.state.openPlaidLink && <OpenLink token={this.state.token} /> }
         </div>

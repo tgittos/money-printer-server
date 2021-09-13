@@ -57,7 +57,7 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
 
     private formatBalance(balance: number){
         if (balance) {
-            return `$${balance.toFixed(2)}`
+            return '$' + balance.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
         }
     }
 
