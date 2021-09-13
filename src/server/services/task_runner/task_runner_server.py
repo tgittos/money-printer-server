@@ -19,7 +19,9 @@ if __name__ == '__main__':
     sys.path.append(pwd)
     print(" * path: {0}".format(sys.path))
 
-    from server.config import config as server_config
-    from server.services.task_runner.jobs.sync_accounts import SyncAccounts
+    from server.services.task_runner.runner import Runner
+
+    runner = Runner()
+    runner.run()
 
     print(" * task runner listening for jobs")
