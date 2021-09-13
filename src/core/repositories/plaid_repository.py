@@ -37,6 +37,10 @@ class PlaidRepository:
         db = MySql(sql_config)
         self.db = db.get_session()
 
+    def get_plaid_items_by_profile(self, profile_id):
+        records = self.db.query(PlaidItem).filter(PlaidItem.profile_id == profile_id).all()
+        return records
+
     def create_plaid_item(self, params):
         r = PlaidItem()
         r.profile_id = params.profile_id
@@ -56,7 +60,8 @@ class PlaidRepository:
         ))
         plaid_link = self.get_plaid_item(GetPlaidItem(id=plaid_item_id))
         print(" * fetching auths from Plaid using access token: {0}".format(plaid_link.access_token))
-        plaid_auths = plaid_accounts_api.get_accounts(plaid_link.access_token)
+        plaid_accounts = plaid_accounts_api.get_accounts(plaid_link.access_token)
+        return plaid_accounts
 
     def get_plaid_item(self, params):
         r = self.db.query(PlaidItem).filter(PlaidItem.id==params.id).first()

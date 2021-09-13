@@ -13,7 +13,15 @@
  * changing pwd to /mnt/c/Users/Tim/src/money-printer/src
  * augmenting path with core
  * path: ['/mnt/c/Users/Tim/src/money-printer/src/server/services/task_runner', '/usr/lib/python38.zip', '/usr/lib/python3.8', '/usr/lib/python3.8/lib-dynload', '/mnt/c/Users/Tim/src/money-printer/src/.venv/lib/python3.8/site-packages', '/mnt/c/Users/Tim/src/money-printer/src']
- * task runner listening for jobs
+server config: {'server': {'host': 'localhost', 'port': '8000', 'secret': 'omg money printer go brr hahaha'}, 'mailgun': {'api_key': 'key-b3ed602d39bab4981638c7a1f093e893', 'domain': 'mg.moneyprintergobrr.io'}, 'sandbox': {'plaid': {'env': 'sandbox', 'client_id': '610b0a72aed5de0015d334ed', 'secret': 'ac8694bdc226585044b54ef5393b47', 'version': '2020-09-14', 'country_codes': ['US'], 'language': 'en'}, 'iexcloud': {'env': 'sandbox', 'secret': 'Tsk_add37c5d56c940e78c54a4b59f422570', 'publishable': 'Tpk_68d2c23ab1ce49c7967028bd6201ee13'}, 'db': {'host': '127.0.0.1', 'port': '3306', 'username': 'moneyprinter', 'password': '!QAZxsw2', 'schema': 'money_printer_sandbox', 'debug': False}}}
+mailgun config <core.apis.mailgun.MailGunConfig object at 0x7f528892db80>
+ * setting env to sandbox
+ * changing pwd to /mnt/c/Users/Tim/src/money-printer/src
+ * augmenting path with core
+ * path: ['/mnt/c/Users/Tim/src/money-printer/src/server/services/data_server', '/usr/lib/python38.zip', '/usr/lib/python3.8', '/usr/lib/python3.8/lib-dynload', '/mnt/c/Users/Tim/src/money-printer/src/.venv/lib/python3.8/site-packages', '/mnt/c/Users/Tim/src/money-printer/src']
+ * sse upstream online
+ * historical upstream online
+ * data-server listening for commands
  * setting env to sandbox
  * changing pwd to /mnt/c/Users/Tim/src/money-printer/src
  * augmenting path with core
@@ -29,10 +37,3 @@
    WARNING: This is a development server. Do not use it in a production deployment.
    Use a production WSGI server instead.
  * Debug mode: off
- * setting env to sandbox
- * changing pwd to /mnt/c/Users/Tim/src/money-printer/src
- * augmenting path with core
- * path: ['/mnt/c/Users/Tim/src/money-printer/src/server/services/data_server', '/usr/lib/python38.zip', '/usr/lib/python3.8', '/usr/lib/python3.8/lib-dynload', '/mnt/c/Users/Tim/src/money-printer/src/.venv/lib/python3.8/site-packages', '/mnt/c/Users/Tim/src/money-printer/src']
- * sse upstream online
- * historical upstream online
- * data-server listening for commands

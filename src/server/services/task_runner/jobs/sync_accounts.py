@@ -22,14 +22,30 @@ plaid_config.secret = app_config['plaid']['secret']
 
 class SyncAccounts:
 
-    def __init__(self, redis_message):
-        self.profile_id = redis_message['profile_id']
-        self.plaid_link_id = redis_message['plaid_item_id']
+    def __init__(self, redis_message=None):
+        if redis_message is not None and 'profile_id' in redis_message and 'plaid_item_id' in redis_message:
+            self.profile_id = redis_message['profile_id']
+            self.plaid_item_id = redis_message['plaid_item_id']
         self.plaid_repo = get_plaid_repository(sql_config=sql_config, plaid_api_config=plaid_config)
 
     def run(self):
-        profile = self.__fetch_profile()
-        plaid_link = self.__fetch_plaid_link()
+        if self.profile_id and self.plaid_item_id:
+            self.sync_profile(self.profile_id, self.plaid_item_id)
+            return
+        self.sync_all_profiles()
+
+    def sync_all_profiles(self):
+        profile_repo = get_profile_repository()
+        plaid_repo = get_plaid_repository(sql_config=sql_config, plaid_api_config=plaid_config)
+        all_profiles = profile_repo.get_all_profiles()
+        for profile in all_profiles:
+            plaid_links = plaid_repo.get_plaid_items_by_profile(profile.id)
+            for plaid_link in plaid_links:
+                self.sync_profile(profile.id, plaid_link.id)
+
+    def sync_profile(self, profile_id, plaid_link_id):
+        profile = self.__fetch_profile(profile_id)
+        plaid_link = self.__fetch_plaid_link(plaid_link_id)
         if profile is None or plaid_link is None:
             print(" * error syncing accounts - either profile or plaid link is None! profile: {0}, plaid_link: {1}".format(
                 profile,
@@ -40,7 +56,6 @@ class SyncAccounts:
         plaid_accounts_api = Accounts(AccountsConfig(
             plaid_config=plaid_config
         ))
-        print(" * fetching auths from Plaid using access token: {0}".format(plaid_link.access_token), flush=True)
         plaid_accounts_dict = plaid_accounts_api.get_accounts(plaid_link.access_token)
 
         print(" * updating {0} accounts".format(len(plaid_accounts_dict['accounts'])), flush=True)
@@ -67,12 +82,12 @@ class SyncAccounts:
                 iso_currency_code=balance_dict['iso_currency_code']
             ))
 
-    def __fetch_profile(self):
+    def __fetch_profile(self, profile_id):
         repo = get_profile_repository()
-        return repo.get_by_id(self.profile_id)
+        return repo.get_by_id(profile_id)
 
-    def __fetch_plaid_link(self):
+    def __fetch_plaid_link(self, plaid_item_id):
         return self.plaid_repo.get_plaid_item(GetPlaidItem(
-            id=self.plaid_link_id
+            id=self.plaid_item_id
         ))
 
