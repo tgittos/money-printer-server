@@ -13,8 +13,7 @@
  * changing pwd to /mnt/c/Users/Tim/src/money-printer/src
  * augmenting path with core
  * path: ['/mnt/c/Users/Tim/src/money-printer/src/server/services/task_runner', '/usr/lib/python38.zip', '/usr/lib/python3.8', '/usr/lib/python3.8/lib-dynload', '/mnt/c/Users/Tim/src/money-printer/src/.venv/lib/python3.8/site-packages', '/mnt/c/Users/Tim/src/money-printer/src']
-server config: {'server': {'host': 'localhost', 'port': '8000', 'secret': 'omg money printer go brr hahaha'}, 'mailgun': {'api_key': 'key-b3ed602d39bab4981638c7a1f093e893', 'domain': 'mg.moneyprintergobrr.io'}, 'sandbox': {'plaid': {'env': 'sandbox', 'client_id': '610b0a72aed5de0015d334ed', 'secret': 'ac8694bdc226585044b54ef5393b47', 'version': '2020-09-14', 'country_codes': ['US'], 'language': 'en'}, 'iexcloud': {'env': 'sandbox', 'secret': 'Tsk_add37c5d56c940e78c54a4b59f422570', 'publishable': 'Tpk_68d2c23ab1ce49c7967028bd6201ee13'}, 'db': {'host': '127.0.0.1', 'port': '3306', 'username': 'moneyprinter', 'password': '!QAZxsw2', 'schema': 'money_printer_sandbox', 'debug': False}}}
-mailgun config <core.apis.mailgun.MailGunConfig object at 0x7f528892db80>
+ * found 1 scheduled jobs
  * setting env to sandbox
  * changing pwd to /mnt/c/Users/Tim/src/money-printer/src
  * augmenting path with core
@@ -37,3 +36,18 @@ mailgun config <core.apis.mailgun.MailGunConfig object at 0x7f528892db80>
    WARNING: This is a development server. Do not use it in a production deployment.
    Use a production WSGI server instead.
  * Debug mode: off
+ * scheduling hourly job sync_accounts, last run: 2021-09-14T09:41:50
+ * found message on worker queue: {'type': 'message', 'pattern': None, 'channel': b'mp:worker', 'data': b'{"job": "sync_accounts", "data": null}'}
+ * syncing accounts for plaid access item
+ * syncing all profiles
+ * task runner scheduled 1 jobs
+ * updating 9 accounts
+ * updating balance for account {0} 3mwkqrJDNZh9oQJ4pzx5T3RnyJWQ6nhw4BxRV
+ * updating balance for account {0} xzwkPGKZJ6fg6EpLknebUMvXpnlWyXt9rqbBM
+ * updating balance for account {0} dQa7pkZArRhMyRaxLNr4s97gpGKwqgfPVmpaz
+ * updating balance for account {0} ajyNM87LlRCkn73zbPLxSogNadLJPNURyzM35
+ * updating balance for account {0} 4ljyKzZgPAFgLlnNmeP1UmoMyEjWKMUgGZPMy
+ * updating balance for account {0} NWbaGBP39LT34qlP7Gp9s7Wygkr5nycrRgwK4
+ * updating balance for account {0} PGXNqx7dwLTAP79Mj1g6slMNrvz5KNFwq9Rv4
+ * updating balance for account {0} joXrA97KaRh6gXpDZrqQFy1w8GdmNwIynBeAX
+ * updating balance for account {0} 7r3yBxXWegiexr971zqKU9E7kaV847fNDmqpW

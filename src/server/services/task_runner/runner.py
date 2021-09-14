@@ -30,6 +30,7 @@ class Runner:
         self.job_repo = get_job_repository(mysql_config=sql_config, mailgun_config=mailgun_config)
         self.pubsub.subscribe(**{WORKER_QUEUE: self.__fetch_jobs})
         self.jobs = self.job_repo.get_scheduled_jobs()
+        print(" * found {0} scheduled jobs".format(len(self.jobs)), flush=True)
 
     def run(self):
         self.running = True
@@ -47,13 +48,13 @@ class Runner:
         self.running = False
 
     def __fetch_jobs(self, message):
-        print(" * found message on worker queue: {0}".format(message))
+        print(" * found message on worker queue: {0}".format(message), flush=True)
         json_data = json.loads(message['data'])
         job = json_data['job']
         if job is not None:
             # todo - figure out some way to dynamically dispatch this
             if job == 'sync_accounts':
-                print(" * syncing accounts for plaid access item")
+                print(" * syncing accounts for plaid access item", flush=True)
                 job = SyncAccounts(json_data)
                 job.run()
 
@@ -78,7 +79,7 @@ class Runner:
                 last_run_iso = "never"
                 if job.last_run is not None:
                     last_run_iso = job.last_run.isoformat()
-                print(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name, last_run_iso))
+                print(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name, last_run_iso),flush=True)
 
                 self.redis.publish(WORKER_QUEUE, json.dumps({
                    'job': job.job_name,
@@ -91,4 +92,4 @@ class Runner:
                 ran_jobs_count += 1
 
         if ran_jobs_count > 0:
-            print(" * task runner scheduled {0} jobs".format(ran_jobs_count))
+            print(" * task runner scheduled {0} jobs".format(ran_jobs_count),flush=True)

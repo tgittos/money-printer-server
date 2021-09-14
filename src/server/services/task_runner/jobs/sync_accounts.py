@@ -22,6 +22,9 @@ plaid_config.secret = app_config['plaid']['secret']
 
 class SyncAccounts:
 
+    profile_id = None
+    plaid_item_id = None
+
     def __init__(self, redis_message=None):
         if redis_message is not None and 'profile_id' in redis_message and 'plaid_item_id' in redis_message:
             self.profile_id = redis_message['profile_id']
@@ -35,6 +38,7 @@ class SyncAccounts:
         self.sync_all_profiles()
 
     def sync_all_profiles(self):
+        print(" * syncing all profiles", flush=True)
         profile_repo = get_profile_repository()
         plaid_repo = get_plaid_repository(sql_config=sql_config, plaid_api_config=plaid_config)
         all_profiles = profile_repo.get_all_profiles()
@@ -88,6 +92,6 @@ class SyncAccounts:
 
     def __fetch_plaid_link(self, plaid_item_id):
         return self.plaid_repo.get_plaid_item(GetPlaidItem(
-            id=self.plaid_item_id
+            id=plaid_item_id
         ))
 
