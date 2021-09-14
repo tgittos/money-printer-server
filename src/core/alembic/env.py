@@ -24,6 +24,7 @@ from core.models.account import Account
 from core.models.balance import Balance
 from core.models.plaid_item import PlaidItem
 from core.models.reset_token import ResetToken
+from core.models.scheduled_job import ScheduledJob
 
 from core.models.base import Base
 target_metadata = Base.metadata

@@ -55,24 +55,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Notifications/Notifications.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications/Notifications.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Notifications/Notifications.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Notifications/Notifications.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Endpoint/index.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Endpoint/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Error/index.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Error/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Headers/index.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Headers/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Link/index.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Plaid/OpenLink.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Plaid/OpenLink.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/PlaidApp.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/ProductTypes/Items.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/ProductTypes/ProductTypesContainer/index.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/ProductTypes/ProductTypesContainer/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/ProductTypes/Products.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Table/Identity.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Table/Identity.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Table/index.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Plaid/Table/index.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ProfileDetails/ProfileDetails.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" afterDir="false" />
@@ -132,22 +115,25 @@
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../core/apis/plaid/oauth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/oauth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/notifications.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/notifications.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/plaid_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/plaid_item.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/reset_token.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/reset_token.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/scheduled_job.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/scheduled_job.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/presentation/account_presenters.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/presentation/account_presenters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/account_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/account_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/balance_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/balance_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/profile_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/profile_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/scheduled_job_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/scheduled_job_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/stock_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/stock_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/scripts/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/schedule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/scripts/script_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/script_base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />

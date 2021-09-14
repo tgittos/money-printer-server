@@ -2,6 +2,27 @@
 
 .Accounts {
 
+  .AccountsFilter {
+    border: $rich-green solid 1px;
+    margin-bottom: 10px;
+
+    div {
+      display: inline-block;
+    }
+
+    div > input {
+      margin-right: 2px;
+    }
+
+    div + div {
+      margin-left: 25px;
+    }
+
+    .AccountsAddButtonContainer {
+      float: right;
+    }
+  }
+
   .AccountItem {
 
     border: $rich-green solid 1px;
@@ -26,8 +47,4 @@
     }
   }
 
-  .AccountsAddButtonContainer {
-    margin-top: 5px;
-    text-align: right;
-  }
 }

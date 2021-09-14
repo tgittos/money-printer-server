@@ -69,7 +69,7 @@ class AccountRepository:
 
     def schedule_account_sync(self, profile_id, plaid_item_id):
         self.redis.publish(WORKER_QUEUE, json.dumps({
-            'job': 'account_sync',
+            'job': 'sync_accounts',
             'profile_id': profile_id,
             'plaid_item_id': plaid_item_id
         }))

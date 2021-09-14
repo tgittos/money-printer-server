@@ -180,6 +180,10 @@ class ProfileRepository:
         decoded = self.decode_jwt(token)
         return datetime.fromtimestamp(decoded['exp']) > datetime.utcnow()
 
+    def get_all_profiles(self):
+        records = self.db.query(Profile).all()
+        return records
+
     def __create_profile(self, request):
         new_pw = self.__generate_temp_password()
         new_profile = Profile()
