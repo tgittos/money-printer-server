@@ -12,6 +12,7 @@ import {Subscription} from "rxjs";
 import BasicCandleChart from "../Charts/lib/charts/BasicCandleChart";
 import Overview from "../Overview/Overview";
 import Account from "../../models/Account";
+import AccountPerformance from "../AccountPerformance/AccountPerformance";
 
 interface IDashboardProps {
     profile: IProfile;
@@ -20,53 +21,28 @@ interface IDashboardProps {
 }
 
 interface IDashboardState {
-    chartedSymbols: string[];
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
-
-    private _liveQuotes: LiveQuoteRepository;
-    private _subscriptions: Subscription[] = [];
 
     constructor(props: IDashboardProps) {
         super(props);
 
         this.state = {
-            chartedSymbols: []
         } as IDashboardState;
-
-        this._onSubscribedSymbolsUpdated = this._onSubscribedSymbolsUpdated.bind(this);
-
-        this._liveQuotes = LiveQuoteRepository.instance;
     }
 
     componentDidMount() {
-        this._subscriptions.push(
-            this._liveQuotes.subscribedSymbols$.subscribe(this._onSubscribedSymbolsUpdated)
-        );
     }
 
     componentWillUnmount() {
-        this._subscriptions.forEach(sub => sub.unsubscribe());
-    }
-
-    private _onSubscribedSymbolsUpdated(trackedSymbols: string[]) {
-        this.setState(prev => ({
-            ...prev,
-            chartedSymbols: trackedSymbols
-        }));
     }
 
     render() {
-        const charts = this.state.chartedSymbols.map(ticker =>
-            <LiveChart key={ticker} ticker={ticker} chart={BasicCandleChart}></LiveChart>
-        );
-
         return <div className={styles.Dashboard}>
             <Header profile={this.props.profile} authenticated={this.props.authenticated}></Header>
             <Overview accounts={this.props.accounts}></Overview>
-            <SymbolTracker disabled={!this.props.authenticated} />
-            { charts }
+            <AccountPerformance accounts={this.props.accounts}></AccountPerformance>
         </div>
     }
 };

@@ -1,28 +1,31 @@
 import * as d3 from "d3";
 import IFigureProps from "../../interfaces/IFigureProps";
-import ISymbol, {SortDescending} from "../../../../interfaces/ISymbol";
+import ILineDataPoint from "../../interfaces/ILineDataPoint";
+import moment from "moment";
 
-class Line {
-    readonly props: IFigureProps;
+export interface ILineProps extends IFigureProps {
+    data: ILineDataPoint[]
+}
 
-    constructor(props: IFigureProps) {
+class Line<T extends ILineDataPoint> {
+    readonly props: ILineProps;
+
+    constructor(props: ILineProps) {
         this.props = props;
     }
 
-    public draw(svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>) {
+    public draw(svg: d3.Selection<SVGElement, ILineDataPoint[], HTMLElement, undefined>) {
         const { xScale, yScale, dimensions } = this.props;
         const { margin } = dimensions;
 
-        const lineGenerator = d3.line<ISymbol>()
-            .defined((d: ISymbol) => {
-                return !!d.close;
-            })
-            .x((d: ISymbol) => {
-                const val = xScale(d.date);
+        const lineGenerator = d3.line<ILineDataPoint>()
+            .x((d) => {
+                const parsedDate = moment(d.x);
+                const val = xScale(parsedDate);
                 return val;
             })
-            .y((d: ISymbol) => {
-                const val = yScale(d.close);
+            .y((d) => {
+                const val = yScale(d.y);
                 return val;
             });
 
@@ -36,5 +39,6 @@ class Line {
             .attr("d", lineGenerator);
     }
 }
+class BasicLine extends Line<ILineDataPoint> {}
 
-export default Line;
+export default BasicLine;

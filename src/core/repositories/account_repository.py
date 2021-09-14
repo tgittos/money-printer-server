@@ -2,7 +2,7 @@ from datetime import datetime
 import redis
 import json
 
-from sqlalchemy import desc
+from sqlalchemy import desc, and_
 
 from core.stores.mysql import MySql
 from core.models.account import Account
@@ -20,6 +20,15 @@ class CreateAccountRequest:
         self.official_name = official_name
         self.type = type
         self.subtype = subtype
+
+
+class GetAccountBalanceRequest:
+
+    def __init__(self, profile_id, account_id, start=None, end=None):
+        self.profile_id = profile_id
+        self.account_id = account_id
+        self.start = start
+        self.end = end
 
 
 def get_repository():
@@ -45,12 +54,12 @@ class AccountRepository:
         account_records = self.db.query(Account).filter(Account.profile_id == profile_id).all()
         return self.__augment_with_balances(account_records)
 
-    def get_account_by_id(self, id):
-        r = self.db.query(Account).filter(Account.id == id).first()
+    def get_account_by_id(self, profile_id, account_id):
+        r = self.db.query(Account).where(and_(Account.profile_id == profile_id, Account.id == account_id)).first()
         return r
 
-    def get_account_by_account_id(self, account_id):
-        r = self.db.query(Account).filter(Account.account_id == account_id).first()
+    def get_account_by_account_id(self, profile_id, account_id):
+        r = self.db.query(Account).where(and_(Account.profile_id == profile_id, Account.account_id == account_id)).first()
         return r
 
     def create_account(self, params):
@@ -80,6 +89,21 @@ class AccountRepository:
             'profile_id': profile_id,
             'plaid_item_id': plaid_item_id
         }))
+
+    def get_account_balances(self, request):
+        account = self.get_account_by_id(request.profile_id, request.account_id)
+        records = []
+        if account is not None:
+            if request.start is not None:
+                if request.end is not None:
+                    records = self.db.query.filter(Balance.accountId == account.id and
+                                                   request.start <= Balance.timestamp <= request.end).all()
+                else:
+                    records = self.db.query.filter(Balance.accountId == account.id and
+                                                   request.start <= Balance.timestamp).all()
+            else:
+                records = self.db.query(Balance).filter(Balance.accountId == account.id).all()
+        return records
 
     def __augment_with_balances(self, account_records):
         augmented_records = []

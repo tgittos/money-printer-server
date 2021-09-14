@@ -1,20 +1,20 @@
 import * as d3 from "d3";
 import IAxisProps from "../../interfaces/IAxisProps";
-import {Axis, ScaleLinear} from "d3";
+import {Axis, ScaleTime} from "d3";
 import IAxis from "../../interfaces/IAxis";
 import ITimeBasedDataPoint from "../../interfaces/ITimeBasedDataPoint";
 
-class CandleXAxis implements IAxis<ITimeBasedDataPoint> {
+class SimpleXAxis implements IAxis<ITimeBasedDataPoint> {
     readonly props: IAxisProps<ITimeBasedDataPoint, Date>;
 
-    private _scale: ScaleLinear<any, any>;
+    private _scale: ScaleTime<any, any>;
     private _axis: Axis<any>;
 
-    public get scale(): ScaleLinear<any, any> {
+    public get scale(): ScaleTime<any, any> {
         return this._scale;
     }
 
-    public get domain(): number[] {
+    public get domain(): Date[] {
         return this._scale.domain();
     }
 
@@ -40,31 +40,23 @@ class CandleXAxis implements IAxis<ITimeBasedDataPoint> {
     }
 
     private createScale() {
-        const { width } = this.props.dimensions;
-        const data = [].concat(this.props.data);
+        const { dimensions, mapper } = this.props;
+        const { width } = dimensions;
+        const data = [].concat(this.props.data) as ITimeBasedDataPoint[];
 
-        this._scale = d3.scaleLinear()
-            .domain([-1, data.length])
+        const timeExtent = d3.extent(data, mapper);
+
+        this._scale = d3.scaleTime()
+            .domain(timeExtent)
             .range([0, width]);
     }
 
     private createAxis() {
         const scale = this._scale;
-        const data = [].concat(this.props.data);
 
         this._axis = d3.axisBottom(scale)
-            .tickFormat(function(d, i) {
-                const datum = data[d.valueOf()];
-                if (datum) {
-                    const date = datum.x;
-                    const hours = date.getHours();
-                    const minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
-                    const seconds = date.getSeconds();
-                    return `${hours}:${minutes}:${seconds}`
-                };
-                return '';
-            });
+            .tickFormat(d3.timeFormat('%m/%d/%y %H:%M'));
     }
 }
 
-export default CandleXAxis;
+export default SimpleXAxis;

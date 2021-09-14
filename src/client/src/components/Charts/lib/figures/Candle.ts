@@ -1,9 +1,10 @@
 import IFigureProps from "../../interfaces/IFigureProps";
 import * as d3 from "d3";
 import {ScaleBand} from "d3";
-import ISymbol from "../../../../interfaces/ISymbol";
+import ICandleDataPoint from "../../interfaces/ICandleDataPoint";
 
 export interface ICandleProps extends IFigureProps {
+    data: ICandleDataPoint[]
     xBand: ScaleBand<any>;
 }
 
@@ -14,7 +15,7 @@ class Candle {
         this.props = props;
     }
 
-    public draw(svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>) {
+    public draw(svg: d3.Selection<SVGElement, ICandleDataPoint[], HTMLElement, undefined>) {
         const { data, xScale, xBand, yScale, dimensions } = this.props;
         const { margin } = dimensions;
 

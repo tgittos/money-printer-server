@@ -1,25 +1,26 @@
 import IChartProps from "../../interfaces/IChartProps";
 import * as d3 from "d3";
-import PriceYAxis from "../axes/PriceYAxis";
+import SimpleYAxis from "../axes/SimpleYAxis";
 import Candle, {ICandleProps} from "../figures/Candle";
 import CandleXAxis from "../axes/CandleXAxis";
 import IChart from "../../interfaces/IChart";
 import {MutableRefObject} from "react";
 import IAxis from "../../interfaces/IAxis";
 import {ScaleBand} from "d3";
-import ISymbol from "../../../../interfaces/ISymbol";
+import ICandleDataPoint from "../../interfaces/ICandleDataPoint";
+import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
 
 class BasicCandleChart implements IChart {
-    readonly svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>;
+    readonly svg: d3.Selection<SVGElement, ICandleDataPoint[], HTMLElement, undefined>;
 
-    private props: IChartProps;
+    private props: IChartProps<ICandleDataPoint>;
     private svgRef: MutableRefObject<null>;
-    private xAxis: IAxis;
-    private yAxis: IAxis;
+    private xAxis: IAxis<ICandleDataPoint>;
+    private yAxis: IAxis<IFigureDataPoint>;
     private xBand: ScaleBand<any>;
     private candles: Candle;
 
-    constructor(props: IChartProps) {
+    constructor(props: IChartProps<ICandleDataPoint>) {
         this.props = props;
         this.svgRef = props.svgRef;
         this.svg = d3.select(this.svgRef.current);
@@ -46,11 +47,13 @@ class BasicCandleChart implements IChart {
 
         this.xAxis = new CandleXAxis({
             data: this.props.data,
-            dimensions: this.props.dimensions
+            dimensions: this.props.dimensions,
+            mapper: (data: ICandleDataPoint) => data.x
         });
-        this.yAxis = new PriceYAxis({
+        this.yAxis = new SimpleYAxis({
             data: this.props.data,
-            dimensions: this.props.dimensions
+            dimensions: this.props.dimensions,
+            mapper: (data: ICandleDataPoint) => data.close
         });
 
         this.xBand = d3.scaleBand<number>()

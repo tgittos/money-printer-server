@@ -1,7 +1,6 @@
 import IChartProps from "../../interfaces/IChartProps";
 import * as d3 from "d3";
 import Line, {ILineProps} from "../figures/Line";
-import RealtimeXAxis from "../axes/RealtimeXAxis";
 import SimpleYAxis from "../axes/SimpleYAxis";
 import IChart from "../../interfaces/IChart";
 import {MutableRefObject} from "react";
@@ -10,20 +9,27 @@ import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
 import ILineDataPoint from "../../interfaces/ILineDataPoint";
 import ITimeBasedDataPoint from "../../interfaces/ITimeBasedDataPoint";
 import SimpleXAxis from "../axes/SimpleXAxis";
+import moment from "moment";
 
-class BasicLineChart implements IChart {
+export interface IMultiLineChartDataEntry {
+    name: string;
+    data: ILineDataPoint[]
+}
+
+class MultiLineChart implements IChart {
     readonly svg: d3.Selection<SVGElement, ILineDataPoint[], HTMLElement, undefined>;
 
-    private props: IChartProps<ILineDataPoint>;
+    private props: IChartProps<IMultiLineChartDataEntry>;
     private svgRef: MutableRefObject<null>;
-    private xAxis: SimpleXAxis;
-    private yAxis: SimpleYAxis;
-    private line: Line;
+    private xAxis: IAxis<ITimeBasedDataPoint>;
+    private yAxis: IAxis<IFigureDataPoint>;
+    private lines: Line[];
 
-    constructor(props: IChartProps<ILineDataPoint>) {
+    constructor(props: IChartProps<IMultiLineChartDataEntry>) {
         this.props = props;
         this.svgRef = props.svgRef;
         this.svg = d3.select(this.svgRef.current);
+        this.lines = [];
 
         this.draw();
     }
@@ -34,7 +40,7 @@ class BasicLineChart implements IChart {
         this.xAxis.draw(this.svg);
         this.yAxis.draw(this.svg);
 
-        this.line.draw(this.svg);
+        this.lines.map(line => line.draw(this.svg));
     }
 
     private init() {
@@ -42,23 +48,39 @@ class BasicLineChart implements IChart {
         const svgWidth = margin.left + margin.right + width;
         const svgHeight = margin.top + margin.bottom + height;
 
+        // pull out axis data from all bundled sub data figures
+        const flatData = this.props.data.flatMap(entry => entry.data)
+            .sort((a, b) => {
+                return a.x < b.x
+                    ? -1
+                    : a.x > b.x
+                        ? 1
+                        : 0;
+            });
+
         this.xAxis = new SimpleXAxis({
-            data: this.props.data,
+            data: flatData,
             dimensions: this.props.dimensions,
-            mapper: (data: ILineDataPoint) => data.x
+            mapper: datum => moment.utc(datum.x).toDate()
         });
         this.yAxis = new SimpleYAxis({
-            data: this.props.data,
+            data: flatData,
             dimensions: this.props.dimensions,
-            mapper: (data: ILineDataPoint) => data.y
+            mapper: datum => datum.y
         });
 
-        this.line = new Line({
-            data: this.props.data,
-            dimensions: this.props.dimensions,
-            xScale: this.xAxis.scale,
-            yScale: this.yAxis.scale
-        } as ILineProps);
+        for (let i = 0; i < this.props.data.length; i++) {
+            const fig = this.props.data[i] as IMultiLineChartDataEntry;
+            console.log('creating line for figure:', fig);
+            this.lines.push(
+                new Line({
+                    name: fig.name,
+                    data: fig.data,
+                    dimensions: this.props.dimensions,
+                    xScale: this.xAxis.scale,
+                    yScale: this.yAxis.scale
+                } as ILineProps));
+        }
 
         this.svg
             .attr("width", svgWidth)
@@ -73,4 +95,4 @@ class BasicLineChart implements IChart {
     }
 }
 
-export default BasicLineChart;
+export default MultiLineChart;

@@ -2,6 +2,7 @@ import styles from './Accounts.module.scss';
 
 import React from "react";
 import {
+    ArrowRepeat,
     Book,
     Calendar2Month,
     CashCoin,
@@ -13,6 +14,7 @@ import {
 import moment from "moment";
 
 import Account from "../../models/Account";
+import AccountRepository from "../../repositories/AccountRepository";
 
 export interface IAccountItemProps {
     account: Account;
@@ -43,10 +45,16 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
         return this.props.account.formatBalanceAsCurrency();
     }
 
+    private _accountRepo: AccountRepository;
+
     constructor(props: IAccountItemProps) {
         super(props);
 
         this.state = {};
+
+        this.requestSync = this.requestSync.bind(this);
+
+        this._accountRepo = new AccountRepository();
     }
 
     private formatDate(date: Date) {
@@ -75,6 +83,10 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
         return <CashStack></CashStack>
     }
 
+    private async requestSync(accountId: number) {
+        await this._accountRepo.refreshAccounts(accountId);
+    }
+
     render() {
         return <div key={this.id}>
             <div className={styles.AccountItem}>
@@ -82,6 +94,11 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
                 <span className={styles.AccountItemName}>{ this.accountName }</span>
                 <span className={styles.AccountItemBalance}> { this.balance }</span>
                 <span className={styles.AccountItemTimestamp}>last updated { this.formatDate(this.timestamp)}</span>
+                <span className={styles.AccountItemRefresh}>
+                    <button onClick={() => this.requestSync(this.id)}>
+                        <ArrowRepeat></ArrowRepeat>
+                    </button>
+                </span>
             </div>
         </div>
     }

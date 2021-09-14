@@ -1,12 +1,11 @@
 import * as d3 from "d3";
 import IAxisProps from "../../interfaces/IAxisProps";
-import moment from "moment";
 import {Axis, ScaleTime} from "d3";
 import IAxis from "../../interfaces/IAxis";
-import ISymbol from "../../../../interfaces/ISymbol";
+import ITimeBasedDataPoint from "../../interfaces/ITimeBasedDataPoint";
 
-class RealtimeXAxis implements IAxis {
-    readonly props: IAxisProps;
+class RealtimeXAxis implements IAxis<ITimeBasedDataPoint> {
+    readonly props: IAxisProps<ITimeBasedDataPoint, Date>;
 
     private _scale: ScaleTime<any, any>;
     private _axis: Axis<any>;
@@ -23,14 +22,14 @@ class RealtimeXAxis implements IAxis {
         return this._axis;
     }
 
-    constructor(props: IAxisProps) {
+    constructor(props: IAxisProps<ITimeBasedDataPoint, Date>) {
         this.props = props;
 
         this._createScale();
         this._createAxis();
     }
 
-    public draw(svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>) {
+    public draw(svg: d3.Selection<SVGElement, ITimeBasedDataPoint[], HTMLElement, undefined>) {
         const xAxis = this._axis;
         const { margin, height } = this.props.dimensions;
 
@@ -41,10 +40,11 @@ class RealtimeXAxis implements IAxis {
     }
 
     private _createScale() {
-        const { width } = this.props.dimensions;
+        const { mapper, dimensions} = this.props;
+        const { width } = dimensions;
+        const data = [].concat(this.props.data);
 
-        const timeExtent = d3.extent(this.props.data,
-            (s: ISymbol) => s.date);
+        const timeExtent = d3.extent(data, mapper);
 
         this._scale = d3.scaleTime()
             .domain(timeExtent)

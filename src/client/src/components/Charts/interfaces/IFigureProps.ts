@@ -1,8 +1,9 @@
 import IChartDimensions from "./IChartDimensions";
-import ISymbol from "../../../interfaces/ISymbol";
+import IFigureDataPoint from "./IFigureDataPoint";
 
 interface IFigureProps {
-    data: ISymbol[];
+    name: string;
+    data: IFigureDataPoint[];
     xScale: any;
     yScale: any;
     dimensions: IChartDimensions

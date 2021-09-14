@@ -2,10 +2,10 @@ import * as d3 from "d3";
 import IAxisProps from "../../interfaces/IAxisProps";
 import {Axis, ScaleLinear } from "d3";
 import IAxis from "../../interfaces/IAxis";
-import ISymbol from "../../../../interfaces/ISymbol";
+import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
 
-class PriceYAxis implements IAxis {
-    readonly props: IAxisProps;
+class SimpleYAxis implements IAxis<IFigureDataPoint> {
+    readonly props: IAxisProps<IFigureDataPoint, number>;
 
     private _scale: ScaleLinear<any, any>
     private _axis: Axis<any>;
@@ -18,14 +18,14 @@ class PriceYAxis implements IAxis {
         return this._axis;
     }
 
-    constructor(props: IAxisProps) {
+    constructor(props: IAxisProps<IFigureDataPoint, number>) {
         this.props = props;
 
         this._createScale();
         this._createAxis();
     }
 
-    public draw(svg: d3.Selection<SVGElement, ISymbol[], HTMLElement, undefined>) {
+    public draw(svg: d3.Selection<SVGElement, IFigureDataPoint[], HTMLElement, undefined>) {
         const yAxis = this._axis;
         const { margin  } = this.props.dimensions;
 
@@ -36,13 +36,13 @@ class PriceYAxis implements IAxis {
     }
 
     private _createScale() {
-        const { height } = this.props.dimensions;
+        const { mapper, dimensions } = this.props;
+        const { height } = dimensions;
 
-        const yMin = d3.min(this.props.data, (s: ISymbol) => +s.low);
-        const yMax = d3.max(this.props.data, (s: ISymbol) => +s.high);
+        const extent = d3.extent(this.props.data, mapper);
 
         this._scale = d3.scaleLinear()
-            .domain([yMin, yMax + yMax * 0.1])
+            .domain([extent[0], extent[1] + extent[1] * 0.1])
             .range([height, 0]);
     }
 
@@ -53,4 +53,4 @@ class PriceYAxis implements IAxis {
     }
 }
 
-export default PriceYAxis;
+export default SimpleYAxis;
