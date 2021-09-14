@@ -117,6 +117,7 @@
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/notifications.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/notifications.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/account.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/account.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/plaid_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/plaid_item.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/profile.py" afterDir="false" />

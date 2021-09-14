@@ -12,12 +12,13 @@ from core.presentation.account_presenters import AccountWithBalance
 
 class CreateAccountRequest:
 
-    def __init__(self, plaid_item_id, profile_id, account_id, name, official_name, subtype):
+    def __init__(self, plaid_item_id, profile_id, account_id, name, official_name, type, subtype):
         self.profile_id = profile_id
         self.plaid_item_id = plaid_item_id
         self.account_id = account_id
         self.name = name
         self.official_name = official_name
+        self.type = type
         self.subtype = subtype
 
 
@@ -59,6 +60,7 @@ class AccountRepository:
         r.account_id = params.account_id
         r.name = params.name
         r.official_name = params.official_name
+        r.type = params.type
         r.subtype = params.subtype
         r.timestamp = datetime.now()
 
@@ -66,6 +68,12 @@ class AccountRepository:
         self.db.commit()
 
         return r
+
+    def update_account(self, account):
+        self.db.add(account)
+        self.db.commit()
+
+        return account
 
     def schedule_account_sync(self, profile_id, plaid_item_id):
         self.redis.publish(WORKER_QUEUE, json.dumps({
@@ -79,6 +87,7 @@ class AccountRepository:
         for account_record in account_records:
             balance = self.db.query(Balance).filter(Balance.accountId == account_record.id)\
                 .order_by(desc(Balance.timestamp)).first()
+            account_record.timestamp = balance.timestamp
             augmented_record = AccountWithBalance(
                 account=account_record,
                 balance=balance.current

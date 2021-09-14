@@ -100,12 +100,12 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
 
         if (!showAssets) {
             filteredData = filteredData.filter(account =>
-                !['cd', 'money market', '401k', 'ira', 'checking', 'saving'].includes(account.subtype));
+                !['depository', 'investment'].includes(account.type));
         }
 
         if (!showDebts) {
             filteredData = filteredData.filter(account =>
-                !['mortgage', 'student', 'credit card'].includes(account.subtype));
+                !['credit', 'loan'].includes(account.type));
         }
 
         if (nameFilter && nameFilter !== '') {
@@ -113,6 +113,8 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
             filteredData = filteredData.filter(account =>
                 account.name.toLowerCase().includes(nameFilter.toLowerCase()));
         }
+
+        console.log('filteredData:', filteredData);
 
         return filteredData;
     }

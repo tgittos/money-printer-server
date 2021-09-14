@@ -11,6 +11,7 @@ class Account(Base):
     account_id = Column(String(128))
     name = Column(String(64))
     official_name = Column(String(128))
+    type = Column(String(32))
     subtype = Column(String(32))
     timestamp = Column(DateTime)
 
@@ -20,6 +21,7 @@ class Account(Base):
             'profile_id': self.profile_id,
             'name': self.name,
             'official_name': self.official_name,
+            'type': self.type,
             'subtype': self.subtype,
             'timestamp': self.timestamp.isoformat(),
         }

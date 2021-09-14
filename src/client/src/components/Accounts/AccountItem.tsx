@@ -46,8 +46,6 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
     constructor(props: IAccountItemProps) {
         super(props);
 
-        const { account } = props;
-
         this.state = {};
     }
 

@@ -72,10 +72,17 @@ class SyncAccounts:
                     account_id=account_dict['account_id'],
                     name=account_dict['name'],
                     official_name=account_dict['official_name'],
+                    type=account_dict['type'],
                     subtype=account_dict['subtype'],
                     plaid_item_id=plaid_link.id,
                     profile_id=profile.id
                 ))
+            else:
+                account.name = account_dict['name']
+                account.official_name = account_dict['official_name']
+                account.type = account_dict['type'],
+                account.subtype = account_dict['subtype']
+                account_repo.update_account(account)
 
             print(" * updating balance for account {0}", account.account_id, flush=True)
             balance_dict = account_dict['balances']
