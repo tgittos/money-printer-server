@@ -88,8 +88,9 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
     render() {
         return <div className={styles.AccountPerformance}>
             <StaticChart
+                chart={MultiLineChart}
                 dimensions={{
-                    width: 800,
+                    width: 1200,
                     height: 600,
                     margin: {
                         top: 0,
@@ -98,7 +99,6 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
                         bottom: 25
                     } as IChartMargin
                 }}
-                chart={MultiLineChart}
                 data={this._getData()} />
         </div>
     }

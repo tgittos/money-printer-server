@@ -2,9 +2,11 @@ import * as d3 from "d3";
 import IFigureProps from "../../interfaces/IFigureProps";
 import ILineDataPoint from "../../interfaces/ILineDataPoint";
 import moment from "moment";
+import {ScaleOrdinal} from "d3";
 
 export interface ILineProps extends IFigureProps {
     data: ILineDataPoint[]
+    color: string;
 }
 
 class Line<T extends ILineDataPoint> {
@@ -15,7 +17,7 @@ class Line<T extends ILineDataPoint> {
     }
 
     public draw(svg: d3.Selection<SVGElement, ILineDataPoint[], HTMLElement, undefined>) {
-        const { xScale, yScale, dimensions } = this.props;
+        const { xScale, yScale, color, dimensions } = this.props;
         const { margin } = dimensions;
 
         const lineGenerator = d3.line<ILineDataPoint>()
@@ -34,7 +36,7 @@ class Line<T extends ILineDataPoint> {
             .append("path")
             .datum(this.props.data)
             .attr("fill", "none")
-            .attr("stroke", "steelblue")
+            .attr("stroke", (d, i) => color ?? "steelblue")
             .attr("stroke-width", 1.5)
             .attr("d", lineGenerator);
     }
