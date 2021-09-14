@@ -1,4 +1,8 @@
 import IAccount from "../interfaces/IAccount";
+import {formatAsCurrency} from "../utilities";
+
+const AssetTypes = ['depository', 'investment'];
+const DebtTypes = ['credit', 'loan'];
 
 class Account implements IAccount {
     id: number;
@@ -8,6 +12,18 @@ class Account implements IAccount {
     timestamp: Date | undefined;
     balance: number;
 
+    public get isAsset(): boolean {
+        return AssetTypes.includes(this.type);
+    }
+
+    public get isDebt(): boolean {
+        return DebtTypes.includes(this.type);
+    }
+
+    public formatBalanceAsCurrency(): string {
+        return formatAsCurrency(this.balance);
+    }
+
     constructor(serverObj: any = {}) {
         this.id = serverObj.id;
         this.name = serverObj.name;
@@ -16,6 +32,7 @@ class Account implements IAccount {
         this.timestamp = serverObj.timestamp;
         this.balance = serverObj.balance ?? 0;
     }
+
 }
 
 export default Account;

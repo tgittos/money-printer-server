@@ -10,9 +10,12 @@ import BasicLineChart from "../Charts/lib/charts/BasicLineChart";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import {Subscription} from "rxjs";
 import BasicCandleChart from "../Charts/lib/charts/BasicCandleChart";
+import Overview from "../Overview/Overview";
+import Account from "../../models/Account";
 
 interface IDashboardProps {
     profile: IProfile;
+    accounts: Account[];
     authenticated: boolean;
 }
 
@@ -61,6 +64,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
         return <div className={styles.Dashboard}>
             <Header profile={this.props.profile} authenticated={this.props.authenticated}></Header>
+            <Overview accounts={this.props.accounts}></Overview>
             <SymbolTracker disabled={!this.props.authenticated} />
             { charts }
         </div>

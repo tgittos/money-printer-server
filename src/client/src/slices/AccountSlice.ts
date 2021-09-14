@@ -1,9 +1,9 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import IAccount from "../interfaces/IAccount";
-import {Pay} from "plaid";
+import Account from "../models/Account";
 
 export interface IAccountState {
-    accounts: IAccount[];
+    accounts: Account[];
 }
 
 const AccountSlice = createSlice({
@@ -12,13 +12,13 @@ const AccountSlice = createSlice({
         accounts: []
     } as IAccountState,
     reducers: {
-        setAccounts(state: IAccountState, action: PayloadAction<IAccount[]>) {
+        setAccounts(state: IAccountState, action: PayloadAction<Account[]>) {
             return {
                 ...state,
-                accounts: action.payload
+                accounts: [].concat(action.payload)
             }
         },
-        addAccount(state: IAccountState, action: PayloadAction<IAccount>) {
+        addAccount(state: IAccountState, action: PayloadAction<Account>) {
             return {
                 ...state,
                 accounts: [].concat(state.accounts).concat([action.payload])

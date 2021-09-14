@@ -6,6 +6,7 @@ import PlaidSetAccessTokenResponse from "../responses/PlaidSetAccessTokenRespons
 import PlaidCreateLinkTokenResponse from "../responses/PlaidCreateLinkTokenRequest";
 import PlaidGetInfoResponse from "../responses/PlaidGetInfoResponse";
 import {addAccount, setAccounts} from "../slices/AccountSlice";
+import Account from "../models/Account";
 
 class PlaidRepository extends BaseRepository {
 
@@ -54,7 +55,7 @@ class PlaidRepository extends BaseRepository {
         }).then(response => (response as any).data as PlaidSetAccessTokenResponse);
 
         if (response.success) {
-            AppStore.dispatch(addAccount(response.data));
+            AppStore.dispatch(addAccount(new Account(response.data)));
         }
 
         return response;

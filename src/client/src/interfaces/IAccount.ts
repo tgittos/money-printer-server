@@ -12,6 +12,8 @@ interface IAccount {
 
    id: number;
    name: string;
+   balance: number;
+   type: string;
    subtype: string;
    timestamp: Date;
 }

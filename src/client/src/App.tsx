@@ -8,7 +8,7 @@ import {
   Route,
 } from "react-router-dom";
 
-import AppStore, {getAppState, getProfileState} from './stores/AppStore';
+import AppStore, {getAccountsState, getAppState, getProfileState} from './stores/AppStore';
 import { IAppState } from "./slices/AppSlice";
 
 import I18nRepository from "./repositories/I18nRepository";
@@ -19,11 +19,13 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from "./components/shared/PrivateRoute";
 import Login from "./components/Login/Login";
 import BigLoader from "./components/shared/Loaders/BigLoader";
+import AccountRepository from "./repositories/AccountRepository";
 
 class App extends React.Component<{}, IAppState> {
 
   private _i18n: I18nRepository;
   private _profileRepo: ProfileRepository;
+  private _accountRepo: AccountRepository;
 
   constructor(props: {}) {
     super(props);
@@ -32,6 +34,7 @@ class App extends React.Component<{}, IAppState> {
 
     this._i18n = new I18nRepository();
     this._profileRepo = new ProfileRepository();
+    this._accountRepo = new AccountRepository();
 
     AppStore.subscribe(() => {
       const newState = getAppState();
@@ -40,11 +43,11 @@ class App extends React.Component<{}, IAppState> {
         ...newState
       }));
     });
-
-    this._profileRepo.init();
   }
 
   componentDidMount() {
+    this._profileRepo.init();
+    this._accountRepo.listAccounts();
   }
 
   componentWillUnmount() {
@@ -52,6 +55,9 @@ class App extends React.Component<{}, IAppState> {
 
   render() {
     const profileState = getProfileState();
+    const accountState = getAccountsState();
+
+    console.log('accountState:', accountState);
 
     if (this.state.loading) {
       return <div className="App">
@@ -74,7 +80,10 @@ class App extends React.Component<{}, IAppState> {
 
     return <div className="App">
           <div className="content">
-            <Dashboard profile={profileState.current} authenticated={profileState.authenticated} />
+            <Dashboard profile={profileState.current}
+                       authenticated={profileState.authenticated}
+                       accounts={accountState.accounts}
+            />
           </div>
         </div>;
   }

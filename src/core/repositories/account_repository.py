@@ -70,7 +70,6 @@ class AccountRepository:
         return r
 
     def update_account(self, account):
-        self.db.add(account)
         self.db.commit()
 
         return account
@@ -93,6 +92,8 @@ class AccountRepository:
                 balance=balance.current
             )
             augmented_records.append(augmented_record)
+            # undo the update to the account_record timestamp
+            self.db.rollback()
 
         return augmented_records
 

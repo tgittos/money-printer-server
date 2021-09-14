@@ -1,6 +1,8 @@
 import BaseRepository from "./BaseRepository";
 import ListAccountsResponse from "../responses/ListAccountsResponse";
 import Account from "../models/Account";
+import AppStore from "../stores/AppStore"
+import {setAccounts} from "../slices/AccountSlice";
 
 class AccountRepository extends BaseRepository {
     constructor() {
@@ -16,7 +18,9 @@ class AccountRepository extends BaseRepository {
         }).then(response => (response as any).data as ListAccountsResponse);
 
         if (response.success) {
-            return response.data.map(serverObj => new Account(serverObj));
+            const accounts = response.data.map(serverObj => new Account(serverObj));
+            AppStore.dispatch(setAccounts(accounts));
+            return accounts;
         }
 
         return [];

@@ -39,8 +39,8 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
         return this.props.account.timestamp;
     }
 
-    public get balance(): number {
-        return this.props.account.balance;
+    public get balance(): string {
+        return this.props.account.formatBalanceAsCurrency();
     }
 
     constructor(props: IAccountItemProps) {
@@ -51,12 +51,6 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
 
     private formatDate(date: Date) {
         return moment(date).fromNow();
-    }
-
-    private formatBalance(balance: number){
-        if (balance) {
-            return '$' + balance.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-        }
     }
 
     private getIconForSubtype(subtype: string) {
@@ -86,7 +80,7 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
             <div className={styles.AccountItem}>
                 <span className={styles.AccountItemIcon}>{ this.getIconForSubtype(this.subType) }</span>
                 <span className={styles.AccountItemName}>{ this.accountName }</span>
-                <span className={styles.AccountItemBalance}> { this.formatBalance(this.balance) }</span>
+                <span className={styles.AccountItemBalance}> { this.balance }</span>
                 <span className={styles.AccountItemTimestamp}>last updated { this.formatDate(this.timestamp)}</span>
             </div>
         </div>

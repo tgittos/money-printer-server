@@ -17,6 +17,7 @@
     "d3-zoom": "^3.0.0",
     "i18next": "^20.4.0",
     "jwt-decode": "^3.1.2",
+    "millify": "^4.0.0",
     "plaid": "^9.0.0-beta.15",
     "plaid-threads": "^11.5.0",
     "prop-types": "^15.7.2",

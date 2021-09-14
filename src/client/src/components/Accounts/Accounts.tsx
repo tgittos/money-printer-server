@@ -1,15 +1,10 @@
 import styles from "./Accounts.module.scss";
 import React, {ChangeEvent} from "react";
-import Header from "../Plaid/Headers";
-import {QuickstartProvider} from "../Context";
-import PlaidApp from "../Plaid/PlaidApp";
 import Account from "../../models/Account";
-import AccountRepository from "../../repositories/AccountRepository";
 import AccountItem from "./AccountItem";
-import {CashCoin, Search} from "react-bootstrap-icons";
+import {Search} from "react-bootstrap-icons";
 import PlaidRepository from "../../repositories/PlaidRepository";
 import OpenLink from "../Plaid/OpenLink";
-import {linkTo} from "@storybook/addon-links";
 import Env from "../../env";
 
 export interface IAccountProps {
@@ -82,9 +77,9 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         const { filterState } = this.state;
         if (filterState.hasOwnProperty(propKey)) {
             if (ev.target.getAttribute('type') === 'checkbox') {
-                filterState[propKey] = ev.target.checked;
+                (filterState as any)[propKey] = ev.target.checked;
             } else {
-                filterState[propKey] = ev.target.value;
+                (filterState as any)[propKey] = ev.target.value;
             }
         }
         this.setState(prev => ({
@@ -99,13 +94,11 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         let filteredData = [].concat(data);
 
         if (!showAssets) {
-            filteredData = filteredData.filter(account =>
-                !['depository', 'investment'].includes(account.type));
+            filteredData = filteredData.filter(account => !account.isAsset)
         }
 
         if (!showDebts) {
-            filteredData = filteredData.filter(account =>
-                !['credit', 'loan'].includes(account.type));
+            filteredData = filteredData.filter(account => !account.isDebt);
         }
 
         if (nameFilter && nameFilter !== '') {
@@ -113,8 +106,6 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
             filteredData = filteredData.filter(account =>
                 account.name.toLowerCase().includes(nameFilter.toLowerCase()));
         }
-
-        console.log('filteredData:', filteredData);
 
         return filteredData;
     }

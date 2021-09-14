@@ -37,9 +37,6 @@ class AuthService {
         const fetchedToken = this.getToken();
         if (fetchedToken) {
             const jwtProfile: any = jwt(fetchedToken);
-            if (Env.DEBUG) {
-                console.log('ProfileRepository::hydrateJWTToken - found profile:', jwtProfile);
-            }
             if (jwtProfile?.profile) {
                 return new Profile(jwtProfile.profile as IServerProfile);
             }
