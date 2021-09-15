@@ -3,12 +3,13 @@ import Account from "../../models/Account";
 import Balance from "../../models/Balance";
 import React from "react";
 import AccountRepository from "../../repositories/AccountRepository";
-import { Promise } from "bluebird";
+import { Promise as BluebirdPromise } from "bluebird";
 import Env from "../../env";
 import MultiLineChart, {IMultiLineChartDataEntry} from "../Charts/lib/charts/MultiLineChart";
 import IChartMargin from "../Charts/interfaces/IChartMargin";
 import ILineDataPoint from "../Charts/interfaces/ILineDataPoint";
 import StaticChart from "../Charts/StaticChart";
+import Holding from "../../models/Holding";
 
 export interface IAccountPerformanceProps {
     accounts: Account[]
@@ -33,6 +34,7 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
         };
 
         this._onReceivedBalances = this._onReceivedBalances.bind(this);
+        this._onReceivedHoldings = this._onReceivedHoldings.bind(this);
         this._getData = this._getData.bind(this);
 
         this._accountRepo = new AccountRepository();
@@ -42,10 +44,19 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
         if (Env.DEBUG) {
             console.log("AccountPerformance::componentDidMount - querying accounts for balance history:", this.props.accounts);
         }
-        Promise.all(
+
+        // fetch balances
+        BluebirdPromise.all(
             this.props.accounts.map(account =>
                 this._accountRepo.getBalances(account.id)))
-            .then(this._onReceivedBalances);
+            .then(this._onReceivedBalances)
+
+        // fetch holdings for investment accounts
+        BluebirdPromise.all(
+            this.props.accounts
+                .filter(account => account.type === "investment")
+                .map(account => this._accountRepo.getHoldings(account.id)))
+            .then(this._onReceivedHoldings);
     }
 
     private _onReceivedBalances(responses: Balance[][]) {
@@ -68,7 +79,13 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
                 ...prev,
                 chartAccounts: chartAccounts
             }));
+
+            this.render();
         }
+    }
+
+    private _onReceivedHoldings(responses: Holding[][]) {
+        console.log('got holdings:', responses);
     }
 
     private _getData(): IMultiLineChartDataEntry[] {

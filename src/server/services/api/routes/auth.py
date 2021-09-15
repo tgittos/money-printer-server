@@ -2,7 +2,8 @@ from flask import Blueprint
 from flask import request
 import json
 
-from core.repositories.profile_repository import get_repository as get_profiles_repository, RegisterProfileRequest
+from core.repositories.profile_repository import get_repository as get_profiles_repository, RegisterProfileRequest,\
+    LoginRequest
 from core.apis.mailgun import MailGunConfig
 
 from server.services.api.routes.decorators import authed

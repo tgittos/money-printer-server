@@ -39,7 +39,7 @@ class BalanceRepository:
 
     def create_balance(self, request):
         balance = Balance()
-        balance.accountId = request.account_id
+        balance.account_id = request.account_id
         balance.available = request.available
         balance.current = request.current
         balance.iso_currency_code = request.iso_currency_code
@@ -63,8 +63,10 @@ class BalanceRepository:
 
         api = Accounts(AccountsConfig(self.plaid_config))
         response_dict = api.get_account_balance(plaid_item.access_token, account.account_id)
+
         for account_dict in response_dict["accounts"]:
             balance_dict = account_dict['balances']
+
             new_balance = self.create_balance(CreateBalanceRequest(
                 account_id=account.id,
                 current=balance_dict['current'],

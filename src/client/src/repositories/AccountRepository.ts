@@ -6,6 +6,9 @@ import {setAccounts} from "../slices/AccountSlice";
 import Balance from "../models/Balance";
 import GetAccountBalancesResponse from "../responses/GetAccountBalancesResponse";
 import moment from "moment";
+import Holding from "../models/Holding";
+import GetAccountHoldingsResponse from "../responses/GetAccountHoldingsResponse";
+import Env from "../env";
 
 class AccountRepository extends BaseRepository {
     constructor() {
@@ -55,6 +58,20 @@ class AccountRepository extends BaseRepository {
         const balances = response.data.map(obj => new Balance(obj));
 
         return balances;
+    }
+
+    public async getHoldings(accountId: number): Promise<Holding[]> {
+        if (Env.DEBUG) {
+            console.log('AccountRepository::getHoldings - getting holdings for account id:', accountId);
+        }
+        const response = await this.authenticatedRequest<null, GetAccountHoldingsResponse>({
+            url: this.endpoint + "/" + accountId + "/holdings",
+            method: "GET"
+        }).then(response => (response as any).data as GetAccountHoldingsResponse);
+
+        const holdings = response.data.map(obj => new Holding(obj));
+
+        return holdings;
     }
 }
 

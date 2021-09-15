@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from datetime import datetime
 
+from core.repositories.security_repository import get_repository as get_security_repository
 from core.repositories.account_repository import get_repository as get_account_repository, GetAccountBalanceRequest
 from core.apis.plaid.oauth import PlaidApiConfig
 
@@ -80,3 +81,19 @@ def request_account_balances(account_id):
                 'success': True,
                 'data': [b.to_dict() for b in balances]
             }
+
+
+@account_bp.route('/v1/api/accounts/<account_id>/holdings', methods=['GET'])
+@authed
+def list_holdings(account_id):
+    profile = get_identity()
+    repository = get_security_repository(mysql_config=mysql_config, plaid_config=plaid_config)
+    holdings = repository.get_holdings_by_profile_and_account(profile_id=profile['id'], account_id=account_id)
+    if holdings is not None:
+        return {
+            'success': True,
+            'data': [h.to_dict for h in holdings]
+        }
+    return {
+        'success': False
+    }

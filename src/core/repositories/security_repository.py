@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import and_
+from sqlalchemy import and_, join
 
 from core.stores.mysql import MySql
 from core.apis.plaid.investments import Investments, InvestmentsConfig, InvestmentsHoldingsGetRequest
@@ -56,8 +56,18 @@ class SecurityRepository:
         record = self.db.query(Security).where(Security.security_id == plaid_security_id).first()
         return record
 
+    def get_holdings_by_profile_and_account(self, profile_id, account_id):
+        account = self.db.query(Account).where(and_(
+            Account.profile_id == profile_id,
+            Account.id == account_id,
+        )).first()
+        records = self.db.query(Holding).where(Holding.account_id == account.id).all()
+        return records
+
     def get_holding_by_account_and_security(self, plaid_account_id, plaid_security_id):
+        print("looking for account with plaid id {0}".format(plaid_account_id), flush=True)
         account = self.db.query(Account).where(Account.account_id == plaid_account_id).first()
+        print("account: {0}".format(account.to_dict), flush=True)
         security = self.get_security_by_security_id(plaid_security_id)
         record = self.db.query(Holding).where(and_(
             Holding.account_id == account.id,

@@ -102,13 +102,13 @@ class AccountRepository:
         if account is not None:
             if request.start is not None:
                 if request.end is not None:
-                    records = self.db.query.filter(Balance.accountId == account.id and
+                    records = self.db.query.filter(Balance.account_id == account.id and
                                                    request.start <= Balance.timestamp <= request.end).all()
                 else:
-                    records = self.db.query.filter(Balance.accountId == account.id and
+                    records = self.db.query.filter(Balance.account_id == account.id and
                                                    request.start <= Balance.timestamp).all()
             else:
-                records = self.db.query(Balance).filter(Balance.accountId == account.id).all()
+                records = self.db.query(Balance).filter(Balance.account_id == account.id).all()
         return records
 
     def sync_all_accounts(self, profile_id):
@@ -131,18 +131,20 @@ class AccountRepository:
             for account_dict in plaid_accounts_dict['accounts']:
                 print(" * updating account details", flush=True)
                 account = self.__sync_update_account(profile, plaid_link, account_dict)
-                print(" * updating account balance", flush=True)
+                print(" * updating account balance for account {0}".format(account.id), flush=True)
                 balance_repo.sync_balance(account.id)
+
+            for account_dict in plaid_accounts_dict['accounts']:
                 # TODO - figure out enums or something
                 if account.type == "investment":
-                    print(" * updating investment holdings", flush=True)
+                    print(" * updating investment holdings for account {0}".format(account.id), flush=True)
                     security_repo.sync_holdings(profile_id=profile_id, account_id=account.id)
         print(" * done!", flush=True)
 
     def __augment_with_balances(self, account_records):
         augmented_records = []
         for account_record in account_records:
-            balance = self.db.query(Balance).filter(Balance.accountId == account_record.id)\
+            balance = self.db.query(Balance).filter(Balance.account_id == account_record.id)\
                 .order_by(desc(Balance.timestamp)).first()
             account_record.timestamp = balance.timestamp
             augmented_record = AccountWithBalance(
