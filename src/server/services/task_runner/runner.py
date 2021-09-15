@@ -2,10 +2,10 @@ import redis
 import json
 from datetime import datetime, timedelta
 import time
+from threading import Thread
 
 from core.apis.mailgun import MailGunConfig
 from core.repositories.scheduled_job_repository import get_repository as get_job_repository
-from server.services.task_runner.jobs.sync_accounts import SyncAccounts
 
 from server.config import config as server_config
 from server.services.api import load_config
@@ -18,45 +18,33 @@ mailgun_config = MailGunConfig(api_key=server_config['mailgun']['api_key'],
 WORKER_QUEUE = "mp:worker"
 
 
-class Runner:
+class Runner(Thread):
 
-    thread = None
     running = False
     timer_start = None
+    on_error = None
 
     def __init__(self):
+        super(Runner, self).__init__()
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
-        self.pubsub = self.redis.pubsub()
         self.job_repo = get_job_repository(mysql_config=sql_config, mailgun_config=mailgun_config)
-        self.pubsub.subscribe(**{WORKER_QUEUE: self.__fetch_jobs})
         self.jobs = self.job_repo.get_scheduled_jobs()
         print(" * found {0} scheduled jobs".format(len(self.jobs)), flush=True)
 
     def run(self):
-        self.running = True
-        self.thread = self.pubsub.run_in_thread(sleep_time=0.1)
         while self.running:
-            # run every minute, regardless of how long the last run took
-            self.timer_start = datetime.utcnow()
-            self.__run_scheduler()
-            sleep_time = datetime.utcnow() - self.timer_start
-            time_delta = 60 - sleep_time.seconds
-            time.sleep(time_delta)
-        self.thread.join()
-
-    def stop(self):
-        self.running = False
-
-    def __fetch_jobs(self, message):
-        print(" * found message on worker queue: {0}".format(message), flush=True)
-        json_data = json.loads(message['data'])
-        job = json_data['job']
-        if job is not None:
-            # todo - figure out some way to dynamically dispatch this
-            if job == 'sync_accounts':
-                print(" * syncing accounts for plaid access item", flush=True)
-                job = SyncAccounts(json_data)
-                job.run()
+            try:
+                # run every minute, regardless of how long the last run took
+                self.timer_start = datetime.utcnow()
+                self.__run_scheduler()
+                sleep_time = datetime.utcnow() - self.timer_start
+                time_delta = 60 - sleep_time.seconds
+                time.sleep(time_delta)
+            except Exception as ex:
+                if self.on_error is not None:
+                    self.on_error(ex)
+                else:
+                    print(" * caught exception but no handler defined, swallowing: {0}".format(ex))
 
     def __run_scheduler(self):
         # doesn't really 'run' a scheduler, but it's polled every second while the server is up
@@ -79,7 +67,8 @@ class Runner:
                 last_run_iso = "never"
                 if job.last_run is not None:
                     last_run_iso = job.last_run.isoformat()
-                print(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name, last_run_iso),flush=True)
+                print(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name, last_run_iso),
+                      flush=True)
 
                 self.redis.publish(WORKER_QUEUE, json.dumps({
                    'job': job.job_name,
@@ -92,4 +81,4 @@ class Runner:
                 ran_jobs_count += 1
 
         if ran_jobs_count > 0:
-            print(" * task runner scheduled {0} jobs".format(ran_jobs_count),flush=True)
+            print(" * task runner scheduled {0} jobs".format(ran_jobs_count), flush=True)
