@@ -5,15 +5,14 @@ import json
 from sqlalchemy import desc, and_
 
 from core.apis.plaid.accounts import Accounts, AccountsConfig
-from core.apis.plaid.enums import AccountTypes
 from core.models.account import Account
 from core.models.balance import Balance
 from core.models.profile import Profile
 from core.models.plaid_item import PlaidItem
 from core.presentation.account_presenters import AccountWithBalance
 from core.stores.mysql import MySql
-from core.repositories.balance_repository import CreateBalanceRequest, get_repository as get_balance_repository
-from core.repositories.security_repository import SecurityRepository, get_repository as get_security_repository
+from core.repositories.balance_repository import get_repository as get_balance_repository
+from core.repositories.security_repository import get_repository as get_security_repository
 
 
 class CreateAccountRequest:

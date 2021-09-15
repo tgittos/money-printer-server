@@ -2,12 +2,21 @@ from flask import Blueprint
 from flask import request
 import json
 
-from core.repositories.profile_repository import *
+from core.repositories.profile_repository import get_repository as get_profiles_repository, RegisterProfileRequest
+from core.apis.mailgun import MailGunConfig
 
 from server.services.api.routes.decorators import authed
+
 from server.config import config as server_config
 from server.services.api import load_config
 app_config = load_config()
+
+mysql_config = app_config['db']
+
+mailgun_config = MailGunConfig(
+    api_key=server_config['mailgun']['api_key'],
+    domain=server_config['mailgun']['domain']
+)
 
 
 # define the blueprint for plaid oauth
@@ -19,7 +28,7 @@ def register():
     first_name = request.json['firstName']
     last_name = request.json['lastName']
 
-    repo = get_repository()
+    repo = get_profiles_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
 
     result = repo.register(RegisterProfileRequest(
         first_name=first_name,
@@ -31,7 +40,7 @@ def register():
 
 @auth_bp.route('/v1/api/auth/unauthenticated', methods=['GET'])
 def get_unauthenticated_user():
-    repo = get_repository()
+    repo = get_profiles_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
     result = repo.get_unauthenticated_user()
     if result is None:
         return ({
@@ -47,7 +56,7 @@ def get_unauthenticated_user():
 def login():
     username = request.json['username']
     password = request.json['password']
-    repo = get_repository()
+    repo = get_profiles_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
     result = repo.login(LoginRequest(
         email=username,
         password=password
@@ -68,7 +77,7 @@ def login():
 @authed
 def logout():
     username = request.json['username']
-    repo = get_repository()
+    repo = get_profiles_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
     result_json = repo.logout(username=username)
 
     return result_json
@@ -76,7 +85,7 @@ def logout():
 @auth_bp.route('/v1/api/auth/reset', methods=['POST'])
 def reset_password():
     username = request.json['username']
-    repo = get_repository()
+    repo = get_profiles_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
     result_json = repo.reset_password(username=username)
     return result_json
 
@@ -85,6 +94,6 @@ def continue_reset_password():
     username = request.json['username']
     token = request.json['token']
     new_password = request.json['password']
-    repo = get_repository()
+    repo = get_profiles_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
     result = repo.process_reset_password(username=username, token=token, password=new_password)
 

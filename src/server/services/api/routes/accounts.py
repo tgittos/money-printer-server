@@ -1,10 +1,21 @@
 from flask import Blueprint, request
 from datetime import datetime
 
-from core.apis.plaid.common import PlaidApiConfig
-from core.repositories.account_repository import AccountRepository, get_repository as get_account_repository, GetAccountBalanceRequest
+from core.repositories.account_repository import get_repository as get_account_repository, GetAccountBalanceRequest
+from core.apis.plaid.oauth import PlaidApiConfig
 
 from server.services.api.routes.decorators import authed, get_identity
+
+from server.services.api import load_config
+app_config = load_config()
+
+mysql_config = app_config['db']
+
+# define a plaid oauth client config
+plaid_config = PlaidApiConfig()
+plaid_config.env = app_config['plaid']['env']
+plaid_config.client_id = app_config['plaid']['client_id']
+plaid_config.secret = app_config['plaid']['secret']
 
 
 # define the blueprint for plaid oauth
@@ -15,7 +26,7 @@ account_bp = Blueprint('account', __name__)
 @authed
 def list_accounts():
     user = get_identity()
-    repo = get_account_repository()
+    repo = get_account_repository(mysql_config=mysql_config, plaid_config=plaid_config)
     if user is not None and user['id'] is not None:
         accounts = repo.get_all_accounts_by_profile(user['id'])
         if accounts is not None:
@@ -32,7 +43,7 @@ def list_accounts():
 @authed
 def request_account_sync(account_id):
     user = get_identity()
-    repo = get_account_repository()
+    repo = get_account_repository(mysql_config=mysql_config, plaid_config=plaid_config)
     if user is not None and user['id'] is not None:
         account = repo.get_account_by_account_id(int(account_id))
         repo.schedule_account_sync(account.profile_id, account.plaid_item_id)
@@ -48,7 +59,7 @@ def request_account_sync(account_id):
 @authed
 def request_account_balances(account_id):
     user = get_identity()
-    repo = get_account_repository()
+    repo = get_account_repository(mysql_config=mysql_config, plaid_config=plaid_config)
     start_qs = request.args.get('start')
     start = None
     end_qs = request.args.get('end')
