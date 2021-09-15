@@ -13,7 +13,6 @@
       <change beforePath="$PROJECT_DIR$/../bin/client-bus" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/client-bus" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/data-server" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/data-server" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/money-printer" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/money-printer" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bin/mp.log&#10;" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/task-runner" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/task-runner" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/client.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
@@ -50,6 +49,8 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiLineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiLineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/SparklineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/SparklineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Label.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Label.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Legend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Legend.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.module.scss" afterDir="false" />
@@ -160,6 +161,7 @@
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/worker.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

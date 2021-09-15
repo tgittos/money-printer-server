@@ -32,7 +32,7 @@ class Worker(Thread):
                 if self.on_error is not None:
                     self.on_error(ex)
                 else:
-                    print(" * caught exception but no handler defined, swallowing: {0}".format(ex))
+                    print(" * caught exception but no handler defined, swallowing: {0}".format(ex), flush=True)
 
     def __fetch_jobs(self, message):
         print(" * found message on worker queue: {0}".format(message), flush=True)

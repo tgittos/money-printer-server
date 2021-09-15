@@ -44,7 +44,7 @@ class Runner(Thread):
                 if self.on_error is not None:
                     self.on_error(ex)
                 else:
-                    print(" * caught exception but no handler defined, swallowing: {0}".format(ex))
+                    print(" * caught exception but no handler defined, swallowing: {0}".format(ex), flush=True)
 
     def __run_scheduler(self):
         # doesn't really 'run' a scheduler, but it's polled every second while the server is up

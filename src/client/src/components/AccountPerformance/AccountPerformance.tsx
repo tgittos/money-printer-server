@@ -60,7 +60,10 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
             return null;
         }).filter(chartAccount => !!chartAccount);
 
-        if (chartAccounts != null) {
+        if (chartAccounts != null && chartAccounts.length > 0) {
+            if (Env.DEBUG) {
+                console.log("AccountPerformance::_onReceivedBalances - got chart data, updating state")
+            }
             this.setState(prev => ({
                 ...prev,
                 chartAccounts: chartAccounts

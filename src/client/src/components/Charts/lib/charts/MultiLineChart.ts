@@ -55,7 +55,7 @@ class MultiLineChart implements IChart {
         const svgHeight = margin.top + margin.bottom + height;
 
         // pull out axis data from all bundled sub data figures
-        const flatLabels = [];
+        const flatLabels: string[] = [];
         const flatData = this.props.data.flatMap(entry => entry.data)
             .sort((a, b) => {
                 return a.x < b.x

@@ -34,7 +34,7 @@ class Overview extends React.Component<IOverviewProps, IOverviewState> {
     private calculateDebts() {
         return '$' + millify(this.props.accounts.reduce((prev, curr) => {
             return curr.isDebt
-                ? prev + curr.balance
+                ? prev - curr.balance
                 : prev;
             }, 0));
     }

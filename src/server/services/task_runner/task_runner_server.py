@@ -4,7 +4,7 @@ import time
 
 
 def handle_thread_error(ex):
-    print(" * exception in thread: {0}".format(ex))
+    print(" * exception in thread: {0}".format(ex), flush=True)
 
 
 if __name__ == '__main__':
@@ -30,18 +30,18 @@ if __name__ == '__main__':
     runner_thread = Runner()
     worker_thread = Worker()
 
-    print(" * starting real time worker thread")
+    print(" * starting real time worker thread", flush=True)
     worker_thread.on_error = handle_thread_error
     worker_thread.start()
 
-    print(" * starting schedule runner thread")
+    print(" * starting schedule runner thread", flush=True)
     runner_thread.on_error = handle_thread_error
     runner_thread.start()
 
     while True:
         time.sleep(1)
 
-    print(" * shutting down worker, runner threads")
+    print(" * shutting down worker, runner threads", flush=True)
 
     worker_thread.join()
     runner_thread.join()
