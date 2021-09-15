@@ -1,10 +1,11 @@
 import os
 import sys
 import time
+import traceback
 
 
 def handle_thread_error(ex):
-    print(" * exception in thread: {0}".format(ex), flush=True)
+    print(" * exception in thread: {0}".format(traceback.format_exc()), flush=True)
 
 
 if __name__ == '__main__':

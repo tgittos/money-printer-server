@@ -14,13 +14,10 @@ from core.lib.notifications import notify_profile_created, ProfileCreatedNotific
     PasswordResetNotification, notify_password_reset
 
 
-def get_repository():
-    from server.services.api import load_config
-    app_config = load_config()
+def get_repository(mysql_config, mailgun_config):
     repo = ProfileRepository(ProfileRepositoryConfig(
-        mailgun_config=MailGunConfig(api_key=server_config['mailgun']['api_key'],
-                                     domain=server_config['mailgun']['domain']),
-        mysql_config=app_config['db']
+        mailgun_config=mailgun_config,
+        mysql_config=mysql_config
     ))
     return repo
 

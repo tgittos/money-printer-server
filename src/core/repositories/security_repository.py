@@ -79,7 +79,7 @@ class SecurityRepository:
         security.cusip = request.cusip
         security.isin = request.isin
         security.sedol = request.sedol
-        security.timestamp = datetime.timestamp()
+        security.timestamp = datetime.utcnow()
 
         self.db.add(security)
         self.db.commit()
@@ -94,7 +94,7 @@ class SecurityRepository:
         holding.cost_basis = request.cost_basis
         holding.quantity = request.quantity
         holding.iso_currency_code = request.iso_currency_code
-        holding.timestamp = datetime.timestamp()
+        holding.timestamp = datetime.utcnow()
 
         self.db.add(holding)
         self.db.commit()
@@ -102,10 +102,19 @@ class SecurityRepository:
         return holding
 
     def sync_holdings(self, profile_id, account_id):
-        account = self.db.query(Account).where(Account.account_id == account_id).first()
+        account = self.db.query(Account).where(Account.id == account_id).first()
+        if account is None:
+            print(" * requested holdings sync on account that couldn't be found: {0}".format(account_id), flush=True)
+            return
+
         plaid_item = self.db.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
+        if plaid_item is None:
+            print(" * requested holdings sync on account but couldn't find plaid_item: {0}".format(account.to_dict()))
+            return
+
         api = Investments(InvestmentsConfig(self.plaid_config))
         investment_dict = api.get_investments(plaid_item.access_token)
+
         # update securities from this account
         # these might not be account specific, but institution specific
         # so there's a chance I can detach it from the profile/account and just
@@ -127,13 +136,14 @@ class SecurityRepository:
                     isin=security_dict['isin'],
                     sedol=security_dict['sedol']
                 ))
+
         # update the holdings
         for holding_dict in investment_dict["holdings"]:
             holding = self.get_holding_by_account_and_security(holding_dict["account_id"], holding_dict["security_id"])
             if holding is None:
                 security = self.get_security_by_security_id(holding_dict['security_id'])
                 holding = self.create_holding(CreateHoldingRequest(
-                    profile_id=profile_id,
+                    account_id=account.id,
                     security_id=security.id,
                     cost_basis=holding_dict['cost_basis'],
                     quantity=holding_dict['quantity'],

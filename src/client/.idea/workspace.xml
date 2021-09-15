@@ -128,9 +128,12 @@
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/plaid/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/enums.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/plaid/investments.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/investments.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/notifications.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/notifications.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/holding.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/holding.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/plaid_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/plaid_item.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/reset_token.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/reset_token.py" afterDir="false" />
@@ -141,6 +144,7 @@
       <change beforePath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/profile_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/profile_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/scheduled_job_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/scheduled_job_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/security_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/security_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/stock_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/stock_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
@@ -161,7 +165,6 @@
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/worker.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

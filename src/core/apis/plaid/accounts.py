@@ -3,6 +3,7 @@ import json
 from plaid import ApiException
 from plaid.model.accounts_get_request import AccountsGetRequest
 from plaid.model.accounts_balance_get_request import AccountsBalanceGetRequest
+from plaid.model.accounts_balance_get_request_options import AccountsBalanceGetRequestOptions
 
 from core.apis.plaid.common import get_plaid_api_client
 
@@ -33,8 +34,9 @@ class Accounts:
         try:
             request = AccountsBalanceGetRequest(
                 access_token=access_token,
-                account_ids=[plaid_account_id]
-            )
+                options=AccountsBalanceGetRequestOptions(
+                    account_ids=[plaid_account_id]
+                ))
             response = self.client.accounts_balance_get(request)
             return response.to_dict()
         except ApiException as e:

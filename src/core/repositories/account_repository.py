@@ -54,6 +54,7 @@ class AccountRepository:
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         db = MySql(mysql_config)
         self.db = db.get_session()
+        self.mysql_config = mysql_config
         self.plaid_config = plaid_config
 
     def get_all_accounts_by_profile(self, profile_id):
@@ -77,7 +78,7 @@ class AccountRepository:
         r.official_name = params.official_name
         r.type = params.type
         r.subtype = params.subtype
-        r.timestamp = datetime.now()
+        r.timestamp = datetime.utcnow()
 
         self.db.add(r)
         self.db.commit()
@@ -133,9 +134,11 @@ class AccountRepository:
                 account = self.__sync_update_account(profile, plaid_link, account_dict)
                 print(" * updating account balance", flush=True)
                 balance_repo.sync_balance(account.id)
-                if AccountTypes.name_of(account.type) == AccountTypes.investment:
-                    print(" * updating account balance", flush=True)
-                    security_repo.sync_holdings(account.id)
+                # TODO - figure out enums or something
+                if account.type == "investment":
+                    print(" * updating investment holdings", flush=True)
+                    security_repo.sync_holdings(profile_id=profile_id, account_id=account.id)
+        print(" * done!", flush=True)
 
     def __augment_with_balances(self, account_records):
         augmented_records = []
@@ -163,7 +166,7 @@ class AccountRepository:
 
     def __sync_update_account(self, profile, plaid_link, account_dict):
         # update the account
-        account = self.get_account_by_account_id(account_dict['account_id'])
+        account = self.get_account_by_account_id(profile_id=profile.id, account_id=account_dict['account_id'])
         if account is None:
             account = self.create_account(CreateAccountRequest(
                 account_id=account_dict['account_id'],

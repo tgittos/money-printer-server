@@ -43,7 +43,7 @@ class BalanceRepository:
         balance.available = request.available
         balance.current = request.current
         balance.iso_currency_code = request.iso_currency_code
-        balance.timestamp = datetime.now()
+        balance.timestamp = datetime.utcnow()
 
         self.db.add(balance)
         self.db.commit()
@@ -62,12 +62,13 @@ class BalanceRepository:
             return
 
         api = Accounts(AccountsConfig(self.plaid_config))
-        balance_dict = api.get_account_balance(plaid_item.access_token, account.account_id)
-        new_balance = self.create_balance(CreateBalanceRequest(
-            account_id=account.id,
-            current=balance_dict['current'],
-            available=balance_dict['available'],
-            iso_currency_code=balance_dict['iso_currency_code']
-        ))
+        response_dict = api.get_account_balance(plaid_item.access_token, account.account_id)
+        for account_dict in response_dict["accounts"]:
+            balance_dict = account_dict['balances']
+            new_balance = self.create_balance(CreateBalanceRequest(
+                account_id=account.id,
+                current=balance_dict['current'],
+                available=balance_dict['available'],
+                iso_currency_code=balance_dict['iso_currency_code']
+            ))
 
-        return new_balance

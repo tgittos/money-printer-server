@@ -47,7 +47,7 @@ class PlaidRepository:
         r.item_id = params.item_id
         r.access_token = params.access_token
         r.request_id = params.request_id
-        r.timestamp = datetime.now()
+        r.timestamp = datetime.utcnow()
 
         self.db.add(r)
         self.db.commit()
