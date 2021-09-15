@@ -4,10 +4,16 @@ import json
 
 from sqlalchemy import desc, and_
 
-from core.stores.mysql import MySql
+from core.apis.plaid.accounts import Accounts, AccountsConfig
+from core.apis.plaid.enums import AccountTypes
 from core.models.account import Account
 from core.models.balance import Balance
+from core.models.profile import Profile
+from core.models.plaid_item import PlaidItem
 from core.presentation.account_presenters import AccountWithBalance
+from core.stores.mysql import MySql
+from core.repositories.balance_repository import CreateBalanceRequest, get_repository as get_balance_repository
+from core.repositories.security_repository import SecurityRepository, get_repository as get_security_repository
 
 
 class CreateAccountRequest:
@@ -31,11 +37,10 @@ class GetAccountBalanceRequest:
         self.end = end
 
 
-def get_repository():
-    from server.services.api import load_config
-    app_config = load_config()
+def get_repository(mysql_config, plaid_config):
     repo = AccountRepository(
-        mysql_config=app_config['db']
+        mysql_config=mysql_config,
+        plaid_config=plaid_config
     )
     return repo
 
@@ -45,10 +50,11 @@ WORKER_QUEUE = "mp:worker"
 
 class AccountRepository:
 
-    def __init__(self, mysql_config):
+    def __init__(self, mysql_config, plaid_config):
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         db = MySql(mysql_config)
         self.db = db.get_session()
+        self.plaid_config = plaid_config
 
     def get_all_accounts_by_profile(self, profile_id):
         account_records = self.db.query(Account).filter(Account.profile_id == profile_id).all()
@@ -105,6 +111,32 @@ class AccountRepository:
                 records = self.db.query(Balance).filter(Balance.accountId == account.id).all()
         return records
 
+    def sync_all_accounts(self, profile_id):
+        profile = self.__fetch_profile(profile_id)
+        if profile is None:
+            return
+
+        balance_repo = get_balance_repository(mysql_config=self.mysql_config, plaid_config=self.plaid_config)
+        security_repo = get_security_repository(mysql_config=self.mysql_config, plaid_config=self.plaid_config)
+        plaid_accounts_api = Accounts(AccountsConfig(
+            plaid_config=self.plaid_config
+        ))
+
+        plaid_links = self.__fetch_plaid_links(profile_id)
+        for plaid_link in plaid_links:
+            plaid_accounts_dict = plaid_accounts_api.get_accounts(plaid_link.access_token)
+
+            print(" * updating {0} accounts".format(len(plaid_accounts_dict['accounts'])), flush=True)
+
+            for account_dict in plaid_accounts_dict['accounts']:
+                print(" * updating account details", flush=True)
+                account = self.__sync_update_account(profile, plaid_link, account_dict)
+                print(" * updating account balance", flush=True)
+                balance_repo.sync_balance(account.id)
+                if AccountTypes.name_of(account.type) == AccountTypes.investment:
+                    print(" * updating account balance", flush=True)
+                    security_repo.sync_holdings(account.id)
+
     def __augment_with_balances(self, account_records):
         augmented_records = []
         for account_record in account_records:
@@ -121,3 +153,32 @@ class AccountRepository:
 
         return augmented_records
 
+    def __fetch_profile(self, profile_id):
+        record = self.db.query(Profile).where(Profile.id == profile_id).first()
+        return record
+
+    def __fetch_plaid_links(self, profile_id):
+        records = self.db.query(PlaidItem).where(PlaidItem.profile_id == profile_id).all()
+        return records
+
+    def __sync_update_account(self, profile, plaid_link, account_dict):
+        # update the account
+        account = self.get_account_by_account_id(account_dict['account_id'])
+        if account is None:
+            account = self.create_account(CreateAccountRequest(
+                account_id=account_dict['account_id'],
+                name=account_dict['name'],
+                official_name=account_dict['official_name'],
+                type=account_dict['type'],
+                subtype=account_dict['subtype'],
+                plaid_item_id=plaid_link.id,
+                profile_id=profile.id
+            ))
+        else:
+            account.name = account_dict['name']
+            account.official_name = account_dict['official_name']
+            account.type = account_dict['type'],
+            account.subtype = account_dict['subtype']
+            self.update_account(account)
+
+        return account

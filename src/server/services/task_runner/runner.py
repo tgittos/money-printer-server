@@ -31,6 +31,16 @@ class Runner(Thread):
         self.jobs = self.job_repo.get_scheduled_jobs()
         print(" * found {0} scheduled jobs".format(len(self.jobs)), flush=True)
 
+    def start(self) -> None:
+        print(" * scheduled runner thread running", flush=True)
+        self.running = True
+        super(Runner, self).start()
+
+    def stop(self) -> None:
+        print(" * shutting runner thread down", flush=True)
+        self.running = False
+        super(Runner, self).join()
+
     def run(self):
         while self.running:
             try:
@@ -62,7 +72,7 @@ class Runner(Thread):
             if job.frequency_type == "weekly":
                 timedelta_val = timedelta(weeks=int(job.frequency_value))
 
-            if job.last_run is None or timedelta_val is not None and job.last_run + timedelta_val <= datetime.utcnow():
+            if job.last_run is None or timedelta_val is not None and job.last_run + timedelta_val <= datetime.now():
                 # run the job, then update it's status
                 last_run_iso = "never"
                 if job.last_run is not None:

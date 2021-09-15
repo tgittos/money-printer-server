@@ -20,14 +20,25 @@ class Worker(Thread):
         self.pub_sub = self.redis.pubsub()
         self.pub_sub.subscribe(WORKER_QUEUE)
 
+    def start(self) -> None:
+        print(" * worker thread running", flush=True)
+        self.running = True
+        super(Worker, self).start()
+
+    def stop(self) -> None:
+        print(" * shutting worker thread down", flush=True)
+        self.running = False
+        super(Worker, self).join()
+
     def run(self):
         while self.running:
             try:
-                message = self.pub_sub.get_message()
+                message = self.pub_sub.get_message(ignore_subscribe_messages=True)
                 while message is not None:
+                    print(" * found message on worker queue: {0}".format(message), flush=True)
                     self.__fetch_jobs(message)
                     message = self.pub_sub.get_message()
-                time.sleep(0.1)
+                time.sleep(1)
             except Exception as ex:
                 if self.on_error is not None:
                     self.on_error(ex)
@@ -35,7 +46,6 @@ class Worker(Thread):
                     print(" * caught exception but no handler defined, swallowing: {0}".format(ex), flush=True)
 
     def __fetch_jobs(self, message):
-        print(" * found message on worker queue: {0}".format(message), flush=True)
         json_data = json.loads(message['data'])
         job = json_data['job']
         if job is not None:

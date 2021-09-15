@@ -48,57 +48,12 @@ class SyncAccounts:
                 self.sync_profile(profile.id, plaid_link.id)
 
     def sync_profile(self, profile_id, plaid_link_id):
-        profile = self.__fetch_profile(profile_id)
-        plaid_link = self.__fetch_plaid_link(plaid_link_id)
-        if profile is None or plaid_link is None:
-            print(" * error syncing accounts - either profile or plaid link is None! profile: {0}, plaid_link: {1}".format(
-                profile,
-                plaid_link
-            ), flush=True)
+        profile_repo = get_profile_repository()
+        profile = profile_repo.get_by_id(profile_id)
+
+        if profile is None:
+            print(" * error syncing accounts - could not find requested profile {0}".format(profile_id), flush=True)
             return
 
-        plaid_accounts_api = Accounts(AccountsConfig(
-            plaid_config=plaid_config
-        ))
-        plaid_accounts_dict = plaid_accounts_api.get_accounts(plaid_link.access_token)
-
-        print(" * updating {0} accounts".format(len(plaid_accounts_dict['accounts'])), flush=True)
         account_repo = get_account_repository()
-        balance_repo = get_balance_repository(mysql_config=sql_config)
-        for account_dict in plaid_accounts_dict['accounts']:
-            account = account_repo.get_account_by_account_id(account_dict['account_id'])
-            if account is None:
-                account = account_repo.create_account(CreateAccountRequest(
-                    account_id=account_dict['account_id'],
-                    name=account_dict['name'],
-                    official_name=account_dict['official_name'],
-                    type=account_dict['type'],
-                    subtype=account_dict['subtype'],
-                    plaid_item_id=plaid_link.id,
-                    profile_id=profile.id
-                ))
-            else:
-                account.name = account_dict['name']
-                account.official_name = account_dict['official_name']
-                account.type = account_dict['type'],
-                account.subtype = account_dict['subtype']
-                account_repo.update_account(account)
-
-            print(" * updating balance for account {0}", account.account_id, flush=True)
-            balance_dict = account_dict['balances']
-            latest_balance = balance_repo.create_balance(CreateBalanceRequest(
-                account_id=account.id,
-                available=balance_dict['available'],
-                current=balance_dict['current'],
-                iso_currency_code=balance_dict['iso_currency_code']
-            ))
-
-    def __fetch_profile(self, profile_id):
-        repo = get_profile_repository()
-        return repo.get_by_id(profile_id)
-
-    def __fetch_plaid_link(self, plaid_item_id):
-        return self.plaid_repo.get_plaid_item(GetPlaidItem(
-            id=plaid_item_id
-        ))
-
+        account_repo.sync_all_accounts(profile_id)

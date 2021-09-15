@@ -30,11 +30,9 @@ if __name__ == '__main__':
     runner_thread = Runner()
     worker_thread = Worker()
 
-    print(" * starting real time worker thread", flush=True)
     worker_thread.on_error = handle_thread_error
     worker_thread.start()
 
-    print(" * starting schedule runner thread", flush=True)
     runner_thread.on_error = handle_thread_error
     runner_thread.start()
 
@@ -42,6 +40,3 @@ if __name__ == '__main__':
         time.sleep(1)
 
     print(" * shutting down worker, runner threads", flush=True)
-
-    worker_thread.join()
-    runner_thread.join()
