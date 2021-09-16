@@ -128,13 +128,15 @@ class AccountRepository:
 
             print(" * updating {0} accounts".format(len(plaid_accounts_dict['accounts'])), flush=True)
 
+            accounts = []
             for account_dict in plaid_accounts_dict['accounts']:
                 print(" * updating account details", flush=True)
                 account = self.__sync_update_account(profile, plaid_link, account_dict)
+                accounts.append(account)
                 print(" * updating account balance for account {0}".format(account.id), flush=True)
                 balance_repo.sync_balance(account.id)
 
-            for account_dict in plaid_accounts_dict['accounts']:
+            for account in accounts:
                 # TODO - figure out enums or something
                 if account.type == "investment":
                     print(" * updating investment holdings for account {0}".format(account.id), flush=True)

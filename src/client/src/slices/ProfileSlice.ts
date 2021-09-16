@@ -10,7 +10,7 @@ export interface IProfileState {
     unauthenticated: IProfile | null;
 }
 
-function profileToIProfile(profile: Profile): IProfile {
+export function profileToIProfile(profile: Profile): IProfile {
     if (profile == null) {
         return null;
     }

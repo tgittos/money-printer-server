@@ -1,11 +1,16 @@
 import BaseRepository from "./BaseRepository";
 import ListAccountsResponse from "../responses/ListAccountsResponse";
 import Account from "../models/Account";
-import AppStore from "../stores/AppStore"
-import {setAccounts} from "../slices/AccountSlice";
+import AppStore, {getProfileState} from "../stores/AppStore"
+import {
+    IAccountBalance,
+    IAccountHolding,
+    setAccounts,
+    setBalances,
+    setHoldings
+} from "../slices/AccountSlice";
 import Balance from "../models/Balance";
 import GetAccountBalancesResponse from "../responses/GetAccountBalancesResponse";
-import moment from "moment";
 import Holding from "../models/Holding";
 import GetAccountHoldingsResponse from "../responses/GetAccountHoldingsResponse";
 import Env from "../env";
@@ -25,7 +30,13 @@ class AccountRepository extends BaseRepository {
 
         if (response.success) {
             const accounts = response.data.map(serverObj => new Account(serverObj));
-            AppStore.dispatch(setAccounts(accounts));
+            AppStore.dispatch(setAccounts(response.data));
+            accounts.forEach(account => {
+                this.getBalances(account.id);
+                if (account.type === "investment") {
+                    this.getHoldings(account.id);
+                }
+            });
             return accounts;
         }
 
@@ -57,6 +68,8 @@ class AccountRepository extends BaseRepository {
 
         const balances = response.data.map(obj => new Balance(obj));
 
+        AppStore.dispatch(setBalances({ accountId, balances: response.data } as IAccountBalance));
+
         return balances;
     }
 
@@ -70,6 +83,8 @@ class AccountRepository extends BaseRepository {
         }).then(response => (response as any).data as GetAccountHoldingsResponse);
 
         const holdings = response.data.map(obj => new Holding(obj));
+
+        AppStore.dispatch(setHoldings({ accountId, holdings: response.data } as IAccountHolding));
 
         return holdings;
     }

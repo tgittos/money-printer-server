@@ -1,7 +1,6 @@
 import styles from "./Overview.module.scss";
 import React from "react";
 import Account from "../../models/Account";
-import {formatAsCurrency} from "../../utilities";
 import millify from "millify";
 
 export interface IOverviewProps {
@@ -64,7 +63,6 @@ class Overview extends React.Component<IOverviewProps, IOverviewState> {
     }
 
     render() {
-        console.log(this.props.accounts)
         return <div className={styles.Overview}>
             <div>Accounts<span className="statValue">{this.props.accounts.length}</span></div>
             <div>Net worth<span className="statValue">{this.calculateNetWorth()}</span></div>

@@ -65,9 +65,7 @@ class SecurityRepository:
         return records
 
     def get_holding_by_account_and_security(self, plaid_account_id, plaid_security_id):
-        print("looking for account with plaid id {0}".format(plaid_account_id), flush=True)
         account = self.db.query(Account).where(Account.account_id == plaid_account_id).first()
-        print("account: {0}".format(account.to_dict), flush=True)
         security = self.get_security_by_security_id(plaid_security_id)
         record = self.db.query(Holding).where(and_(
             Holding.account_id == account.id,

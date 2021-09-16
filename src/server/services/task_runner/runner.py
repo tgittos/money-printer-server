@@ -72,7 +72,7 @@ class Runner(Thread):
             if job.frequency_type == "weekly":
                 timedelta_val = timedelta(weeks=int(job.frequency_value))
 
-            if job.last_run is None or timedelta_val is not None and job.last_run + timedelta_val <= datetime.now():
+            if job.last_run is None or timedelta_val is not None and job.last_run + timedelta_val <= datetime.utcnow():
                 # run the job, then update it's status
                 last_run_iso = "never"
                 if job.last_run is not None:

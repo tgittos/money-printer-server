@@ -1,10 +1,5 @@
-import axios from 'axios';
-import Cookies from 'universal-cookie';
-import jwt from 'jwt-decode';
-
 import AppStore from './../stores/AppStore';
-import {setCurrentProfile, setUnauthenticatedProfile} from "../slices/ProfileSlice";
-
+import {profileToIProfile, setCurrentProfile, setUnauthenticatedProfile} from "../slices/ProfileSlice";
 import BaseRepository from './BaseRepository'
 import type IRegisterProfileRequest from '../requests/RegisterProfileRequest';
 import type IRegisterProfileResponse from "../responses/RegisterProfileResponse";
@@ -12,9 +7,10 @@ import type IAuthProfileRequest from "../requests/AuthProfileRequest";
 import type IAuthProfileResponse from "../responses/AuthProfileResponse";
 import Env from '../env';
 import IGetUnauthenticatedProfileResponse from "../responses/GetUnauthenticatedProfileResponse";
-import Profile, {IProfile, IServerProfile} from "../models/Profile";
-import AuthService, {NullableProfile} from "../services/AuthService";
+import Profile from "../models/Profile";
+import AuthService from "../services/AuthService";
 import {setAppInitialized} from "../slices/AppSlice";
+import AccountRepository from "./AccountRepository";
 
 class ProfileRepository extends BaseRepository {
 
@@ -53,13 +49,13 @@ class ProfileRepository extends BaseRepository {
         profileToSet = unauthenticatedProfile;
       }
       AppStore.dispatch(setAppInitialized());
-      AppStore.dispatch(setUnauthenticatedProfile(unauthenticatedProfile));
+      AppStore.dispatch(setUnauthenticatedProfile(profileToIProfile(unauthenticatedProfile)));
     }
 
     if (Env.DEBUG) {
       console.log("ProfileRepository::init - setting profile to", profileToSet);
     }
-    AppStore.dispatch(setCurrentProfile(profileToSet));
+    AppStore.dispatch(setCurrentProfile(profileToIProfile(profileToSet)));
   }
 
   public async getUnauthenticatedProfile(): Promise<IGetUnauthenticatedProfileResponse> {

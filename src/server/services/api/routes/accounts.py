@@ -92,7 +92,7 @@ def list_holdings(account_id):
     if holdings is not None:
         return {
             'success': True,
-            'data': [h.to_dict for h in holdings]
+            'data': [h.to_dict() for h in holdings]
         }
     return {
         'success': False

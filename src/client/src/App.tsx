@@ -2,24 +2,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
-
 import AppStore, {getAccountsState, getAppState, getProfileState} from './stores/AppStore';
 import { IAppState } from "./slices/AppSlice";
-
 import I18nRepository from "./repositories/I18nRepository";
 import ProfileRepository from "./repositories/ProfileRepository";
-
-import Profile from "./models/Profile";
 import Dashboard from "./components/Dashboard/Dashboard";
-import PrivateRoute from "./components/shared/PrivateRoute";
-import Login from "./components/Login/Login";
 import BigLoader from "./components/shared/Loaders/BigLoader";
 import AccountRepository from "./repositories/AccountRepository";
+import Account from "./models/Account";
 
 class App extends React.Component<{}, IAppState> {
 
@@ -32,9 +22,12 @@ class App extends React.Component<{}, IAppState> {
 
     this.state = getAppState();
 
+    // load in all our stores and sync the current data state from the server
     this._i18n = new I18nRepository();
     this._profileRepo = new ProfileRepository();
     this._accountRepo = new AccountRepository();
+
+    // subscribe to any realtime data sources we need to keep everything realtime
 
     AppStore.subscribe(() => {
       const newState = getAppState();
@@ -57,7 +50,7 @@ class App extends React.Component<{}, IAppState> {
     const profileState = getProfileState();
     const accountState = getAccountsState();
 
-    console.log('accountState:', accountState);
+    console.log('holdings: ', accountState.holdings);
 
     if (this.state.loading) {
       return <div className="App">
@@ -82,7 +75,8 @@ class App extends React.Component<{}, IAppState> {
           <div className="content">
             <Dashboard profile={profileState.current}
                        authenticated={profileState.authenticated}
-                       accounts={accountState.accounts}
+                       accounts={accountState.accounts.map(account => new Account(account))}
+                       balances={accountState.balances}
             />
           </div>
         </div>;
