@@ -115,7 +115,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
             ? <div>
             {
                 this._filterData(this.props.accounts).map(account => {
-                    return <AccountItem account={account}></AccountItem>
+                    return <AccountItem key={account.id} account={account}></AccountItem>
                 })
             }
         </div>

@@ -3,27 +3,23 @@ import Account from "../../models/Account";
 import Balance from "../../models/Balance";
 import React from "react";
 import AccountRepository from "../../repositories/AccountRepository";
-import { Promise } from "bluebird";
+import { Promise as BluebirdPromise } from "bluebird";
 import Env from "../../env";
 import MultiLineChart, {IMultiLineChartDataEntry} from "../Charts/lib/charts/MultiLineChart";
 import IChartMargin from "../Charts/interfaces/IChartMargin";
 import ILineDataPoint from "../Charts/interfaces/ILineDataPoint";
 import StaticChart from "../Charts/StaticChart";
+import {IAccountBalance} from "../../slices/AccountSlice";
 
 export interface IAccountPerformanceProps {
     accounts: Account[]
+    balances: IAccountBalance[]
 }
 
 export interface IAccountPerformanceState {
-    chartAccounts: {
-        account: Account | null,
-        balances: Balance[]
-    }[]
 }
 
 class AccountPerformance extends React.Component<IAccountPerformanceProps, IAccountPerformanceState> {
-
-    private _accountRepo: AccountRepository;
 
     constructor(props: IAccountPerformanceProps) {
         super(props);
@@ -32,48 +28,16 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
             chartAccounts: []
         };
 
-        this._onReceivedBalances = this._onReceivedBalances.bind(this);
         this._getData = this._getData.bind(this);
-
-        this._accountRepo = new AccountRepository();
     }
 
     componentDidMount() {
-        if (Env.DEBUG) {
-            console.log("AccountPerformance::componentDidMount - querying accounts for balance history:", this.props.accounts);
-        }
-        Promise.all(
-            this.props.accounts.map(account =>
-                this._accountRepo.getBalances(account.id)))
-            .then(this._onReceivedBalances);
-    }
-
-    private _onReceivedBalances(responses: Balance[][]) {
-        const chartAccounts = responses.map(balances => {
-            if (balances.length > 0) {
-                const peek = balances[0];
-                const account = this.props.accounts.filter(a => a.id == peek.accountId)[0];
-                return {
-                    account, balances
-                }
-            }
-            return null;
-        }).filter(chartAccount => !!chartAccount);
-
-        if (chartAccounts != null && chartAccounts.length > 0) {
-            if (Env.DEBUG) {
-                console.log("AccountPerformance::_onReceivedBalances - got chart data, updating state")
-            }
-            this.setState(prev => ({
-                ...prev,
-                chartAccounts: chartAccounts
-            }));
-        }
     }
 
     private _getData(): IMultiLineChartDataEntry[] {
-        const chartData = this.state.chartAccounts.map(account => {
-            const data = account.balances.map(balance => {
+        const chartData = this.props.balances.map(accountBalance => {
+            const account = this.props.accounts.find(account => account.id === accountBalance.accountId);
+            const data = (accountBalance.balances ?? []).map(balance => {
                 return {
                     x: balance.timestamp,
                     y: balance.current
@@ -81,7 +45,7 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
             });
 
             return {
-                name: account.account.name,
+                name: account.name,
                 data
             } as IMultiLineChartDataEntry;
         });

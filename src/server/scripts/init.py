@@ -1,14 +1,16 @@
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     from script_base import *
 
-    from core.apis.mailgun import MailGunConfig
-    from core.repositories.profile_repository import ProfileRepository, ProfileRepositoryConfig, RegisterProfileRequest
+    from server.config import config as server_config
 
-    repo = ProfileRepository(ProfileRepositoryConfig(
+    from core.apis.mailgun import MailGunConfig
+    from core.repositories.profile_repository import get_repository as get_profile_repository, RegisterProfileRequest
+
+    repo = get_profile_repository(
+        mysql_config=app_config['db'],
         mailgun_config=MailGunConfig(api_key=server_config['mailgun']['api_key'],
-                                     domain=server_config['mailgun']['domain']),
-        mysql_config=app_config['db']
-    ))
+                                     domain=server_config['mailgun']['domain']))
 
     email = input("Email to invite: ")
     first_name = input("First name: ")
@@ -22,5 +24,3 @@ if __name__ == '__main__':
         print("Your invite was sent to {0}, please check your email".format(email))
     else:
         print("Something went wrong, try again: {0}".format(result.message))
-
-

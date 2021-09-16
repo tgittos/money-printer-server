@@ -31,6 +31,16 @@ class Runner(Thread):
         self.jobs = self.job_repo.get_scheduled_jobs()
         print(" * found {0} scheduled jobs".format(len(self.jobs)), flush=True)
 
+    def start(self) -> None:
+        print(" * scheduled runner thread running", flush=True)
+        self.running = True
+        super(Runner, self).start()
+
+    def stop(self) -> None:
+        print(" * shutting runner thread down", flush=True)
+        self.running = False
+        super(Runner, self).join()
+
     def run(self):
         while self.running:
             try:

@@ -1,7 +1,19 @@
 from functools import wraps
 from flask import request, Response
 
-from core.repositories.profile_repository import get_repository
+from core.repositories.profile_repository import get_repository as get_profile_repository
+from core.apis.mailgun import MailGunConfig
+
+from server.config import config as server_config
+from server.services.api import load_config
+app_config = load_config()
+
+mysql_config = app_config['db']
+
+mailgun_config = MailGunConfig(
+    api_key=server_config['mailgun']['api_key'],
+    domain=server_config['mailgun']['domain']
+)
 
 
 def authed(func):
@@ -20,7 +32,7 @@ def authed(func):
                 "success": False
             }, status=401, mimetype='application/json')
 
-        repo = get_repository()
+        repo = get_profile_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
 
         if token is not None:
             if repo.is_token_valid(token):
@@ -36,6 +48,6 @@ def get_identity():
     if token is not None:
         parts = token.split(' ')
         token = parts[len(parts) - 1]
-    repo = get_repository()
+    repo = get_profile_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
     profile_dict = repo.decode_jwt(token)['profile']
     return profile_dict

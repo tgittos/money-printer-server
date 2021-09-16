@@ -1,16 +1,17 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
 from core.models.base import Base
 
 
-class Balance(Base):
-    __tablename__ = 'balances'
+class Holding(Base):
+    __tablename__ = 'holdings'
 
     id = Column(Integer, primary_key=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
-    available = Column(Float)
-    current = Column(Float)
+    security_id = Column(Integer, ForeignKey("securities.id"), nullable=False)
+    cost_basis = Column(Float)
+    quantity = Column(Float)
     iso_currency_code = Column(String(8))
     timestamp = Column(DateTime)
 
@@ -18,8 +19,10 @@ class Balance(Base):
         return {
             'id': self.id,
             'account_id': self.account_id,
-            'available': self.available,
-            'current': self.current,
+            'security_id': self.security_id,
+            'cost_basis': self.cost_basis,
+            'quantity': self.quantity,
             'iso_currency_code': self.iso_currency_code,
-            'timestamp': self.timestamp.isoformat(),
+            'timestamp': self.timestamp.isoformat()
         }
+

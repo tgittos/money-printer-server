@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+
 from core.models.base import Base
 
 
@@ -9,8 +11,8 @@ class Account(Base):
     plaid_item_id = Column(Integer, ForeignKey("plaid_items.id"), nullable=False)
     profile_id = Column(Integer, ForeignKey("profiles.id"), nullable=False)
     account_id = Column(String(128))
-    name = Column(String(64))
-    official_name = Column(String(128))
+    name = Column(String(256))
+    official_name = Column(String(256))
     type = Column(String(32))
     subtype = Column(String(32))
     timestamp = Column(DateTime)
