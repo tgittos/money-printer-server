@@ -49,6 +49,14 @@ class SecurityRepository:
         self.db = mysql.get_session()
         self.plaid_config = plaid_config
 
+    def get_securities(self):
+        records = self.db.query(Security).distinct(Security.ticker_symbol).all()
+        return records
+
+    def get_security_by_symbol(self, symbol):
+        record = self.db.query(Security).where(Security.ticker_symbol == symbol).first()
+        return record
+
     def get_securities_by_account_id(self, account_id):
         records = self.db.query(Security).where(Security.account_id == account_id).all()
         return records

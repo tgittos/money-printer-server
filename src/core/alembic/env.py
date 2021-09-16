@@ -27,6 +27,7 @@ from core.models.reset_token import ResetToken
 from core.models.scheduled_job import ScheduledJob
 from core.models.security import Security
 from core.models.holding import Holding
+from core.models.security_price import SecurityPrice
 
 from core.models.base import Base
 target_metadata = Base.metadata

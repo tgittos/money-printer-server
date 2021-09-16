@@ -2,8 +2,7 @@ from threading import Thread
 import redis
 import time
 import json
-
-from server.services.task_runner.jobs.sync_accounts import SyncAccounts
+import importlib
 
 
 WORKER_QUEUE = "mp:worker"
@@ -49,8 +48,19 @@ class Worker(Thread):
         json_data = json.loads(message['data'])
         job = json_data['job']
         if job is not None:
-            # todo - figure out some way to dynamically dispatch this
-            if job == 'sync_accounts':
-                print(" * syncing accounts for plaid access item", flush=True)
-                job = SyncAccounts(json_data)
+            print(" * attempting to resolve job {0}".format(job), flush=True)
+            job = self.__resolve_job(job, json_data)
+            print(" * successfully resolved job {0}, running".format(job), flush=True)
+            if job is not None:
                 job.run()
+
+    def __resolve_job(self, job_name, args):
+        try:
+            package = job_name
+            klass = job_name.title().replace('_', '')
+            job_module = importlib.import_module('server.services.task_runner.jobs.' + package)
+            job_klass = getattr(job_module, klass)
+            if job_klass is not None:
+                return job_klass(args)
+        except Exception as ex:
+            raise Exception(" * error resolving job {0}".format(job_name), ex)
