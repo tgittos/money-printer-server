@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import and_, join
+from sqlalchemy import and_
 
 from core.stores.mysql import MySql
 from core.apis.plaid.investments import Investments, InvestmentsConfig, InvestmentsHoldingsGetRequest
@@ -8,6 +8,7 @@ from core.models.plaid_item import PlaidItem
 from core.models.account import Account
 from core.models.security import Security
 from core.models.holding import Holding
+from core.presentation.holding_presenters import HoldingWithSecurity
 
 
 def get_repository(mysql_config, plaid_config):
@@ -61,8 +62,14 @@ class SecurityRepository:
             Account.profile_id == profile_id,
             Account.id == account_id,
         )).first()
-        records = self.db.query(Holding).where(Holding.account_id == account.id).all()
-        return records
+        holdings = self.db.query(Holding).where(Holding.account_id == account.id).all()
+        security_ids = list([h.security_id for h in holdings])
+        securities = self.db.query(Security).filter(Security.id.in_(security_ids)).all()
+        presentations = []
+        for holding in holdings:
+            security = list(filter(lambda s: s.id == holding.security_id, securities))[0]
+            presentations.append(HoldingWithSecurity(holding, security))
+        return presentations
 
     def get_holding_by_account_and_security(self, plaid_account_id, plaid_security_id):
         account = self.db.query(Account).where(Account.account_id == plaid_account_id).first()
