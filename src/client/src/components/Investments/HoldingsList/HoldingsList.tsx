@@ -20,6 +20,7 @@ interface IHoldingLatestPrice {
 export interface IHoldingsListProps {
     account: Account;
     holdings: Holding[];
+    onActiveChanged?: (holding: Holding) => void;
 }
 
 export interface IHoldingsListState {
@@ -50,7 +51,7 @@ class HoldingsList extends React.Component<IHoldingsListProps, IHoldingsListStat
         this._stocks = new StockService();
 
         this._onHoldingLatestFetched = this._onHoldingLatestFetched.bind(this);
-
+        this._onHoldingClicked = this._onHoldingClicked.bind(this);
     }
 
     componentDidMount() {
@@ -99,6 +100,19 @@ class HoldingsList extends React.Component<IHoldingsListProps, IHoldingsListStat
         }));
     }
 
+    private _onHoldingClicked(holdingId: number) {
+       const holding = this.props.holdings.find(holding => holding.id === holdingId);
+       if (holding) {
+           this.setState(prev => ({
+               ...prev,
+               activeHoldingId: holdingId
+           }));
+           if (this.props.onActiveChanged) {
+               this.props.onActiveChanged(holding);
+           }
+       }
+    }
+
     private getLatestPrice(holdingId: number) {
         const { holdingPrices } = this.state;
         const holding = holdingPrices.find(holdingPrice => holdingPrice.holdingId === holdingId);
@@ -116,7 +130,7 @@ class HoldingsList extends React.Component<IHoldingsListProps, IHoldingsListStat
         return <div className={styles.HoldingsList}>
             {
                 (this.props.holdings || []).map(holding =>
-                    <div key={holding.id}>
+                    <div key={holding.id} onClick={() => this._onHoldingClicked(holding.id)}>
                         <HoldingListItem active={this.state.activeHoldingId === holding.id}
                                          account={this.props.account}
                                          holding={holding}

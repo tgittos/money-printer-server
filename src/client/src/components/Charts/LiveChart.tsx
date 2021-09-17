@@ -72,11 +72,11 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                             .pipe(filter(val => val !== undefined))
                             .subscribe(this._onLiveData)
                     );
-                    const today: Date = new Date();
+                    const yesterday: Date = moment().subtract(1, 'days').toDate();
                     if (Env.DEBUG) {
                         console.log('LiveChart::componentDidMount - fetching historical data for ticker');
                     }
-                    this._historical.historicalIntraday(this.props.ticker, today)
+                    this._historical.historicalIntraday(this.props.ticker, yesterday)
                         .then(this._onHistoricalData);
                 }
             })
@@ -208,7 +208,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
 
     render() {
         if (this.loading) {
-            return <BigLoader></BigLoader>
+            return <BigLoader />
         }
 
         if (this.state.chartData.length > 0) {
@@ -225,7 +225,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                     }
                 } as IChartDimensions}
                 data={this.state.chartData}
-            ></StaticChart>
+                />
         }
 
         return <div>No data found (live or historical!)</div>;

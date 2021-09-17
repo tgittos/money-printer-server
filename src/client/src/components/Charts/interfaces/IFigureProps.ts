@@ -4,8 +4,9 @@ import IFigureDataPoint from "./IFigureDataPoint";
 interface IFigureProps {
     name: string;
     data: IFigureDataPoint[];
-    xScale: any;
-    yScale: any;
+    xScale?: any;
+    yScale?: any;
+    colorScale?: any;
     dimensions: IChartDimensions
 }
 

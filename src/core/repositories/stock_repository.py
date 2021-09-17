@@ -122,7 +122,7 @@ class StockRepository:
         records = self.db.query(SecurityPrice).filter(and_(
             SecurityPrice.symbol == symbol,
             SecurityPrice.resolution == "intraday",
-            start is None or SecurityPrice.date >= start
+            start is None or SecurityPrice.date >= datetime.fromtimestamp(start)
         )).all()
         return records
 
@@ -207,7 +207,7 @@ class StockRepository:
             return None
 
     def __fetch_historical_intraday(self, symbol, start=None) -> DataFrame:
-        start = datetime.fromtimestamp(start) or (datetime.utcnow() - timedelta(minutes=5))
+        start = datetime.fromtimestamp(start) or datetime.utcnow()
         print(" * fetching historical intraday prices for symbol {0} since {1}".format(symbol, start), flush=True)
         try:
             # convert dates from default utc to ET
