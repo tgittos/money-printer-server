@@ -1,4 +1,4 @@
-import Profile, {IServerProfile} from "../models/Profile";
+import {IServerProfile} from "../models/Profile";
 
 interface IRegisterProfileResponse {
   success: boolean;

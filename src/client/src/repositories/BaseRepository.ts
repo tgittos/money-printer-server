@@ -1,55 +1,27 @@
 import Env from '../env';
-import axios from "axios";
 import AuthService from "../services/AuthService";
+import HttpService from "../services/HttpService";
 
 class BaseRepository {
 
-  protected  apiEndpoint: string = "";
-  protected authService: AuthService;
+  protected apiEndpoint: string = "";
+  protected http: HttpService;
 
   constructor() {
-    this.authService = new AuthService();
-    this.wireAuthInterceptors();
+    this.http = new HttpService();
   }
 
   public get endpoint() {
-    return "http://" + Env.API_HOST + "/" + Env.API_VERSION + "/api/" + this.apiEndpoint;
-  }
-
-  public async unauthenticatedRequest<ReqT, ResT>(opts: any): Promise<ResT> {
-    return await axios.request<ReqT>(
-        opts
-      ).then(response => (response as unknown) as ResT);
+    return this.http.baseApiEndpoint + "/" + this.apiEndpoint;
   }
 
   public async authenticatedRequest<ReqT, ResT>(opts: any): Promise<ResT> {
-    const token = this.authService.token;
-    return await axios.request<ReqT>({
-      ...opts,
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }).then(response => (response as unknown) as ResT);
+    return this.http.authenticatedRequest(opts);
   }
 
-  private wireAuthInterceptors() {
-    axios.interceptors.response.use(response => {
-      return response;
-    }, error => {
-      if (error.response !== undefined) {
-        const {status} = error.response;
-        if (status === 401) {
-          if (Env.DEBUG) {
-            console.log('BaseRepository::wireAuthInterceptors - axios response interceptor: received 401 from server, clearing auth information');
-          }
-          // this.authService.clearProfile();
-          // AppStore.dispatch(clearCurrentProfile());
-        }
-      }
-      return Promise.reject(error);
-    })
+  public async unauthenticatedRequest<ReqT, ResT>(opts: any): Promise<ResT> {
+    return this.http.unauthenticatedRequest(opts);
   }
-
 }
 
 export default BaseRepository;

@@ -6,12 +6,13 @@ import StaticChart from "../Charts/StaticChart";
 import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import {IChartFactory} from "./lib/ChartFactory";
-import HistoricalQuoteRepository from "../../repositories/HistoricalQuoteRepository";
 import moment from 'moment';
 import ISymbolResponse from "../../responses/SymbolsResponse";
 import Env from "../../env";
 import ISymbol from "../../interfaces/ISymbol";
 import { SortDescending } from "../../interfaces/ISymbol";
+import StockService from "../../services/StockService";
+import {IServerHistoricalIntradaySymbol} from "../../models/symbols/HistoricalIntradaySymbol";
 
 interface ILiveChartProps {
     ticker: string;
@@ -33,7 +34,7 @@ interface ILiveChartState {
 class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
 
     private _liveQuotes: LiveQuoteRepository;
-    private _historicalQuotes: HistoricalQuoteRepository;
+    private _historical: StockService;
     private _subscriptions: Subscription[] = [];
 
     private get loading(): boolean {
@@ -49,14 +50,14 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
             cachedHistoricalData: [],
             cachedRealtimeData: [],
             chartData: [],
-            start: props.start ?? moment().subtract('days', 1)
+            start: props.start ?? moment().subtract(1, 'days')
         } as ILiveChartState;
 
         this._onLiveData = this._onLiveData.bind(this);
         this._onHistoricalData = this._onHistoricalData.bind(this);
 
         this._liveQuotes = LiveQuoteRepository.instance;
-        this._historicalQuotes = new HistoricalQuoteRepository();
+        this._historical = new StockService();
     }
 
     componentDidMount() {
@@ -75,7 +76,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                     if (Env.DEBUG) {
                         console.log('LiveChart::componentDidMount - fetching historical data for ticker');
                     }
-                    this._historicalQuotes.historicalIntraday(this.props.ticker, today)
+                    this._historical.historicalIntraday(this.props.ticker, today)
                         .then(this._onHistoricalData);
                 }
             })
@@ -139,11 +140,10 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
         }));
     }
 
-    private _onHistoricalData(response: ISymbolResponse) {
-        if (response.success) {
+    private _onHistoricalData(data: IServerHistoricalIntradaySymbol[]) {
+        if (data && data.length > 0) {
             let { loadingHistorical, cachedRealtimeData, cachedHistoricalData, chartData } = this.state;
             const { loadingRealtime } = this.state;
-            const { data } = response;
 
             if (loadingHistorical) {
                 loadingHistorical = false;
@@ -187,7 +187,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                 chartData: this.expireData(chartData).sort(SortDescending)
             }));
         } else {
-            console.log(`LiveChart::_onHistoricalData - warning! historical intraday for ${this.props.ticker} failed: ${response.message}`);
+            console.log(`LiveChart::_onHistoricalData - warning! historical intraday for ${this.props.ticker} empty`);
             this.setState(prev => ({
                 ...prev,
                 loadingHistorical: false

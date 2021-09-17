@@ -1,0 +1,43 @@
+.HoldingsList {
+  width: 250px;
+  max-height: 100%;
+  font-size: 0.8em;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  overflow-y: scroll;
+}
+
+.HoldingsListItem {
+  border: #041901 solid 1px;
+  min-height: 40px;
+  padding: 0;
+
+  .HoldingsListItemSymbol {
+    width: 100%;
+    border-bottom: solid 1px black;
+    height: 30px;
+    font-size: 0.9em;
+    background: #5FA23F;
+    color: #0C4102;
+  }
+
+  .HoldingListItemDetail {
+
+    .HoldingListItemDetailQuantity {
+      font-weight: bolder;
+    }
+
+    .HoldingListItemDetailCost {
+      font-weight: bolder;
+    }
+  }
+
+  .HoldingListItemTimestamp {
+    font-weight: lighter;
+    font-size: 0.7em;
+  }
+
+}

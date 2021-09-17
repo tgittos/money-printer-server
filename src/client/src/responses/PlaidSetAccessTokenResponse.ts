@@ -1,4 +1,4 @@
-import IAccount from "../interfaces/IAccount";
+import {IAccount} from "../models/Account";
 
 interface IPlaidSetAccessTokenResponse {
     success: boolean;

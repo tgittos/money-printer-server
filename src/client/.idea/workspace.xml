@@ -80,8 +80,8 @@
       <change beforePath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/IAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/IAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/IAuthedProfile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/IAuthedProfile.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interfaces/IAccount.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interfaces/IAuthedProfile.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Account.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Account.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Balance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Balance.ts" afterDir="false" />
@@ -93,7 +93,7 @@
       <change beforePath="$PROJECT_DIR$/src/repositories/AccountRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/AccountRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/ClientHubRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/ClientHubRepository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/HistoricalQuoteRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/HistoricalQuoteRepository.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/repositories/HistoricalQuoteRepository.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/LiveQuoteRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/LiveQuoteRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/PlaidRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/PlaidRepository.ts" afterDir="false" />
@@ -128,6 +128,7 @@
       <change beforePath="$PROJECT_DIR$/src/testData.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/testData.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utilities.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/alembic/env.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/alembic/env.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/mailgun.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/mailgun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" afterDir="false" />
@@ -142,7 +143,9 @@
       <change beforePath="$PROJECT_DIR$/../core/models/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/reset_token.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/reset_token.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/scheduled_job.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/scheduled_job.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/security_price.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/security_price.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/presentation/account_presenters.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/presentation/account_presenters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/presentation/holding_presenters.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/presentation/holding_presenters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/account_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/account_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/balance_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/balance_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" afterDir="false" />
@@ -160,6 +163,7 @@
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/symbols.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/symbols.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/upstream_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/upstream_thread.py" afterDir="false" />
@@ -168,6 +172,7 @@
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/historical_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/historical_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_securities.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_securities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" afterDir="false" />
     </list>

@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import ProfileSlice, {IProfileState} from "./../slices/ProfileSlice";
 import AppSlice, {IAppState} from "./../slices/AppSlice";
 import PlaidSlice, {IPlaidState} from "../slices/PlaidSlice";
-import AccountSlice, {IAccountState} from "../slices/AccountSlice";
+import AccountSlice, {IAccountBalance, IAccountHolding, IAccountState} from "../slices/AccountSlice";
 
 const appStore = configureStore({
     reducer: {
@@ -28,6 +28,14 @@ export function getPlaidState(): IPlaidState {
 
 export function getAccountsState(): IAccountState {
     return (appStore.getState() as { accounts: IAccountState }).accounts;
+}
+
+export function getHoldingsState(): IAccountHolding[] {
+    return (appStore.getState() as { accounts: IAccountState }).accounts.holdings;
+}
+
+export function getBalancesState(): IAccountBalance[] {
+    return (appStore.getState() as { accounts: IAccountState }).accounts.balances;
 }
 
 export default appStore;

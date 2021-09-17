@@ -2,20 +2,30 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 
 import React from "react";
-import AppStore, {getAccountsState, getAppState, getProfileState} from './stores/AppStore';
+import AppStore, {getAccountsState, getAppState, getHoldingsState, getProfileState} from './stores/AppStore';
 import { IAppState } from "./slices/AppSlice";
 import I18nRepository from "./repositories/I18nRepository";
 import ProfileRepository from "./repositories/ProfileRepository";
 import Dashboard from "./components/Dashboard/Dashboard";
 import BigLoader from "./components/shared/Loaders/BigLoader";
 import AccountRepository from "./repositories/AccountRepository";
-import Account from "./models/Account";
+import Account, {IAccount} from "./models/Account";
+import {Route, BrowserRouter as Router, Switch} from "react-router-dom";
+import Header from "./components/Header/Header";
+import Investments from "./components/Investments/Investments";
+import Forecasting from "./components/Forecasting/Forecasting";
 
 class App extends React.Component<{}, IAppState> {
 
   private _i18n: I18nRepository;
   private _profileRepo: ProfileRepository;
   private _accountRepo: AccountRepository;
+
+  public get loading(): boolean {
+    const profileState = getProfileState();
+    const accountState = getAccountsState();
+    return profileState.loading || accountState.loading;
+  }
 
   constructor(props: {}) {
     super(props);
@@ -46,13 +56,16 @@ class App extends React.Component<{}, IAppState> {
   componentWillUnmount() {
   }
 
+  private filterInvestmentAccounts(accountShapes: IAccount[]): Account[] {
+    return accountShapes.map(shape => new Account(shape))
+        .filter(account => account.isInvestment);
+  }
+
   render() {
     const profileState = getProfileState();
     const accountState = getAccountsState();
 
-    console.log('holdings: ', accountState.holdings);
-
-    if (this.state.loading) {
+    if (this.loading) {
       return <div className="App">
         <BigLoader></BigLoader>
       </div>
@@ -72,14 +85,27 @@ class App extends React.Component<{}, IAppState> {
     }
 
     return <div className="App">
+        <Router>
           <div className="content">
-            <Dashboard profile={profileState.current}
-                       authenticated={profileState.authenticated}
-                       accounts={accountState.accounts.map(account => new Account(account))}
-                       balances={accountState.balances}
-            />
+            <Header profile={profileState.current} authenticated={profileState.authenticated} />
+            <Switch>
+              <Route path="/" exact>
+                <Dashboard profile={profileState.current}
+                           authenticated={profileState.authenticated}
+                           accounts={accountState.accounts.map(account => new Account(account))}
+                           balances={accountState.balances}
+                />
+              </Route>
+              <Route path="/investments">
+                <Investments accounts={this.filterInvestmentAccounts(accountState.accounts)}></Investments>
+              </Route>
+              <Route path="/forecasting">
+                <Forecasting></Forecasting>
+              </Route>
+            </Switch>
           </div>
-        </div>;
+        </Router>
+      </div>;
   }
 }
 

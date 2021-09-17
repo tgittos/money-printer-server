@@ -43,8 +43,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                     Money Printer
                 </Navbar.Brand>
                 <Nav className={cssClassName}>
-                    <Nav.Link href="#dashboard">Dashboard</Nav.Link>
-                    <Nav.Link href="#forecasting">Forecasting</Nav.Link>
+                    <Nav.Link href="/">Dashboard</Nav.Link>
+                    <Nav.Link href="/investments">Investments</Nav.Link>
+                    <Nav.Link href="/forecasting">Forecasting</Nav.Link>
                     <MiniProfile profile={this.props.profile} authenticated={this.props.authenticated}></MiniProfile>
                </Nav>
             </Container>
