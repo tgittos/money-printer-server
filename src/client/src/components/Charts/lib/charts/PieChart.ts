@@ -1,11 +1,12 @@
 import IChart from "../../interfaces/IChart";
 import * as d3 from "d3";
 import {MutableRefObject} from "react";
-import Pie, {IPieData} from "../figures/Pie";
+import Pie, {IPieData, IPieProps} from "../figures/Pie";
 import IChartProps from "../../interfaces/IChartProps";
 import IFigureProps from "../../interfaces/IFigureProps";
 import Legend, {ILegendProps} from "../figures/Legend";
 import {ScaleOrdinal} from "d3";
+import {formatAsCurrency} from "../../../../utilities";
 
 class PieChart implements IChart {
     readonly svg: d3.Selection<SVGElement, IPieData[], HTMLElement, undefined>;
@@ -15,11 +16,14 @@ class PieChart implements IChart {
     private colorDomain: ScaleOrdinal<any, any>;
     private pie: Pie;
     private legend: Legend;
+    private labelFormatter: (val: IPieData) => string;
 
     constructor(props: IChartProps<IPieData>) {
         this.props = props;
         this.svgRef = props.svgRef;
         this.svg = d3.select(this.svgRef.current);
+        this.labelFormatter = this.props.labelFormatter ??
+            ((val: IPieData) => val.name);
 
         this.draw();
     }
@@ -36,7 +40,7 @@ class PieChart implements IChart {
         const svgWidth = margin.left + margin.right + width;
         const svgHeight = margin.top + margin.bottom + height;
 
-        const flatLabels = this.props.data.map(d => d.name);
+        const flatLabels = this.props.data.map(this.labelFormatter);
 
         this.colorDomain = d3.scaleOrdinal()
             .domain(flatLabels)
@@ -45,8 +49,9 @@ class PieChart implements IChart {
         this.pie = new Pie({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            colorScale: this.colorDomain
-        } as IFigureProps);
+            colorScale: this.colorDomain,
+            valueFormatter: (val: IPieData) => formatAsCurrency(val.value)
+        } as IPieProps);
 
         this.legend = new Legend({
             labels: flatLabels.reverse(),

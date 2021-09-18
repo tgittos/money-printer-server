@@ -100,6 +100,7 @@ class InvestmentAccountSummary extends React.Component<IInvestmentAccountSummary
                                 : <StaticChart chart={PieChart}
                                                dimensions={this.chartDimensions}
                                                data={this.pieChartData}
+                                               labelFormatter={datum => datum.name}
                                                />
                         }
                     </Col>

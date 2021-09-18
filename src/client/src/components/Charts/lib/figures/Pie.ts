@@ -8,13 +8,25 @@ export interface IPieData extends IFigureDataPoint{
     value: number;
 }
 
-class Pie {
-    readonly props: IFigureProps;
-    readonly colorDomain: ScaleOrdinal<any, any>;
+export interface IPieProps extends IFigureProps {
+    labelFormatter: (val: IPieData) => string;
+    valueFormatter: (val: IPieData) => string;
+}
 
-    constructor(props: IFigureProps) {
+class Pie {
+    readonly props: IPieProps;
+    readonly colorDomain: ScaleOrdinal<any, any>;
+    readonly labelFormatter: (val: IPieData) => string;
+    readonly valueFormatter: (val: IPieData) => string | number;
+
+    constructor(props: IPieProps) {
         this.props = props;
         this.colorDomain = this.props.colorScale;
+
+        this.labelFormatter = this.props.labelFormatter ??
+            ((datum: IPieData) => datum.name);
+        this.valueFormatter = this.props.valueFormatter ??
+            ((datum: IPieData) => datum.value);
     }
 
     public draw(svg: d3.Selection<SVGElement, IPieData[], HTMLElement, undefined>) {
@@ -65,12 +77,12 @@ class Pie {
             .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
                 .attr("y", "-0.4em")
                 .attr("font-weight", "bold")
-                .text(d => d.data.name))
+                .text(d => this.labelFormatter(d.data)))
             .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
                 .attr("x", 0)
                 .attr("y", "0.7em")
                 .attr("fill-opacity", 0.7)
-                .text(d => d.data.value));
+                .text(d => this.valueFormatter(d.data)));
     }
 }
 
