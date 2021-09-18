@@ -1,15 +1,9 @@
-import {IServerHistoricalIntradaySymbol} from "../models/symbols/HistoricalIntradaySymbol";
-
-export interface IRawHistoricalIntradayResponse {
-    success: boolean;
-    message: string;
-    data: string;
-}
+import {IHistoricalIntradaySymbol} from "../models/symbols/HistoricalIntradaySymbol";
 
 interface IHistoricalIntradayResponse {
     success: boolean;
     message: string;
-    data: IServerHistoricalIntradaySymbol[];
+    data: IHistoricalIntradaySymbol[];
 }
 
 export default IHistoricalIntradayResponse;

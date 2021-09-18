@@ -1,7 +1,7 @@
 import IFigureProps from "../../interfaces/IFigureProps";
 import * as d3 from "d3";
 import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
-import {ScaleOrdinal} from "d3";
+import {PieArcDatum, ScaleOrdinal} from "d3";
 
 export interface IPieData extends IFigureDataPoint{
     name: string;
@@ -9,10 +9,10 @@ export interface IPieData extends IFigureDataPoint{
 }
 
 class Pie {
-    readonly props: IFigureProps<IPieData>;
+    readonly props: IFigureProps;
     readonly colorDomain: ScaleOrdinal<any, any>;
 
-    constructor(props: IFigureProps<IPieData>) {
+    constructor(props: IFigureProps) {
         this.props = props;
         this.colorDomain = this.props.colorScale;
     }
@@ -27,11 +27,13 @@ class Pie {
             .domain((this.props.data as IPieData[]).map(d => d.name))
             .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse());
 
-        const arc = d3.arc()
+        const arc = d3.arc<PieArcDatum<IPieData>>()
             .innerRadius(0)
             .outerRadius(Math.min(width, height / 2 - 1));
 
-        const arcLabel = d3.arc().innerRadius(radius).outerRadius(radius);
+        const arcLabel = d3.arc<PieArcDatum<IPieData>>()
+            .innerRadius(radius)
+            .outerRadius(radius);
 
         const pie = d3.pie<IPieData>()
             .value(d => d.value);

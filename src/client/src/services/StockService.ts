@@ -1,9 +1,9 @@
 import HttpService from "./HttpService";
 import IHistoricalEoDResponse from "../responses/HistoricalEoDResponse";
 import moment from "moment";
-import IHistoricalIntradayResponse, {IRawHistoricalIntradayResponse} from "../responses/HistoricalIntradayResponse";
-import HistoricalIntradaySymbol, {IServerHistoricalIntradaySymbol} from "../models/symbols/HistoricalIntradaySymbol";
+import IHistoricalIntradayResponse from "../responses/HistoricalIntradayResponse";
 import {IServerHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
+import {IHistoricalIntradaySymbol} from "../models/symbols/HistoricalIntradaySymbol";
 
 class StockService {
 
@@ -61,7 +61,7 @@ class StockService {
     }
 
 
-    public async historicalIntraday(symbol: string, start: Date): Promise<IServerHistoricalIntradaySymbol[]> {
+    public async historicalIntraday(symbol: string, start: Date): Promise<IHistoricalIntradaySymbol[]> {
 
         const startTs = start.getTime() / 1000;
 

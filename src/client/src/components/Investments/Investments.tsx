@@ -70,7 +70,7 @@ class Investments extends React.Component<IInvestmentsProps, IInvestmentsState> 
         return <div className={styles.Investments}>
             <Tabs activeKey={this.activeKey} onSelect={this._onTabSelect} className={styles.InvestmentTabs}>
                 { this.props.accounts.map(account =>
-                    <Tab key={account.id} className={styles.InvestmentTabContent} title={account.name} eventKey={account.id}>
+                    <Tab key={account.id} title={account.name} eventKey={account.id} className={styles.InvestmentTabContent}>
                         <InvestmentAccountSummary account={account}></InvestmentAccountSummary>
                     </Tab>) }
             </Tabs>

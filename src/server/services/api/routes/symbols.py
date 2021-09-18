@@ -50,7 +50,7 @@ def symbol_intraday(symbol):
 
     return {
         'success': True,
-        'data': result.to_json(orient='records')
+        'data': result.to_dict(orient='records')
     }
 
 

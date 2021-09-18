@@ -1,9 +1,9 @@
 import moment from 'moment';
 import ISymbol from "../../interfaces/ISymbol";
 
-export interface IServerHistoricalIntradaySymbol {
+export interface IHistoricalIntradaySymbol {
     symbol: string;
-    date: string;
+    date: string | Date;
     label: string;
     average: number;
     changeOverTime: number;
@@ -24,7 +24,7 @@ export interface IServerHistoricalIntradaySymbol {
     volume: number;
 }
 
-class HistoricalIntradaySymbol implements ISymbol {
+class HistoricalIntradaySymbol implements IHistoricalIntradaySymbol {
     public symbol: string;
     public average: number;
     public changeOverTime: number;
@@ -43,8 +43,9 @@ class HistoricalIntradaySymbol implements ISymbol {
     public notional: number;
     public numberOfTrades: number;
     public volume: number;
+    public label: string;
 
-    private _date: string;
+    readonly _date: string;
     private _label: string;
 
     public get date(): Date {
@@ -64,7 +65,7 @@ class HistoricalIntradaySymbol implements ISymbol {
         return date;
     }
 
-    constructor(ticker: string, obj: IServerHistoricalIntradaySymbol) {
+    constructor(ticker: string, obj: IHistoricalIntradaySymbol) {
         this.symbol = ticker;
         this.average = obj.average;
         this.changeOverTime = obj.changeOverTime;
@@ -84,7 +85,7 @@ class HistoricalIntradaySymbol implements ISymbol {
         this.numberOfTrades = obj.numberOfTrades;
         this.volume = obj.volume;
 
-        this._date = obj.date;
+        this._date = obj.date as string;
         this._label = obj.label;
     }
 }

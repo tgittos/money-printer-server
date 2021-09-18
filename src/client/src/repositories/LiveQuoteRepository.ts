@@ -16,6 +16,9 @@ class LiveQuoteRepository extends BaseRepository {
     public get connected$(): Observable<boolean> {
         return this._chRepo.connected$;
     }
+    public get connected(): boolean {
+        return this._chRepo.connected;
+    }
 
     public get liveQuotes$(): Observable<NullableSymbol> {
         if (this._liveQuoteChannel == null) {

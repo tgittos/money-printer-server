@@ -1,19 +1,22 @@
 .HoldingsList {
   width: 100%;
-  max-height: 100%;
   font-size: 0.8em;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .HoldingsListItem {
   border: #041901 solid 1px;
   padding: 0;
   cursor: pointer;
+
+  div {
+    height: auto;
+  }
 
   .HoldingsListItemSymbol {
     width: 100%;

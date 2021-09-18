@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {MutableRefObject} from 'react';
 import {filter, Subscription} from "rxjs";
 
 import BigLoader from "../shared/Loaders/BigLoader";
@@ -7,16 +7,18 @@ import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import {IChartFactory} from "./lib/ChartFactory";
 import moment from 'moment';
-import ISymbolResponse from "../../responses/SymbolsResponse";
 import Env from "../../env";
 import ISymbol from "../../interfaces/ISymbol";
 import { SortDescending } from "../../interfaces/ISymbol";
 import StockService from "../../services/StockService";
-import {IServerHistoricalIntradaySymbol} from "../../models/symbols/HistoricalIntradaySymbol";
+import {IHistoricalIntradaySymbol} from "../../models/symbols/HistoricalIntradaySymbol";
+import IChartProps from "./interfaces/IChartProps";
 
 interface ILiveChartProps {
     ticker: string;
     chart: IChartFactory;
+    svgRef?: MutableRefObject<null>;
+    dimensions: IChartDimensions;
     start?: Date;
     end?: Date;
 }
@@ -72,7 +74,9 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                             .pipe(filter(val => val !== undefined))
                             .subscribe(this._onLiveData)
                     );
-                    const yesterday: Date = moment().subtract(1, 'days').toDate();
+                    // subscribe to this ticker on the data upstream
+                    this._liveQuotes.subscribeToSymbol(this.props.ticker);
+                    const yesterday: Date = moment().utc().subtract(1, 'days').toDate()
                     if (Env.DEBUG) {
                         console.log('LiveChart::componentDidMount - fetching historical data for ticker');
                     }
@@ -88,6 +92,8 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
     }
 
     componentWillUnmount() {
+        // unsubscribe to the upstream symbol
+        this._liveQuotes.unsubscribeFromSymbol(this.props.ticker);
         this._subscriptions.forEach(subscription =>
             subscription.unsubscribe());
     }
@@ -140,7 +146,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
         }));
     }
 
-    private _onHistoricalData(data: IServerHistoricalIntradaySymbol[]) {
+    private _onHistoricalData(data: IHistoricalIntradaySymbol[]) {
         if (data && data.length > 0) {
             let { loadingHistorical, cachedRealtimeData, cachedHistoricalData, chartData } = this.state;
             const { loadingRealtime } = this.state;
@@ -152,9 +158,14 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                     console.log('LiveChart::_onLiveData - toggling loading historical data to false');
                 }
 
-                if (!loadingRealtime) {
+                if (!loadingRealtime || !this._liveQuotes.connected) {
                     if (Env.DEBUG) {
-                        console.log('LiveChart::_onLiveData - detected realtime data already streaming in, building chart data and flushing both caches');
+                        if (!loadingRealtime) {
+                            console.log('LiveChart::_onLiveData - detected realtime data already streaming in, building chart data and flushing both caches');
+                        }
+                        if (!this._liveQuotes.connected) {
+                            console.log('LiveChart::_onLiveData - realtime connection not connected, build chart data and flush cache');
+                        }
                     }
                     chartData = []
                         .concat(chartData)
