@@ -1,7 +1,7 @@
 import moment from 'moment';
 import ISymbol from "../../interfaces/ISymbol";
 
-export interface IServerHistoricalEoDSymbol {
+export interface IHistoricalEoDSymbol {
     symbol: string;
     date: string;
     label: string;
@@ -51,7 +51,7 @@ class HistoricalEoDSymbol implements ISymbol {
         return moment(this._date).toDate();
     }
 
-    constructor(ticker: string, obj: IServerHistoricalEoDSymbol) {
+    constructor(ticker: string, obj: IHistoricalEoDSymbol) {
         this.symbol = ticker;
         this.average = obj.average;
         this.changeOverTime = obj.changeOverTime;

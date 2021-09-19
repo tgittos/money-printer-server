@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-import json
+from datetime import datetime, timedelta, timezone
 
 from flask import Blueprint
 from flask import request
@@ -48,6 +47,17 @@ def symbol_intraday(symbol):
         start=int(float(start)),
     )
 
+    if result is None:
+        start_date = datetime.fromtimestamp(float(start), tz=timezone.utc)
+        return {
+            'success': False,
+            'message': 'no data found for symbol {0} over time period {1} - {2}'.format(
+                symbol,
+                start_date,
+                "now"
+            )
+        }
+
     return {
         'success': True,
         'data': result.to_dict(orient='records')
@@ -74,7 +84,19 @@ def symbol_eod(symbol):
 
     result = repo.historical_daily(symbol, start=start, end=end)
 
+    if result is None:
+        start_date = datetime.fromtimestamp(float(start), tz=timezone.utc)
+        end_date = datetime.fromtimestamp(float(end), tz=timezone.utc)
+        return {
+            'success': False,
+            'message': 'no data found for symbol {0} over time period {1} - {2}'.format(
+                symbol,
+                start_date,
+                end_date
+            )
+        }
+
     return {
         'success': True,
-        'data': result.to_json(orient='records')
+        'data': result.to_dict(orient='records')
     }

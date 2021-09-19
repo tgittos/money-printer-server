@@ -76,7 +76,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                     );
                     // subscribe to this ticker on the data upstream
                     this._liveQuotes.subscribeToSymbol(this.props.ticker);
-                    const yesterday: Date = moment().utc().subtract(1, 'days').toDate()
+                    const yesterday: Date = moment().utc().subtract(7, 'days').toDate()
                     if (Env.DEBUG) {
                         console.log('LiveChart::componentDidMount - fetching historical data for ticker');
                     }

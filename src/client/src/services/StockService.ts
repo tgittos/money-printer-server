@@ -2,7 +2,7 @@ import HttpService from "./HttpService";
 import IHistoricalEoDResponse from "../responses/HistoricalEoDResponse";
 import moment from "moment";
 import IHistoricalIntradayResponse from "../responses/HistoricalIntradayResponse";
-import {IServerHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
+import {IHistoricalEoDSymbol, IServerHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
 import {IHistoricalIntradaySymbol} from "../models/symbols/HistoricalIntradaySymbol";
 
 class StockService {
@@ -18,7 +18,7 @@ class StockService {
         this.http = new HttpService();
     }
 
-    public async previous(symbol: string): Promise<IServerHistoricalEoDSymbol> {
+    public async previous(symbol: string): Promise<IHistoricalEoDSymbol> {
         if (symbol === null || symbol === undefined || symbol === '') {
             throw Error(`cannot fetch previous for invalid symbol: ${symbol}`);
         }
@@ -37,10 +37,10 @@ class StockService {
     }
 
     public async historicalEoD(symbol: string, start: Date | null = null, end: Date | null = null):
-        Promise<IServerHistoricalEoDSymbol[]> {
+        Promise<IHistoricalEoDSymbol[]> {
 
-        const startTs = moment(start).seconds()
-        const endTs = moment(end ?? moment(start).subtract(7, 'days')).seconds()
+        const startTs = moment(start).utc().toDate().getTime() / 1000.0;
+        const endTs = moment(end ?? moment.utc()).utc().toDate().getTime() / 1000.0;
 
         const response = await this.http.authenticatedRequest<null, IHistoricalEoDResponse>({
             method: "GET",
@@ -54,7 +54,7 @@ class StockService {
                 startTs,
                 endTs,
                 response.message);
-            return [];
+            return [] as IHistoricalEoDSymbol[];
         }
 
         return response.data;
@@ -76,7 +76,7 @@ class StockService {
                 'since',
                 startTs,
                 response.message);
-            return [];
+            return [] as IHistoricalIntradaySymbol[];
         }
 
         return response.data;

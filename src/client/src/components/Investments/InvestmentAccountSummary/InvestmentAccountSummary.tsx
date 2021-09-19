@@ -12,6 +12,7 @@ import StaticChart from "../../Charts/StaticChart";
 import PieChart from "../../Charts/lib/charts/PieChart";
 import {IPieData} from "../../Charts/lib/figures/Pie";
 import IChartDimensions from "../../Charts/interfaces/IChartDimensions";
+import InvestmentPerformance from "../InvestmentPerformance/InvestmentPerformance";
 
 export interface IInvestmentAccountSummaryProps {
     account: Account;
@@ -93,10 +94,7 @@ class InvestmentAccountSummary extends React.Component<IInvestmentAccountSummary
                     <Col>
                         {
                             this.activeHolding
-                                ? <LiveChart chart={BasicCandleChart}
-                                             dimensions={this.chartDimensions}
-                                             ticker={this.state.activeHolding.securitySymbol}
-                                             />
+                                ? <InvestmentPerformance holding={this.activeHolding}/>
                                 : <StaticChart chart={PieChart}
                                                dimensions={this.chartDimensions}
                                                data={this.pieChartData}

@@ -64,11 +64,11 @@ class BalanceRepository:
         api = Accounts(AccountsConfig(self.plaid_config))
         response_dict = api.get_account_balance(plaid_item.access_token, account.account_id)
 
-        if "accounts" not in response_dict:
+        if response_dict is None or 'accounts' not in response_dict:
             print(" * unusual response from upstream: {0}".format(response_dict))
             return
 
-        for account_dict in response_dict["accounts"]:
+        for account_dict in response_dict['accounts']:
             balance_dict = account_dict['balances']
 
             new_balance = self.create_balance(CreateBalanceRequest(

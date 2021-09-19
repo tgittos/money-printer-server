@@ -1,9 +1,9 @@
-import {IServerHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
+import {IHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
 
 interface IHistoricalEoDResponse {
     success: boolean;
     message: string;
-    data: IServerHistoricalEoDSymbol[];
+    data: IHistoricalEoDSymbol[];
 }
 
 export default IHistoricalEoDResponse;

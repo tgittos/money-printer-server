@@ -49,6 +49,10 @@ class HistoricalIntradaySymbol implements IHistoricalIntradaySymbol {
     private _label: string;
 
     public get date(): Date {
+        if (this._date && this._date != '') {
+            return moment.utc(this._date).toDate();
+        }
+
         const sansMeridianParts = this._label.split(' ');
         let sansMeridian = sansMeridianParts[0];
         if (sansMeridian.length == 1) {

@@ -1,6 +1,5 @@
 import os
-from datetime import time, date, timedelta, datetime, timezone
-import pytz
+from datetime import timedelta, datetime, timezone
 import traceback
 
 import pandas as pd
@@ -58,7 +57,9 @@ class StockRepository:
                 raise Exception("could not find tracked security for requested symbol", symbol)
             security_id = security.id
         stored = self.__get_stored_historical_daily(symbol, start=start)
-        if self.__verify_daily_dataset(stored, start, end):
+        if self.__verify_daily_dataset(stored,
+                                       start=datetime.fromtimestamp(start, tz=timezone.utc).date(),
+                                       end=datetime.fromtimestamp(end, tz=timezone.utc).date()):
             print(" * found data in store already, returning existing data", flush=True)
             return self.__to_dataframe(stored)
         data = self.__fetch_historical_daily(symbol, start=start, end=end, close_only=close_only)
@@ -84,7 +85,7 @@ class StockRepository:
                 raise Exception("could not find tracked security for requested symbol", symbol)
             security_id = security.id
         stored = self.__get_stored_historical_intraday(symbol, start=start)
-        if self.__verify_intraday_dataset(stored, start):
+        if self.__verify_intraday_dataset(stored, datetime.fromtimestamp(start, tz=timezone.utc)):
             print(" * found data in store already, returning existing data", flush=True)
             return self.__to_dataframe(stored)
         data = self.__fetch_historical_intraday(symbol, start=start)
@@ -107,7 +108,7 @@ class StockRepository:
                 raise Exception("could not find tracked security for requested symbol", symbol)
             security_id = security.id
         start = datetime.now(tz=timezone.utc) - timedelta(days=1)
-        stored = self.__get_stored_historical_daily(symbol, start)
+        stored = self.__get_stored_historical_daily(symbol, start.timestamp())
         if self.__verify_daily_dataset(stored, start.date(), datetime.utcnow().date()):
             print(" * found data in store already, returning existing data", flush=True)
             return self.__to_dataframe(stored)
@@ -127,12 +128,12 @@ class StockRepository:
     # if so, return our local version
     # if not, fetch from the upstream API the store locally
     def __get_stored_historical_intraday(self, symbol, start=None):
-        real_start = datetime.fromtimestamp(start, tz=timezone.utc)
+        real_start = datetime.fromtimestamp(start, tz=timezone.utc) or datetime.now(tz=timezone.utc) - timedelta(days=7)
         print(" * searching db intraday resolution symbol/s for {0} from {1} to now".format(symbol, real_start))
         records = self.db.query(SecurityPrice).filter(and_(
             SecurityPrice.symbol == symbol,
             SecurityPrice.resolution == "intraday",
-            start is None or SecurityPrice.date >= real_start
+            real_start is None or SecurityPrice.date >= real_start
         )).all()
         return records
 
@@ -140,12 +141,12 @@ class StockRepository:
     # if so, return our local version
     # if not, fetch from the upstream API the store locally
     def __get_stored_historical_daily(self, symbol, start=None, end=None):
-        real_start = start
+        real_start = datetime.now(tz=timezone.utc) - timedelta(weeks=1)
         if start is not None:
-            real_start = start.date()
-        real_end = end
+            real_start = datetime.fromtimestamp(start, tz=timezone.utc)
+        real_end = datetime.now(tz=timezone.utc)
         if end is not None:
-            real_end = end.date()
+            real_end = datetime.fromtimestamp(end, tz=timezone.utc)
         print(" * searching db daily resolution symbol/s for {0} from {1} - {2}".format(symbol, real_start, real_end))
         records = self.db.query(SecurityPrice).filter(and_(
             SecurityPrice.symbol == symbol,
@@ -213,7 +214,7 @@ class StockRepository:
         start = start is not None and datetime.fromtimestamp(start, tz=timezone.utc) or end - timedelta(days=30)
         real_start = self.__utc_to_local(start).date()
         real_end = self.__utc_to_local(end).date()
-        print(" * fetching historical daily prices for symbol {0}, {1} - {2}".format(symbol, real_start, real_end), flush=True)
+        print(" * fetching historical daily prices for symbol {0}, {1} - {2} from upstream".format(symbol, real_start, real_end), flush=True)
         try:
             df = get_historical_data(symbol,
                                      start=real_start,
@@ -239,7 +240,7 @@ class StockRepository:
             total_df = pd.DataFrame()
             for i in range(days+1):
                 fetch_date = real_start + timedelta(days=i)
-                print(" * fetching historical intraday prices for symbol {0} on {1}".format(symbol, fetch_date),
+                print(" * fetching historical intraday prices for symbol {0} on {1} from upstream".format(symbol, fetch_date),
                       flush=True)
                 df = get_historical_intraday(symbol, date=fetch_date)
                 total_df = total_df.append(df)
@@ -301,6 +302,8 @@ class StockRepository:
         return val.astimezone(tz=local_tz)
 
     def __verify_daily_dataset(self, dataset, start, end):
+        print('start:', start, flush=True)
+        print('end:', end, flush=True)
         days = np.busday_count(start, end)
         return len(dataset) >= days
 
