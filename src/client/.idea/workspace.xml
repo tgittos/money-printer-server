@@ -18,7 +18,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" afterDir="false" />
@@ -48,17 +47,28 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiLineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiLineChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/PieChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/PieChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/SparklineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/SparklineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Label.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Label.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Legend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Legend.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Line.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Pie.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Pie.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Forecasting/Forecasting.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Forecasting/Forecasting.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Forecasting/Forecasting.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Forecasting/Forecasting.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Investments/HoldingsList/HoldingListItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/HoldingsList/HoldingListItem.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Investments/HoldingsList/HoldingsList.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/HoldingsList/HoldingsList.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Investments/HoldingsList/HoldingsList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/HoldingsList/HoldingsList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Investments/Investments.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/Investments.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Investments/Investments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/Investments.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.tsx" afterDir="false" />
@@ -80,20 +90,18 @@
       <change beforePath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/IAccount.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/IAccount.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/IAuthedProfile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/IAuthedProfile.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Account.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Account.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Balance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Balance.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Holding.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Holding.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Profile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Profile.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Security.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Security.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/symbols/HistoricalEoDSymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/symbols/HistoricalEoDSymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/symbols/HistoricalIntradaySymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/symbols/HistoricalIntradaySymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/symbols/RealtimeSymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/symbols/RealtimeSymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/AccountRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/AccountRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/ClientHubRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/ClientHubRepository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/HistoricalQuoteRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/HistoricalQuoteRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/I18nRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/LiveQuoteRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/LiveQuoteRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/PlaidRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/PlaidRepository.ts" afterDir="false" />
@@ -106,6 +114,7 @@
       <change beforePath="$PROJECT_DIR$/src/responses/GetAccountBalancesResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/GetAccountBalancesResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/GetAccountHoldingsResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/GetAccountHoldingsResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/GetUnauthenticatedProfileResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/GetUnauthenticatedProfileResponse.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/responses/HistoricalEoDResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/HistoricalEoDResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/HistoricalIntradayResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/HistoricalIntradayResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/ListAccountsResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/ListAccountsResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/PlaidCreateLinkTokenRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/PlaidCreateLinkTokenRequest.ts" afterDir="false" />
@@ -114,6 +123,8 @@
       <change beforePath="$PROJECT_DIR$/src/responses/RegisterProfileResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/RegisterProfileResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/responses/SymbolsResponse.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/responses/SymbolsResponse.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/AuthService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/AuthService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/HttpService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/HttpService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/StockService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/StockService.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/slices/AccountSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/slices/AccountSlice.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/slices/AppSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/slices/AppSlice.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/slices/PlaidSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/slices/PlaidSlice.ts" afterDir="false" />
@@ -128,6 +139,7 @@
       <change beforePath="$PROJECT_DIR$/src/testData.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/testData.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utilities.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/google.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/mailgun.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/mailgun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/accounts.py" afterDir="false" />
@@ -138,13 +150,17 @@
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/holding.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/holding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/iex_blacklist.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/iex_blacklist.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/plaid_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/plaid_item.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/reset_token.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/reset_token.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/scheduled_job.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/scheduled_job.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/security_price.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/security_price.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/presentation/account_presenters.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/presentation/account_presenters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/presentation/holding_presenters.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/presentation/holding_presenters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/account_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/account_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/balance_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/balance_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/holding_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/holding_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/profile_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/profile_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/scheduled_job_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/scheduled_job_repository.py" afterDir="false" />
@@ -152,6 +168,7 @@
       <change beforePath="$PROJECT_DIR$/../core/repositories/stock_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/stock_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/init.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/schedule.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/script_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/script_base.py" afterDir="false" />
@@ -160,6 +177,7 @@
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/symbols.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/symbols.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/upstream_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/upstream_thread.py" afterDir="false" />
@@ -168,6 +186,7 @@
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/historical_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/historical_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_securities.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_securities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" afterDir="false" />
     </list>
@@ -222,10 +241,10 @@
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stories" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\shared" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\models" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\responses" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stores" />
-      <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\shared" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components" />
     </key>
   </component>

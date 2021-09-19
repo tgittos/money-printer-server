@@ -1,9 +1,9 @@
 import moment from 'moment';
 import ISymbol from "../../interfaces/ISymbol";
 
-export interface IHistoricalIntradaySymbol {
+export interface IHistoricalEoDSymbol {
     symbol: string;
-    date: string | Date;
+    date: string;
     label: string;
     average: number;
     changeOverTime: number;
@@ -24,7 +24,7 @@ export interface IHistoricalIntradaySymbol {
     volume: number;
 }
 
-class HistoricalIntradaySymbol implements IHistoricalIntradaySymbol {
+class HistoricalEoDSymbol implements ISymbol {
     public symbol: string;
     public average: number;
     public changeOverTime: number;
@@ -43,33 +43,15 @@ class HistoricalIntradaySymbol implements IHistoricalIntradaySymbol {
     public notional: number;
     public numberOfTrades: number;
     public volume: number;
-    public label: string;
 
-    readonly _date: string;
+    private _date: string;
     private _label: string;
 
     public get date(): Date {
-        if (this._date && this._date != '') {
-            return moment.utc(this._date).toDate();
-        }
-
-        const sansMeridianParts = this._label.split(' ');
-        let sansMeridian = sansMeridianParts[0];
-        if (sansMeridian.length == 1) {
-            if (sansMeridianParts[1] == "PM") {
-                sansMeridian = (parseInt(sansMeridian, 10) + 12).toString();
-            }
-            sansMeridian += ":00";
-        }
-        const dateToParse = `${this._date} ${sansMeridian}`;
-        const date = moment(dateToParse).toDate();
-        if (date === undefined) {
-            console.log('couldn\'t parse date', dateToParse);
-        }
-        return date;
+        return moment(this._date).toDate();
     }
 
-    constructor(ticker: string, obj: IHistoricalIntradaySymbol) {
+    constructor(ticker: string, obj: IHistoricalEoDSymbol) {
         this.symbol = ticker;
         this.average = obj.average;
         this.changeOverTime = obj.changeOverTime;
@@ -89,9 +71,9 @@ class HistoricalIntradaySymbol implements IHistoricalIntradaySymbol {
         this.numberOfTrades = obj.numberOfTrades;
         this.volume = obj.volume;
 
-        this._date = obj.date as string;
+        this._date = obj.date;
         this._label = obj.label;
     }
 }
 
-export default HistoricalIntradaySymbol;
+export default HistoricalEoDSymbol;

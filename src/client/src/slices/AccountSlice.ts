@@ -1,6 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import IAccount from "../interfaces/IAccount";
-import Account from "../models/Account";
+import Account, {IAccount} from "../models/Account";
 import Balance, {IBalance} from "../models/Balance";
 import Holding, {IHolding} from "../models/Holding";
 
@@ -15,6 +14,10 @@ export interface IAccountHolding {
 }
 
 export interface IAccountState {
+    loading: boolean;
+    loadingAccounts: boolean;
+    loadingBalances: boolean;
+    loadingHoldings: boolean;
     accounts: IAccount[];
     balances: IAccountBalance[];
     holdings: IAccountHolding[];
@@ -60,7 +63,7 @@ export function holdingToIHolding(data: Holding | Holding[]): IHolding | IHoldin
     return modelToInterface<Holding, IHolding>(data, (holding => ({
         id: holding.id,
         accountId: holding.accountId,
-        securityId: holding.securityId,
+        securitySymbol: holding.securitySymbol,
         costBasis: holding.costBasis,
         quantity: holding.quantity,
         isoCurrencyCode: holding.isoCurrencyCode,
@@ -71,20 +74,28 @@ export function holdingToIHolding(data: Holding | Holding[]): IHolding | IHoldin
 const AccountSlice = createSlice({
     name: 'Account',
     initialState: {
+        loadingAccounts: true,
         accounts: [],
+        loadingBalances: true,
         balances: [],
-        holdings: []
+        loadingHoldings: true,
+        holdings: [],
+        loading: true
     } as IAccountState,
     reducers: {
         setAccounts(state: IAccountState, action: PayloadAction<IAccount[]>) {
             return {
                 ...state,
+                loadingAccounts: false,
+                loading: state.loadingBalances || state.loadingHoldings,
                 accounts: [].concat(action.payload)
             }
         },
         addAccount(state: IAccountState, action: PayloadAction<IAccount>) {
             return {
                 ...state,
+                loadingAccounts: false,
+                loading: state.loadingBalances || state.loadingHoldings,
                 accounts: [].concat(state.accounts).concat([action.payload])
             }
         },
@@ -92,6 +103,8 @@ const AccountSlice = createSlice({
             const accountId = action.payload.accountId;
             return {
                 ...state,
+                loadingBalances: false,
+                loading: state.loadingAccounts || state.loadingHoldings,
                 balances: state.balances
                     .filter(accountBalance => accountBalance.accountId !== accountId)
                     .concat({
@@ -104,6 +117,8 @@ const AccountSlice = createSlice({
             const accountId = action.payload.accountId;
             return {
                 ...state,
+                loadingHoldings: false,
+                loading: state.loadingAccounts || state.loadingBalances,
                 holdings: state.holdings
                     .filter(accountHoldings => accountHoldings.accountId !== accountId)
                     .concat({

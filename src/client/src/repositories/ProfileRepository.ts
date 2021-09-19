@@ -14,6 +14,8 @@ import AccountRepository from "./AccountRepository";
 
 class ProfileRepository extends BaseRepository {
 
+  private authService: AuthService;
+
   constructor() {
     super();
 

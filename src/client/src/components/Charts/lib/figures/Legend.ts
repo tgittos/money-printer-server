@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
 import {ScaleOrdinal, style} from "d3";
+import {IPieData} from "./Pie";
 
 export interface ILegendProps {
     x: number,
@@ -18,8 +19,12 @@ class Legend {
     }
 
     public draw(svg: d3.Selection<SVGElement, IFigureDataPoint[], HTMLElement, undefined>) {
-        const { labels, size, domain, x, y } = this.props
+        const { labels, domain, } = this.props
         const data = [].concat(labels) as string[]
+
+        const size = this.props.size ?? 10;
+        const x = this.props.x ?? 10;
+        const y = this.props.y ?? 10;
 
         const mySvg = svg.append("g")
             .attr("class", "legend");

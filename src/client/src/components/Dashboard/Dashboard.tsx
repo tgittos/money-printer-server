@@ -34,7 +34,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     render() {
         return <div className={styles.Dashboard}>
-            <Header profile={this.props.profile} authenticated={this.props.authenticated}></Header>
             <Overview accounts={this.props.accounts}></Overview>
             <AccountPerformance accounts={this.props.accounts} balances={this.props.balances}></AccountPerformance>
         </div>

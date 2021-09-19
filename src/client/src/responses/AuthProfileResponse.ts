@@ -1,5 +1,4 @@
-import IAuthedProfile from "../interfaces/IAuthedProfile";
-
+import {IAuthedProfile} from "../models/Profile";
 
 interface IAuthProfileResponse {
     success: boolean;

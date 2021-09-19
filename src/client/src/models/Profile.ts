@@ -1,3 +1,8 @@
+export interface IAuthedProfile {
+  profile: IServerProfile
+  token: string
+}
+
 export interface IServerProfile {
   id: number;
   email: string;

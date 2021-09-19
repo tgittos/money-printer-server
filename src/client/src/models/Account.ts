@@ -1,5 +1,13 @@
-import IAccount from "../interfaces/IAccount";
 import {formatAsCurrency} from "../utilities";
+
+export interface IAccount {
+    id: number;
+    name: string;
+    balance: number;
+    type: string;
+    subtype: string;
+    timestamp: Date;
+}
 
 const AssetTypes = ['depository', 'investment'];
 const DebtTypes = ['credit', 'loan'];
@@ -18,6 +26,10 @@ class Account implements IAccount {
 
     public get isDebt(): boolean {
         return DebtTypes.includes(this.type);
+    }
+
+    public get isInvestment(): boolean {
+        return this.type === "investment";
     }
 
     public formatBalanceAsCurrency(): string {

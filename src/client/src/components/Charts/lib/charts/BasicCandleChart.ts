@@ -15,8 +15,8 @@ class BasicCandleChart implements IChart {
 
     private props: IChartProps<ICandleDataPoint>;
     private svgRef: MutableRefObject<null>;
-    private xAxis: IAxis<ICandleDataPoint>;
-    private yAxis: IAxis<IFigureDataPoint>;
+    private xAxis: CandleXAxis;
+    private yAxis: SimpleYAxis;
     private xBand: ScaleBand<any>;
     private candles: Candle;
 
@@ -25,9 +25,11 @@ class BasicCandleChart implements IChart {
         this.svgRef = props.svgRef;
         this.svg = d3.select(this.svgRef.current);
 
-        this.props.data = this.props.data.reverse();
-
-        this.draw();
+        if (this.props.data) {
+            this.draw();
+        } else {
+            console.log('BasicCandleChart::constructor - cannot render chart, no data found');
+        }
     }
 
     public draw() {

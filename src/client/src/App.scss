@@ -4,7 +4,13 @@
   text-align: center;
   background: $background;
   height: 100%;
+  max-height: 100%;
   color: $text;
+}
+
+.content {
+  height: 100%;
+  max-height: 100%;
 }
 
 #unconfigured {

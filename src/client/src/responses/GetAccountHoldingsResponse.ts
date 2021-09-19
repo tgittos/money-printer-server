@@ -1,8 +1,8 @@
-import {IServerHolding} from "../models/Holding";
+import {IHolding} from "../models/Holding";
 
 interface IGetAccountHoldingsResponse {
     success: boolean;
-    data: IServerHolding[];
+    data: IHolding[];
 }
 
 export default IGetAccountHoldingsResponse

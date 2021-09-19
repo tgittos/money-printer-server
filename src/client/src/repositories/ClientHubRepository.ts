@@ -34,6 +34,9 @@ class ClientHubRepository extends BaseRepository {
     public get connected$(): Observable<boolean> {
         return this._connectionStateObservable;
     }
+    public get connected(): boolean {
+        return this._connectionStateSubject.getValue();
+    }
 
     private static _instance: ClientHubRepository;
     public static get instance(): ClientHubRepository {

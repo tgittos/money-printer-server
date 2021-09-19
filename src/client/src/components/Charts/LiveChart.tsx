@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {MutableRefObject} from 'react';
 import {filter, Subscription} from "rxjs";
 
 import BigLoader from "../shared/Loaders/BigLoader";
@@ -6,16 +6,19 @@ import StaticChart from "../Charts/StaticChart";
 import IChartDimensions from "../Charts/interfaces/IChartDimensions";
 import LiveQuoteRepository from "../../repositories/LiveQuoteRepository";
 import {IChartFactory} from "./lib/ChartFactory";
-import HistoricalQuoteRepository from "../../repositories/HistoricalQuoteRepository";
 import moment from 'moment';
-import ISymbolResponse from "../../responses/SymbolsResponse";
 import Env from "../../env";
 import ISymbol from "../../interfaces/ISymbol";
 import { SortDescending } from "../../interfaces/ISymbol";
+import StockService from "../../services/StockService";
+import {IHistoricalIntradaySymbol} from "../../models/symbols/HistoricalIntradaySymbol";
+import IChartProps from "./interfaces/IChartProps";
 
 interface ILiveChartProps {
     ticker: string;
     chart: IChartFactory;
+    svgRef?: MutableRefObject<null>;
+    dimensions: IChartDimensions;
     start?: Date;
     end?: Date;
 }
@@ -33,7 +36,7 @@ interface ILiveChartState {
 class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
 
     private _liveQuotes: LiveQuoteRepository;
-    private _historicalQuotes: HistoricalQuoteRepository;
+    private _historical: StockService;
     private _subscriptions: Subscription[] = [];
 
     private get loading(): boolean {
@@ -49,14 +52,14 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
             cachedHistoricalData: [],
             cachedRealtimeData: [],
             chartData: [],
-            start: props.start ?? moment().subtract('days', 1)
+            start: props.start ?? moment().subtract(1, 'days')
         } as ILiveChartState;
 
         this._onLiveData = this._onLiveData.bind(this);
         this._onHistoricalData = this._onHistoricalData.bind(this);
 
         this._liveQuotes = LiveQuoteRepository.instance;
-        this._historicalQuotes = new HistoricalQuoteRepository();
+        this._historical = new StockService();
     }
 
     componentDidMount() {
@@ -71,11 +74,13 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                             .pipe(filter(val => val !== undefined))
                             .subscribe(this._onLiveData)
                     );
-                    const today: Date = new Date();
+                    // subscribe to this ticker on the data upstream
+                    this._liveQuotes.subscribeToSymbol(this.props.ticker);
+                    const yesterday: Date = moment().utc().subtract(7, 'days').toDate()
                     if (Env.DEBUG) {
                         console.log('LiveChart::componentDidMount - fetching historical data for ticker');
                     }
-                    this._historicalQuotes.historicalIntraday(this.props.ticker, today)
+                    this._historical.historicalIntraday(this.props.ticker, yesterday)
                         .then(this._onHistoricalData);
                 }
             })
@@ -87,6 +92,8 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
     }
 
     componentWillUnmount() {
+        // unsubscribe to the upstream symbol
+        this._liveQuotes.unsubscribeFromSymbol(this.props.ticker);
         this._subscriptions.forEach(subscription =>
             subscription.unsubscribe());
     }
@@ -139,11 +146,10 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
         }));
     }
 
-    private _onHistoricalData(response: ISymbolResponse) {
-        if (response.success) {
+    private _onHistoricalData(data: IHistoricalIntradaySymbol[]) {
+        if (data && data.length > 0) {
             let { loadingHistorical, cachedRealtimeData, cachedHistoricalData, chartData } = this.state;
             const { loadingRealtime } = this.state;
-            const { data } = response;
 
             if (loadingHistorical) {
                 loadingHistorical = false;
@@ -152,9 +158,14 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                     console.log('LiveChart::_onLiveData - toggling loading historical data to false');
                 }
 
-                if (!loadingRealtime) {
+                if (!loadingRealtime || !this._liveQuotes.connected) {
                     if (Env.DEBUG) {
-                        console.log('LiveChart::_onLiveData - detected realtime data already streaming in, building chart data and flushing both caches');
+                        if (!loadingRealtime) {
+                            console.log('LiveChart::_onLiveData - detected realtime data already streaming in, building chart data and flushing both caches');
+                        }
+                        if (!this._liveQuotes.connected) {
+                            console.log('LiveChart::_onLiveData - realtime connection not connected, build chart data and flush cache');
+                        }
                     }
                     chartData = []
                         .concat(chartData)
@@ -187,7 +198,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                 chartData: this.expireData(chartData).sort(SortDescending)
             }));
         } else {
-            console.log(`LiveChart::_onHistoricalData - warning! historical intraday for ${this.props.ticker} failed: ${response.message}`);
+            console.log(`LiveChart::_onHistoricalData - warning! historical intraday for ${this.props.ticker} empty`);
             this.setState(prev => ({
                 ...prev,
                 loadingHistorical: false
@@ -208,7 +219,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
 
     render() {
         if (this.loading) {
-            return <BigLoader></BigLoader>
+            return <BigLoader />
         }
 
         if (this.state.chartData.length > 0) {
@@ -225,7 +236,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
                     }
                 } as IChartDimensions}
                 data={this.state.chartData}
-            ></StaticChart>
+                />
         }
 
         return <div>No data found (live or historical!)</div>;
