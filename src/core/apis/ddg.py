@@ -3,6 +3,8 @@ import requests
 
 from bs4 import BeautifulSoup
 
+from core.lib.logger import get_logger
+
 
 class DuckDuckGoQuestionsResult:
     abstract = None
@@ -25,6 +27,9 @@ class DuckDuckGo:
     search_url = "https://duckduckgo.com/?q={0}&iar=news&ia=news"
     questions_url = "https://api.duckduckgo.com/?q={0}&format=json"
 
+    def __init__(self):
+        self.logger = get_logger(__name__)
+
     def query_url(self, query):
         sanitized_query = query.replace(' ', '+')
         return self.questions_url.format(sanitized_query)
@@ -35,7 +40,7 @@ class DuckDuckGo:
         if response.status_code == 200:
             results = self.__extract_results(response.json())
         else:
-            print(" * DuckDuckGo returned a non-200 response: ", response.status_code, response.json())
+            self.logger.error("DuckDuckGo returned a non-200 response: ", response.status_code, response.json())
         return []
 
     def __extract_search_results(self, text_results):

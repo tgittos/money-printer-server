@@ -6,6 +6,7 @@ from threading import Thread
 
 from core.apis.mailgun import MailGunConfig
 from core.repositories.scheduled_job_repository import get_repository as get_job_repository
+from core.lib.logger import get_logger
 
 from server.config import config as server_config
 from server.services.api import load_config
@@ -26,18 +27,19 @@ class Runner(Thread):
 
     def __init__(self):
         super(Runner, self).__init__()
+        self.logger = get_logger(__name__)
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         self.job_repo = get_job_repository(mysql_config=sql_config, mailgun_config=mailgun_config)
         self.jobs = self.job_repo.get_scheduled_jobs()
-        print(" * found {0} scheduled jobs".format(len(self.jobs)), flush=True)
+        self.logger.info("found {0} scheduled jobs".format(len(self.jobs)))
 
     def start(self) -> None:
-        print(" * scheduled runner thread running", flush=True)
+        self.logger.debug("scheduled job runner thread starting")
         self.running = True
         super(Runner, self).start()
 
     def stop(self) -> None:
-        print(" * shutting runner thread down", flush=True)
+        self.logger.debug("shutting job runner thread down")
         self.running = False
         super(Runner, self).join()
 
@@ -54,7 +56,7 @@ class Runner(Thread):
                 if self.on_error is not None:
                     self.on_error(ex)
                 else:
-                    print(" * caught exception but no handler defined, swallowing: {0}".format(ex), flush=True)
+                    self.logger.exception(" * caught exception but no handler defined, swallowing: {0}".format(ex))
 
     def __run_scheduler(self):
         # doesn't really 'run' a scheduler, but it's polled every second while the server is up
@@ -77,8 +79,8 @@ class Runner(Thread):
                 last_run_iso = "never"
                 if job.last_run is not None:
                     last_run_iso = job.last_run.isoformat()
-                print(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name, last_run_iso),
-                      flush=True)
+                self.logger.info(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name,
+                                                                                   last_run_iso))
 
                 self.redis.publish(WORKER_QUEUE, json.dumps({
                    'job': job.job_name,
@@ -91,4 +93,4 @@ class Runner(Thread):
                 ran_jobs_count += 1
 
         if ran_jobs_count > 0:
-            print(" * task runner scheduled {0} jobs".format(ran_jobs_count), flush=True)
+            self.logger.info(" * task runner scheduled {0} jobs".format(ran_jobs_count))

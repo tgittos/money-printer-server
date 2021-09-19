@@ -1,12 +1,11 @@
-import os
-import sys
-import signal
 import time
 import requests
 import redis
 import json
 
 import sseclient
+
+from core.lib.logger import get_logger
 
 
 class SSEClient:
@@ -21,6 +20,7 @@ class SSEClient:
     }
 
     def __init__(self, env_string, iexcloud_secret):
+        self.logger = get_logger(__name__)
         self.env_string = env_string
         self.secret_token = iexcloud_secret
         self.tracked_symbols = []
@@ -32,12 +32,12 @@ class SSEClient:
         self.thread = self.p.run_in_thread(sleep_time=0.1)
 
     def start(self):
-        print(" * starting upstream")
+        self.logger.info("starting upstream sse connection")
         self.running = True
         while self.running:
             if len(self.tracked_symbols) > 0:
                 url = self.__gen_api_url(self.tracked_symbols)
-                print(" * starting SSE stream to url: {0}".format(url))
+                self.logger.debug("starting stream to url: {0}".format(url))
                 stream_response = requests.get(url, stream=True, headers=self.headers, params=self.params)
                 client = sseclient.SSEClient(stream_response)
                 for event in client.events():
@@ -50,9 +50,8 @@ class SSEClient:
                         message = self.p.get_message()
                     if not self.running:
                         break
-            print(" * not tracking any symbols, sleep for 1s")
             time.sleep(1)
-        print(" * stopping upstream")
+        self.logger.info("stopping upstream sse connection")
 
     def stop(self):
         self.running = False
@@ -68,12 +67,12 @@ class SSEClient:
         command = json_data['command']
 
         if command == "start":
-            print(" * start command received, starting starting upstream server")
+            self.logger.debug("sse server received start command, requesting start of upstream")
             self.start()
             return
 
         if command == "stop":
-            print(" * stop command received, stopping upstream server")
+            self.logger.debug("sse server received stop command, requesting stop of upstream")
             self.stop()
             return
 
@@ -86,13 +85,13 @@ class SSEClient:
         if command == "add-symbol":
             symbol = json_data['data']
             if symbol not in self.tracked_symbols:
-                print(" * adding {0} to tracking list".format(symbol))
+                self.logger.debug("adding {0} to tracking list".format(symbol))
                 self.tracked_symbols.append(symbol)
 
         elif command == "remove-symbol":
             symbol = json_data['data']
             if symbol in self.tracked_symbols:
-                print(" * removing {0} from tracking list".format(symbol))
+                self.logger.debug("removing {0} from tracking list".format(symbol))
                 self.tracked_symbols.remove(symbol)
 
         if self.running:

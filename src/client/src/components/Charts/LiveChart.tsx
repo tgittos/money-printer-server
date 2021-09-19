@@ -29,6 +29,7 @@ interface ILiveChartState {
     cachedRealtimeData: ISymbol[];
     cachedHistoricalData: ISymbol[];
     chartData: ISymbol[];
+    activeChartType: IChartFactory;
     start: Date;
     end?: Date;
 }
@@ -52,7 +53,8 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
             cachedHistoricalData: [],
             cachedRealtimeData: [],
             chartData: [],
-            start: props.start ?? moment().subtract(1, 'days')
+            start: props.start ?? moment().subtract(1, 'days'),
+            activeChartType: this.props.chart
         } as ILiveChartState;
 
         this._onLiveData = this._onLiveData.bind(this);
@@ -224,7 +226,7 @@ class LiveChart extends React.Component<ILiveChartProps, ILiveChartState> {
 
         if (this.state.chartData.length > 0) {
             return <StaticChart
-                chart={this.props.chart}
+                chart={this.state.activeChartType}
                 dimensions={{
                     width: 1200,
                     height: 600,

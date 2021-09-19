@@ -3,13 +3,16 @@ from .auth import auth_bp
 from .accounts import account_bp
 from .symbols import symbol_bp
 
+from core.lib.logger import get_logger
+
 
 def init_app(app):
-    print(" * registering auth blueprint")
+    logger = get_logger('server.services.api.routes')
+    logger.info(" * registering auth blueprint")
     app.register_blueprint(auth_bp)
-    print(" * registering plaid oauth blueprint")
+    logger.info(" * registering plaid oauth blueprint")
     app.register_blueprint(oauth_bp)
-    print(" * registering accounts blueprint")
+    logger.info(" * registering accounts blueprint")
     app.register_blueprint(account_bp)
-    print(" * registering symbol blueprint")
+    logger.info(" * registering symbol blueprint")
     app.register_blueprint(symbol_bp)

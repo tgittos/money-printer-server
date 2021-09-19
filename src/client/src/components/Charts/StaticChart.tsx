@@ -13,7 +13,7 @@ const StaticChart = (props: IChartProps<any>) => {
             ...props,
             svgRef: svgRef
         }));
-    }, [data]);
+    }, [data, chart]);
 
     return <svg ref={svgRef} width={svgWidth} height={svgHeight} />;
 }

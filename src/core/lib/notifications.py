@@ -2,6 +2,7 @@ from pathlib import Path
 
 from core.apis.mailgun import *
 
+
 class ProfileCreatedNotification(object):
     profile=None
     temp_password=None
@@ -9,6 +10,7 @@ class ProfileCreatedNotification(object):
     def __init__(self, profile, password):
         self.profile = profile
         self.temp_password = password
+
 
 class PasswordResetNotification(object):
     profile=None
@@ -33,6 +35,7 @@ def notify_profile_created(config, notification):
         html=text
     ))
     return result
+
 
 def notify_password_reset(config, notification):
     text = Path("core/templates/notifications/password_reset.html").read_text()

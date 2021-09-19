@@ -4,6 +4,7 @@ from core.apis.plaid.common import PlaidApiConfig
 from core.apis.mailgun import MailGunConfig
 from core.repositories.profile_repository import get_repository as get_profile_repository
 from core.repositories.account_repository import get_repository as get_account_repository, CreateAccountRequest
+from core.lib.logger import get_logger
 
 from server.services.api import load_config
 from server.config import config as server_config
@@ -28,6 +29,7 @@ class SyncAccounts:
     plaid_item_id = None
 
     def __init__(self, redis_message=None):
+        self.logger = get_logger(__name__)
         if redis_message is not None and 'profile_id' in redis_message and 'plaid_item_id' in redis_message:
             self.profile_id = redis_message['profile_id']
             self.plaid_item_id = redis_message['plaid_item_id']
@@ -36,12 +38,12 @@ class SyncAccounts:
 
     def run(self):
         if self.profile_id and self.plaid_item_id:
-            self.sync_profile(self.profile_id, self.plaid_item_id)
+            self.sync_profile(self.profile_id)
             return
         self.sync_all_profiles()
 
     def sync_all_profiles(self):
-        print(" * syncing all profiles", flush=True)
+        self.logger.debug("syncing all profiles")
         all_profiles = self.profile_repo.get_all_profiles()
         for profile in all_profiles:
             self.sync_profile(profile.id)
@@ -50,7 +52,7 @@ class SyncAccounts:
         profile = self.profile_repo.get_by_id(profile_id)
 
         if profile is None:
-            print(" * error syncing accounts - could not find requested profile {0}".format(profile_id), flush=True)
+            self.logger.error("error syncing accounts - could not find requested profile {0}".format(profile_id))
             return
 
         self.account_repo.sync_all_accounts(profile_id)

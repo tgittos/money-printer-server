@@ -6,6 +6,7 @@ from core.models.balance import Balance
 from core.models.account import Account
 from core.models.plaid_item import PlaidItem
 from core.stores.mysql import MySql
+from core.lib.logger import get_logger
 
 
 def get_repository(mysql_config, plaid_config):
@@ -25,6 +26,7 @@ class CreateBalanceRequest:
 class BalanceRepository:
 
     def __init__(self, mysql_config, plaid_config):
+        self.logger = get_logger(__name__)
         db = MySql(mysql_config)
         self.db = db.get_session()
         self.plaid_config = plaid_config
@@ -65,7 +67,7 @@ class BalanceRepository:
         response_dict = api.get_account_balance(plaid_item.access_token, account.account_id)
 
         if response_dict is None or 'accounts' not in response_dict:
-            print(" * unusual response from upstream: {0}".format(response_dict))
+            self.logger.error("unusual response from upstream: {0}".format(response_dict))
             return
 
         for account_dict in response_dict['accounts']:

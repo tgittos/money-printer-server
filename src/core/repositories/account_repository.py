@@ -13,6 +13,7 @@ from core.presentation.account_presenters import AccountWithBalance
 from core.stores.mysql import MySql
 from core.repositories.balance_repository import get_repository as get_balance_repository
 from core.repositories.security_repository import get_repository as get_security_repository
+from core.lib.logger import get_logger
 
 
 class CreateAccountRequest:
@@ -50,6 +51,7 @@ WORKER_QUEUE = "mp:worker"
 class AccountRepository:
 
     def __init__(self, mysql_config, plaid_config):
+        self.logger = get_logger(__name__)
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         db = MySql(mysql_config)
         self.db = db.get_session()
@@ -116,6 +118,8 @@ class AccountRepository:
         if profile is None:
             return
 
+        self.logger.info("updating account state for profile {0}".format(profile.id))
+
         balance_repo = get_balance_repository(mysql_config=self.mysql_config, plaid_config=self.plaid_config)
         security_repo = get_security_repository(mysql_config=self.mysql_config, plaid_config=self.plaid_config)
         plaid_accounts_api = Accounts(AccountsConfig(
@@ -126,22 +130,23 @@ class AccountRepository:
         for plaid_link in plaid_links:
             plaid_accounts_dict = plaid_accounts_api.get_accounts(plaid_link.access_token)
 
-            print(" * updating {0} accounts".format(len(plaid_accounts_dict['accounts'])), flush=True)
+            self.logger.info("updating {0} accounts".format(len(plaid_accounts_dict['accounts'])))
 
             accounts = []
             for account_dict in plaid_accounts_dict['accounts']:
-                print(" * updating account details", flush=True)
+                self.logger.info("updating account details for account {0}".log(account_dict['id']))
                 account = self.__sync_update_account(profile, plaid_link, account_dict)
                 accounts.append(account)
-                print(" * updating account balance for account {0}".format(account.id), flush=True)
+                self.logger.info("updating account balance for account {0}".format(account.id))
                 balance_repo.sync_balance(account.id)
 
             for account in accounts:
                 # TODO - figure out enums or something
                 if account.type == "investment":
-                    print(" * updating investment holdings for account {0}".format(account.id), flush=True)
+                    self.logger.info("updating investment holdings for account {0}".format(account.id))
                     security_repo.sync_holdings(profile_id=profile_id, account_id=account.id)
-        print(" * done!", flush=True)
+
+        self.logger.info("done updating accounts for profile {0}".format(profile.id))
 
     def __augment_with_balances(self, account_records):
         augmented_records = []

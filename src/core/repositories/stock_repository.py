@@ -12,6 +12,7 @@ from core.stores.mysql import MySql
 from core.models.security import Security
 from core.models.security_price import SecurityPrice
 from core.models.iex_blacklist import IexBlacklist
+from core.lib.logger import get_logger
 
 
 def get_repository(iex_config, mysql_config):
@@ -32,6 +33,7 @@ class StockRepositoryConfig(object):
 class StockRepository:
 
     def __init__(self, config):
+        self.logger = get_logger(__name__)
         # pull the IEX config and store the token in the IEX_TOKEN env var
         secret = config.iex_config['secret']
         mysql_config = config.mysql_config
@@ -60,14 +62,14 @@ class StockRepository:
         if self.__verify_daily_dataset(stored,
                                        start=datetime.fromtimestamp(start, tz=timezone.utc).date(),
                                        end=datetime.fromtimestamp(end, tz=timezone.utc).date()):
-            print(" * found data in store already, returning existing data", flush=True)
+            self.logger.debug("found data in store already, returning existing data")
             return self.__to_dataframe(stored)
         data = self.__fetch_historical_daily(symbol, start=start, end=end, close_only=close_only)
         if data is not None and len(data) > 0:
             self.__store_historical_daily(security_id, symbol, data)
         else:
-            print(" * upstream didn't return an error, but it did return an empty dataset, symbol: {0}, start: {1}," +
-                  " end: {2}".format(symbol, start, end), flush=True)
+            self.logger.warning(" * upstream didn't return an error, but it did return an empty dataset, symbol: {0}" +
+                                ", start: {1}, end: {2}".format(symbol, start, end))
         return data
 
     # gets historical intraday prices for the given symbol
@@ -86,14 +88,14 @@ class StockRepository:
             security_id = security.id
         stored = self.__get_stored_historical_intraday(symbol, start=start)
         if self.__verify_intraday_dataset(stored, datetime.fromtimestamp(start, tz=timezone.utc)):
-            print(" * found data in store already, returning existing data", flush=True)
+            self.logger.debug("found data in store already, returning existing data")
             return self.__to_dataframe(stored)
         data = self.__fetch_historical_intraday(symbol, start=start)
         if data is not None and len(data) > 0:
             self.__store_historical_intraday(security_id, symbol, data)
         else:
-            print(" * upstream didn't return an error, but it did return an empty dataset, symbol: {0}, start: {1}"
-                  .format(symbol, start), flush=True)
+            self.logger.warning("upstream didn't return an error, but it did return an empty dataset, symbol: {0}, " +
+                                "start: {1}" .format(symbol, start))
         return data
 
     # gets the previous trading day's prices for the given symbol
@@ -110,19 +112,19 @@ class StockRepository:
         start = datetime.now(tz=timezone.utc) - timedelta(days=1)
         stored = self.__get_stored_historical_daily(symbol, start.timestamp())
         if stored and len(stored) > 0 and self.__verify_daily_dataset(stored, start.date(), datetime.utcnow().date()):
-            print(" * found data in store already, returning existing data", flush=True)
+            self.logger.debug("found data in store already, returning existing data")
             return self.__to_dataframe(stored)
         data = self.__fetch_historical_daily(symbol, start=start.timestamp())
         if data is not None and len(data) > 0:
             self.__store_historical_daily(security_id, symbol, data)
         else:
-            print(" * upstream didn't return an error, but it did return an empty dataset, symbol: {0}, start: {1}"
-                  .format(symbol, start), flush=True)
+            self.logger.warning("upstream didn't return an error, but it did return an empty dataset, " +
+                                "symbol: {0}, start: {1}" .format(symbol, start))
             # ok, so we can't fetch the price for today, and we dont have todays price in the db
             # so just return the latest price for this symbol that we do have
             last = self.db.query(SecurityPrice).where(SecurityPrice.symbol == symbol)\
                 .order_by(SecurityPrice.date.desc()).first()
-            print(" * last effort to find a price, found last price in db: {0}".format(last))
+            self.logger.warning("last effort to find a price, found last price in db: {0}".format(last))
             if last is not None:
                 return self.__to_dataframe(last)
         return data
@@ -136,7 +138,7 @@ class StockRepository:
     # if not, fetch from the upstream API the store locally
     def __get_stored_historical_intraday(self, symbol, start=None):
         real_start = datetime.fromtimestamp(start, tz=timezone.utc) or datetime.now(tz=timezone.utc) - timedelta(days=7)
-        print(" * searching db intraday resolution symbol/s for {0} from {1} to now".format(symbol, real_start))
+        self.logger.debug("searching db intraday resolution symbol/s for {0} from {1} to now".format(symbol, real_start))
         records = self.db.query(SecurityPrice).filter(and_(
             SecurityPrice.symbol == symbol,
             SecurityPrice.resolution == "intraday",
@@ -154,7 +156,7 @@ class StockRepository:
         real_end = datetime.now(tz=timezone.utc)
         if end is not None:
             real_end = datetime.fromtimestamp(end, tz=timezone.utc)
-        print(" * searching db daily resolution symbol/s for {0} from {1} - {2}".format(symbol, real_start, real_end))
+        self.logger.debug(" * searching db daily resolution symbol/s for {0} from {1} - {2}".format(symbol, real_start, real_end))
         records = self.db.query(SecurityPrice).filter(and_(
             SecurityPrice.symbol == symbol,
             SecurityPrice.resolution == "daily",
@@ -221,7 +223,7 @@ class StockRepository:
         start = start is not None and datetime.fromtimestamp(start, tz=timezone.utc) or end - timedelta(days=30)
         real_start = self.__utc_to_local(start).date()
         real_end = self.__utc_to_local(end).date()
-        print(" * fetching historical daily prices for symbol {0}, {1} - {2} from upstream".format(symbol, real_start, real_end), flush=True)
+        self.logger.info("fetching historical daily prices for symbol {0}, {1} - {2} from upstream".format(symbol, real_start, real_end))
         try:
             df = get_historical_data(symbol,
                                      start=real_start,
@@ -230,12 +232,12 @@ class StockRepository:
             return df
         except IEXQueryError as ex:
             if ex.status == 404:
-                print(" * upstream provider couldn't resolve symbol {0}".format(symbol), flush=True)
+                self.logger.warning("upstream provider couldn't resolve symbol {0}".format(symbol))
                 self.__add_to_iex_blacklist(symbol)
             return None
         except Exception:
-            print(" * unexpected error from upstream provider fetching for symbol {0}: {1}"
-                  .format(symbol, traceback.format_exc()), flush=True)
+            self.logger.exception("unexpected error from upstream provider fetching for symbol {0}: {1}"
+                  .format(symbol, traceback.format_exc()))
             return None
 
     def __fetch_historical_intraday(self, symbol, start=None):
@@ -247,19 +249,18 @@ class StockRepository:
             total_df = pd.DataFrame()
             for i in range(days+1):
                 fetch_date = real_start + timedelta(days=i)
-                print(" * fetching historical intraday prices for symbol {0} on {1} from upstream".format(symbol, fetch_date),
-                      flush=True)
+                self.logger.info("fetching historical intraday prices for symbol {0} on {1} from upstream".format(symbol, fetch_date))
                 df = get_historical_intraday(symbol, date=fetch_date)
                 total_df = total_df.append(df)
             return total_df
         except IEXQueryError as ex:
             if ex.status == 404:
-                print(" * upstream provider couldn't resolve symbol {0}".format(symbol), flush=True)
+                self.logger.warning("upstream provider couldn't resolve symbol {0}".format(symbol))
                 self.__add_to_iex_blacklist(symbol)
             return None
         except Exception:
-            print(" * unexpected error from upstream provider fetching for symbol {0}: {1}"
-                  .format(symbol, traceback.format_exc()), flush=True)
+            self.logger.exception("unexpected error from upstream provider fetching for symbol {0}: {1}"
+                  .format(symbol, traceback.format_exc()))
             return None
 
     def __add_to_iex_blacklist(self, symbol):

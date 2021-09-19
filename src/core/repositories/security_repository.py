@@ -9,6 +9,7 @@ from core.models.account import Account
 from core.models.security import Security
 from core.models.holding import Holding
 from core.presentation.holding_presenters import HoldingWithSecurity
+from core.lib.logger import get_logger
 
 
 def get_repository(mysql_config, plaid_config):
@@ -45,6 +46,7 @@ class CreateHoldingRequest:
 class SecurityRepository:
 
     def __init__(self, mysql_config, plaid_config):
+        self.logger = get_logger(__name__)
         mysql = MySql(mysql_config)
         self.db = mysql.get_session()
         self.plaid_config = plaid_config
@@ -127,12 +129,12 @@ class SecurityRepository:
     def sync_holdings(self, profile_id, account_id):
         account = self.db.query(Account).where(Account.id == account_id).first()
         if account is None:
-            print(" * requested holdings sync on account that couldn't be found: {0}".format(account_id), flush=True)
+            self.logger.error("requested holdings sync on account that couldn't be found: {0}".format(account_id))
             return
 
         plaid_item = self.db.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
         if plaid_item is None:
-            print(" * requested holdings sync on account but couldn't find plaid_item: {0}".format(account.to_dict()))
+            self.logger.error("requested holdings sync on account but couldn't find plaid_item: {0}".format(account.to_dict()))
             return
 
         api = Investments(InvestmentsConfig(self.plaid_config))

@@ -3,6 +3,7 @@ from datetime import datetime
 from core.apis.plaid.accounts import Accounts, AccountsConfig
 from core.stores.mysql import MySql
 from core.models.plaid_item import PlaidItem
+from core.lib.logger import get_logger
 
 
 def get_repository(sql_config, plaid_api_config):
@@ -33,6 +34,7 @@ class GetPlaidItem:
 class PlaidRepository:
 
     def __init__(self, sql_config, plaid_api_config):
+        self.logger = get_logger(__name__)
         self.plaid_api_config = plaid_api_config
         db = MySql(sql_config)
         self.db = db.get_session()
@@ -59,7 +61,6 @@ class PlaidRepository:
             plaid_config=self.plaid_api_config
         ))
         plaid_link = self.get_plaid_item(GetPlaidItem(id=plaid_item_id))
-        print(" * fetching auths from Plaid using access token: {0}".format(plaid_link.access_token))
         plaid_accounts = plaid_accounts_api.get_accounts(plaid_link.access_token)
         return plaid_accounts
 

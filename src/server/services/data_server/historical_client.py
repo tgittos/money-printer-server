@@ -2,6 +2,7 @@ import redis
 import json
 
 from core.repositories.stock_repository import get_repository as get_stock_repository
+from core.lib.logger import get_logger
 
 from server.services.api import load_config
 app_config = load_config()
@@ -13,6 +14,7 @@ iex_config = app_config['iexcloud']
 class HistoricalClient:
 
     def __init__(self):
+        self.logger = get_logger(__name__)
         self.r = redis.Redis(host='localhost', port=6379, db=0)
         self.p = self.r.pubsub()
         self.p.subscribe(**{'historical_quotes': self.__handle_message})
@@ -20,10 +22,16 @@ class HistoricalClient:
         self.repository = get_stock_repository(iex_config=iex_config, mysql_config=mysql_config)
 
     def get_historical_daily(self, symbol, start=None, end=None):
+        self.logger.debug("get_historical_daily request for symbol {0}, {1} - {2}".format(
+            symbol, start, end
+        ))
         data = self.repository.historical_daily(symbol, start=start, end=end)
         return json.dumps(data)
 
     def get_historical_intraday(self, symbol, start=None):
+        self.logger.debug("get_historical_intraday request for symbol {0}, {1}".format(
+            symbol, start
+        ))
         data = self.repository.historical_intraday(symbol, start=start)
         return json.dumps(data)
 

@@ -84,6 +84,7 @@ class App extends React.Component<{}, IAppState> {
       </div>
     }
 
+    // TODO convert router output components to lazy loaded ones
     return <div className="App">
         <Router>
           <div className="content">

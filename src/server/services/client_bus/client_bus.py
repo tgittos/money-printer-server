@@ -1,10 +1,13 @@
 import json
 import redis
 
+from core.lib.logger import get_logger
+
 
 class ClientBus:
 
     def __init__(self, socketio):
+        self.logger = get_logger(__name__)
         self.r = redis.Redis(host='localhost', port=6379, db=0)
         self.p = self.r.pubsub()
         self.socketio = socketio
@@ -12,20 +15,20 @@ class ClientBus:
         self.thread = None
 
     def connect(self):
-        print(" * client connected")
+        self.logger.debug("client connected")
 
     def handle_json_message(self, data):
-        print("received message: {0}".format(data))
+        self.logger.debug("received message: {0}".format(data))
 
     def get_symbols(self):
-        print(" * requesting tracking state from upstream")
+        self.logger.debug("requesting tracking state from upstream")
         if self.r is not None:
             self.r.publish('sse-control', json.dumps({
                 'command': 'list-symbols'
             }))
 
     def subscribe_symbol(self, data=None):
-        print(" * subscribing to upstream-symbols pubsub in thread: {0}".format(data))
+        self.logger.info("subscribing to upstream-symbols pubsub in thread: {0}".format(data))
         self.p.subscribe(**{'upstream-symbols': self.__proxy})
         self.thread = self.p.run_in_thread(sleep_time=0.1)
         if data is not None:
@@ -36,7 +39,7 @@ class ClientBus:
 
     def unsubscribe_symbol(self, data=None):
         if self.p is not None:
-            print(" * unsubscribing from upstream-symbols pubsub in thread")
+            self.logger.info("unsubscribing from upstream-symbols pubsub in thread")
             if data is not None:
                 self.r.publish('sse-control', json.dumps({
                     'command': 'remove-symbol',
@@ -45,7 +48,7 @@ class ClientBus:
 
     def fetch_historical_data(self, data=None):
         if self.p is not None:
-            print(" * requesting historical data fetch using command {0}".format(data))
+            self.logger.debug("requesting historical data fetch using command {0}".format(data))
             if data is not None:
                 self.r.publish('historical_quotes', json.dumps({
                     'command': 'fetch',
@@ -54,7 +57,7 @@ class ClientBus:
 
     def __proxy(self, message):
         data_message = message['data'].decode('utf-8')
-        # print(" * emitting event to upstream {0}".format(json_message))
+        # self.logger.debug("emitting event to upstream {0}".format(json_message))
         self.socketio.emit('live_quotes', data_message)
 
     def __augment_app(self):
