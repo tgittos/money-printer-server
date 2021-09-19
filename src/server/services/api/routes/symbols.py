@@ -18,7 +18,7 @@ symbol_bp = Blueprint('symbols', __name__)
 
 @symbol_bp.route('/v1/api/symbols/<symbol>/previous', methods=['GET'])
 @authed
-def symbol_current(symbol):
+def symbol_previous(symbol):
     repo = get_stock_repository(iex_config=iex_config, mysql_config=mysql_config)
 
     # result is a data frame

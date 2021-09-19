@@ -109,7 +109,7 @@ class StockRepository:
             security_id = security.id
         start = datetime.now(tz=timezone.utc) - timedelta(days=1)
         stored = self.__get_stored_historical_daily(symbol, start.timestamp())
-        if self.__verify_daily_dataset(stored, start.date(), datetime.utcnow().date()):
+        if stored and len(stored) > 0 and self.__verify_daily_dataset(stored, start.date(), datetime.utcnow().date()):
             print(" * found data in store already, returning existing data", flush=True)
             return self.__to_dataframe(stored)
         data = self.__fetch_historical_daily(symbol, start=start.timestamp())
@@ -118,6 +118,13 @@ class StockRepository:
         else:
             print(" * upstream didn't return an error, but it did return an empty dataset, symbol: {0}, start: {1}"
                   .format(symbol, start), flush=True)
+            # ok, so we can't fetch the price for today, and we dont have todays price in the db
+            # so just return the latest price for this symbol that we do have
+            last = self.db.query(SecurityPrice).where(SecurityPrice.symbol == symbol)\
+                .order_by(SecurityPrice.date.desc()).first()
+            print(" * last effort to find a price, found last price in db: {0}".format(last))
+            if last is not None:
+                return self.__to_dataframe(last)
         return data
 
     # returns if we have any data for this symbol
@@ -271,7 +278,7 @@ class StockRepository:
     def __to_dataframe(self, data):
         if type(data) == list:
             return pd.DataFrame.from_records([d.to_dict() for d in data])
-        return pd.DataFrame.from_dict(data.to_dict())
+        return pd.DataFrame.from_records([data.to_dict()])
 
     def __remove_tz(self, val):
         if val is None:
@@ -302,8 +309,6 @@ class StockRepository:
         return val.astimezone(tz=local_tz)
 
     def __verify_daily_dataset(self, dataset, start, end):
-        print('start:', start, flush=True)
-        print('end:', end, flush=True)
         days = np.busday_count(start, end)
         return len(dataset) >= days
 
