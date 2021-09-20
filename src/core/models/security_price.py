@@ -7,7 +7,6 @@ class SecurityPrice(Base):
     __tablename__ = 'security_prices'
 
     id = Column(Integer, primary_key=True)
-    security_id = Column(Integer, ForeignKey("securities.id"), nullable=False)
     symbol = Column(String(8), nullable=False)
     high = Column(Float)
     low = Column(Float)

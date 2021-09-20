@@ -2,6 +2,39 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../notebooks/alerts.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/charts.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/data.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/fundamentals.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../../notebooks/fundamentals.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/nns/technical_prediction/technical_prediction_data.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/nns/technical_prediction/technical_prediction_exploration.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/nns/technical_prediction/technical_prediction_training.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/options.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../../notebooks/options.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/oscillators.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/BLANK.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/amd.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/bp.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/cpng.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/dkng.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/drrx.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/env.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/f.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/msft.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/mvis.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/nio.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/nvda.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/oke.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/riot.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/six.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/sldb.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/tsla.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/txt.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/upld.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/uwmc.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/veru.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/vst.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/wfc.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../notebooks/stonks/xom.ipynb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
@@ -174,12 +207,12 @@
       <change beforePath="$PROJECT_DIR$/../server/scripts/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/init.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/schedule.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/script_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/script_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/symbols.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/symbols.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/upstream_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/upstream_thread.py" afterDir="false" />

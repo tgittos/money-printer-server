@@ -1,0 +1,1 @@
+(cd .. && export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/src && jupyter-lab)

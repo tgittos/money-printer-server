@@ -42,9 +42,12 @@ def symbol_intraday(symbol):
     start = request.args.get('start')
     repo = get_stock_repository(iex_config=iex_config, mysql_config=mysql_config)
 
+    # parse given start date
+    start_date = datetime.fromtimestamp(float(start), tz=timezone.utc).date()
+
     result = repo.historical_intraday(
         symbol=symbol,
-        start=int(float(start)),
+        start=start_date,
     )
 
     if result is None:
@@ -69,30 +72,27 @@ def symbol_intraday(symbol):
 def symbol_eod(symbol):
     start = request.args.get('start')
     if start is None:
-        start = datetime.utcnow() - timedelta(days=7)
-        start = start.timestamp()
+        start = datetime.today() - timedelta(days=30)
     else:
-        start = int(float(start))
+        start = datetime.fromtimestamp(float(start), tz=timezone.utc)
 
     end = request.args.get('end')
     if end is None:
-        end = datetime.utcnow().timestamp()
+        end = datetime.today()
     else:
-        end = int(float(end))
+        end = datetime.fromtimestamp(float(end), tz=timezone.utc)
 
     repo = get_stock_repository(iex_config=iex_config, mysql_config=mysql_config)
 
     result = repo.historical_daily(symbol, start=start, end=end)
 
     if result is None:
-        start_date = datetime.fromtimestamp(float(start), tz=timezone.utc)
-        end_date = datetime.fromtimestamp(float(end), tz=timezone.utc)
         return {
             'success': False,
             'message': 'no data found for symbol {0} over time period {1} - {2}'.format(
                 symbol,
-                start_date,
-                end_date
+                start,
+                end
             )
         }
 

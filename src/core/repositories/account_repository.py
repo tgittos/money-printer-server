@@ -134,11 +134,14 @@ class AccountRepository:
 
             accounts = []
             for account_dict in plaid_accounts_dict['accounts']:
-                self.logger.info("updating account details for account {0}".format(account_dict['id']))
-                account = self.__sync_update_account(profile, plaid_link, account_dict)
-                accounts.append(account)
-                self.logger.info("updating account balance for account {0}".format(account.id))
-                balance_repo.sync_balance(account.id)
+                if 'id' in account_dict:
+                    self.logger.info("updating account details for account {0}".format(account_dict['id']))
+                    account = self.__sync_update_account(profile, plaid_link, account_dict)
+                    accounts.append(account)
+                    self.logger.info("updating account balance for account {0}".format(account.id))
+                    balance_repo.sync_balance(account.id)
+                else:
+                    self.logger.warning("upstream returned account response missing an id: {0}".format(account_dict))
 
             for account in accounts:
                 # TODO - figure out enums or something
