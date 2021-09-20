@@ -1,5 +1,5 @@
 import styles from './InvestmentPerformance.module.scss';
-import React from "react";
+import React, {FormEvent} from "react";
 import BasicCandleChart from "../../Charts/lib/charts/BasicCandleChart";
 import Holding from "../../../models/Holding";
 import StockService from "../../../services/StockService";
@@ -10,6 +10,10 @@ import IChartDimensions from "../../Charts/interfaces/IChartDimensions";
 import StaticChart from "../../Charts/StaticChart";
 import moment from "moment";
 import HistoricalEoDSymbol, {IHistoricalEoDSymbol} from "../../../models/symbols/HistoricalEoDSymbol";
+import {Dropdown} from "react-bootstrap";
+import {IChartFactory} from "../../Charts/lib/ChartFactory";
+import Candle from "../../Charts/lib/figures/Candle";
+import BasicLineChart from "../../Charts/lib/charts/BasicLineChart";
 
 export interface IInvestmentPerformanceProps {
     holding: Holding;
@@ -17,6 +21,9 @@ export interface IInvestmentPerformanceProps {
 
 export interface IInvestmentPerformanceState {
     loading: boolean;
+    activeChart: IChartFactory;
+    // todo - gross
+    activeChartType: string;
     intradayData: IHistoricalIntradaySymbol[];
     eodData: IHistoricalEoDSymbol[];
 }
@@ -36,11 +43,14 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         this.state = {
             loading: true,
             intradayData: [],
-            eodData: []
+            eodData: [],
+            activeChart: BasicCandleChart,
+            activeChartType: 'Candle'
         };
 
         this._onHistoricalIntradayDataReceived = this._onHistoricalIntradayDataReceived.bind(this);
         this._onHistoricalEoDDataReceived = this._onHistoricalEoDDataReceived.bind(this);
+        this._onChartTypeChanged = this._onChartTypeChanged.bind(this);
 
         this._stocks = new StockService();
     }
@@ -94,6 +104,26 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         }));
     }
 
+    private _onChartTypeChanged(chartType: string | undefined) {
+        console.log('chart type:', chartType)
+        if (chartType) {
+            this.setState(prev => ({
+                ...prev,
+                activeChartType: chartType
+            }));
+        }
+    }
+
+    private get _chartType(): IChartFactory {
+        const { activeChartType } = this.state;
+        if (activeChartType === 'Candle') {
+            return BasicCandleChart;
+        }
+        if (activeChartType === 'Line') {
+            return BasicLineChart;
+        }
+    }
+
     private _formatDataForCandle() {
         const { intradayData, eodData } = this.state;
 
@@ -122,20 +152,35 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
 
         return <div className={styles.InvestmentPerformance}>
             <h1>{ this.props.holding.securitySymbol }</h1>
-            <StaticChart chart={BasicCandleChart}
-                         dimensions={{
-                             width: 1000,
-                             height: 700,
-                             margin: {
-                                 top: 5,
-                                 bottom: 25,
-                                 left: 35,
-                                 right: 5
-                             }
-                         } as IChartDimensions}
-                         data={this._formatDataForCandle()}
-                         ticker={this.props.holding.securitySymbol}
-                />
+
+            <div>
+                <div className="chart-controls">
+                    <Dropdown onSelect={this._onChartTypeChanged}>
+                        <Dropdown.Toggle>
+                            Chart: { this.state.activeChartType }
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item eventKey='Candle'>Candle</Dropdown.Item>
+                            <Dropdown.Item eventKey='Line'>Line</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
+            </div>
+
+            <StaticChart chart={this._chartType}
+                     dimensions={{
+                         width: 1000,
+                         height: 700,
+                         margin: {
+                             top: 5,
+                             bottom: 25,
+                             left: 35,
+                             right: 5
+                         }
+                     } as IChartDimensions}
+                     data={this._formatDataForCandle()}
+                     ticker={this.props.holding.securitySymbol}
+            />
         </div>
     }
 }

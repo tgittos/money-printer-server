@@ -110,6 +110,11 @@ class StockRepository:
                 raise Exception("could not find tracked security for requested symbol", symbol)
             security_id = security.id
         start = datetime.now(tz=timezone.utc) - timedelta(days=1)
+        # if the start is a weekend, walk it back to the last trading day
+        start = self.__get_last_bus_day(start)
+        # todo - this date stuff has spiralled out of control
+        # need to refactor the store, fetch and get methods to all use dates, not datetimes?
+        start = self.__date_to_datetime(start)
         stored = self.__get_stored_historical_daily(symbol, start.timestamp())
         if stored and len(stored) > 0 and self.__verify_daily_dataset(stored, start.date(), datetime.utcnow().date()):
             self.logger.debug("found data in store already, returning existing data")
@@ -321,3 +326,10 @@ class StockRepository:
         if np.isnan(val):
             return 0
         return float(val)
+
+    def __get_last_bus_day(self, date):
+        return np.busday_offset(date.date(), 0, roll='backward').astype(datetime)
+
+    def __date_to_datetime(self, date):
+        return datetime.combine(date, datetime.min.time())
+

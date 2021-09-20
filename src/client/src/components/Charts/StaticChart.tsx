@@ -1,6 +1,7 @@
 import IChartProps from "./interfaces/IChartProps";
 import React from "react";
 import ChartFactory from "./lib/ChartFactory";
+import {Dropdown} from "react-bootstrap";
 
 const StaticChart = (props: IChartProps<any>) => {
     const { data, dimensions, chart } = props;

@@ -13,6 +13,7 @@ from flask_socketio import SocketIO, emit
 app = None
 socket_app = None
 
+
 def create_app():
     from server.config import config as server_config
 
@@ -60,10 +61,10 @@ if __name__ == '__main__':
     logger = get_logger("websocket_server")
 
     # log all the previous stuff we set up
-    logger.debug(" * setting env to {0}".format(env_string))
-    logger.debug(" * changing pwd to {0}".format(pwd))
-    logger.debug(" * augmented path with core")
-    logger.debug(" * path: {0}".format(sys.path))
+    logger.debug("setting env to {0}".format(env_string))
+    logger.debug("changing pwd to {0}".format(pwd))
+    logger.debug("augmented path with core")
+    logger.debug("path: {0}".format(sys.path))
 
     # create the app
     from server.config import config as server_config
@@ -72,11 +73,11 @@ if __name__ == '__main__':
     app = create_app()
     socket_app = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
 
-    logger.debug(" * augmenting money-printer websocket server with message handlers")
+    logger.debug("augmenting money-printer websocket server with message handlers")
     client_bus = ClientBus(socket_app)
 
     # wire up the sigint intercept
     signal.signal(signal.SIGINT, curry_sigint_handler(client_bus=client_bus))
 
-    logger.info(" * running money-printer websocket server")
+    logger.info("running money-printer websocket server")
     socket_app.run(app)

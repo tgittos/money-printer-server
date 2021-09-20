@@ -18,13 +18,11 @@
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/DynamicChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/DynamicChart.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" afterDir="false" />
@@ -149,6 +147,7 @@
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/enums.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/investments.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/investments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/lib/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/logger.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/notifications.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/notifications.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
@@ -171,9 +170,11 @@
       <change beforePath="$PROJECT_DIR$/../core/repositories/stock_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/stock_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/init.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/schedule.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/script_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/script_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />

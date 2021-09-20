@@ -4,19 +4,20 @@ import Holding, {IHolding} from "../../../models/Holding";
 import {formatAsCurrency} from "../../../utilities";
 import Account, {IAccount} from "../../../models/Account";
 import IHistoricalEoDResponse from "../../../responses/HistoricalEoDResponse";
-import HistoricalEoDSymbol from "../../../models/symbols/HistoricalEoDSymbol";
+import HistoricalEoDSymbol, {IHistoricalEoDSymbol} from "../../../models/symbols/HistoricalEoDSymbol";
 import StockService from "../../../services/StockService";
 import moment from "moment";
+import Env from "../../../env";
 
 export interface IHoldingListItemProps {
     active: boolean;
     account: Account;
     holding: Holding;
-    latestPrice: number;
 }
 
 export interface IHoldingListItemState {
-    previousPrice: number;
+    loading: boolean;
+    latestPrice: number;
 }
 
 class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingListItemState> {
@@ -26,19 +27,49 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
     constructor(props: IHoldingListItemProps) {
         super(props);
 
+        this.state = {
+            loading: !!this.props.holding.securitySymbol,
+            latestPrice: -1
+        }
+
         this._handlePreviousPrice = this._handlePreviousPrice.bind(this);
 
         this.stocks = new StockService();
     }
 
     componentDidMount() {
+        if (this.props.holding.securitySymbol) {
+            this.stocks.previous(this.props.holding.securitySymbol)
+                .then(this._handlePreviousPrice);
+        } else {
+            if (Env.DEBUG) {
+                console.log("HoldingListItem::componentDidMount - not looking for symbol latest price, no symbol found");
+            }
+        }
     }
 
-    private _handlePreviousPrice(previous: HistoricalEoDSymbol) {
-        this.setState(prev => ({
-            ...prev,
-            previousPrice: previous.close
-        }));
+    componentDidUpdate(prevProps: Readonly<IHoldingListItemProps>,
+                       prevState: Readonly<IHoldingListItemState>, snapshot?: any) {
+        // todo - maybe add a check and fetch the price again if it's old enough?
+    }
+
+    private _handlePreviousPrice(previous: IHistoricalEoDSymbol) {
+        if (previous) {
+            this.setState(prev => ({
+                ...prev,
+                latestPrice: previous.close,
+                loading: false
+            }));
+        } else {
+            if (Env.DEBUG) {
+                console.log("HoldingListItem::_handlePreviousPrice - price from server was undefined for ticker",
+                    this.props.holding.securitySymbol);
+            }
+            this.setState(prev => ({
+                ...prev,
+                loading: false
+            }));
+        }
     }
 
     public formatQuantity(val: number): string {
@@ -58,6 +89,11 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
 
     render() {
         return <div className={styles.HoldingsListItem}>
+            {
+                this.state.loading && <span className={styles.HoldingListItemLoading}>
+                  Updating price...
+                </span>
+            }
             <div>
                 <p className={styles.HoldingsListItemSymbol}>
                     { this.props.holding.securitySymbol ?? '???' }
@@ -68,7 +104,7 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
                     </span>
                     @
                     <span className={styles.HoldingListItemDetailCost}>
-                        { this.formatLastPrice(this.props.latestPrice) }
+                        { this.formatLastPrice(this.state.latestPrice) }
                     </span>
                     each
                 </span>
