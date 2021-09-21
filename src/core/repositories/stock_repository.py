@@ -65,6 +65,14 @@ class StockRepository:
                                 ", start: {1}, end: {2}".format(symbol, start, end))
         return data
 
+    def historical_daily_all(self, symbols, start=None, end=None, close_only=False):
+        symbol_data = []
+        for symbol in symbols:
+            symbol_data.append(
+                self.historical_daily(symbol, start, end, close_only)
+            )
+        return symbol_data
+
     # gets historical intraday prices for the given symbol
     # defaults to the last day
     # start date can be specified for custom date ranges (within the last 90 days)
@@ -144,6 +152,12 @@ class StockRepository:
 
     def __store_historical_daily(self, symbol, dfs):
         return self.__store_stock_price(symbol, "daily", dfs)
+
+    def has_data(self, symbol, resolution):
+        return self.db.query(SecurityPrice).filter(and_(
+            SecurityPrice.symbol == symbol,
+            SecurityPrice.resolution == resolution
+        )).count() > 0
 
     def has_data_point(self, symbol, resolution, timestamp):
         if resolution == 'intraday':

@@ -91,6 +91,7 @@ redis==3.5.3
 requests==2.26.0
 requests-unixsocket==0.2.0
 scipy==1.7.1
+seaborn==0.11.2
 Send2Trash==1.8.0
 simple-websocket==0.3.0
 six==1.16.0

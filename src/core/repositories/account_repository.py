@@ -134,8 +134,8 @@ class AccountRepository:
 
             accounts = []
             for account_dict in plaid_accounts_dict['accounts']:
-                if 'id' in account_dict:
-                    self.logger.info("updating account details for account {0}".format(account_dict['id']))
+                if 'account_id' in account_dict:
+                    self.logger.info("updating account details for account {0}".format(account_dict['account_id']))
                     account = self.__sync_update_account(profile, plaid_link, account_dict)
                     accounts.append(account)
                     self.logger.info("updating account balance for account {0}".format(account.id))

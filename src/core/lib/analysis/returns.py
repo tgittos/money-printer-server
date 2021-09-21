@@ -10,3 +10,4 @@ def returns(prices):
     df['return'] = df['close'] / df['prev_close'] - 1
     # calculate the log return for each day's records
     df['log_return'] = np.log(df['return'].astype(float) + 1)
+    return df
