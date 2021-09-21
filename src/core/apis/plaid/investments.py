@@ -1,8 +1,9 @@
-import json
+import traceback
 
 from plaid import ApiException
 from plaid.model.investments_holdings_get_request import InvestmentsHoldingsGetRequest
 
+from core.lib.logger import get_logger
 from core.apis.plaid.common import get_plaid_api_client
 
 
@@ -15,6 +16,7 @@ class InvestmentsConfig(object):
 
 class Investments:
     def __init__(self, accounts_config=None):
+        self.logger = get_logger(__name__)
         self.config = accounts_config or InvestmentsConfig()
         self.client = get_plaid_api_client(self.config.plaid_config)
 
@@ -26,4 +28,6 @@ class Investments:
             response = self.client.investments_holdings_get(request)
             return response.to_dict()
         except ApiException as e:
-            return json.loads(e.body)
+            self.logger.exception("unexpected error from upstream provider fetching account holdings for account: {0}"
+                                  .format(traceback.format_exc()))
+            return

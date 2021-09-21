@@ -61,8 +61,7 @@ class StockRepository:
         if data is not None and len(data) > 0:
             self.__store_historical_daily(symbol, data)
         else:
-            self.logger.warning(" * upstream didn't return an error, but it did return an empty dataset, symbol: {0}" +
-                                ", start: {1}, end: {2}".format(symbol, start, end))
+            self.logger.warning(" * upstream didn't return an error, but it did return an empty dataset, symbol: {0}, start: {1}, end: {2}".format(symbol, start, end))
         return data
 
     def historical_daily_all(self, symbols, start=None, end=None, close_only=False):
@@ -90,8 +89,7 @@ class StockRepository:
         if data is not None and len(data) > 0:
             self.__store_historical_intraday(symbol, data)
         else:
-            self.logger.warning("upstream didn't return an error, but it did return an empty dataset, symbol: {0}, " +
-                                "start: {1}" .format(symbol, start))
+            self.logger.warning("upstream didn't return an error, but it did return an empty dataset, symbol: {0} start: {1}" .format(symbol, start))
         return data
 
     # gets the previous trading day's prices for the given symbol
@@ -153,11 +151,10 @@ class StockRepository:
     def __store_historical_daily(self, symbol, dfs):
         return self.__store_stock_price(symbol, "daily", dfs)
 
-    def has_data(self, symbol, resolution):
-        return self.db.query(SecurityPrice).filter(and_(
-            SecurityPrice.symbol == symbol,
-            SecurityPrice.resolution == resolution
-        )).count() > 0
+    def has_data(self, symbol):
+        return self.db.query(SecurityPrice).filter(
+            SecurityPrice.symbol == symbol
+        ).count() > 0
 
     def has_data_point(self, symbol, resolution, timestamp):
         if resolution == 'intraday':
@@ -211,9 +208,12 @@ class StockRepository:
         return records
 
     def __fetch_historical_daily(self, symbol, start=None, end=None, close_only=False):
-        start = start or datetime.today() - timedelta(days=30)
-        end = end or datetime.today()
-        self.logger.info("fetching historical daily prices for symbol {0}, {1} - {2} from upstream".format(symbol, start, end))
+        if start is None:
+            start = self.__get_last_bus_day(datetime.today() - timedelta(days=30))
+        if end is None:
+            end = self.__get_last_bus_day(datetime.today())
+        self.logger.info("fetching historical daily prices for symbol {0}, {1} - {2} from upstream"
+                         .format(symbol, start, end))
         try:
             df = get_historical_data(symbol,
                                      start=start,

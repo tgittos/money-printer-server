@@ -50,14 +50,13 @@ class SyncSecurities:
         if not has_data:
             self.logger.info("no historical data found for security, fetching default window of back data")
             # fetch the default window's worth of historical daily closings
-            self.stock_repo.historical_daily(security.ticker_symbol, security_id=security.id)
+            self.stock_repo.historical_daily(security.ticker_symbol)
         else:
             self.logger.info("updating prices with last EOD")
             # just fetch the last EOD prices
             self.__sync_eod_symbol(security.id, security.ticker_symbol)
 
     def __sync_eod_symbol(self, security_id, symbol):
-        start = datetime.utcnow() - timedelta(days=1)
         # the repo method will automatically persist the data for us
-        self.stock_repo.previous(symbol, security_id=security_id)
+        self.stock_repo.previous(symbol)
 
