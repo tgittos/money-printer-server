@@ -23,15 +23,13 @@ mailgun_config = MailGunConfig(
 )
 
 
-class SyncAccounts:
+class SyncHoldings:
 
-    profile_id = None
     plaid_item_id = None
 
     def __init__(self, redis_message=None):
         self.logger = get_logger(__name__)
         if redis_message is not None and 'profile_id' in redis_message and 'plaid_item_id' in redis_message:
-            self.profile_id = redis_message.args['profile_id']
             self.plaid_item_id = redis_message.args['plaid_item_id']
         self.profile_repo = get_profile_repository(mysql_config=sql_config, mailgun_config=mailgun_config)
         self.account_repo = get_account_repository(mysql_config=sql_config, plaid_config=plaid_config)
@@ -40,6 +38,8 @@ class SyncAccounts:
         if self.profile_id and self.plaid_item_id:
             self.sync_profile(self.profile_id)
             return
+
+        security_repo.sync_holdings(profile_id=profile_id, account_id=account.id)
         self.sync_all_profiles()
 
     def sync_all_profiles(self):

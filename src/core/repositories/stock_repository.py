@@ -13,6 +13,7 @@ from core.models.security import Security
 from core.models.security_price import SecurityPrice
 from core.models.iex_blacklist import IexBlacklist
 from core.lib.logger import get_logger
+from core.lib.utilities import sanitize_float
 
 
 def get_repository(iex_config, mysql_config):
@@ -180,25 +181,25 @@ class StockRepository:
 
                 # guaranteed data
                 price.symbol = symbol
-                price.high = self.__sanitize_float(df['high'])
-                price.low = self.__sanitize_float(df['low'])
-                price.open = self.__sanitize_float(df['open'])
-                price.close = self.__sanitize_float(df['close'])
+                price.high = sanitize_float(df['high'])
+                price.low = sanitize_float(df['low'])
+                price.open = sanitize_float(df['open'])
+                price.close = sanitize_float(df['close'])
                 price.volume = int(df['volume'])
                 price.date = self.__local_to_utc(date_index)
                 price.resolution = resolution
                 price.timestamp = datetime.utcnow()
 
                 # data that seems to be optional based on endpoint
-                if 'uHigh' in df: price.u_high = self.__sanitize_float(df['uHigh'])
-                if 'uLow' in df: price.u_low = self.__sanitize_float(df['uLow'])
-                if 'uOpen' in df: price.u_open = self.__sanitize_float(df['uOpen'])
-                if 'uClose' in df: price.u_close = self.__sanitize_float(df['uClose'])
-                if 'uVolume' in df: price.u_volume = self.__sanitize_float(df['uVolume'])
-                if 'change' in df: price.change = self.__sanitize_float(df['change'])
-                if 'changePercent' in df: price.change_percent = self.__sanitize_float(df['changePercent'])
-                if 'changeOverTime' in df: price.change_over_time = self.__sanitize_float(df['changeOverTime'])
-                if 'marketChangeOverTime' in df: price.market_change_over_time = self.__sanitize_float(df['marketChangeOverTime'])
+                if 'uHigh' in df: price.u_high = sanitize_float(df['uHigh'])
+                if 'uLow' in df: price.u_low = sanitize_float(df['uLow'])
+                if 'uOpen' in df: price.u_open = sanitize_float(df['uOpen'])
+                if 'uClose' in df: price.u_close = sanitize_float(df['uClose'])
+                if 'uVolume' in df: price.u_volume = sanitize_float(df['uVolume'])
+                if 'change' in df: price.change = sanitize_float(df['change'])
+                if 'changePercent' in df: price.change_percent = sanitize_float(df['changePercent'])
+                if 'changeOverTime' in df: price.change_over_time = sanitize_float(df['changeOverTime'])
+                if 'marketChangeOverTime' in df: price.market_change_over_time = sanitize_float(df['marketChangeOverTime'])
 
                 self.db.add(price)
                 self.db.commit()
@@ -293,11 +294,6 @@ class StockRepository:
     def __verify_intraday_dataset(self, dataset, start):
         # todo - figure out this
         return len(dataset) > 0
-
-    def __sanitize_float(self, val):
-        if np.isnan(val):
-            return 0
-        return float(val)
 
     def __get_last_bus_day(self, date):
         return np.busday_offset(date.date(), 0, roll='backward').astype(datetime)

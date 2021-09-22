@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from sqlalchemy import and_
 
@@ -8,8 +8,11 @@ from core.models.plaid_item import PlaidItem
 from core.models.account import Account
 from core.models.security import Security
 from core.models.holding import Holding
+from core.models.holding_balance import HoldingBalance
+from core.models.investment_transaction import InvestmentTransaction
 from core.presentation.holding_presenters import HoldingWithSecurity
 from core.lib.logger import get_logger
+from core.lib.utilities import sanitize_float
 
 
 def get_repository(mysql_config, plaid_config):
@@ -41,6 +44,29 @@ class CreateHoldingRequest:
         self.cost_basis = cost_basis
         self.quantity = quantity
         self.iso_currency_code = iso_currency_code
+
+
+class UpdateHoldingRequest:
+    def __init__(self, holding_id, cost_basis, quantity):
+        self.holding_id = holding_id
+        self.cost_basis = cost_basis
+        self.quantity = quantity
+
+
+class CreateInvestmentTransactionRequest:
+    def __init__(self, account_id, date, name, amount, fees, price, quantity, iso_currency_code, type, subtype,
+                 investment_transaction_id):
+        self.account_id = account_id
+        self.date = date
+        self.name = name
+        self.amount = amount
+        self.fees = fees
+        self.price = price
+        self.quantity = quantity
+        self.type = type
+        self.subtype = subtype
+        self.iso_currency_code = iso_currency_code
+        self.investment_transaction_id = investment_transaction_id
 
 
 class SecurityRepository:
@@ -126,6 +152,40 @@ class SecurityRepository:
 
         return holding
 
+    def update_holding_balance(self, request):
+        holding_balance = HoldingBalance()
+
+        holding_balance.holding_id = request.holding_id
+        holding_balance.cost_basis = request.cost_basis
+        holding_balance.quantity = request.quantity
+        holding_balance.timestamp = datetime.utcnow()
+
+        self.db.add(holding_balance)
+        self.db.commit()
+
+        return holding_balance
+
+    def create_investment_transaction(self, request):
+        investment_transaction = InvestmentTransaction()
+
+        investment_transaction.account_id = request.account_id
+        investment_transaction.name = request.name
+        investment_transaction.quantity = request.quantity
+        investment_transaction.price = sanitize_float(request.price)
+        investment_transaction.fees = sanitize_float(request.fees)
+        investment_transaction.amount = sanitize_float(request.amount)
+        investment_transaction.date = request.date
+        investment_transaction.iso_currency_code = request.iso_currency_code
+        investment_transaction.type = request.type
+        investment_transaction.subtype = request.subtype
+        investment_transaction.investment_transaction_id = request.investment_transaction_id
+        investment_transaction.timestamp = datetime.utcnow()
+
+        self.db.add(investment_transaction)
+        self.db.commit()
+
+        return investment_transaction
+
     def sync_holdings(self, profile_id, account_id):
         account = self.db.query(Account).where(Account.id == account_id).first()
         if account is None:
@@ -164,9 +224,9 @@ class SecurityRepository:
 
         # update the holdings
         for holding_dict in investment_dict["holdings"]:
+            security = self.get_security_by_security_id(holding_dict['security_id'])
             holding = self.get_holding_by_account_and_security(holding_dict["account_id"], holding_dict["security_id"])
             if holding is None:
-                security = self.get_security_by_security_id(holding_dict['security_id'])
                 holding = self.create_holding(CreateHoldingRequest(
                     account_id=account.id,
                     security_id=security.id,
@@ -174,3 +234,72 @@ class SecurityRepository:
                     quantity=holding_dict['quantity'],
                     iso_currency_code=holding_dict['iso_currency_code']
                 ))
+            else:
+                self.update_holding_balance(UpdateHoldingRequest(
+                    holding_id=holding.id,
+                    cost_basis=holding_dict['cost_basis'],
+                    quantity=holding_dict['quantity']
+                ))
+
+    def sync_transactions(self, profile_id, account_id):
+        account = self.db.query(Account).where(Account.id == account_id).first()
+        if account is None:
+            self.logger.error("requested holdings sync on account that couldn't be found: {0}".format(account_id))
+            return
+
+        plaid_item = self.db.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
+        if plaid_item is None:
+            self.logger.error(
+                "requested holdings sync on account but couldn't find plaid_item: {0}".format(account.to_dict()))
+            return
+
+        api = Investments(InvestmentsConfig(self.plaid_config))
+
+        # if we have no transactions for this account, try and pull the last years
+        # otherwise, we probably got a notification from a webhook to update, so just
+        # update the last week's worth of transactions
+        start = date.today()
+        end = start - timedelta(days=365)
+
+        if self.__has_transactions(account_id):
+            end = start - timedelta(days=7)
+
+        transactions_dict = api.get_transactions(plaid_item.access_token, start=start, end=end)
+
+        if 'transactions' not in transactions_dict:
+            self.logger.info("upstream provider returned 0 transactions for date period {0} - {1}"
+                             .format(start, end))
+            return
+
+        transactions = []
+
+        for transaction_dict in transactions_dict:
+            if 'account_id' not in transaction_dict:
+                self.logger.error("upstream gave investment transaction result with missing account id: {0}", transaction_dict)
+                next()
+
+            investment_transaction = self.__get_investment_transaction_by_investment_transaction_id(
+                transaction_dict['investment_transaction_id'])
+
+            if investment_transaction is None:
+                investment_transaction = self.create_investment_transaction(CreateInvestmentTransactionRequest(
+                    account_id=transaction_dict['account_id'],
+                    amount=transaction_dict['amount'],
+                    date=transaction_dict['date'],
+                    fees=transaction_dict['fees'],
+                    investment_transaction_id=transaction_dict['investment_transaction_id'],
+                    iso_currency_code=transaction_dict['iso_currency_code'],
+                    name=transaction_dict['name'],
+                    price=transaction_dict['price'],
+                    quantity=transaction_dict['quantity'],
+                    subtype=transaction_dict['subtype'],
+                    type=transaction_dict['type']
+                ))
+
+            transactions.append(transactions)
+
+        return transactions
+
+    def __get_investment_transaction_by_investment_transaction_id(self, investment_transaction_id):
+        return self.db.query(InvestmentTransaction).filter(InvestmentTransaction.investment_transaction_id ==
+                                                           investment_transaction_id).first()

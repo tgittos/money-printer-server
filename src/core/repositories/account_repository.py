@@ -1,18 +1,18 @@
 from datetime import datetime
-import redis
 import json
 
 from sqlalchemy import desc, and_
 
 from core.apis.plaid.accounts import Accounts, AccountsConfig
 from core.models.account import Account
-from core.models.balance import Balance
+from core.models.account_balance import AccountBalance
 from core.models.profile import Profile
 from core.models.plaid_item import PlaidItem
 from core.presentation.account_presenters import AccountWithBalance
 from core.stores.mysql import MySql
 from core.repositories.balance_repository import get_repository as get_balance_repository
 from core.repositories.security_repository import get_repository as get_security_repository
+from core.repositories.scheduled_job_repository import get_repository as get_scheduled_job_repository, CreateInstantJobRequest
 from core.lib.logger import get_logger
 
 
@@ -37,26 +37,24 @@ class GetAccountBalanceRequest:
         self.end = end
 
 
-def get_repository(mysql_config, plaid_config):
+def get_repository(mysql_config, plaid_config, mailgun_config):
     repo = AccountRepository(
         mysql_config=mysql_config,
-        plaid_config=plaid_config
+        plaid_config=plaid_config,
+        mailgun_config=mailgun_config
     )
     return repo
 
 
-WORKER_QUEUE = "mp:worker"
-
-
 class AccountRepository:
 
-    def __init__(self, mysql_config, plaid_config):
+    def __init__(self, mysql_config, plaid_config, mailgun_config):
         self.logger = get_logger(__name__)
-        self.redis = redis.Redis(host='localhost', port=6379, db=0)
         db = MySql(mysql_config)
         self.db = db.get_session()
         self.mysql_config = mysql_config
         self.plaid_config = plaid_config
+        self.mailgun_config = mailgun_config
 
     def get_all_accounts_by_profile(self, profile_id):
         account_records = self.db.query(Account).filter(Account.profile_id == profile_id).all()
@@ -92,11 +90,24 @@ class AccountRepository:
         return account
 
     def schedule_account_sync(self, profile_id, plaid_item_id):
-        self.redis.publish(WORKER_QUEUE, json.dumps({
-            'job': 'sync_accounts',
-            'profile_id': profile_id,
-            'plaid_item_id': plaid_item_id
-        }))
+        scheduled_job_repo = get_scheduled_job_repository(mailgun_config=self.mailgun_config, mysql_config=self.mysql_config)
+        scheduled_job_repo.create_instant_job(CreateInstantJobRequest(
+            job_name='sync_accounts',
+            args={
+                'profile_id': profile_id,
+                'plaid_item_id': plaid_item_id
+            }
+        ))
+
+    def schedule_account_sync(self, plaid_item_id):
+        if plaid_item_id is None:
+            self.logger.error("cannot schedule account sync by plaid item without plaid item")
+            return
+        plaid_item = self.db.query(PlaidItem).where(PlaidItem.item_id == plaid_item_id).first()
+        if plaid_item is None:
+            self.logger.error("scheduled account sync for plaid item, but no accounts found: {0}".format(plaid_item_id))
+            return
+        self.schedule_account_sync(profile_id=plaid_item.profile_id, plaid_item_id=plaid_item_id)
 
     def get_account_balances(self, request):
         account = self.get_account_by_id(request.profile_id, request.account_id)
@@ -104,13 +115,13 @@ class AccountRepository:
         if account is not None:
             if request.start is not None:
                 if request.end is not None:
-                    records = self.db.query.filter(Balance.account_id == account.id and
-                                                   request.start <= Balance.timestamp <= request.end).all()
+                    records = self.db.query.filter(AccountBalance.account_id == account.id and
+                                                   request.start <= AccountBalance.timestamp <= request.end).all()
                 else:
-                    records = self.db.query.filter(Balance.account_id == account.id and
-                                                   request.start <= Balance.timestamp).all()
+                    records = self.db.query.filter(AccountBalance.account_id == account.id and
+                                                   request.start <= AccountBalance.timestamp).all()
             else:
-                records = self.db.query(Balance).filter(Balance.account_id == account.id).all()
+                records = self.db.query(AccountBalance).filter(AccountBalance.account_id == account.id).all()
         return records
 
     def sync_all_accounts(self, profile_id):
@@ -120,14 +131,13 @@ class AccountRepository:
 
         self.logger.info("updating account state for profile {0}".format(profile.id))
 
-        balance_repo = get_balance_repository(mysql_config=self.mysql_config, plaid_config=self.plaid_config)
-        security_repo = get_security_repository(mysql_config=self.mysql_config, plaid_config=self.plaid_config)
         plaid_accounts_api = Accounts(AccountsConfig(
             plaid_config=self.plaid_config
         ))
 
         plaid_links = self.__fetch_plaid_links(profile_id)
         for plaid_link in plaid_links:
+
             plaid_accounts_dict = plaid_accounts_api.get_accounts(plaid_link.access_token)
 
             self.logger.info("updating {0} accounts".format(len(plaid_accounts_dict['accounts'])))
@@ -138,24 +148,18 @@ class AccountRepository:
                     self.logger.info("updating account details for account {0}".format(account_dict['account_id']))
                     account = self.__sync_update_account(profile, plaid_link, account_dict)
                     accounts.append(account)
-                    self.logger.info("updating account balance for account {0}".format(account.id))
-                    balance_repo.sync_balance(account.id)
+                    # self.logger.info("updating account balance for account {0}".format(account.id))
+                    # balance_repo.sync_balance(account.id)
                 else:
                     self.logger.warning("upstream returned account response missing an id: {0}".format(account_dict))
-
-            for account in accounts:
-                # TODO - figure out enums or something
-                if account.type == "investment":
-                    self.logger.info("updating investment holdings for account {0}".format(account.id))
-                    security_repo.sync_holdings(profile_id=profile_id, account_id=account.id)
 
         self.logger.info("done updating accounts for profile {0}".format(profile.id))
 
     def __augment_with_balances(self, account_records):
         augmented_records = []
         for account_record in account_records:
-            balance = self.db.query(Balance).filter(Balance.account_id == account_record.id)\
-                .order_by(desc(Balance.timestamp)).first()
+            balance = self.db.query(AccountBalance).filter(AccountBalance.account_id == account_record.id)\
+                .order_by(desc(AccountBalance.timestamp)).first()
             account_record.timestamp = balance.timestamp
             augmented_record = AccountWithBalance(
                 account=account_record,

@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import desc
 
 from core.apis.plaid.accounts import Accounts, AccountsConfig
-from core.models.balance import Balance
+from core.models.account_balance import AccountBalance
 from core.models.account import Account
 from core.models.plaid_item import PlaidItem
 from core.stores.mysql import MySql
@@ -14,7 +14,7 @@ def get_repository(mysql_config, plaid_config):
     return repo
 
 
-class CreateBalanceRequest:
+class CreateAccountBalanceRequest:
 
     def __init__(self, account_id, available, current, iso_currency_code):
         self.account_id = account_id
@@ -32,15 +32,15 @@ class BalanceRepository:
         self.plaid_config = plaid_config
 
     def get_balances_by_account_id(self, account_id):
-        r = self.db.query(Balance).filter(Balance.accountId == account_id).all()
+        r = self.db.query(AccountBalance).filter(AccountBalance.accountId == account_id).all()
         return r
 
     def get_latest_balance_by_account_id(self, account_id):
-        r = self.db.query(Balance).filter(Balance.accountId == account_id).order_by(desc(Balance.timestamp)).first()
+        r = self.db.query(AccountBalance).filter(AccountBalance.accountId == account_id).order_by(desc(AccountBalance.timestamp)).first()
         return r
 
     def create_balance(self, request):
-        balance = Balance()
+        balance = AccountBalance()
         balance.account_id = request.account_id
         balance.available = request.available
         balance.current = request.current
@@ -73,7 +73,7 @@ class BalanceRepository:
         for account_dict in response_dict['accounts']:
             balance_dict = account_dict['balances']
 
-            new_balance = self.create_balance(CreateBalanceRequest(
+            new_balance = self.create_balance(CreateAccountBalanceRequest(
                 account_id=account.id,
                 current=balance_dict['current'],
                 available=balance_dict['available'],
