@@ -131,6 +131,8 @@ class AccountRepository:
 
         self.logger.info("updating account state for profile {0}".format(profile.id))
 
+        balance_repo = get_balance_repository(mysql_config=self.mysql_config, plaid_config=self.plaid_config)
+
         plaid_accounts_api = Accounts(AccountsConfig(
             plaid_config=self.plaid_config
         ))
@@ -149,7 +151,7 @@ class AccountRepository:
                     account = self.__sync_update_account(profile, plaid_link, account_dict)
                     accounts.append(account)
                     # self.logger.info("updating account balance for account {0}".format(account.id))
-                    # balance_repo.sync_balance(account.id)
+                    balance_repo.sync_account_balance(account.id)
                 else:
                     self.logger.warning("upstream returned account response missing an id: {0}".format(account_dict))
 

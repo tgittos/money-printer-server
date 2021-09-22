@@ -39,7 +39,7 @@ def receive_plaid_webhook():
     plaid_repo = get_plaid_repository(sql_config=mysql_config, plaid_api_config=plaid_config)
     account_repo = get_account_repository(mysql_config=mysql_config, plaid_config=plaid_config)
     holding_repo = get_holdings_repository(mysql_config=mysql_config, iex_config=iex_config)
-    balance_repo = get_balance_repository(mysql_config=mysql_config, plaid_config=plaid_config)
+    balance_repo = get_balance_repository(mysql_config=mysql_config, plaid_config=plaid_config, mailgun_config=mailgun_config)
 
     if webhook_type == "ITEM":
         if webhook_code == "ERROR":
@@ -55,7 +55,7 @@ def receive_plaid_webhook():
 
     if webhook_type == "TRANSACTIONS":
         if webhook_code == "DEFAULT_UPDATE":
-            balance_repo.schedule_update_balances(plaid_item_id=plaid_item_id)
+            balance_repo.schedule_update_all_balances(plaid_item_id=plaid_item_id)
 
     if webhook_type == "HOLDINGS":
         if webhook_code == "DEFAULT_UPDATE":

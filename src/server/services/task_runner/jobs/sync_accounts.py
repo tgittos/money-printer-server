@@ -40,7 +40,7 @@ class SyncAccounts:
         if self.profile_id and self.plaid_item_id:
             self.sync_profile(self.profile_id)
             return
-        self.sync_all_profiles()
+        # self.sync_all_profiles()
 
     def sync_all_profiles(self):
         self.logger.debug("syncing all profiles")
@@ -49,6 +49,7 @@ class SyncAccounts:
             self.sync_profile(profile.id)
 
     def sync_profile(self, profile_id):
+        self.logger.debug("syncing profiles {0}".format(profile_id))
         profile = self.profile_repo.get_by_id(profile_id)
 
         if profile is None:
