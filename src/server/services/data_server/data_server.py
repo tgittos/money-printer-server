@@ -23,6 +23,11 @@ if __name__ == '__main__':
     # grab a ref to the logger
     logger = get_logger("server.services.data_server")
 
+    # TODO - remove!
+    if env_string != 'sandbox':
+        logger.error("data server not starting - configured to not run in any env but sandbox")
+        exit(0)
+
     # log all the previous stuff we set up
     logger.debug("setting env to {0}".format(env_string))
     logger.debug("changing pwd to {0}".format(pwd))

@@ -31,6 +31,7 @@ class Runner(Thread):
         self.redis = redis.Redis(host='localhost', port=6379, db=0)
         self.job_repo = get_job_repository(mysql_config=sql_config, mailgun_config=mailgun_config)
         self.jobs = self.job_repo.get_scheduled_jobs()
+        self.logger.info("running using db config: {0}".format(sql_config))
         self.logger.info("found {0} scheduled jobs".format(len(self.jobs)))
 
     def start(self) -> None:

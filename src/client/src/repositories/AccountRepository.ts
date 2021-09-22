@@ -40,6 +40,7 @@ class AccountRepository extends BaseRepository {
             return accounts;
         }
 
+        AppStore.dispatch(setAccounts([]))
         return [];
     }
 

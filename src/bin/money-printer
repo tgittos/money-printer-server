@@ -1,2 +1,4 @@
+env="${1:-sandbox}"
 echo 'MONEY PRINTER GOING BRRR'
-(trap 'kill 0' SIGINT; export MONEY_PRINTER_ENV=sandbox && (./bin/data-server & ./bin/client-bus & ./bin/task-runner & ./bin/api) > /dev/null)
+echo "BRRRing in $env"
+export MONEY_PRINTER_ENV=$env && (trap 'kill 0' SIGINT; (./bin/data-server $env & ./bin/client-bus $env & ./bin/task-runner $env & ./bin/api $env) > /dev/null)

@@ -87,7 +87,7 @@ const AccountSlice = createSlice({
             return {
                 ...state,
                 loadingAccounts: false,
-                loading: state.loadingBalances || state.loadingHoldings,
+                loading: action.payload.length > 0 && (state.loadingBalances || state.loadingHoldings),
                 accounts: [].concat(action.payload)
             }
         },

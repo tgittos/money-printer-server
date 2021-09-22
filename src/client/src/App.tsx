@@ -24,6 +24,7 @@ class App extends React.Component<{}, IAppState> {
   public get loading(): boolean {
     const profileState = getProfileState();
     const accountState = getAccountsState();
+    console.log('App.loading:', profileState.loading, accountState.loading);
     return profileState.loading || accountState.loading;
   }
 

@@ -6,7 +6,7 @@ from server.config import config as server_config
 def load_config():
     env_string = "sandbox"
     if 'MONEY_PRINTER_ENV' in os.environ:
-        env_string = os.environ['MONEY_PRINTER_ENV']
+        env_string = os.environ['MONEY_PRINTER_ENV'].strip()
 
     if env_string == "production":
         return server_config['production']
