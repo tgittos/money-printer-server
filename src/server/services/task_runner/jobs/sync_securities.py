@@ -23,8 +23,8 @@ class SyncSecurities:
 
     def __init__(self, redis_message=None):
         self.logger = get_logger(__name__)
-        if redis_message is not None and 'symbol' in redis_message['data']:
-            self.symbol = redis_message['data']['symbol']
+        if redis_message is not None and 'symbol' in redis_message['args']:
+            self.symbol = redis_message['args']['symbol']
         self.stock_repo = get_stock_repository(iex_config=iex_config, mysql_config=sql_config)
         self.security_repo = get_security_repository(mysql_config=sql_config, plaid_config=plaid_config)
 

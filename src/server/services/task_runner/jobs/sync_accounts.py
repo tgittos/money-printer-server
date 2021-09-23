@@ -30,8 +30,8 @@ class SyncAccounts:
 
     def __init__(self, redis_message=None):
         self.logger = get_logger(__name__)
-        if redis_message is not None and 'plaid_item_id' in redis_message['data']:
-            self.plaid_item_id = redis_message['data']['plaid_item_id']
+        if redis_message is not None and 'plaid_item_id' in redis_message['args']:
+            self.plaid_item_id = redis_message['args']['plaid_item_id']
         self.profile_repo = get_profile_repository(mysql_config=sql_config, mailgun_config=mailgun_config)
         self.account_repo = get_account_repository(mysql_config=sql_config, plaid_config=plaid_config,
                                                    mailgun_config=mailgun_config, iex_config=iex_config)

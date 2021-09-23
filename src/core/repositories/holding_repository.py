@@ -1,5 +1,6 @@
 
 from core.models.account import Account
+from core.models.plaid_item import PlaidItem
 from core.repositories.security_repository import get_repository as get_security_repo
 from core.repositories.stock_repository import get_repository as get_stock_repository
 from core.repositories.scheduled_job_repository import get_repository as get_scheduled_job_repository, CreateInstantJobRequest
@@ -53,14 +54,18 @@ class HoldingRepository:
             }
         ))
 
-    def update_holdings(self, plaid_item_id):
-        if plaid_item_id is None:
-            self.logger.error("cannot update holding without a valid plaid_item_id")
+    def update_holdings(self, plaid_item_item_id):
+        if plaid_item_item_id is None:
+            self.logger.error("cannot update holding without a valid plaid_item_item_id")
             return
-        accounts = self.db.query(Account).filter(Account.plaid_item_id == plaid_item_id).all()
+        plaid_item = self.db.query(PlaidItem).where(PlaidItem.item_id == plaid_item_item_id).first()
+        if plaid_item is None:
+            self.logger.warning("requested update holding with plaid item item_id {0}, no plaid item found"
+                                .format(plaid_item_item_id))
+        accounts = self.db.query(Account).filter(Account.plaid_item_id == plaid_item.id).all()
         if accounts is None or len(accounts) == 0:
             self.logger.error("received request to update holdings with no corresponding accounts: {0}"
-                              .format(plaid_item_id))
+                              .format(plaid_item.id))
             return
         accounts_updated = 0
         for account in accounts:

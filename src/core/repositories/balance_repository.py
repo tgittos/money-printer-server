@@ -64,14 +64,21 @@ class BalanceRepository:
             }
         ))
 
-    def sync_all_balances(self, plaid_item_id):
-        self.logger.info("syncing account balance/s for plaid item: {0}".format(plaid_item_id))
-        accounts = self.db.query(Account).where(Account.plaid_item_id == plaid_item_id).all()
+    def sync_all_balances(self, plaid_item_item_id):
+        self.logger.info("syncing account balance/s for plaid item: {0}".format(plaid_item_item_id))
+        plaid_item = self.db.query(PlaidItem).where(PlaidItem.item_id == plaid_item_item_id).first()
+        if plaid_item is None:
+            self.logger.warning("requested balance sync for plaid item with item_id {0}, no plaid item found"
+                                .format(plaid_item_item_id))
+            return
+        accounts = self.db.query(Account).where(Account.plaid_item_id == plaid_item.id).all()
         if accounts and len(accounts) > 0:
             self.logger.info("found {0} accounts to update".format(len(accounts)))
             for account in accounts:
                 self.sync_account_balance(account.id)
             self.logger.info("done updating balances for plaid item")
+        else:
+            self.logger.warning("requested account sync of plaid item {0} but no accounts found".format(plaid_item.id))
 
     def sync_account_balance(self, account_id):
         self.logger.info("syncing account balance for account id: {0}".format(account_id))

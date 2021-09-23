@@ -210,7 +210,7 @@ class StockRepository:
 
     def __fetch_historical_daily(self, symbol, start=None, end=None, close_only=False):
         if start is None:
-            start = self.__get_last_bus_day(datetime.today() - timedelta(days=30))
+            start = self.__get_last_bus_day(datetime.today() - timedelta(days=90))
         if end is None:
             end = self.__get_last_bus_day(datetime.today())
         self.logger.info("fetching historical daily prices for symbol {0}, {1} - {2} from upstream"
@@ -232,7 +232,7 @@ class StockRepository:
             return None
 
     def __fetch_historical_intraday(self, symbol, start=None):
-        start = datetime.combine(start, datetime.min.time()) or datetime.today() - timedelta(days=7)
+        start = datetime.combine(start, datetime.min.time()) or datetime.today() - timedelta(days=30)
         today = datetime.today()
         try:
             days = min((today - start).days, 1)

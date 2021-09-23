@@ -90,7 +90,7 @@ class Runner(Thread):
                                                                                        last_run_iso))
                     self.redis.publish(WORKER_QUEUE, json.dumps({
                         'job': job.job_name,
-                        'data': job.json_args
+                        'args': job.json_args
                     }))
                     job_ran = True
             else:

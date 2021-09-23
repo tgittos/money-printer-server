@@ -37,7 +37,6 @@ class GetAccountBalanceRequest:
         self.end = end
 
 
-
 def get_repository(mysql_config, plaid_config, mailgun_config, iex_config):
     repo = AccountRepository(
         mysql_config=mysql_config,
