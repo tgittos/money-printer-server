@@ -13,6 +13,7 @@ class Profile(Base):
     first_name = Column(String(32))
     last_name = Column(String(32))
     force_password_reset = Column(Boolean, nullable=False, default=True)
+    is_demo_profile = Column(Boolean, nullable=False, default=False)
     timestamp = Column(DateTime)
 
     def to_dict(self):

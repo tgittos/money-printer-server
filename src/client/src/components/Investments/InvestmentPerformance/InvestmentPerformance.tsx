@@ -14,6 +14,7 @@ import {Dropdown} from "react-bootstrap";
 import {IChartFactory} from "../../Charts/lib/ChartFactory";
 import Candle from "../../Charts/lib/figures/Candle";
 import BasicLineChart from "../../Charts/lib/charts/BasicLineChart";
+import ISymbol from "../../../interfaces/ISymbol";
 
 export interface IInvestmentPerformanceProps {
     holding: Holding;
@@ -24,8 +25,8 @@ export interface IInvestmentPerformanceState {
     activeChart: IChartFactory;
     // todo - gross
     activeChartType: string;
-    intradayData: IHistoricalIntradaySymbol[];
-    eodData: IHistoricalEoDSymbol[];
+    intradayData: HistoricalIntradaySymbol[];
+    eodData: HistoricalEoDSymbol[];
 }
 
 class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps, IInvestmentPerformanceState> {
@@ -127,7 +128,7 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
     private _formatDataForCandle() {
         const { intradayData, eodData } = this.state;
 
-        let data = intradayData;
+        let data: ISymbol[] = intradayData;
         if (data.length === 0) {
             data = eodData;
         };
@@ -179,7 +180,6 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
                          }
                      } as IChartDimensions}
                      data={this._formatDataForCandle()}
-                     ticker={this.props.holding.securitySymbol}
             />
         </div>
     }

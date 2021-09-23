@@ -100,13 +100,16 @@ class ProfileRepository:
         self.db = db.get_session()
 
     def get_unauthenticated_user(self):
-        empty_profile = Profile()
-        empty_profile.timestamp = datetime.utcnow()
-        empty_profile.first_name = "Anonymous"
-        empty_profile.last_name = "Money-Printer"
-        jwt_token = self.__encode_jwt(empty_profile)
+        demo_profile = self.db.query(Profile).where(Profile.is_demo_profile).first()
+        # TODO - maybe delete this
+        if demo_profile is None:
+            demo_profile = Profile()
+            demo_profile.timestamp = datetime.utcnow()
+            demo_profile.first_name = "Anonymous"
+            demo_profile.last_name = "Money-Printer"
+        jwt_token = self.__encode_jwt(demo_profile)
         return {
-            "profile": empty_profile.to_dict(),
+            "profile": demo_profile.to_dict(),
             "token": jwt_token
         }
 

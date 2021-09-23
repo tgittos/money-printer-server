@@ -23,14 +23,14 @@ mailgun_config = MailGunConfig(
 )
 
 
-class SyncAccounts:
+class SyncBalances:
 
     plaid_item_id = None
 
     def __init__(self, redis_message=None):
         self.logger = get_logger(__name__)
-        if redis_message is not None and 'plaid_item_id' in redis_message:
-            self.plaid_item_id = redis_message.args['plaid_item_id']
+        if redis_message is not None and 'plaid_item_id' in redis_message['args']:
+            self.plaid_item_id = redis_message['args']['plaid_item_id']
 
         self.profile_repo = get_profile_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
         self.balance_repo = get_balance_repository(mysql_config=mysql_config, plaid_config=plaid_config)

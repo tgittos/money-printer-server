@@ -19,9 +19,7 @@ const OpenLink: FunctionComponent<IOpenLinkProps> = ({ token }) => {
     const onSuccess = useCallback<PlaidLinkOnSuccess>(
         async (public_token: string, metadata: any) => {
         const result = await plaidRepository.setAccessToken(public_token);
-        if (result.success) {
-            localStorage.removeItem('link_token');
-        }
+        localStorage.removeItem('link_token');
     }, []);
 
     const onExit = useCallback<PlaidLinkOnExit>(

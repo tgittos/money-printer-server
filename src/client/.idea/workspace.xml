@@ -150,13 +150,17 @@
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/enums.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/investments.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/investments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/apis/plaid/oauth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/oauth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/analysis/returns.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/analysis/returns.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/logger.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/notifications.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/notifications.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/lib/utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/holding.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/holding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/holding_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/holding_balance.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/iex_blacklist.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/iex_blacklist.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/investment_transaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/investment_transaction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/plaid_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/plaid_item.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/reset_token.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/reset_token.py" afterDir="false" />
@@ -177,12 +181,14 @@
       <change beforePath="$PROJECT_DIR$/../server/scripts/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/init.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/schedule.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/script_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/script_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/services/api/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/plaid.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/plaid.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/webhooks.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/webhooks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/upstream_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/upstream_thread.py" afterDir="false" />
@@ -191,6 +197,8 @@
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/historical_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/historical_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/data_server/sse_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_accounts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_balances.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_balances.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_holdings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_holdings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_securities.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_securities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" afterDir="false" />

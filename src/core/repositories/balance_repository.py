@@ -30,6 +30,7 @@ class BalanceRepository:
         self.logger = get_logger(__name__)
         db = MySql(mysql_config)
         self.db = db.get_session()
+        self.mysql_config = mysql_config
         self.plaid_config = plaid_config
         self.mailgun_config = mailgun_config
 

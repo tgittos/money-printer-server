@@ -24,7 +24,7 @@ export interface IHistoricalIntradaySymbol {
     volume: number;
 }
 
-class HistoricalIntradaySymbol implements IHistoricalIntradaySymbol {
+class HistoricalIntradaySymbol implements ISymbol {
     public symbol: string;
     public average: number;
     public changeOverTime: number;

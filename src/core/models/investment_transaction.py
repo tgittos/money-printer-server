@@ -11,7 +11,7 @@ class InvestmentTransaction(Base):
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
     name = Column(String(512))
     amount = Column(Float)
-    fees = Column(float)
+    fees = Column(Float)
     price = Column(Float)
     quantity = Column(Float)
     date = Column(DateTime)
