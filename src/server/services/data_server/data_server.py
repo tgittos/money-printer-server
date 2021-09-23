@@ -4,7 +4,7 @@ import sys
 
 if __name__ == '__main__':
     # echo the environment we're passing in
-    env_string = os.environ['MONEY_PRINTER_ENV']
+    env_string = os.environ['MONEY_PRINTER_ENV'].strip()
 
     # sometimes we run with whacky paths, so lets set the python runtime
     # pwd to something sane

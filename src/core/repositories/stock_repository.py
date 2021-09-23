@@ -232,7 +232,7 @@ class StockRepository:
             return None
 
     def __fetch_historical_intraday(self, symbol, start=None):
-        start = start or datetime.today() - timedelta(days=7)
+        start = datetime.combine(start, datetime.min.time()) or datetime.today() - timedelta(days=7)
         today = datetime.today()
         try:
             days = min((today - start).days, 1)

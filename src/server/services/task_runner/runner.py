@@ -1,6 +1,6 @@
 import redis
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import time
 from threading import Thread
 
@@ -68,26 +68,40 @@ class Runner(Thread):
             job_ran = False
             timedelta_val = None
 
-            if job.frequency_type == "hourly":
-                timedelta_val = timedelta(hours=int(job.frequency_value))
-            if job.frequency_type == "daily":
-                timedelta_val = timedelta(days=int(job.frequency_value))
-            if job.frequency_type == "weekly":
-                timedelta_val = timedelta(weeks=int(job.frequency_value))
+            if job.frequency_type == "scheduled":
+                time_val = datetime.strptime(job.frequency_value, "%H:%m")
+                schedule_time = datetime.now(tz=timezone.utc).replace(hour=time_val.hour, minute=time_val.minute)
+                if datetime.utcnow() < schedule_time:
+                    last_run_iso = "never"
+                    if job.last_run is not None:
+                        last_run_iso = job.last_run.isoformat()
+                    self.logger.info(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name,
+                                                                                       last_run_iso))
+                    self.redis.publish(WORKER_QUEUE, json.dumps({
+                        'job': job.job_name,
+                        'data': job.json_args
+                    }))
+                    job_ran = True
+            else:
+                if job.frequency_type == "hourly":
+                    timedelta_val = timedelta(hours=int(job.frequency_value))
+                if job.frequency_type == "daily":
+                    timedelta_val = timedelta(days=int(job.frequency_value))
+                if job.frequency_type == "weekly":
+                    timedelta_val = timedelta(weeks=int(job.frequency_value))
 
-            if job.last_run is None or timedelta_val is not None and job.last_run + timedelta_val <= datetime.utcnow():
-                # run the job, then update it's status
-                last_run_iso = "never"
-                if job.last_run is not None:
-                    last_run_iso = job.last_run.isoformat()
-                self.logger.info(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name,
-                                                                                   last_run_iso))
-
-                self.redis.publish(WORKER_QUEUE, json.dumps({
-                   'job': job.job_name,
-                   'data': job.json_args
-                }))
-                job_ran = True
+                if job.last_run is None or timedelta_val is not None and job.last_run + timedelta_val <= datetime.utcnow():
+                    # run the job, then update it's status
+                    last_run_iso = "never"
+                    if job.last_run is not None:
+                        last_run_iso = job.last_run.isoformat()
+                    self.logger.info(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name,
+                                                                                       last_run_iso))
+                    self.redis.publish(WORKER_QUEUE, json.dumps({
+                       'job': job.job_name,
+                       'data': job.json_args
+                    }))
+                    job_ran = True
 
             if job_ran:
                 self.job_repo.update_last_run(job)
