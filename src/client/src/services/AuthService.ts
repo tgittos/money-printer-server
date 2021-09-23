@@ -20,12 +20,11 @@ class AuthService {
 
     constructor() {
         this.cookies = new Cookies();
-        this.tokenProfile = this.hydrateJWTToken();
     }
 
     public setProfile(token: string) {
         this.storeToken(token);
-        this.tokenProfile = this.hydrateJWTToken();
+        this.tokenProfile = this.loadProfileFromToken();
     }
 
     public clearProfile() {
@@ -33,15 +32,17 @@ class AuthService {
         this.tokenProfile = null;
     }
 
-    private hydrateJWTToken(): Profile | null {
+    public loadProfileFromToken(): Profile | null {
+        let loadedProfile: Profile = null;
         const fetchedToken = this.getToken();
         if (fetchedToken) {
             const jwtProfile: any = jwt(fetchedToken);
             if (jwtProfile?.profile) {
-                return new Profile(jwtProfile.profile as IServerProfile);
+                loadedProfile = new Profile(jwtProfile.profile as IServerProfile);
             }
         }
-        return null;
+        this.tokenProfile = loadedProfile;
+        return loadedProfile;
     }
 
     protected storeToken(token: string) {

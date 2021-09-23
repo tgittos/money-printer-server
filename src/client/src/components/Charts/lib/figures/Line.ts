@@ -21,6 +21,8 @@ class Line<T extends ILineDataPoint> {
         const { margin } = dimensions;
 
         const lineGenerator = d3.line<ILineDataPoint>()
+            // this filtering by 0 thing is kinda dodgy
+            .defined(d => !isNaN(d.y) && d.y > 0)
             .x((d) => {
                 const parsedDate = moment(d.x);
                 const val = xScale(parsedDate);

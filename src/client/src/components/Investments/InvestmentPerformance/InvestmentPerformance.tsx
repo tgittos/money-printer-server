@@ -14,6 +14,8 @@ import {Dropdown} from "react-bootstrap";
 import {IChartFactory} from "../../Charts/lib/ChartFactory";
 import Candle from "../../Charts/lib/figures/Candle";
 import BasicLineChart from "../../Charts/lib/charts/BasicLineChart";
+import ISymbol from "../../../interfaces/ISymbol";
+import ILineDataPoint from "../../Charts/interfaces/ILineDataPoint";
 
 export interface IInvestmentPerformanceProps {
     holding: Holding;
@@ -24,8 +26,10 @@ export interface IInvestmentPerformanceState {
     activeChart: IChartFactory;
     // todo - gross
     activeChartType: string;
-    intradayData: IHistoricalIntradaySymbol[];
-    eodData: IHistoricalEoDSymbol[];
+    intradayData: HistoricalIntradaySymbol[];
+    eodData: HistoricalEoDSymbol[];
+    chartStart: Date;
+    chartEnd: Date;
 }
 
 class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps, IInvestmentPerformanceState> {
@@ -45,7 +49,9 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
             intradayData: [],
             eodData: [],
             activeChart: BasicCandleChart,
-            activeChartType: 'Candle'
+            activeChartType: 'Candle',
+            chartEnd: moment.utc().toDate(),
+            chartStart: moment.utc().subtract(30, 'days').toDate()
         };
 
         this._onHistoricalIntradayDataReceived = this._onHistoricalIntradayDataReceived.bind(this);
@@ -67,8 +73,8 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
 
         if (prevHolding && newHolding && prevHolding?.id != newHolding?.id) {
             // re-fetch data from the server
-            const lastWeek = moment().subtract(1, 'weeks').toDate();
-            this._stocks.historicalIntraday(this.props.holding.securitySymbol, this.lastWeek)
+            const { chartStart, chartEnd } = this.state;
+            this._stocks.historicalIntraday(this.props.holding.securitySymbol, chartStart)
                 .then(this._onHistoricalIntradayDataReceived);
         }
     }
@@ -77,7 +83,8 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         if (data && data.length == 0) {
             // no data from the intraday, maybe this symbol only supports closing daily prices
             // ie - it's a mutual fund or something
-            this._stocks.historicalEoD(this.props.holding.securitySymbol, this.lastWeek)
+            const { chartStart, chartEnd } = this.state;
+            this._stocks.historicalEoD(this.props.holding.securitySymbol, chartStart, chartEnd)
                 .then(this._onHistoricalEoDDataReceived);
         }
         this.setState(prev => ({
@@ -105,7 +112,6 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
     }
 
     private _onChartTypeChanged(chartType: string | undefined) {
-        console.log('chart type:', chartType)
         if (chartType) {
             this.setState(prev => ({
                 ...prev,
@@ -124,10 +130,20 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         }
     }
 
-    private _formatDataForCandle() {
+    private _formatDataForActiveChart() {
+        const { activeChartType } = this.state;
+        if (activeChartType === 'Candle') {
+            return this._formatDataForCandle();
+        }
+        if (activeChartType === 'Line') {
+            return this._formatDataForLine();
+        }
+    }
+
+    private _formatDataForLine() {
         const { intradayData, eodData } = this.state;
 
-        let data = intradayData;
+        let data: ISymbol[] = intradayData;
         if (data.length === 0) {
             data = eodData;
         };
@@ -135,12 +151,40 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         const formattedData = data.map(datum => {
             return {
                 x: datum.date,
+                y: datum.close
+            } as ILineDataPoint;
+        });
+
+        return formattedData;
+    }
+
+    private _formatDataForCandle() {
+        const { intradayData, eodData } = this.state;
+
+        let data: ISymbol[] = intradayData;
+        if (data.length === 0) {
+            data = eodData;
+        };
+
+        const formattedData = data.map(datum => {
+            const datapoint = {
+                x: datum.date,
                 open: datum.open,
                 close: datum.close,
                 high: datum.high,
                 low: datum.low,
             } as ICandleDataPoint;
+
+            // this seems fishy too on some tickers, like MIPTX
+            if (datapoint.low == 0) {
+                datapoint.low = Math.min(datapoint.open, datapoint.close);
+            }
+
+            return datapoint;
         });
+
+        console.log('data:', data);
+        console.log('formattedData:', formattedData);
 
         return formattedData;
     }
@@ -178,8 +222,7 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
                              right: 5
                          }
                      } as IChartDimensions}
-                     data={this._formatDataForCandle()}
-                     ticker={this.props.holding.securitySymbol}
+                     data={this._formatDataForActiveChart()}
             />
         </div>
     }

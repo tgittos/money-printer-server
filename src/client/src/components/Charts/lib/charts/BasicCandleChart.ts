@@ -63,6 +63,8 @@ class BasicCandleChart implements IChart {
             .range([0, width])
             .padding(0.3)
 
+        console.log(this.props.data);
+
         this.candles = new Candle({
             data: this.props.data,
             xScale: this.xAxis.scale,

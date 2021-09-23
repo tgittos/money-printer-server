@@ -17,7 +17,7 @@ export interface IHoldingListItemProps {
 
 export interface IHoldingListItemState {
     loading: boolean;
-    latestPrice: number;
+    latestPrice: HistoricalEoDSymbol;
 }
 
 class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingListItemState> {
@@ -29,7 +29,7 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
 
         this.state = {
             loading: !!this.props.holding.securitySymbol,
-            latestPrice: -1
+            latestPrice: null
         }
 
         this._handlePreviousPrice = this._handlePreviousPrice.bind(this);
@@ -57,7 +57,7 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
         if (previous) {
             this.setState(prev => ({
                 ...prev,
-                latestPrice: previous.close,
+                latestPrice: new HistoricalEoDSymbol(this.props.holding.securitySymbol, previous),
                 loading: false
             }));
         } else {
@@ -76,8 +76,11 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
         return val.toFixed(2);
     }
 
-    public formatTimestamp(val: Date): string {
-        return moment(val).fromNow();
+    public getTimestamp(): string {
+        if (this.state.latestPrice) {
+            return moment.utc(this.state.latestPrice.date).fromNow();
+        }
+        return moment.utc(this.props.holding.timestamp).fromNow();
     }
 
     public formatLastPrice(val: number): string {
@@ -104,12 +107,12 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
                     </span>
                     @
                     <span className={styles.HoldingListItemDetailCost}>
-                        { this.formatLastPrice(this.state.latestPrice) }
+                        { this.formatLastPrice(this.state.latestPrice?.close) }
                     </span>
                     each
                 </span>
                 <p className={styles.HoldingListItemTimestamp}>
-                    { this.formatTimestamp(this.props.holding.timestamp) }
+                    { this.getTimestamp() }
                 </p>
             </div>
         </div>

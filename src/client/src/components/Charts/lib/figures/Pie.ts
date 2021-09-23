@@ -9,8 +9,8 @@ export interface IPieData extends IFigureDataPoint{
 }
 
 export interface IPieProps extends IFigureProps {
-    labelFormatter: (val: IPieData) => string;
-    valueFormatter: (val: IPieData) => string;
+    labelFormatter?: (val: IPieData) => string;
+    valueFormatter?: (val: IPieData) => string;
 }
 
 class Pie {

@@ -2,7 +2,7 @@ import HttpService from "./HttpService";
 import IHistoricalEoDResponse from "../responses/HistoricalEoDResponse";
 import moment from "moment";
 import IHistoricalIntradayResponse from "../responses/HistoricalIntradayResponse";
-import {IHistoricalEoDSymbol, IServerHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
+import {IHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
 import {IHistoricalIntradaySymbol} from "../models/symbols/HistoricalIntradaySymbol";
 
 class StockService {

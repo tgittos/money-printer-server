@@ -4,8 +4,8 @@ from sqlalchemy.orm import relationship
 from core.models.base import Base
 
 
-class Balance(Base):
-    __tablename__ = 'balances'
+class AccountBalance(Base):
+    __tablename__ = 'account_balances'
 
     id = Column(Integer, primary_key=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)

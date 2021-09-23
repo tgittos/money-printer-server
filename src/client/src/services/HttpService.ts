@@ -25,9 +25,12 @@ class HttpService {
 
     public async authenticatedRequest<ReqT, ResT>(opts: any): Promise<ResT> {
         const token = this.authService.token;
-        if (!!token) {
+        if (token === undefined) {
             // authed request requested, but no token present (logged in as anonymous user, likely)
             // fallback to an unauthed request
+            if (Env.DEBUG) {
+                console.log('loaded undefined token from auth service, falling back to unauthed request');
+            }
             return this.unauthenticatedRequest<ReqT, ResT>(opts)
                 .then(response => (response as unknown) as ResT);
         }

@@ -31,6 +31,7 @@ class ProfileRepository extends BaseRepository {
     if (Env.DEBUG) {
       console.log("ProfileRepository::init - checking cookies for stored token");
     }
+    const profile = this.authService.loadProfileFromToken();
     if (this.authService.currentProfile) {
       if (Env.DEBUG) {
         console.log("ProfileRepository::init - found profile in token, setting profile to", this.authService.currentProfile);

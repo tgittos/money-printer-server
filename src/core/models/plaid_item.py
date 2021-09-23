@@ -12,4 +12,5 @@ class PlaidItem(Base):
     item_id = Column(String(64))
     access_token = Column(String(64))
     request_id = Column(String(32))
+    status = Column(String(128))
     timestamp = Column(DateTime)

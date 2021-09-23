@@ -4,7 +4,7 @@ import sys
 
 if __name__ == '__main__':
     # echo the environment we're passing in
-    env_string = os.environ['MONEY_PRINTER_ENV']
+    env_string = os.environ['MONEY_PRINTER_ENV'].strip()
 
     # sometimes we run with whacky paths, so lets set the python runtime
     # pwd to something sane
@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     # configure the logger
     from core.lib.logger import init_logger, get_logger
-    init_logger(os.path.dirname(__file__) + "../../../../logs/")
+    init_logger(os.path.dirname(__file__) + "/../../../logs/")
 
     # grab a ref to the logger
     logger = get_logger("server.services.data_server")

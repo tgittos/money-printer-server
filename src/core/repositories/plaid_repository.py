@@ -24,6 +24,12 @@ class CreatePlaidItem:
         self.request_id = request_id
 
 
+class UpdatePlaidItem:
+    def __init__(self, id, status):
+        self.id = id
+        self.status = status
+
+
 class GetPlaidItem:
     id = None
 
@@ -55,6 +61,19 @@ class PlaidRepository:
         self.db.commit()
 
         return r
+
+    def update_plaid_item(self, request):
+        plaid_item = self.get_plaid_item(GetPlaidItem(request.id))
+        if plaid_item is None:
+            self.logger.error("plaid item with given id not found: {0}".format(request.id))
+            return
+
+        plaid_item.status = request.status
+        plaid_item.timestamp = datetime.utcnow()
+
+        self.db.commit()
+
+        return plaid_item
 
     def sync_accounts(self, plaid_item_id):
         plaid_accounts_api = Accounts(AccountsConfig(

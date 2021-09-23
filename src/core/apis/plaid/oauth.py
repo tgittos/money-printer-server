@@ -29,7 +29,7 @@ class Oauth:
             'products': PLAID_PRODUCTS_STRINGS
         }
 
-    def create_link_token(self):
+    def create_link_token(self, webhook_url):
         try:
             plaid_config = self.config.plaid_config
             request = LinkTokenCreateRequest(
@@ -37,6 +37,7 @@ class Oauth:
                 client_name=plaid_config.product_name,
                 country_codes=plaid_config.country_codes,
                 language=plaid_config.language,
+                webhook=webhook_url,
                 user=LinkTokenCreateRequestUser(
                     client_user_id=str(time.time())
                 )

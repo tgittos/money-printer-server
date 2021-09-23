@@ -21,7 +21,8 @@ print(" * path: {0}".format(sys.path))
 
 from core.models.profile import Profile
 from core.models.account import Account
-from core.models.balance import Balance
+from core.models.account_balance import AccountBalance
+from core.models.holding_balance import HoldingBalance
 from core.models.plaid_item import PlaidItem
 from core.models.reset_token import ResetToken
 from core.models.scheduled_job import ScheduledJob
@@ -29,6 +30,7 @@ from core.models.security import Security
 from core.models.holding import Holding
 from core.models.security_price import SecurityPrice
 from core.models.iex_blacklist import IexBlacklist
+from core.models.investment_transaction import InvestmentTransaction
 
 from core.models.base import Base
 target_metadata = Base.metadata
