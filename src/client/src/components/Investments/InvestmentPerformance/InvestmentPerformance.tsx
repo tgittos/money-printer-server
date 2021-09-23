@@ -15,6 +15,7 @@ import {IChartFactory} from "../../Charts/lib/ChartFactory";
 import Candle from "../../Charts/lib/figures/Candle";
 import BasicLineChart from "../../Charts/lib/charts/BasicLineChart";
 import ISymbol from "../../../interfaces/ISymbol";
+import ILineDataPoint from "../../Charts/interfaces/ILineDataPoint";
 
 export interface IInvestmentPerformanceProps {
     holding: Holding;
@@ -45,8 +46,8 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
             loading: true,
             intradayData: [],
             eodData: [],
-            activeChart: BasicCandleChart,
-            activeChartType: 'Candle'
+            activeChart: BasicLineChart,
+            activeChartType: 'Line'
         };
 
         this._onHistoricalIntradayDataReceived = this._onHistoricalIntradayDataReceived.bind(this);
@@ -125,6 +126,34 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         }
     }
 
+    private _formatDataForActiveChart() {
+        const { activeChartType } = this.state;
+        if (activeChartType === 'Candle') {
+            return this._formatDataForCandle();
+        }
+        if (activeChartType === 'Line') {
+            return this._formatDataForLine();
+        }
+    }
+
+    private _formatDataForLine() {
+        const { intradayData, eodData } = this.state;
+
+        let data: ISymbol[] = intradayData;
+        if (data.length === 0) {
+            data = eodData;
+        };
+
+        const formattedData = data.map(datum => {
+            return {
+                x: datum.date,
+                y: datum.close
+            } as ILineDataPoint;
+        });
+
+        return formattedData;
+    }
+
     private _formatDataForCandle() {
         const { intradayData, eodData } = this.state;
 
@@ -179,7 +208,7 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
                              right: 5
                          }
                      } as IChartDimensions}
-                     data={this._formatDataForCandle()}
+                     data={this._formatDataForActiveChart()}
             />
         </div>
     }

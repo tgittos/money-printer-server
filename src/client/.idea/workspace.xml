@@ -200,7 +200,6 @@
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_securities.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/jobs/sync_securities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/task_runner_server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/services/task_runner/worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/task_runner/worker.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
