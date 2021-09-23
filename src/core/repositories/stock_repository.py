@@ -62,7 +62,8 @@ class StockRepository:
         if data is not None and len(data) > 0:
             self.__store_historical_daily(symbol, data)
         else:
-            self.logger.warning(" * upstream didn't return an error, but it did return an empty dataset, symbol: {0}, start: {1}, end: {2}".format(symbol, start, end))
+            self.logger.warning(" * upstream didn't return an error, but it did return an empty dataset, symbol: "
+                                "{0}, start: {1}, end: {2}".format(symbol, start, end))
         return data
 
     def historical_daily_all(self, symbols, start=None, end=None, close_only=False):
@@ -86,11 +87,13 @@ class StockRepository:
         if self.__verify_intraday_dataset(stored, start):
             self.logger.debug("found data in store already, returning existing data")
             return self.__to_dataframe(stored)
+        self.logger.debug("local db miss, fetching time period from upstream")
         data = self.__fetch_historical_intraday(symbol, start=start)
         if data is not None and len(data) > 0:
             self.__store_historical_intraday(symbol, data)
         else:
-            self.logger.warning("upstream didn't return an error, but it did return an empty dataset, symbol: {0} start: {1}" .format(symbol, start))
+            self.logger.warning("upstream didn't return an error, but it did return an empty dataset, "
+                                "symbol: {0} start: {1}" .format(symbol, start))
         return data
 
     # gets the previous trading day's prices for the given symbol
@@ -232,26 +235,42 @@ class StockRepository:
             return None
 
     def __fetch_historical_intraday(self, symbol, start=None):
-        start = datetime.combine(start, datetime.min.time()) or datetime.today() - timedelta(days=30)
-        today = datetime.today()
-        try:
-            days = min((today - start).days, 1)
-            total_df = pd.DataFrame()
-            for i in range(days+1):
-                fetch_date = start + timedelta(days=i)
-                self.logger.info("fetching historical intraday prices for symbol {0} on {1} from upstream".format(symbol, fetch_date))
+        if start is None:
+            start = datetime.now(tz=timezone.utc) - timedelta(days=30)
+        days = max((datetime.now(tz=timezone.utc) - start).days, 1)
+        total_df = pd.DataFrame()
+        # walk the date range from the request (or default) start forward to now
+        # requesting the daily intraday prices for that day
+        # wrapped in a try/except to ensure we get as many data points as possible
+        self.logger.debug("starting historical intraday upstream walk, start: {0}, days: {1}"
+                          .format(start, days))
+        for i in range(days+1):
+            fetch_date = start + timedelta(days=i)
+            # if this day is a non-business day, don't even try to fetch it, skip it
+            if not self.__is_bus_day(fetch_date.date()):
+                self.logger.debug("skipping historical intraday fetch for {0}, non business day".format(fetch_date))
+                continue
+            self.logger.info("fetching historical intraday prices for symbol {0} on {1} from upstream"
+                             .format(symbol, fetch_date))
+            try:
                 df = get_historical_intraday(symbol, date=fetch_date)
                 total_df = total_df.append(df)
-            return total_df
-        except IEXQueryError as ex:
-            if ex.status == 404:
-                self.logger.warning("upstream provider couldn't resolve symbol {0}".format(symbol))
-                self.__add_to_iex_blacklist(symbol)
-            return None
-        except Exception:
-            self.logger.exception("unexpected error from upstream provider fetching for symbol {0}: {1}"
-                  .format(symbol, traceback.format_exc()))
-            return None
+            except IEXQueryError as ex:
+                if ex.status == 404:
+                    self.logger.warning("upstream provider couldn't resolve symbol {0}".format(symbol))
+                    self.__add_to_iex_blacklist(symbol)
+                    return total_df
+                else:
+                    self.logger.warning("upstream provider returned an unknown error for symbol {0}: {1}"
+                                        .format(symbol, traceback.format_exc()))
+                    continue
+            except Exception:
+                self.logger.exception("unexpected error from upstream provider fetching for symbol {0}: {1}"
+                      .format(symbol, traceback.format_exc()))
+                continue
+        self.logger.debug("returning {0} datapoints after upstream walk".format(len(total_df)))
+        return total_df
+
 
     def __add_to_iex_blacklist(self, symbol):
         if self.__on_iex_blacklist(symbol):
@@ -297,4 +316,7 @@ class StockRepository:
 
     def __get_last_bus_day(self, date):
         return np.busday_offset(date.date(), 0, roll='backward').astype(datetime)
+
+    def __is_bus_day(self, date):
+        return np.is_busday(date)
 

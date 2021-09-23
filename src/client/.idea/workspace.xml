@@ -184,6 +184,7 @@
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/profile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/symbols.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/symbols.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/webhooks.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/webhooks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/client_bus.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/client_bus/sse_control_thread.py" afterDir="false" />

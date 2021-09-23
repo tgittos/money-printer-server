@@ -57,7 +57,7 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
         if (previous) {
             this.setState(prev => ({
                 ...prev,
-                latestPrice: previous,
+                latestPrice: new HistoricalEoDSymbol(this.props.holding.securitySymbol, previous),
                 loading: false
             }));
         } else {
@@ -78,9 +78,9 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
 
     public getTimestamp(): string {
         if (this.state.latestPrice) {
-            return moment(this.state.latestPrice.date).utc().fromNow();
+            return moment.utc(this.state.latestPrice.date).fromNow();
         }
-        return moment(this.props.holding.timestamp).utc().fromNow();
+        return moment.utc(this.props.holding.timestamp).fromNow();
     }
 
     public formatLastPrice(val: number): string {

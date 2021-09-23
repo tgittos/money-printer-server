@@ -28,6 +28,8 @@ export interface IInvestmentPerformanceState {
     activeChartType: string;
     intradayData: HistoricalIntradaySymbol[];
     eodData: HistoricalEoDSymbol[];
+    chartStart: Date;
+    chartEnd: Date;
 }
 
 class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps, IInvestmentPerformanceState> {
@@ -46,8 +48,10 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
             loading: true,
             intradayData: [],
             eodData: [],
-            activeChart: BasicLineChart,
-            activeChartType: 'Line'
+            activeChart: BasicCandleChart,
+            activeChartType: 'Candle',
+            chartEnd: moment.utc().toDate(),
+            chartStart: moment.utc().subtract(30, 'days').toDate()
         };
 
         this._onHistoricalIntradayDataReceived = this._onHistoricalIntradayDataReceived.bind(this);
@@ -69,8 +73,8 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
 
         if (prevHolding && newHolding && prevHolding?.id != newHolding?.id) {
             // re-fetch data from the server
-            const lastWeek = moment().subtract(1, 'weeks').toDate();
-            this._stocks.historicalIntraday(this.props.holding.securitySymbol, this.lastWeek)
+            const { chartStart, chartEnd } = this.state;
+            this._stocks.historicalIntraday(this.props.holding.securitySymbol, chartStart)
                 .then(this._onHistoricalIntradayDataReceived);
         }
     }
@@ -79,7 +83,8 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         if (data && data.length == 0) {
             // no data from the intraday, maybe this symbol only supports closing daily prices
             // ie - it's a mutual fund or something
-            this._stocks.historicalEoD(this.props.holding.securitySymbol, this.lastWeek)
+            const { chartStart, chartEnd } = this.state;
+            this._stocks.historicalEoD(this.props.holding.securitySymbol, chartStart, chartEnd)
                 .then(this._onHistoricalEoDDataReceived);
         }
         this.setState(prev => ({
@@ -107,7 +112,6 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
     }
 
     private _onChartTypeChanged(chartType: string | undefined) {
-        console.log('chart type:', chartType)
         if (chartType) {
             this.setState(prev => ({
                 ...prev,
@@ -163,14 +167,24 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         };
 
         const formattedData = data.map(datum => {
-            return {
+            const datapoint = {
                 x: datum.date,
                 open: datum.open,
                 close: datum.close,
                 high: datum.high,
                 low: datum.low,
             } as ICandleDataPoint;
+
+            // this seems fishy too on some tickers, like MIPTX
+            if (datapoint.low == 0) {
+                datapoint.low = Math.min(datapoint.open, datapoint.close);
+            }
+
+            return datapoint;
         });
+
+        console.log('data:', data);
+        console.log('formattedData:', formattedData);
 
         return formattedData;
     }

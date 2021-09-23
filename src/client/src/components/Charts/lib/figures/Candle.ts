@@ -36,7 +36,7 @@ class Candle {
             .attr("fill", d => (d.open === d.close) ? "silver" : (d.open > d.close) ? "red" : "green")
 
         // draw high and low
-        const stems = mySvg.selectAll("g.line")
+        const stems = mySvg.selectAll(".candle-stem")
             .data(data)
             .enter()
             .append("line")

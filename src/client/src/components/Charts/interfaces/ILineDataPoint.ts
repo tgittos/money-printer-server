@@ -3,7 +3,7 @@ import ITimeBasedDataPoint from "./ITimeBasedDataPoint";
 
 interface ILineDataPoint extends IFigureDataPoint, ITimeBasedDataPoint {
     x: Date
-    y: number
+    y: number | undefined | null
 }
 
 export default ILineDataPoint;
