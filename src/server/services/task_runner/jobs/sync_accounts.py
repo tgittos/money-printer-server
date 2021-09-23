@@ -11,6 +11,7 @@ from server.config import config as server_config
 app_config = load_config()
 
 sql_config = app_config['db']
+iex_config = app_config['iexcloud']
 
 plaid_config = PlaidApiConfig()
 plaid_config.env = app_config['plaid']['env']
@@ -32,7 +33,8 @@ class SyncAccounts:
         if redis_message is not None and 'plaid_item_id' in redis_message['args']:
             self.plaid_item_id = redis_message['args']['plaid_item_id']
         self.profile_repo = get_profile_repository(mysql_config=sql_config, mailgun_config=mailgun_config)
-        self.account_repo = get_account_repository(mysql_config=sql_config, plaid_config=plaid_config, mailgun_config=mailgun_config)
+        self.account_repo = get_account_repository(mysql_config=sql_config, plaid_config=plaid_config,
+                                                   mailgun_config=mailgun_config, iex_config=iex_config)
 
     def run(self):
         if self.plaid_item_id:

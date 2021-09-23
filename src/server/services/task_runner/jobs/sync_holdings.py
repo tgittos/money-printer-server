@@ -2,8 +2,6 @@ from datetime import datetime
 
 from core.apis.plaid.common import PlaidApiConfig
 from core.apis.mailgun import MailGunConfig
-from core.repositories.profile_repository import get_repository as get_profile_repository
-from core.repositories.account_repository import get_repository as get_account_repository, CreateAccountRequest
 from core.repositories.holding_repository import get_repository as get_holdings_repository
 from core.lib.logger import get_logger
 

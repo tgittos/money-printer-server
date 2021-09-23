@@ -13,6 +13,8 @@ from server.services.api import load_config
 from server.config import config as server_config
 app_config = load_config()
 
+iex_config = app_config['iexcloud']
+
 # define a plaid oauth client config
 plaid_config = PlaidApiConfig()
 plaid_config.env = app_config['plaid']['env']
@@ -64,7 +66,7 @@ def get_access_token():
     client = Oauth(oauth_config)
     plaid_item = client.get_access_token(profile['id'], public_token)
     account_repo = get_account_repository(mysql_config=app_config['db'], plaid_config=plaid_config,
-                                          mailgun_config=mailgun_config)
+                                          mailgun_config=mailgun_config, iex_config=iex_config)
     account_repo.schedule_account_sync(plaid_item_id=plaid_item.id)
     return {
         'success': plaid_item is not None,

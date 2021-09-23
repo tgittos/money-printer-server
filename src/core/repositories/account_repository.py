@@ -11,7 +11,7 @@ from core.models.plaid_item import PlaidItem
 from core.presentation.account_presenters import AccountWithBalance
 from core.stores.mysql import MySql
 from core.repositories.balance_repository import get_repository as get_balance_repository
-from core.repositories.security_repository import get_repository as get_security_repository
+from core.repositories.holding_repository import get_repository as get_holdings_repository
 from core.repositories.scheduled_job_repository import get_repository as get_scheduled_job_repository, CreateInstantJobRequest
 from core.lib.logger import get_logger
 
@@ -37,24 +37,27 @@ class GetAccountBalanceRequest:
         self.end = end
 
 
-def get_repository(mysql_config, plaid_config, mailgun_config):
+
+def get_repository(mysql_config, plaid_config, mailgun_config, iex_config):
     repo = AccountRepository(
         mysql_config=mysql_config,
         plaid_config=plaid_config,
-        mailgun_config=mailgun_config
+        mailgun_config=mailgun_config,
+        iex_config=iex_config
     )
     return repo
 
 
 class AccountRepository:
 
-    def __init__(self, mysql_config, plaid_config, mailgun_config):
+    def __init__(self, mysql_config, plaid_config, mailgun_config, iex_config):
         self.logger = get_logger(__name__)
         db = MySql(mysql_config)
         self.db = db.get_session()
         self.mysql_config = mysql_config
         self.plaid_config = plaid_config
         self.mailgun_config = mailgun_config
+        self.iex_config = iex_config
 
     def get_all_accounts_by_profile(self, profile_id):
         account_records = self.db.query(Account).filter(Account.profile_id == profile_id).all()
@@ -126,6 +129,8 @@ class AccountRepository:
 
         balance_repo = get_balance_repository(mysql_config=self.mysql_config, plaid_config=self.plaid_config,
                                               mailgun_config=self.mailgun_config)
+        holdings_repo = get_holdings_repository(mysql_config=self.mysql_config, iex_config=self.iex_config,
+                                                plaid_config=self.plaid_config, mailgun_config=self.mailgun_config)
 
         plaid_accounts_api = Accounts(AccountsConfig(
             plaid_config=self.plaid_config
@@ -155,6 +160,9 @@ class AccountRepository:
                 balance_repo.sync_account_balance(account.id)
             else:
                 self.logger.warning("upstream returned account response missing an id: {0}".format(account_dict))
+
+        self.logger.info("fetching investment holdings for PlaidItem {0}".format(plaid_item_id))
+        holdings_repo.update_holdings(plaid_item_id)
 
         self.logger.info("done updating accounts for profile {0}".format(profile.id))
 
