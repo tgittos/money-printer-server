@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     # configure the logger
     from core.lib.logger import init_logger, get_logger
-    init_logger(os.path.dirname(__file__) + "../../../../logs/")
+    init_logger(os.path.dirname(__file__) + "/../../../logs/")
 
     # grab a ref to the logger
     logger = get_logger("server.services.data_server")

@@ -25,10 +25,11 @@ class ScheduledJobRepositoryConfig:
 
 
 class CreateScheduledJobRequest:
-    def __init__(self, job_name, frequency_type, frequency_value):
+    def __init__(self, job_name, frequency_type, frequency_value, json_args):
         self.job_name = job_name
         self.frequency_type = frequency_type
         self.frequency_value = frequency_value
+        self.json_args = json_args
 
 
 class CreateInstantJobRequest:
@@ -56,6 +57,8 @@ class ScheduledJobRepository:
         job.job_name = request.job_name
         job.frequency_type = request.frequency_type
         job.frequency_value = request.frequency_value
+        job.json_args = request.json_args
+        job.last_run = None
         job.timestamp = datetime.utcnow()
 
         self.db.add(job)

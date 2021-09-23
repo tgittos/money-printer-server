@@ -24,6 +24,7 @@ class Runner(Thread):
     running = False
     timer_start = None
     on_error = None
+    exception_count = 0
 
     def __init__(self):
         super(Runner, self).__init__()
@@ -50,10 +51,16 @@ class Runner(Thread):
                 # run every minute, regardless of how long the last run took
                 self.timer_start = datetime.utcnow()
                 self.__run_scheduler()
+                self.exception_count = 0
                 sleep_time = datetime.utcnow() - self.timer_start
                 time_delta = 60 - sleep_time.seconds
                 time.sleep(time_delta)
             except Exception as ex:
+                self.exception_count += 1
+                if self.exception_count == 10:
+                    # 10 exceptions since we had a clean run? either the runner or a job entry is borked
+                    self.logger.error("too many exceptions in a row, shutting the runner down")
+                    self.running = False
                 if self.on_error is not None:
                     self.on_error(ex)
                 else:
@@ -69,12 +76,16 @@ class Runner(Thread):
             timedelta_val = None
 
             if job.frequency_type == "scheduled":
-                time_val = datetime.strptime(job.frequency_value, "%H:%m")
-                schedule_time = datetime.now(tz=timezone.utc).replace(hour=time_val.hour, minute=time_val.minute)
-                if datetime.utcnow() < schedule_time:
+                time_val = datetime.strptime(job.frequency_value, "%H:%M")
+                next_run = datetime.now(tz=timezone.utc)
+                last_run = None
+                if job.last_run:
+                    last_run = job.last_run.astimezone(tz=timezone.utc)
+                    next_run = datetime.now(tz=timezone.utc).replace(hour=time_val.hour, minute=time_val.minute)
+                if last_run is None or last_run < next_run <= datetime.now(tz=timezone.utc):
                     last_run_iso = "never"
-                    if job.last_run is not None:
-                        last_run_iso = job.last_run.isoformat()
+                    if last_run is not None:
+                        last_run_iso = last_run.isoformat()
                     self.logger.info(" * scheduling {0} job {1}, last run: {2}".format(job.frequency_type, job.job_name,
                                                                                        last_run_iso))
                     self.redis.publish(WORKER_QUEUE, json.dumps({
