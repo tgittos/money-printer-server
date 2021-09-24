@@ -30,10 +30,10 @@ class Candle {
             .append("rect")
             .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
             .attr("class", "candle")
-            .attr('y', d => yScale(Math.max(d.open, d.close)))
+            .attr('y', d => yScale(Math.max(d?.open, d?.close)))
             .attr('width', xBand.bandwidth())
-            .attr('height', d => (d.open === d.close) ? 1 : yScale(Math.min(d.open, d.close))-yScale(Math.max(d.open, d.close)))
-            .attr("fill", d => (d.open === d.close) ? "silver" : (d.open > d.close) ? "red" : "green")
+            .attr('height', d => (d?.open === d?.close) ? 1 : yScale(Math.min(d?.open, d?.close))-yScale(Math.max(d?.open, d?.close)))
+            .attr("fill", d => (d?.open === d?.close) ? "silver" : (d?.open > d?.close) ? "red" : "green")
 
         // draw high and low
         const stems = mySvg.selectAll(".candle-stem")
@@ -43,9 +43,9 @@ class Candle {
             .attr("class", "stem")
             .attr("x1", (d, i) => xScale(i) - xBand.bandwidth()/2)
             .attr("x2", (d, i) => xScale(i) - xBand.bandwidth()/2)
-            .attr("y1", d => yScale(d.high))
-            .attr("y2", d => yScale(d.low))
-            .attr("stroke", d => (d.open === d.close) ? "white" : (d.open > d.close) ? "red" : "green");
+            .attr("y1", d => yScale(d?.high))
+            .attr("y2", d => yScale(d?.low))
+            .attr("stroke", d => (d?.open === d?.close) ? "white" : (d?.open > d?.close) ? "red" : "green");
     }
 }
 

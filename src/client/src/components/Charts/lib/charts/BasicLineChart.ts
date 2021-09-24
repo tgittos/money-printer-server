@@ -1,14 +1,10 @@
 import IChartProps from "../../interfaces/IChartProps";
 import * as d3 from "d3";
 import Line, {ILineProps} from "../figures/Line";
-import RealtimeXAxis from "../axes/RealtimeXAxis";
 import SimpleYAxis from "../axes/SimpleYAxis";
 import IChart from "../../interfaces/IChart";
 import {MutableRefObject} from "react";
-import IAxis from "../../interfaces/IAxis";
-import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
 import ILineDataPoint from "../../interfaces/ILineDataPoint";
-import ITimeBasedDataPoint from "../../interfaces/ITimeBasedDataPoint";
 import SimpleXAxis from "../axes/SimpleXAxis";
 
 class BasicLineChart implements IChart {
@@ -45,12 +41,12 @@ class BasicLineChart implements IChart {
         this.xAxis = new SimpleXAxis({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            mapper: (data: ILineDataPoint) => data.x
+            mapper: (data: ILineDataPoint) => data?.x
         });
         this.yAxis = new SimpleYAxis({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            mapper: (data: ILineDataPoint) => data.y
+            mapper: (data: ILineDataPoint) => data?.y
         });
 
         this.line = new Line({

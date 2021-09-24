@@ -33,7 +33,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             styles.Header, "justify-content-end"
         ].join(' ');
 
-        return <Navbar bg="dark" variant="dark" expand="lg">
+        return <Navbar variant="mp">
             <Container>
                 <Navbar.Brand href="#dashboard">
                     <img src="/logo192.png"

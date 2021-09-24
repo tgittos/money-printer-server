@@ -22,7 +22,7 @@ class Line<T extends ILineDataPoint> {
 
         const lineGenerator = d3.line<ILineDataPoint>()
             // this filtering by 0 thing is kinda dodgy
-            .defined(d => !isNaN(d.y) && d.y > 0)
+            .defined(d => d !== undefined && !isNaN(d.y) && d.y > 0)
             .x((d) => {
                 const parsedDate = moment(d.x);
                 const val = xScale(parsedDate);
@@ -38,7 +38,7 @@ class Line<T extends ILineDataPoint> {
             .append("path")
             .datum(this.props.data)
             .attr("fill", "none")
-            .attr("stroke", (d, i) => color ?? "steelblue")
+            .attr("stroke", (d, i) => color ?? "#6dc98f")
             .attr("stroke-width", 1.5)
             .attr("d", lineGenerator);
     }

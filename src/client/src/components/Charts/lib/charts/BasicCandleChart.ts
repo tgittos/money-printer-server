@@ -50,12 +50,12 @@ class BasicCandleChart implements IChart {
         this.xAxis = new CandleXAxis({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            mapper: (data: ICandleDataPoint) => data.x
+            mapper: (data: ICandleDataPoint) => data?.x
         });
         this.yAxis = new SimpleYAxis({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            mapper: (data: ICandleDataPoint) => data.close
+            mapper: (data: ICandleDataPoint) => data?.close
         });
 
         this.xBand = d3.scaleBand<number>()

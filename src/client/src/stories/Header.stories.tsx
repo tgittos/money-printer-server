@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './../mp-theme.scss'
 
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';

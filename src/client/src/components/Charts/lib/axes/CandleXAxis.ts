@@ -55,8 +55,10 @@ class CandleXAxis implements IAxis<ITimeBasedDataPoint> {
         this._axis = d3.axisBottom(scale)
             .tickFormat(function(d, i) {
                 const datum = data[d.valueOf()];
+                console.log(datum)
                 if (datum) {
                     const date = datum.x;
+                    console.log(date);
                     const hours = date.getHours();
                     const minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
                     const seconds = date.getSeconds();
