@@ -52,6 +52,10 @@ button:hover {
   background: $background-light;
   color: $text-dark;
 }
+button:focus {
+  background: $background-light;
+  color: $text-dark;
+}
 
 .content {
   height: 100%;
@@ -99,6 +103,15 @@ button:hover {
 .dropdown-menu {
   background: $background;
   border: $border-secondary solid 1px;
+}
+
+.dropdown-item {
+  color: $text-light;
+}
+
+.show > .btn-primary.dropdown-toggle {
+  background-color: $secondary-highlight;
+  border-color: #5FA23F;
 }
 
 .btn-primary {

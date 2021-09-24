@@ -10,7 +10,7 @@ import IChartDimensions from "../../Charts/interfaces/IChartDimensions";
 import StaticChart from "../../Charts/StaticChart";
 import moment from "moment";
 import HistoricalEoDSymbol, {IHistoricalEoDSymbol} from "../../../models/symbols/HistoricalEoDSymbol";
-import {Dropdown} from "react-bootstrap";
+import {Col, Dropdown, Row} from "react-bootstrap";
 import {IChartFactory} from "../../Charts/lib/ChartFactory";
 import Candle from "../../Charts/lib/figures/Candle";
 import BasicLineChart from "../../Charts/lib/charts/BasicLineChart";
@@ -76,6 +76,10 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
             const { chartStart, chartEnd } = this.state;
             this._stocks.historicalIntraday(this.props.holding.securitySymbol, chartStart)
                 .then(this._onHistoricalIntradayDataReceived);
+            this.setState(prev => ({
+                ...prev,
+                loading: true
+            }))
         }
     }
 
@@ -195,10 +199,11 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         }
 
         return <div className={styles.InvestmentPerformance}>
-            <h1>{ this.props.holding.securitySymbol }</h1>
-
-            <div>
-                <div className="chart-controls">
+            <Row className={styles.InvestmentPerformanceHeader}>
+                <Col>
+                    <h1>{ this.props.holding.securitySymbol }</h1>
+                </Col>
+                <Col className={styles.InvestmentPerformanceChartControls}>
                     <Dropdown onSelect={this._onChartTypeChanged}>
                         <Dropdown.Toggle>
                             Chart: { this.state.activeChartType }
@@ -208,8 +213,8 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
                             <Dropdown.Item eventKey='Line'>Line</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-                </div>
-            </div>
+                </Col>
+            </Row>
 
             <StaticChart chart={this._chartType}
                      dimensions={{
