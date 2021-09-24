@@ -13,6 +13,7 @@ export interface IHoldingListItemProps {
     active: boolean;
     account: Account;
     holding: Holding;
+    latestPriceResolver?: (holding: Holding) => Promise<IHistoricalEoDSymbol>;
 }
 
 export interface IHoldingListItemState {
@@ -28,7 +29,7 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
         super(props);
 
         this.state = {
-            loading: !!this.props.holding.securitySymbol,
+            loading: !!this.props.holding?.securitySymbol,
             latestPrice: null
         }
 
@@ -38,9 +39,17 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
     }
 
     componentDidMount() {
-        if (this.props.holding.securitySymbol) {
-            this.stocks.previous(this.props.holding.securitySymbol)
-                .then(this._handlePreviousPrice);
+        const { holding, latestPriceResolver } = this.props;
+        if (holding.securitySymbol) {
+            // we can inject in a custom price resolver
+            if (latestPriceResolver) {
+                latestPriceResolver(holding).then(this._handlePreviousPrice)
+            } else {
+                // but if we don't, use the stock service to fetch the previous
+                // symbol price
+                this.stocks.previous(this.props.holding.securitySymbol)
+                    .then(this._handlePreviousPrice);
+            }
         } else {
             if (Env.DEBUG) {
                 console.log("HoldingListItem::componentDidMount - not looking for symbol latest price, no symbol found");
@@ -92,28 +101,27 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
 
     render() {
         return <div className={styles.HoldingsListItem}>
-            {
-                this.state.loading && <span className={styles.HoldingListItemLoading}>
-                  Updating price...
-                </span>
-            }
             <div>
                 <p className={styles.HoldingsListItemSymbol}>
                     { this.props.holding.securitySymbol ?? '???' }
+                    <span className={styles.HoldingListItemTimestamp}>
+                        { this.getTimestamp() }
+                    </span>
                 </p>
-                <span className={styles.HoldingListItemDetail}>
+                <p className={styles.HoldingListItemDetail}>
                     <span className={styles.HoldingListItemDetailQuantity}>
                         { this.formatQuantity(this.props.holding.quantity) }
                     </span>
-                    @
+                    <span className={styles.HoldingListItemAt}>@</span>
                     <span className={styles.HoldingListItemDetailCost}>
                         { this.formatLastPrice(this.state.latestPrice?.close) }
                     </span>
-                    each
-                </span>
-                <p className={styles.HoldingListItemTimestamp}>
-                    { this.getTimestamp() }
                 </p>
+                {
+                    this.state.loading && <p className={styles.HoldingListItemLoading}>
+                      Updating price...
+                    </p>
+                }
             </div>
         </div>
     }

@@ -3,7 +3,7 @@
 .Accounts {
 
   .AccountsFilter {
-    border: $rich-green solid 1px;
+    border: $border-primary solid 1px;
     margin-bottom: 10px;
 
     div {
@@ -25,7 +25,7 @@
 
   .AccountItem {
 
-    border: $rich-green solid 1px;
+    border: $border-primary solid 1px;
     padding: 3px 5px;
 
     .AccountItemIcon {

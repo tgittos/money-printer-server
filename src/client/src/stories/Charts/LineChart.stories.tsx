@@ -19,10 +19,9 @@ const Template: ComponentStory<typeof StaticChart> = (args) => <StaticChart
         height: 800,
         margin: {
             top: 5,
-            left: 35,
+            left: 45,
             right: 5,
             bottom: 45,
-            left: 45
         } as IChartMargin
     } as IChartDimensions}
     {...args} />;

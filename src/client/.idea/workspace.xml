@@ -92,6 +92,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fonts.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/fonts.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Account.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Account.ts" afterDir="false" />
@@ -102,6 +103,7 @@
       <change beforePath="$PROJECT_DIR$/src/models/symbols/HistoricalEoDSymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/symbols/HistoricalEoDSymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/symbols/HistoricalIntradaySymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/symbols/HistoricalIntradaySymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/symbols/RealtimeSymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/symbols/RealtimeSymbol.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mp-theme.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/mp-theme.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/AccountRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/AccountRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/BaseRepository.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/repositories/ClientHubRepository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/ClientHubRepository.ts" afterDir="false" />
@@ -135,10 +137,11 @@
       <change beforePath="$PROJECT_DIR$/src/stores/AppStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/stores/AppStore.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stories/Accounts.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Accounts.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stories/BigLoader.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/BigLoader.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Charts/CandleChart.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Charts/CandleChart.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Charts/LineChart.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Charts/LineChart.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stories/Header.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Header.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stories/Login.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Login.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stories/Profiles.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/Profiles.stories.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stories/Register.stories.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/testData.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/testData.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utilities.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.scss" afterDir="false" />

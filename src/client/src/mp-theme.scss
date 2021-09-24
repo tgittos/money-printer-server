@@ -2,7 +2,7 @@
 @import './fonts';
 
 html, body {
-  font-family: 'Dosis';
+  font-family: 'Dosis', sans-serif;
   background: $background;
   height: 100%;
   max-height: 100%;
@@ -16,19 +16,124 @@ a:hover {
   color: $link-hover;
 }
 
+a.nav-link {
+  color: $link;
+}
+a.nav-link.active {
+  color: $link-hover;
+}
+a.nav-link:hover {
+  color: $link-hover;
+}
+
+p {
+  margin: 0;
+}
+
+input {
+  background: $background;
+  color: $text-light;
+  border-width: 1px;
+}
+input:checked {
+  background: $primary-highlight;
+  color: $text-dark;
+}
+
+button {
+  background: transparent;
+  color: $text-light;
+  border-radius: 0.25rem;
+  border-style: solid;
+  border-width: 1px;
+  border-color: $border-secondary;
+}
+button:hover {
+  background: $background-light;
+  color: $text-dark;
+}
+
 .content {
   height: 100%;
   max-height: 100%;
 }
 
-.navbar-mp {
-  text-transform: uppercase;
-  font-family: "Share";
+.modal-content {
+  background: $background;
+  color: $text;
+  border: $border-secondary solid 1px;
 
-  a.nav-link {
-    color: $link;
+  .modal-header {
+    background: $primary-highlight;
+    color: $text-dark;
+    font-family: "Share", sans-serif;
   }
-  a.nav-link:hover {
-    color: $link-hover;
+}
+
+.navbar {
+  text-transform: uppercase;
+  font-family: "Share", sans-serif;
+
+  .nav-item {
+    cursor: pointer;
+  }
+}
+
+.nav-tabs {
+  border-bottom: $border-secondary solid 1px;
+
+  .nav-link {
+    background-color: transparent;
+    color: $text-light;
+  }
+  .nav-link.active {
+    background-color: transparent;
+    color: $text-light;
+    border: $border-secondary solid 1px;
+  }
+  .nav-link:hover {
+    border: $border-secondary solid 1px;
+  }
+}
+
+.dropdown-menu {
+  background: $background;
+  border: $border-secondary solid 1px;
+}
+
+.btn-primary {
+  background-color: transparent;
+  border: $border-primary solid 1px;
+  color: $text-light;
+}
+.btn-primary:hover {
+  border: $border-primary solid 1px;
+  background-color: $secondary-highlight;
+  color: $text-dark;
+}
+
+/* TODO: move this to the accounts module? */
+.accounts-modal {
+  width: 90vw;
+  max-width: 90vw;
+
+  height: 80vh;
+  max-height: 80vh;
+
+  .modal-content {
+    height: 100%;
+
+    .modal-body {
+      padding: 0;
+
+      .nav-item {
+        padding-left: 1rem;
+        cursor: pointer;
+      }
+
+      .nav-item + .nav-item {
+        border-top: black solid 1px;
+      }
+    }
   }
 }

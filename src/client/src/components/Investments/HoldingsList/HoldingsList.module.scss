@@ -1,5 +1,6 @@
+@import './../../../variables';
+
 .HoldingsList {
-  width: 100%;
   font-size: 0.8em;
 
   display: flex;
@@ -7,48 +8,65 @@
   justify-content: space-between;
 
   overflow-y: auto;
+
 }
 
 .HoldingsListItem {
-  border: #041901 solid 1px;
   padding: 0;
   cursor: pointer;
+
+  font-weight: 200;
+
+  border: $border-secondary solid 1px;
 
   div {
     height: auto;
   }
 
+  p {
+    padding: 0.2em;
+  }
+
   .HoldingListItemLoading {
     font-size: 0.6em;
     font-weight: lighter;
+    background: $secondary-highlight;
+    color: $text-dark;
   }
 
   .HoldingsListItemSymbol {
-    width: 100%;
-    border-bottom: solid 1px black;
-    font-size: 0.9em;
-    background: #5FA23F;
+    font-family: "Share", sans-serif;
+    font-size: 1em;
     color: #0C4102;
+    width: 100%;
+    background: $primary-highlight;
     margin-bottom: 0;
+
+    .HoldingListItemTimestamp {
+      font-weight: 200;
+      font-size: 0.6em;
+      margin-left: 1em;
+    }
   }
 
   .HoldingListItemDetail {
+    font-size: 1em;
 
     .HoldingListItemDetailQuantity {
       font-weight: bolder;
       margin-right: 0.2em;
+      letter-spacing: 0.07em;
+    }
+
+    .HoldingListItemAt {
+
     }
 
     .HoldingListItemDetailCost {
       font-weight: bolder;
       margin: 0 0.2em;
+      letter-spacing: 0.07em;
     }
-  }
-
-  .HoldingListItemTimestamp {
-    font-weight: lighter;
-    font-size: 0.7em;
-    margin-bottom: 0;
   }
 
 }

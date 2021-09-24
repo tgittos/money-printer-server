@@ -1,5 +1,5 @@
 interface IFigureDataPoint {
-    y: number;
+    y?: number;
 }
 
 export default IFigureDataPoint;

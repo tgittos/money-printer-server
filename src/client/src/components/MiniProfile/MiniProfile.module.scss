@@ -1,4 +1,28 @@
+@import "./../../variables";
+
 .MiniLogin {
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+
+    li {
+      button {
+        width: 100%;
+        background: transparent;
+        border: none;
+        color: $link;
+      }
+
+      button:hover {
+        color: $link-hover;
+      }
+    }
+
+    li+li {
+      border-top: $border-secondary solid 1px;
+    }
+  }
 
   .MiniLoginProfileModal {
     width: 90vw;

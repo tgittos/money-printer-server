@@ -7,6 +7,7 @@ import moment from "moment";
 import IChartMargin from "../../components/Charts/interfaces/IChartMargin";
 import BasicCandleChart from "../../components/Charts/lib/charts/BasicCandleChart";
 import ICandleDataPoint from "../../components/Charts/interfaces/ICandleDataPoint";
+import IFigureDataPoint from "../../components/Charts/interfaces/IFigureDataPoint";
 
 export default {
     title: 'Components/Charts/CandleChart',
@@ -20,10 +21,9 @@ const Template: ComponentStory<typeof StaticChart> = (args) => <StaticChart
         height: 800,
         margin: {
             top: 5,
-            left: 35,
+            left: 45,
             right: 5,
             bottom: 45,
-            left: 45
         } as IChartMargin
     } as IChartDimensions}
     {...args} />;
@@ -37,7 +37,7 @@ const pointCount = 500;
 const basePrice = 50.0;
 const walkPct = 0.05;
 
-function randomStep(arr, valuator: (obj) => number) {
+function randomStep(arr: ICandleDataPoint[], valuator: (obj: ICandleDataPoint) => number) {
     const lastDataPoint = arr[arr.length-1];
     let lastValue = valuator(lastDataPoint);
     if (Math.random() * 2 > 1) {

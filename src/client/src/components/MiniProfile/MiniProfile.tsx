@@ -129,7 +129,7 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
 
     render() {
         const dropdownTitle = (<PersonCircle></PersonCircle>);
-        return <NavDropdown title={dropdownTitle} id="profile-dropdown" className={styles.navItem}>
+        return <NavDropdown align="end" title={dropdownTitle} id="profile-dropdown" className={styles.navItem}>
 
             { this.props.authenticated
                 ? this.renderAuthenticated()

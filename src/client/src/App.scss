@@ -14,8 +14,8 @@
 
   .code {
     font-family: monospace;
-    background: $light-green;
-    color: $olive-green;
+    background: $background-dark;
+    color: $text-light;
     padding: 1px;
   }
 }
@@ -52,29 +52,5 @@
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-.accounts-modal {
-  width: 90vw;
-  max-width: 90vw;
-
-  height: 80vh;
-  max-height: 80vh;
-
-  .modal-content {
-    height: 100%;
-
-    .modal-body {
-      padding: 0;
-
-      .nav-item {
-        padding-left: 1rem;
-      }
-
-      .nav-item + .nav-item {
-        border-top: black solid 1px;
-      }
-    }
   }
 }
