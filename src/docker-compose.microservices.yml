@@ -11,7 +11,7 @@ services:
       context: .
       dockerfile: server/services/api/Dockerfile
     ports:
-      - "5000:5000"
+      - "8000:8000"
     links:
       - redis
     depends_on: [redis]
@@ -24,8 +24,7 @@ services:
       context: .
       dockerfile: server/services/client_bus/Dockerfile
     ports:
-      - "8000:8000"
-      - "8443:8443"
+      - "5000:5000"
     links:
       - redis
     depends_on: [redis]

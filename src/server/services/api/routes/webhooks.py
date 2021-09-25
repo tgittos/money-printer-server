@@ -2,14 +2,12 @@ import json
 
 from flask import Blueprint, request
 
-from core.apis.plaid.common import PlaidApiConfig
-from core.apis.mailgun import MailGunConfig
 from core.repositories.plaid_repository import get_repository as get_plaid_repository, UpdatePlaidItem
 from core.repositories.holding_repository import get_repository as get_holdings_repository
 from core.repositories.account_repository import get_repository as get_account_repository
 from core.repositories.balance_repository import get_repository as get_balance_repository
 from core.lib.logger import get_logger
-from server.config import mysql_config, plaid_config, mailgun_config, iex_config
+from config import mysql_config, plaid_config, mailgun_config, iex_config
 
 webhooks_bp = Blueprint('webhooks', __name__)
 

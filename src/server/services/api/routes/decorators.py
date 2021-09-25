@@ -3,9 +3,8 @@ from flask import request, Response
 from jwt import DecodeError
 
 from core.repositories.profile_repository import get_repository as get_profile_repository
-from core.apis.mailgun import MailGunConfig
 from core.lib.logger import get_logger
-from server.config import mysql_config, mailgun_config
+from config import mysql_config, mailgun_config
 
 
 logger = get_logger(__name__)

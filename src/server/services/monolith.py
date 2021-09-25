@@ -4,6 +4,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO
 import traceback
+import signal
 
 
 def curry_sigint_handler(context):
@@ -45,19 +46,6 @@ if __name__ == '__main__':
     logger.debug("augmented path with core")
     logger.debug("path: {0}".format(sys.path))
 
-    # base flask app
-    app = Flask(__name__)
-    app.config['CORS_HEADERS'] = 'Content-Type'
-    app.url_map.strict_slashes = False
-    CORS(app)
-
-    # client bus
-    from server.services.client_bus.client_bus import ClientBus
-    socket_app = SocketIO(app, cors_allowed_origins='*', message_queue="redis://{0}".format(config.redis.host))
-
-    logger.debug("augmenting money-printer websocket server with message handlers")
-    client_bus = ClientBus(socket_app)
-
     # data server
     from server.services.data_server.sse_client import SSEClient
     from server.services.data_server.historical_client import HistoricalClient
@@ -97,7 +85,16 @@ if __name__ == '__main__':
     }))
 
     # start flask server
-    logger.info("running money-printer websocket server")
-    socket_app.run(app)
-    logger.info("running money-printer api server")
-    app.run(host=config.host, port=config.port)
+    app = Flask(__name__)
+    app.config['CORS_HEADERS'] = 'Content-Type'
+    app.url_map.strict_slashes = False
+    CORS(app)
+    socket_ = SocketIO(app, cors_allowed_origins='*', message_queue="redis://{0}".format(config.redis.host))
+
+    # todo - refactor this - right now it augments an app with handlers, doesn't actually do anything really
+    logger.debug("augmenting money-printer websocket server with message handlers")
+    from server.services.client_bus.client_bus import ClientBus
+    ClientBus(socket_)
+
+    logger.info("running money-printer api/ws server")
+    socket_.run(app, host=config.host, port=config.port)

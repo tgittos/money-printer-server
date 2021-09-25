@@ -17,6 +17,7 @@
       <change beforePath="$PROJECT_DIR$/../bin/task-runner" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/task-runner" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/client.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" afterDir="false" />
@@ -180,6 +181,8 @@
       <change beforePath="$PROJECT_DIR$/../core/repositories/stock_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/stock_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../docker-compose.microservices.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.microservices.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/../server/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/init.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/schedule.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/scripts/script_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/scripts/script_base.py" afterDir="false" />
@@ -274,6 +277,7 @@
       <updated>1630002872469</updated>
       <workItem from="1630002874254" duration="8300000" />
       <workItem from="1630011654402" duration="127020000" />
+      <workItem from="1632578930047" duration="595000" />
     </task>
     <servers />
   </component>

@@ -6,6 +6,8 @@ from core.lib.logger import get_logger
 
 class ClientBus:
 
+    running = False
+
     def __init__(self, socketio):
         self.logger = get_logger(__name__)
         self.r = redis.Redis(host='localhost', port=6379, db=0)
@@ -13,6 +15,18 @@ class ClientBus:
         self.socketio = socketio
         self.__augment_app()
         self.thread = None
+
+    def start(self):
+        self.logger.info("subscribing to upstream-symbols pubsub in thread")
+        self.running = True
+        self.p.subscribe(**{'upstream-symbols': self.__proxy})
+        self.thread = self.p.run_in_thread(sleep_time=0.1)
+
+    def stop(self):
+        if self.thread and self.running:
+            self.running = False
+            self.p.unsubscribe(**{'upstream-symbols': self.__proxy})
+            self.thread.join()
 
     def connect(self):
         self.logger.debug("client connected")
@@ -28,9 +42,6 @@ class ClientBus:
             }))
 
     def subscribe_symbol(self, data=None):
-        self.logger.info("subscribing to upstream-symbols pubsub in thread: {0}".format(data))
-        self.p.subscribe(**{'upstream-symbols': self.__proxy})
-        self.thread = self.p.run_in_thread(sleep_time=0.1)
         if data is not None:
             self.r.publish('sse-control', json.dumps({
                 'command': 'add-symbol',
@@ -38,22 +49,20 @@ class ClientBus:
             }))
 
     def unsubscribe_symbol(self, data=None):
-        if self.p is not None:
-            self.logger.info("unsubscribing from upstream-symbols pubsub in thread")
-            if data is not None:
-                self.r.publish('sse-control', json.dumps({
-                    'command': 'remove-symbol',
-                    'data': data
-                }))
+        self.logger.info("unsubscribing from upstream-symbols pubsub in thread")
+        if data is not None:
+            self.r.publish('sse-control', json.dumps({
+                'command': 'remove-symbol',
+                'data': data
+            }))
 
     def fetch_historical_data(self, data=None):
-        if self.p is not None:
-            self.logger.debug("requesting historical data fetch using command {0}".format(data))
-            if data is not None:
-                self.r.publish('historical_quotes', json.dumps({
-                    'command': 'fetch',
-                    'data': data
-                }))
+        self.logger.debug("requesting historical data fetch using command {0}".format(data))
+        if data is not None:
+            self.r.publish('historical_quotes', json.dumps({
+                'command': 'fetch',
+                'data': data
+            }))
 
     def __proxy(self, message):
         data_message = message['data'].decode('utf-8')

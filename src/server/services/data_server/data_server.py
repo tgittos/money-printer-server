@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 
 if __name__ == '__main__':
@@ -47,4 +48,4 @@ if __name__ == '__main__':
     logger.info("running money-printer data server")
 
     while True:
-        pass
+        time.sleep(60)

@@ -3,8 +3,8 @@ from datetime import datetime
 
 from core.repositories.security_repository import get_repository as get_security_repository
 from core.repositories.account_repository import get_repository as get_account_repository, GetAccountBalanceRequest
-from server.services.api.routes.decorators import authed, get_identity
-from server.config import mysql_config, plaid_config, mailgun_config, iex_config
+from .decorators import authed, get_identity
+from config import mysql_config, plaid_config, mailgun_config, iex_config
 
 
 # define the blueprint for plaid oauth

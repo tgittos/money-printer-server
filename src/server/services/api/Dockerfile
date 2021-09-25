@@ -21,8 +21,8 @@ COPY server/.secrets.json server/.secrets.json
 
 RUN mkdir logs
 
-EXPOSE 5000
+EXPOSE 8000
 
 ENV MP_ENVIRONMENT=environment:-development
 
-ENTRYPOINT python server/services/api/api_server.py
+ENTRYPOINT python server/bin/api.py

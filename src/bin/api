@@ -2,4 +2,5 @@
 
 env="${1:-$MP_ENVIRONMENT}"
 env="${env:-development}"
-export MP_ENVIRONMENT=$env && ./.venv/bin/python3 ./server/services/api/api_server.py
+export PYTHONPATH="$PYTHONPATH:."
+export MP_ENVIRONMENT=$env && ./.venv/bin/python3 ./server/bin/api.py

@@ -4,8 +4,8 @@ import json
 
 from core.repositories.profile_repository import get_repository as get_profiles_repository, RegisterProfileRequest,\
     LoginRequest
-from server.services.api.routes.decorators import authed
-from server.config import mysql_config, mailgun_config
+from .decorators import authed
+from config import mysql_config, mailgun_config
 
 # define the blueprint for plaid oauth
 auth_bp = Blueprint('auth', __name__)

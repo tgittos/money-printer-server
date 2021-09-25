@@ -4,14 +4,13 @@ import bcrypt
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import jwt
-import json
 
-from server.config import config as server_config
 from core.stores.mysql import MySql
 from core.models.profile import Profile
 from core.models.reset_token import ResetToken
 from core.lib.notifications import notify_profile_created, ProfileCreatedNotification, MailGunConfig,\
     PasswordResetNotification, notify_password_reset
+from config import config
 
 
 def get_repository(mysql_config, mailgun_config):
@@ -245,9 +244,9 @@ class ProfileRepository:
             "authenticated": True,
             "exp": (datetime.utcnow() + relativedelta(months=1)).timestamp(),
             "algorithm": "HS256"
-        }, server_config['server']['secret'])
+        }, config.secret)
         return token
 
     def decode_jwt(self, token):
-        raw = jwt.decode(token, server_config['server']['secret'], algorithms=["HS256"])
+        raw = jwt.decode(token, config.secret, algorithms=["HS256"])
         return raw
