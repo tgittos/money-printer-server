@@ -7,7 +7,7 @@ services:
       MP_HOST: "0.0.0.0"
     build:
       context: .
-      dockerfile: server/services/Dockerfile
+      dockerfile: Dockerfile
     image: moneyprinter
     ports:
       - "8000:8000"

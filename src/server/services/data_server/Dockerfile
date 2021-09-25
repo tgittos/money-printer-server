@@ -24,4 +24,4 @@ RUN mkdir logs
 ENV MP_ENVIRONMENT=environment:-development
 ENV PYTHONPATH=$PYTHONPATH:.
 
-ENTRYPOINT python server/bin/data-server.py && tail -f log/mp.log
+ENTRYPOINT python server/bin/data-server.py && tail -f logs/mp.log

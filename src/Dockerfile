@@ -24,5 +24,8 @@ COPY bin/money-printer bin/money-printer
 RUN mkdir logs
 
 ENV MP_ENVIRONMENT=environment:-development
+ENV MP_HOST=0.0.0.0
 
-ENTRYPOINT bin/money-printer
+EXPOSE 8000
+
+ENTRYPOINT bin/money-printer && tail -f logs/mp.log

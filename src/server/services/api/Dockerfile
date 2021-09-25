@@ -24,6 +24,7 @@ RUN mkdir logs
 EXPOSE 8000
 
 ENV MP_ENVIRONMENT=environment:-development
+ENV MP_HOST=0.0.0.0
 ENV PYTHONPATH=$PYTHONPATH:.
 
-ENTRYPOINT python server/bin/api.py && tail -f log/mp.log
+ENTRYPOINT python server/bin/api.py && tail -f logs/mp.log
