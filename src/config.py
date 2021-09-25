@@ -4,7 +4,9 @@ from dynaconf import Dynaconf
 from core.apis.mailgun import MailGunConfig
 from core.stores.mysql import MySqlConfig
 
-env = os.environ['MP_ENVIRONMENT']
+env = 'development'
+if 'MP_ENVIRONMENT' in os.environ:
+    env = os.environ['MP_ENVIRONMENT']
 
 config = Dynaconf(
     envvar_prefix="MP",
@@ -26,6 +28,7 @@ mysql_config = MySqlConfig(
 )
 
 iex_config = {
+    'env': config.iex.env,
     'secret': config.iex.secret
 }
 

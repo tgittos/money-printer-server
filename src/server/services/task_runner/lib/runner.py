@@ -6,7 +6,7 @@ from threading import Thread
 
 from core.repositories.scheduled_job_repository import get_repository as get_job_repository
 from core.lib.logger import get_logger
-from server.config import redis_config, mysql_config, mailgun_config
+from config import redis_config, mysql_config, mailgun_config
 
 WORKER_QUEUE = "mp:worker"
 

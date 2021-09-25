@@ -5,7 +5,7 @@ import json
 import importlib
 
 from core.lib.logger import get_logger
-from server.config import redis_config
+from config import redis_config
 
 
 WORKER_QUEUE = "mp:worker"

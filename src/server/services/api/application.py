@@ -6,7 +6,8 @@ from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
-from config import config
+from config import config, mysql_config, mailgun_config
+from core.repositories.profile_repository import get_repository as get_profile_repository, RegisterProfileRequest
 from core.lib.logger import init_logger, get_logger
 
 from .routes.plaid import oauth_bp as plaid_bp
@@ -31,9 +32,16 @@ class ApiApplication:
         self._configure_ws()
 
     def run(self):
-        self.logger.info("starting money-printer api/ws application")
+        print(" * Starting money-printer api/ws application", flush=True)
         self.client_bus.start()
         self.socket_app.run(self.flask_app, host=config.host, port=config.port)
+
+    def init(self, first_name, last_name, email):
+        repo = get_profile_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
+        result = repo.register(RegisterProfileRequest(
+            email=email, first_name=first_name, last_name=last_name
+        ))
+        return result
 
     def _configure_flask(self):
         self.logger.debug("configuring base Flask application")
@@ -64,7 +72,7 @@ class ApiApplication:
 
     def _configure_signals(self):
         self.logger.debug("intercepting sigints for graceful shutdown")
-        signal.signal(signal.SIGINT, self.curry_sigint_handler({
+        signal.signal(signal.SIGINT, self._curry_sigint_handler({
             "client_bus": self.client_bus
         }))
 

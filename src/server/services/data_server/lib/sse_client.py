@@ -50,13 +50,15 @@ class SSEClient:
                         message = self.p.get_message()
                     if not self.running:
                         break
-            time.sleep(1)
+            time.sleep(0.2)
         self.logger.info("stopping upstream sse connection")
 
     def stop(self):
         self.running = False
-        # sleep for a few ticks to allow the redis pubsub to pick up that we're shutting down
-        time.sleep(0.2)
+        time.sleep(1)
+        self.p.unsubscribe('sse-control')
+        if self.thread:
+            self.thread.join()
 
     def restart(self):
         self.stop()

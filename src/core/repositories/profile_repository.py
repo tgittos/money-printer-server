@@ -1,9 +1,9 @@
 import secrets
 import string
-import bcrypt
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import jwt
+import bcrypt
 
 from core.stores.mysql import MySql
 from core.models.profile import Profile
