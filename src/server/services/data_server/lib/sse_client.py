@@ -5,6 +5,7 @@ import json
 
 import sseclient
 
+from config import config
 from core.lib.logger import get_logger
 
 
@@ -26,7 +27,7 @@ class SSEClient:
         self.tracked_symbols = []
         self.running = False
 
-        self.redis = redis.Redis(host='localhost', port=6379, db=0)
+        self.redis = redis.Redis(host=config.redis.host, port=config.redis.port, db=0)
         self.p = self.redis.pubsub()
         self.p.subscribe(**{'sse-control': self.__handle_sse_control})
         self.thread = self.p.run_in_thread(sleep_time=0.1)

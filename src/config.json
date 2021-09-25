@@ -1,6 +1,6 @@
 {
   "development": {
-    "host": "0.0.0.0",
+    "host": "localhost",
     "port": "8000",
     "mailgun": {
       "domain": "mg.moneyprintergobrr.io"

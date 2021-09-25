@@ -226,7 +226,7 @@ class ProfileRepository:
         return bcrypt.hashpw(pt_password.encode('utf8'), bcrypt.gensalt())
 
     def __check_password(self, pw_hash, candidate):
-        return bcrypt.checkpw(candidate.encode('utf8'), pw_hash)
+        return bcrypt.checkpw(candidate.encode('utf8'), pw_hash.encode('utf8'))
 
     def __generate_temp_password(self, len=16):
         alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_+=-'

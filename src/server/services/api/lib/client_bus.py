@@ -1,6 +1,7 @@
 import json
 import redis
 
+from config import config
 from core.lib.logger import get_logger
 
 
@@ -10,7 +11,7 @@ class ClientBus:
 
     def __init__(self, socketio):
         self.logger = get_logger(__name__)
-        self.r = redis.Redis(host='localhost', port=6379, db=0)
+        self.r = redis.Redis(host=config.redis.host, port=config.redis.port, db=0)
         self.p = self.r.pubsub()
         self.socketio = socketio
         self.__augment_app()

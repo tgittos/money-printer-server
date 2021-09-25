@@ -7,3 +7,4 @@ alembic.ini
 *.log
 .secrets.*
 .gitsecret/keys/random_seed
+*.rdb

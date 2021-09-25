@@ -1,7 +1,9 @@
 #!/bin/sh
 
+redis-server &
+
 env="${1:-development}"
 echo 'MONEY PRINTER GOING BRRR'
 echo "BRRRing in $env"
 export PYTHONPATH="$PYTHONPATH:."
-export MP_ENVIRONMENT=$env && (trap 'kill 0' INT TERM; (./bin/data-server $env & ./bin/task-runner $env & ./bin/api $env))
+export MP_ENVIRONMENT=$env && python server/bin/money-printer.py

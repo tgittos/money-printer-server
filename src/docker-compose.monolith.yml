@@ -4,10 +4,10 @@ services:
   moneyprinter:
     environment:
       MP_ENVIRONMENT: "development"
+      MP_HOST: "0.0.0.0"
     build:
       context: .
       dockerfile: server/services/Dockerfile
     image: moneyprinter
     ports:
-      - "5000:5000"
       - "8000:8000"

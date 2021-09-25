@@ -6,6 +6,7 @@ services:
   api:
     environment:
       MP_ENVIRONMENT: "development"
+      MP_HOST: "0.0.0.0"
       MP_REDIS__HOST: "redis"
     build:
       context: .
@@ -16,19 +17,6 @@ services:
       - redis
     depends_on: [redis]
     image: mp_api
-  client_bus:
-    environment:
-      MP_ENVIRONMENT: "development"
-      MP_REDIS__HOST: "redis"
-    build:
-      context: .
-      dockerfile: server/services/client_bus/Dockerfile
-    ports:
-      - "5000:5000"
-    links:
-      - redis
-    depends_on: [redis]
-    image: client_bus
   data_server:
     environment:
       MP_ENVIRONMENT: "development"

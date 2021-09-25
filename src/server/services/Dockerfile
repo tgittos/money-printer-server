@@ -17,12 +17,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY core core
 COPY server server
-COPY server/.secrets.json server/.secrets.json
+COPY .secrets.json .secrets.json
+COPY config* .
+COPY bin/money-printer bin/money-printer
 
 RUN mkdir logs
 
 ENV MP_ENVIRONMENT=environment:-development
 
-RUN nohup redis-server &
-
-ENTRYPOINT python server/services/monolith.py
+ENTRYPOINT bin/money-printer

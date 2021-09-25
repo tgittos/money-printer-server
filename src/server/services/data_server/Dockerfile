@@ -16,10 +16,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY core core
 COPY server server
-COPY server/.secrets.json server/.secrets.json
+COPY .secrets.json .secrets.json
+COPY config* .
 
 RUN mkdir logs
 
 ENV MP_ENVIRONMENT=environment:-development
+ENV PYTHONPATH=$PYTHONPATH:.
 
-ENTRYPOINT python server/services/data_server/data_server.py
+ENTRYPOINT python server/bin/data-server.py && tail -f log/mp.log

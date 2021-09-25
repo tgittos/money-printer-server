@@ -5,7 +5,6 @@ FROM python:3
 ARG environment
 
 RUN apt update
-RUN apt install -y nginx
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -17,12 +16,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY core core
 COPY server server
-COPY server/.secrets.json server/.secrets.json
+COPY .secrets.json .secrets.json
+COPY config* .
 
 RUN mkdir logs
 
 EXPOSE 8000
 
 ENV MP_ENVIRONMENT=environment:-development
+ENV PYTHONPATH=$PYTHONPATH:.
 
-ENTRYPOINT python server/bin/api.py
+ENTRYPOINT python server/bin/api.py && tail -f log/mp.log
