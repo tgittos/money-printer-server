@@ -1,3 +1,5 @@
+#!/bin/sh
+
 env="${1:-$MP_ENVIRONMENT}"
 env="${env:-development}"
 export MP_ENVIRONMENT=$env && ./.venv/bin/python3 ./server/services/task_runner/task_runner_server.py

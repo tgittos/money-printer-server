@@ -6,9 +6,10 @@ from core.repositories.account_repository import get_repository as get_account_r
 from server.services.api.routes.decorators import authed, get_identity
 from server.config import mysql_config, plaid_config, mailgun_config, iex_config
 
-oauth_config = OauthConfig()
-oauth_config.mysql_config = mysql_config
-oauth_config.plaid_config = plaid_config
+oauth_config = OauthConfig(
+    mysql_config=mysql_config,
+    plaid_config=plaid_config
+)
 
 # define the blueprint for plaid oauth
 oauth_bp = Blueprint('plaid_oauth', __name__)

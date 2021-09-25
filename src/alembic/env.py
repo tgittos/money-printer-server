@@ -16,7 +16,7 @@ config = context.config
 env = 'development'
 if 'MP_ENVIRONMENT' in os.environ:
     env = os.environ['MP_ENVIRONMENT']
-f1 = open('./server/settings.json',)
+f1 = open('./server/config.json',)
 f2 = open('./server/.secrets.json',)
 config_json = json.loads(f1.read())
 secrets_json = json.loads(f2.read())

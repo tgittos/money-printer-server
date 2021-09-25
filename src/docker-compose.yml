@@ -7,40 +7,40 @@ services:
     environment:
       MP_ENVIRONMENT: "development"
       MP_REDIS__HOST: "redis://redis"
-    build: ./server/services/api
-    command: ./server/bin/api
-    volumes:
-      - . /usr/app
+    build:
+      context: .
+      dockerfile: server/services/api/Dockerfile
     ports:
       - "5000:5000"
-    depends_on: redis
+    depends_on: [redis]
+    image: mp_api
   client_bus:
     environment:
       MP_ENVIRONMENT: "development"
       MP_REDIS__HOST: "redis://redis"
-    build: ./server/services/client_bus
-    command: ./server/bin/client_bus
-    volumes:
-      - . /usr/app
+    build:
+      context: .
+      dockerfile: server/services/client_bus/Dockerfile
     ports:
       - "8000:8000"
       - "8443:8443"
-    depends_on: redis
+    depends_on: [redis]
+    image: client_bus
   data_server:
     environment:
       MP_ENVIRONMENT: "development"
       MP_REDIS__HOST: "redis://redis"
-    build: ./server/services/data_services
-    command: ./server/bin/data_services
-    volumes:
-      - . /usr/app
-    depends_on: redis
+    build:
+      context: .
+      dockerfile: server/services/data_server/Dockerfile
+    depends_on: [redis]
+    image: data_server
   task_runner:
     environment:
       MP_ENVIRONMENT: "development"
       MP_REDIS__HOST: "redis://redis"
-    build: ./server/services/task_runner
-    command: ./server/bin/task_runner
-    volumes:
-      - . /usr/app
-    depends_on: redis
+    build:
+      context: .
+      dockerfile: server/services/task-runner/Dockerfile
+    depends_on: [redis]
+    image: task_runner

@@ -1,3 +1,5 @@
+#!/bin/sh
+
 env="${1:-development}"
 echo 'MONEY PRINTER GOING BRRR'
 echo "BRRRing in $env"
