@@ -6,7 +6,6 @@ from core.repositories.stock_repository import get_repository as get_stock_repos
 from core.repositories.scheduled_job_repository import get_repository as get_scheduled_job_repository, CreateInstantJobRequest
 from core.lib.logger import get_logger
 
-from server.config import config as server_config
 from core.stores.mysql import MySql
 
 

@@ -1,17 +1,16 @@
 import secrets
 import string
-import bcrypt
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import jwt
-import json
+import bcrypt
 
-from server.config import config as server_config
 from core.stores.mysql import MySql
 from core.models.profile import Profile
 from core.models.reset_token import ResetToken
 from core.lib.notifications import notify_profile_created, ProfileCreatedNotification, MailGunConfig,\
     PasswordResetNotification, notify_password_reset
+from config import config
 
 
 def get_repository(mysql_config, mailgun_config):
@@ -227,7 +226,7 @@ class ProfileRepository:
         return bcrypt.hashpw(pt_password.encode('utf8'), bcrypt.gensalt())
 
     def __check_password(self, pw_hash, candidate):
-        return bcrypt.checkpw(candidate.encode('utf8'), pw_hash)
+        return bcrypt.checkpw(candidate.encode('utf8'), pw_hash.encode('utf8'))
 
     def __generate_temp_password(self, len=16):
         alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_+=-'
@@ -245,9 +244,9 @@ class ProfileRepository:
             "authenticated": True,
             "exp": (datetime.utcnow() + relativedelta(months=1)).timestamp(),
             "algorithm": "HS256"
-        }, server_config['server']['secret'])
+        }, config.secret)
         return token
 
     def decode_jwt(self, token):
-        raw = jwt.decode(token, server_config['server']['secret'], algorithms=["HS256"])
+        raw = jwt.decode(token, config.secret, algorithms=["HS256"])
         return raw

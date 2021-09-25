@@ -1,3 +1,0 @@
-env="${1:-$MONEY_PRINTER_ENV}"
-env="${env:-sandbox}"
-export MONEY_PRINTER_ENV=$env && ./.venv/bin/python3 ./server/services/client_bus/websocket_server.py

@@ -1,33 +1,14 @@
-import json
-
 from flask import Blueprint
 from flask import request
 
-from core.apis.plaid.common import PlaidApiConfig
 from core.apis.plaid.oauth import Oauth, OauthConfig
-from core.apis.mailgun import MailGunConfig
 from core.repositories.account_repository import get_repository as get_account_repository
-from server.services.api.routes.decorators import authed, get_identity
-from server.services.api import load_config
+from .decorators import authed, get_identity
+from config import mysql_config, plaid_config, mailgun_config, iex_config
 
-from server.config import config as server_config
-app_config = load_config()
-
-iex_config = app_config['iexcloud']
-
-# define a plaid oauth client config
-plaid_config = PlaidApiConfig()
-plaid_config.env = app_config['plaid']['env']
-plaid_config.client_id = app_config['plaid']['client_id']
-plaid_config.secret = app_config['plaid']['secret']
-
-oauth_config = OauthConfig()
-oauth_config.mysql_config = app_config['db']
-oauth_config.plaid_config = plaid_config
-
-mailgun_config = MailGunConfig(
-    api_key=server_config['mailgun']['api_key'],
-    domain=server_config['mailgun']['domain']
+oauth_config = OauthConfig(
+    mysql_config=mysql_config,
+    plaid_config=plaid_config
 )
 
 # define the blueprint for plaid oauth

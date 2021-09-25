@@ -5,6 +5,7 @@ import json
 
 import sseclient
 
+from config import config
 from core.lib.logger import get_logger
 
 
@@ -26,7 +27,7 @@ class SSEClient:
         self.tracked_symbols = []
         self.running = False
 
-        self.redis = redis.Redis(host='localhost', port=6379, db=0)
+        self.redis = redis.Redis(host=config.redis.host, port=config.redis.port, db=0)
         self.p = self.redis.pubsub()
         self.p.subscribe(**{'sse-control': self.__handle_sse_control})
         self.thread = self.p.run_in_thread(sleep_time=0.1)
@@ -50,13 +51,15 @@ class SSEClient:
                         message = self.p.get_message()
                     if not self.running:
                         break
-            time.sleep(1)
+            time.sleep(0.2)
         self.logger.info("stopping upstream sse connection")
 
     def stop(self):
         self.running = False
-        # sleep for a few ticks to allow the redis pubsub to pick up that we're shutting down
-        time.sleep(0.2)
+        time.sleep(1)
+        self.p.unsubscribe('sse-control')
+        if self.thread:
+            self.thread.join()
 
     def restart(self):
         self.stop()

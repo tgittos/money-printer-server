@@ -3,28 +3,8 @@ from datetime import datetime
 
 from core.repositories.security_repository import get_repository as get_security_repository
 from core.repositories.account_repository import get_repository as get_account_repository, GetAccountBalanceRequest
-from core.apis.plaid.oauth import PlaidApiConfig
-from core.apis.mailgun import MailGunConfig
-
-from server.services.api.routes.decorators import authed, get_identity
-
-from server.config import config as server_config
-from server.services.api import load_config
-app_config = load_config()
-
-mysql_config = app_config['db']
-iex_config = app_config['iexcloud']
-
-# define a plaid oauth client config
-plaid_config = PlaidApiConfig()
-plaid_config.env = app_config['plaid']['env']
-plaid_config.client_id = app_config['plaid']['client_id']
-plaid_config.secret = app_config['plaid']['secret']
-
-mailgun_config = MailGunConfig(
-    domain=server_config['mailgun']['domain'],
-    api_key=server_config['mailgun']['api_key']
-)
+from .decorators import authed, get_identity
+from config import mysql_config, plaid_config, mailgun_config, iex_config
 
 
 # define the blueprint for plaid oauth

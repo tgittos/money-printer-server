@@ -1,0 +1,33 @@
+{
+  "development": {
+    "host": "localhost",
+    "port": "8000",
+    "mailgun": {
+      "domain": "mg.moneyprintergobrr.io"
+    },
+    "iex": {
+      "env": "sandbox",
+      "publishable": "pk_3394e9ba369a45d2b3efdd6c0bbb168f"
+    },
+    "plaid": {
+      "env": "sandbox",
+      "client_id": "610b0a72aed5de0015d334ed",
+      "version": "2020-09-14",
+      "country_codes": "US"
+    },
+    "db": {
+      "host": "mp-db.cnl8otl80kk5.us-west-2.rds.amazonaws.com",
+      "port": "3306",
+      "schema": "mp-dev",
+      "debug": "false"
+    },
+    "redis": {
+      "host": "localhost",
+      "port": "6379"
+    }
+  },
+  "staging": {
+  },
+  "production": {
+  }
+}

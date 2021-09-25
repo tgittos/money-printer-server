@@ -1,3 +1,6 @@
-env="${1:-$MONEY_PRINTER_ENV}"
-env="${env:-sandbox}"
-export MONEY_PRINTER_ENV=$env && ./.venv/bin/python3 ./server/services/api/api_server.py
+#!/bin/sh
+
+env="${1:-$MP_ENVIRONMENT}"
+env="${env:-development}"
+export PYTHONPATH="$PYTHONPATH:."
+export MP_ENVIRONMENT=$env && ./.venv/bin/python3 ./server/bin/api.py

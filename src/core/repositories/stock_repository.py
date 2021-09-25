@@ -24,8 +24,7 @@ def get_repository(iex_config, mysql_config):
     return repo
 
 
-class StockRepositoryConfig(object):
-
+class StockRepositoryConfig:
     def __init__(self, iex_config, mysql_config):
         self.iex_config = iex_config
         self.mysql_config = mysql_config

@@ -4,17 +4,9 @@ from datetime import datetime, timedelta, timezone
 import time
 from threading import Thread
 
-from core.apis.mailgun import MailGunConfig
 from core.repositories.scheduled_job_repository import get_repository as get_job_repository
 from core.lib.logger import get_logger
-
-from server.config import config as server_config
-from server.services.api import load_config
-app_config = load_config()
-
-sql_config = app_config['db']
-mailgun_config = MailGunConfig(api_key=server_config['mailgun']['api_key'],
-                               domain=server_config['mailgun']['domain'])
+from config import redis_config, mysql_config, mailgun_config
 
 WORKER_QUEUE = "mp:worker"
 
@@ -29,10 +21,9 @@ class Runner(Thread):
     def __init__(self):
         super(Runner, self).__init__()
         self.logger = get_logger(__name__)
-        self.redis = redis.Redis(host='localhost', port=6379, db=0)
-        self.job_repo = get_job_repository(mysql_config=sql_config, mailgun_config=mailgun_config)
+        self.redis = redis.Redis(host=redis_config.host, port=redis_config.port, db=0)
+        self.job_repo = get_job_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
         self.jobs = self.job_repo.get_scheduled_jobs()
-        self.logger.info("running using db config: {0}".format(sql_config))
         self.logger.info("found {0} scheduled jobs".format(len(self.jobs)))
 
     def start(self) -> None:
