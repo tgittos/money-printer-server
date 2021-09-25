@@ -7,3 +7,4 @@ src/logs/**/*
 alembic.ini
 *.log
 .secrets.*
+.gitsecret/keys/random_seed
