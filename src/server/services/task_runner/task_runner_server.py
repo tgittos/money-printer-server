@@ -10,7 +10,7 @@ def handle_thread_error(ex):
 
 if __name__ == '__main__':
     # echo the environment we're passing in
-    env_string = os.environ['MONEY_PRINTER_ENV']
+    env_string = os.environ['MP_ENVIRONMENT']
 
     # sometimes we run with whacky paths, so lets set the python runtime
     # pwd to something sane

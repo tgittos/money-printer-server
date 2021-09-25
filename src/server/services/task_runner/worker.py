@@ -5,6 +5,7 @@ import json
 import importlib
 
 from core.lib.logger import get_logger
+from server.config import redis_config
 
 
 WORKER_QUEUE = "mp:worker"
@@ -18,7 +19,7 @@ class Worker(Thread):
     def __init__(self):
         super(Worker, self).__init__()
         self.logger = get_logger(__name__)
-        self.redis = redis.Redis(host='localhost', port=6379, db=0)
+        self.redis = redis.Redis(host=redis_config.host, port=redis_config.port, db=0)
         self.pub_sub = self.redis.pubsub()
         self.pub_sub.subscribe(WORKER_QUEUE)
 

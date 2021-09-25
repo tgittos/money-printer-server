@@ -1,3 +1,3 @@
-env="${1:-$MONEY_PRINTER_ENV}"
-env="${env:-sandbox}"
-export MONEY_PRINTER_ENV=$env && ./.venv/bin/python3 ./server/services/task_runner/task_runner_server.py
+env="${1:-$MP_ENVIRONMENT}"
+env="${env:-development}"
+export MP_ENVIRONMENT=$env && ./.venv/bin/python3 ./server/services/task_runner/task_runner_server.py

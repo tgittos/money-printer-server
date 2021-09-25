@@ -9,25 +9,7 @@ from core.repositories.holding_repository import get_repository as get_holdings_
 from core.repositories.account_repository import get_repository as get_account_repository
 from core.repositories.balance_repository import get_repository as get_balance_repository
 from core.lib.logger import get_logger
-
-from server.config import config as server_config
-from server.services.api import load_config
-app_config = load_config()
-
-mysql_config = app_config['db']
-iex_config = app_config['iexcloud']
-
-# define a plaid oauth client config
-plaid_config = PlaidApiConfig()
-plaid_config.env = app_config['plaid']['env']
-plaid_config.client_id = app_config['plaid']['client_id']
-plaid_config.secret = app_config['plaid']['secret']
-
-mailgun_config = MailGunConfig(
-    api_key=server_config['mailgun']['api_key'],
-    domain=server_config['mailgun']['domain']
-)
-
+from server.config import mysql_config, plaid_config, mailgun_config, iex_config
 
 webhooks_bp = Blueprint('webhooks', __name__)
 

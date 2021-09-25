@@ -4,7 +4,7 @@ import threading
 import redis
 
 from core.lib.logger import get_logger
-
+from server.config import redis_config
 
 env_string = os.environ['MONEY_PRINTER_ENV']
 
@@ -14,7 +14,7 @@ class SSEControlThread(threading.Thread):
     def __init__(self, *args, **kwargs):
         super(SSEControlThread, self).__init__(*args, **kwargs)
         self.logger = get_logger(__name__)
-        self.redis = redis.Redis(host='localhost', port=6379, db=0)
+        self.redis = redis.Redis(host=redis_config.host, port=redis_config.port, db=0)
         self.pubsub = self.redis.pubsub()
 
     def on(self, channel, handler):

@@ -6,3 +6,4 @@ __pycache__
 src/logs/**/*
 alembic.ini
 *.log
+.secrets.*

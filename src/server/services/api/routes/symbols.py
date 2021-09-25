@@ -5,12 +5,7 @@ from flask import request
 
 from core.repositories.stock_repository import get_repository as get_stock_repository
 from server.services.api.routes.decorators import authed
-
-from server.services.api import load_config
-app_config = load_config()
-
-mysql_config = app_config['db']
-iex_config = app_config['iexcloud']
+from server.config import mysql_config, iex_config
 
 # define the blueprint for symbol routes
 symbol_bp = Blueprint('symbols', __name__)

@@ -1,7 +1,6 @@
 import time
 import json
 
-from plaid import ApiException
 from plaid.model.link_token_create_request import LinkTokenCreateRequest
 from plaid.model.link_token_create_request_user import LinkTokenCreateRequestUser
 from plaid.model.item_public_token_exchange_request import ItemPublicTokenExchangeRequest
@@ -10,9 +9,13 @@ from core.apis.plaid.common import get_plaid_api_client, PlaidApiConfig, PLAID_P
 from core.repositories.plaid_repository import PlaidRepository, CreatePlaidItem, GetPlaidItem
 
 
-class OauthConfig(object):
-    plaid_config = PlaidApiConfig()
-    mysql_config = None
+class OauthConfig:
+    def __init__(self, plaid_api_config, mysql_config):
+        self.plaid_config = PlaidApiConfig()
+        self.plaid_config.env = plaid_api_config['env']
+        self.plaid_config.secret = plaid_api_config['secret']
+        self.plaid_config.client_id = plaid_api_config['client_id']
+        self.mysql_config = None
 
 
 class Oauth:
@@ -45,7 +48,7 @@ class Oauth:
 
             response = self.client.link_token_create(request)
             return response.to_dict()
-        except ApiException as e:
+        except Exception as e:
             return json.loads(e.body)
 
     def get_access_token(self, profile_id, public_token):
@@ -59,7 +62,7 @@ class Oauth:
             request_id = exchange_response['request_id']
             plaid_item = self.__store_link(profile_id, request_id, item_id, access_token)
             return plaid_item
-        except ApiException as e:
+        except Exception as e:
             return json.loads(e.body)
 
 

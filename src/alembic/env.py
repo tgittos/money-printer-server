@@ -1,4 +1,6 @@
 from logging.config import fileConfig
+import json
+import os
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -8,6 +10,27 @@ from alembic import context
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+# this will overwrite the ini-file sqlalchemy.url path
+# with the path given in the config of the main code
+env = 'development'
+if 'MP_ENVIRONMENT' in os.environ:
+    env = os.environ['MP_ENVIRONMENT']
+f1 = open('./server/settings.json',)
+f2 = open('./server/.secrets.json',)
+config_json = json.loads(f1.read())
+secrets_json = json.loads(f2.read())
+f1.close()
+f2.close()
+
+config.set_main_option('sqlalchemy.url',
+                       "mysql://{0}:{1}@{2}:{3}/{4}".format(
+                           secrets_json[env]['db']['username'],
+                           secrets_json[env]['db']['password'],
+                           config_json[env]['db']['host'],
+                           config_json[env]['db']['port'],
+                           config_json[env]['db']['schema']
+                       ))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

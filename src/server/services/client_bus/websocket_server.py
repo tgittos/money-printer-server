@@ -15,7 +15,7 @@ socket_app = None
 
 
 def create_app():
-    from server.config import config as server_config
+    from server.config import config
 
     temp_app = Flask(__name__)
 
@@ -25,7 +25,7 @@ def create_app():
     CORS(temp_app)
 
     # global static configs
-    temp_app.config['SECRET_KEY'] = server_config['server']['secret']
+    temp_app.config['SECRET_KEY'] = config.secret
 
     return temp_app
 
@@ -41,7 +41,7 @@ def curry_sigint_handler(client_bus):
 if __name__ == '__main__':
 
     # echo the environment we're passing in
-    env_string = os.environ['MONEY_PRINTER_ENV']
+    env_string = os.environ['MP_ENVIRONMENT']
 
     # sometimes we run with whacky paths, so lets set the python runtime
     # pwd to something sane
@@ -67,7 +67,6 @@ if __name__ == '__main__':
     logger.debug("path: {0}".format(sys.path))
 
     # create the app
-    from server.config import config as server_config
     from server.services.client_bus.client_bus import ClientBus
 
     app = create_app()

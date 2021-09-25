@@ -20,9 +20,6 @@ def create_app():
 
 
 if __name__ == '__main__':
-    # echo the environment we're passing in
-    env_string = os.environ['MONEY_PRINTER_ENV']
-
     # sometimes we run with whacky paths, so lets set the python runtime
     # pwd to something sane
     pwd = os.path.abspath(os.path.dirname(__file__) + "/../../../")
@@ -34,6 +31,7 @@ if __name__ == '__main__':
     sys.path.append(pwd)
 
     # configure the logger
+    from server.config import config, env
     from core.lib.logger import init_logger, get_logger
     init_logger(os.path.dirname(__file__) + "/../../../logs/")
 
@@ -41,21 +39,14 @@ if __name__ == '__main__':
     logger = get_logger("server.services.api")
 
     # log all the previous stuff we set up
-    logger.debug("setting env to {0}".format(env_string))
+    logger.debug("setting env to {0}".format(env))
     logger.debug("changing pwd to {0}".format(pwd))
     logger.debug("augmented path with core")
     logger.debug("path: {0}".format(sys.path))
 
-    # fetch the environment we need to be loading
-    from server.services.api import load_config
-    app_config = load_config()
-
-    # now require stuff
-    from server.config import config as server_config
     import routes
 
     logger.info("running money-printer api server")
 
     app = create_app()
-    app.run(host=server_config['server']['host'],
-            port=server_config['server']['port'])
+    app.run(host=config.host, port=config.port)

@@ -5,19 +5,11 @@ from jwt import DecodeError
 from core.repositories.profile_repository import get_repository as get_profile_repository
 from core.apis.mailgun import MailGunConfig
 from core.lib.logger import get_logger
+from server.config import mysql_config, mailgun_config
 
-from server.config import config as server_config
-from server.services.api import load_config
-app_config = load_config()
-
-mysql_config = app_config['db']
-
-mailgun_config = MailGunConfig(
-    api_key=server_config['mailgun']['api_key'],
-    domain=server_config['mailgun']['domain']
-)
 
 logger = get_logger(__name__)
+
 
 def authed(func):
     @wraps(func)

@@ -4,7 +4,7 @@ import sys
 
 if __name__ == '__main__':
     # echo the environment we're passing in
-    env_string = os.environ['MONEY_PRINTER_ENV'].strip()
+    env_string = os.environ['MP_ENVIRONMENT'].strip()
 
     # sometimes we run with whacky paths, so lets set the python runtime
     # pwd to something sane
@@ -34,18 +34,17 @@ if __name__ == '__main__':
     logger.debug("augmented path with core")
     logger.debug("path: {0}".format(sys.path))
 
-    # fetch the environment we need to be loading
-    from server.services.api import load_config
-    app_config = load_config()
-
-    from server.config import config as server_config
+    from server.config import config
     from server.services.data_server.sse_client import SSEClient
     from server.services.data_server.historical_client import HistoricalClient
 
-    sse_client = SSEClient(env_string, server_config[env_string]['iexcloud']['secret'])
+    sse_client = SSEClient(env_string, config.iex.secret)
     logger.debug("sse upstream online")
 
     historical_client = HistoricalClient()
     logger.debug("historical upstream online")
 
     logger.info("running money-printer data server")
+
+    while True:
+        pass

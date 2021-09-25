@@ -4,10 +4,7 @@ import requests
 import sseclient
 
 from core.lib.logger import get_logger
-
-from server.config import config as server_config
-
-env_string = os.environ['MONEY_PRINTER_ENV']
+from server.config import iex_config
 
 
 class UpstreamThread(threading.Thread):
@@ -15,7 +12,7 @@ class UpstreamThread(threading.Thread):
     def __init__(self, *args, **kwargs):
         super(UpstreamThread, self).__init__(*args, **kwargs)
         self.logger = get_logger(__name__)
-        self.secret_token = server_config[env_string]['iexcloud']['secret']
+        self.secret_token = iex_config['secret']
         self.stop_event = threading.Event()
         self.pause_event = threading.Event()
         self.publisher = None
@@ -53,7 +50,7 @@ class UpstreamThread(threading.Thread):
         return self.pause_event.is_set()
 
     def __gen_api_url(self, symbols):
-        if env_string == 'sandbox':
+        if iex_config['env'] == 'sandbox':
             url = "https://sandbox-sse.iexapis.com/stable/stocksUS1Second?symbols={0}&token={1}" \
                 .format(','.join(symbols), self.secret_token)
         else:
