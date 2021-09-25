@@ -2,12 +2,12 @@
 
 FROM python:3
 
+ARG environment
+
 RUN apt update
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-
-WORKDIR /usr/app
 
 COPY requirements.txt requirements.txt
 
@@ -16,5 +16,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY core core
 COPY server server
+COPY server/.secrets.json server/.secrets.json
 
-ENTRYPOINT ["bash", "server/bin/task-runner"]
+RUN mkdir logs
+
+ENV MP_ENVIRONMENT=environment:-development
+
+ENTRYPOINT python server/services/task_runner/task_runner_server.py

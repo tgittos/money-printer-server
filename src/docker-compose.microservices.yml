@@ -6,41 +6,49 @@ services:
   api:
     environment:
       MP_ENVIRONMENT: "development"
-      MP_REDIS__HOST: "redis://redis"
+      MP_REDIS__HOST: "redis"
     build:
       context: .
       dockerfile: server/services/api/Dockerfile
     ports:
       - "5000:5000"
+    links:
+      - redis
     depends_on: [redis]
     image: mp_api
   client_bus:
     environment:
       MP_ENVIRONMENT: "development"
-      MP_REDIS__HOST: "redis://redis"
+      MP_REDIS__HOST: "redis"
     build:
       context: .
       dockerfile: server/services/client_bus/Dockerfile
     ports:
       - "8000:8000"
       - "8443:8443"
+    links:
+      - redis
     depends_on: [redis]
     image: client_bus
   data_server:
     environment:
       MP_ENVIRONMENT: "development"
-      MP_REDIS__HOST: "redis://redis"
+      MP_REDIS__HOST: "redis"
     build:
       context: .
       dockerfile: server/services/data_server/Dockerfile
+    links:
+      - redis
     depends_on: [redis]
     image: data_server
   task_runner:
     environment:
       MP_ENVIRONMENT: "development"
-      MP_REDIS__HOST: "redis://redis"
+      MP_REDIS__HOST: "redis"
     build:
       context: .
-      dockerfile: server/services/task-runner/Dockerfile
+      dockerfile: server/services/task_runner/Dockerfile
+    links:
+      - redis
     depends_on: [redis]
     image: task_runner

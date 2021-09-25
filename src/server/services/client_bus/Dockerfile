@@ -17,13 +17,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY core core
 COPY server server
-COPY bin/client-bus bin/client-bus
+COPY server/.secrets.json server/.secrets.json
 
-RUN chmod +x bin/api
 RUN mkdir logs
 
 EXPOSE 8000
 
 ENV MP_ENVIRONMENT=environment:-development
 
-ENTRYPOINT ["python", "server/services/client_bus/websocket_server.py"]
+ENTRYPOINT python server/services/client_bus/websocket_server.py

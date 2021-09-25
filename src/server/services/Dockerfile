@@ -5,6 +5,7 @@ FROM python:3
 ARG environment
 
 RUN apt update
+RUN apt -y install redis
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -22,4 +23,6 @@ RUN mkdir logs
 
 ENV MP_ENVIRONMENT=environment:-development
 
-ENTRYPOINT python server/services/data_server/data_server.py
+RUN nohup redis-server &
+
+ENTRYPOINT python server/services/monolith.py

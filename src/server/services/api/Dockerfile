@@ -17,14 +17,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY core core
 COPY server server
-COPY bin/api bin/api
+COPY server/.secrets.json server/.secrets.json
 
-RUN chmod +x bin/api
 RUN mkdir logs
 
 EXPOSE 5000
 
 ENV MP_ENVIRONMENT=environment:-development
-ENV PYTHONPATH="${PYTHONPATH}:."
 
 ENTRYPOINT python server/services/api/api_server.py

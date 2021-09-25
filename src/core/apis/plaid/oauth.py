@@ -10,12 +10,12 @@ from core.repositories.plaid_repository import PlaidRepository, CreatePlaidItem,
 
 
 class OauthConfig:
-    def __init__(self, plaid_api_config, mysql_config):
+    def __init__(self, plaid_config, mysql_config):
         self.plaid_config = PlaidApiConfig()
-        self.plaid_config.env = plaid_api_config['env']
-        self.plaid_config.secret = plaid_api_config['secret']
-        self.plaid_config.client_id = plaid_api_config['client_id']
-        self.mysql_config = None
+        self.plaid_config.env = plaid_config['env']
+        self.plaid_config.secret = plaid_config['secret']
+        self.plaid_config.client_id = plaid_config['client_id']
+        self.mysql_config = mysql_config
 
 
 class Oauth:
