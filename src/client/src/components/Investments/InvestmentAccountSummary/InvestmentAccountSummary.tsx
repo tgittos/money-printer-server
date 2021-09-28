@@ -71,9 +71,10 @@ class InvestmentAccountSummary extends React.Component<IInvestmentAccountSummary
     }
 
     private get pieChartData(): IPieData[] {
+        console.log('holdings:', this.holdings);
         return this.holdings.map(holding => ({
             name: holding.securitySymbol ?? '???',
-            value: holding.quantity * holding.costBasis // this is not right - need to pull the most recent close and use that
+            value: holding.quantity * holding.latestPrice
         } as IPieData));
     }
 

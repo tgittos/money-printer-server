@@ -45,10 +45,11 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
             if (latestPriceResolver) {
                 latestPriceResolver(holding).then(this._handlePreviousPrice)
             } else {
-                // but if we don't, use the stock service to fetch the previous
-                // symbol price
-                this.stocks.previous(this.props.holding.securitySymbol)
-                    .then(this._handlePreviousPrice);
+                // no price resolver injected, just use the one on the holding
+                this.setState(prev => ({
+                    ...prev,
+                    loading: false
+                }))
             }
         } else {
             if (Env.DEBUG) {
@@ -114,7 +115,7 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
                     </span>
                     <span className={styles.HoldingListItemAt}>@</span>
                     <span className={styles.HoldingListItemDetailCost}>
-                        { this.formatLastPrice(this.state.latestPrice?.close) }
+                        { this.formatLastPrice(this.state.latestPrice?.close ?? this.props.holding.latestPrice) }
                     </span>
                 </p>
                 {

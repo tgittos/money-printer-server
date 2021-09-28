@@ -11,6 +11,8 @@ export interface IHolding {
     quantity: number;
     isoCurrencyCode: string;
     iso_currency_code?: string;
+    latestPrice: number;
+    latest_price?: number;
     timestamp: string | Date;
 }
 
@@ -21,6 +23,7 @@ class Holding {
     public costBasis: number;
     public quantity: number;
     public isoCurrencyCode: string;
+    public latestPrice: number;
     private _timestamp: string | Date;
 
     public get timestamp(): Date {
@@ -34,6 +37,7 @@ class Holding {
         this.costBasis = serverObj.cost_basis;
         this.quantity = serverObj.quantity;
         this.isoCurrencyCode = serverObj.iso_currency_code;
+        this.latestPrice = serverObj.latest_price;
         this._timestamp = serverObj.timestamp;
     }
 }

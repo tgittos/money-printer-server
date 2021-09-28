@@ -84,7 +84,7 @@ class HoldingRepository:
         if plaid_item is None:
             self.logger.error("cannot update investment transactions without a valid plaid_item_id")
             return
-        profile = get_profile_by_id(self, )
+        profile = get_profile_by_id(self, plaid_item.profile_id)
         accounts = get_accounts_by_plaid_item(self, plaid_item)
         if accounts is None or len(accounts) == 0:
             self.logger.error("received request to update investment transactions with no corresponding accounts: {0}"

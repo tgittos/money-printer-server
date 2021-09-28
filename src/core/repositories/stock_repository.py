@@ -54,7 +54,7 @@ class StockRepository:
         if data is not None and len(data) > 0:
             self.create_historical_daily_security_price(symbol, data)
         else:
-            self.logger.warning(" * upstream didn't return an error, but it did return an empty dataset, symbol: "
+            self.logger.warning("upstream didn't return an error, but it did return an empty dataset, symbol: "
                                 "{0}, start: {1}, end: {2}".format(symbol, start, end))
         return data
 

@@ -59,7 +59,8 @@ def get_historical_intraday_security_prices(cls, symbol: str, start: datetime = 
     """
     Searches the database for all per-minute intraday SecurityPrices for a given symbol on a given day
     """
-    cls.logger.debug("searching db intraday resolution symbol/s for {0} from {1} to now".format(symbol, start))
+    if hasattr(cls, 'logger'):
+        cls.logger.debug("searching db intraday resolution symbol/s for {0} from {1} to now".format(symbol, start))
     records = cls.db.with_session(lambda session: session.query(SecurityPrice)
                                   .filter(and_(
                                       SecurityPrice.symbol == symbol,
@@ -74,7 +75,8 @@ def get_historical_daily_security_prices(cls, symbol: str, start: datetime = Non
     """
     Searches the database for the daily close SecurityPrices for a given symbol in a given date range
     """
-    cls.logger.debug(" * searching db daily resolution symbol/s for {0} from {1} - {2}".format(symbol, start, end))
+    if hasattr(cls, 'logger'):
+        cls.logger.debug("searching db daily resolution symbol/s for {0} from {1} - {2}".format(symbol, start, end))
     records = cls.db.with_session(lambda session: session.query(SecurityPrice)
                                   .filter(and_(
                                       SecurityPrice.symbol == symbol,

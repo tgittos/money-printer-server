@@ -7,7 +7,7 @@ from core.models.security import Security
 from core.models.holding import Holding
 from core.models.holding_balance import HoldingBalance
 from core.models.investment_transaction import InvestmentTransaction
-from core.presentation.holding_presenters import HoldingWithSecurity, HoldingWithSecurityList
+from core.presentation.holding_presenters import HoldingWithSecurity, HoldingWithSecurityList, HoldingPresenter
 from core.lib.types import SecurityList
 from core.lib.utilities import sanitize_float
 
@@ -47,9 +47,13 @@ def get_holdings_by_profile_and_account(cls, profile: Profile, account: Account)
     security_ids = list([h.security_id for h in holdings])
     securities = cls.db.with_session(lambda session: session.query(Security).filter(Security.id.in_(security_ids)).all())
     presentations = []
+    presenter = HoldingPresenter(cls.db)
     for holding in holdings:
         security = list(filter(lambda s: s.id == holding.security_id, securities))[0]
-        presentations.append(HoldingWithSecurity(holding, security))
+        if security is None:
+            presentations.append(HoldingWithSecurity(holding=holding, ticker='', price=0))
+        else:
+            presentations += presenter.with_balances(security=security, holdings=[holding])
     return presentations
 
 

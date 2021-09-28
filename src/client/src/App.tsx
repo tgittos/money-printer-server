@@ -6,13 +6,13 @@ import AppStore, {getAccountsState, getAppState, getHoldingsState, getProfileSta
 import { IAppState } from "./slices/AppSlice";
 import I18nRepository from "./repositories/I18nRepository";
 import ProfileRepository from "./repositories/ProfileRepository";
-import Dashboard from "./components/Dashboard/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard.lazy";
 import BigLoader from "./components/shared/Loaders/BigLoader";
 import AccountRepository from "./repositories/AccountRepository";
 import Account, {IAccount} from "./models/Account";
 import {Route, BrowserRouter as Router, Switch} from "react-router-dom";
 import Header from "./components/Header/Header";
-import Investments from "./components/Investments/Investments";
+import Investments from "./components/Investments/Investments.lazy";
 import Forecasting from "./components/Forecasting/Forecasting";
 
 class App extends React.Component<{}, IAppState> {
@@ -98,7 +98,7 @@ class App extends React.Component<{}, IAppState> {
                 />
               </Route>
               <Route path="/investments">
-                <Investments accounts={this.filterInvestmentAccounts(accountState.accounts)}></Investments>
+                <Investments accounts={this.filterInvestmentAccounts(accountState.accounts)} />
               </Route>
               <Route path="/forecasting">
                 <Forecasting></Forecasting>
