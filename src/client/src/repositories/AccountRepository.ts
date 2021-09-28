@@ -45,7 +45,10 @@ class AccountRepository extends BaseRepository {
     }
 
     public async refreshAccounts(accountId: number): Promise<void> {
-        console.log('refreshing account', accountId)
+        const response = await this.authenticatedRequest({
+            url: this.endpoint + "/" + accountId + "/sync",
+            method: "POST"
+        });
     }
 
     public async getBalances(accountId: number, start: Date | null = null, end: Date | null = null): Promise<Balance[]> {

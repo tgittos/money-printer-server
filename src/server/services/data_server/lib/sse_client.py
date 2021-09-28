@@ -66,42 +66,47 @@ class SSEClient:
         self.start()
 
     def __handle_sse_control(self, data):
-        json_data = json.loads(data['data'])
-        command = json_data['command']
+        try:
+            json_data = json.loads(data['data'])
+            command = json_data['command']
 
-        if command == "start":
-            self.logger.debug("sse server received start command, requesting start of upstream")
-            self.start()
-            return
+            if command == "start":
+                self.logger.debug("sse server received start command, requesting start of upstream")
+                self.start()
+                return
 
-        if command == "stop":
-            self.logger.debug("sse server received stop command, requesting stop of upstream")
-            self.stop()
-            return
+            if command == "stop":
+                self.logger.debug("sse server received stop command, requesting stop of upstream")
+                self.stop()
+                return
 
-        if command == "list-symbols":
-            self.redis.publish('upstream-symbols', json.dumps({
-                'command': 'list-symbols',
-                'data': self.tracked_symbols
-            }))
+            if command == "list-symbols":
+                self.redis.publish('upstream-symbols', json.dumps({
+                    'command': 'list-symbols',
+                    'data': self.tracked_symbols
+                }))
 
-        if command == "add-symbol":
-            symbol = json_data['data']
-            if symbol not in self.tracked_symbols:
-                self.logger.debug("adding {0} to tracking list".format(symbol))
-                self.tracked_symbols.append(symbol)
+            if command == "add-symbol":
+                symbol = json_data['data']
+                if symbol not in self.tracked_symbols:
+                    self.logger.debug("adding {0} to tracking list".format(symbol))
+                    self.tracked_symbols.append(symbol)
 
-        elif command == "remove-symbol":
-            symbol = json_data['data']
-            if symbol in self.tracked_symbols:
-                self.logger.debug("removing {0} from tracking list".format(symbol))
-                self.tracked_symbols.remove(symbol)
+            elif command == "remove-symbol":
+                symbol = json_data['data']
+                if symbol in self.tracked_symbols:
+                    self.logger.debug("removing {0} from tracking list".format(symbol))
+                    self.tracked_symbols.remove(symbol)
 
-        if self.running:
-            self.stop()
+            if self.running:
+                self.stop()
 
-        if len(self.tracked_symbols) > 0:
-            self.start()
+            if len(self.tracked_symbols) > 0:
+                self.start()
+        except redis.exceptions.ConnectionError:
+            # redis backbone connection terminated, shut ourselves down
+            self.logger.exception("backbone redis connection dropped, shutting down")
+            self.running = False
 
     def __stream_data(self, event_data):
         self.redis.publish('upstream-symbols', json.dumps({

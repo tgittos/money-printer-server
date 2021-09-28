@@ -2,10 +2,11 @@ import styles from "./Accounts.module.scss";
 import React, {ChangeEvent} from "react";
 import Account from "../../models/Account";
 import AccountItem from "./AccountItem";
-import {Search} from "react-bootstrap-icons";
+import {ArrowRepeat, Search} from "react-bootstrap-icons";
 import PlaidRepository from "../../repositories/PlaidRepository";
 import OpenLink from "../Plaid/OpenLink";
 import Env from "../../env";
+import ProfileRepository from "../../repositories/ProfileRepository";
 
 export interface IAccountProps {
     accounts: Account[]
@@ -26,6 +27,7 @@ interface IFilterState {
 class Accounts extends React.Component<IAccountProps, IAccountState> {
 
     private plaidRepository: PlaidRepository;
+    private profileRepository: ProfileRepository;
 
     constructor(props: IAccountProps) {
         super(props);
@@ -43,8 +45,10 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         this._onRequestLinkAccount = this._onRequestLinkAccount.bind(this);
         this._onFiltersUpdated = this._onFiltersUpdated.bind(this);
         this._filterData = this._filterData.bind(this);
+        this._requestAccountSync = this._requestAccountSync.bind(this);
 
         this.plaidRepository = new PlaidRepository();
+        this.profileRepository = new ProfileRepository();
     }
 
     componentDidMount() {
@@ -110,6 +114,10 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         return filteredData;
     }
 
+    private async _requestAccountSync() {
+        await this.profileRepository.refreshAccounts();
+    }
+
     renderAccounts() {
         const accountList = this.props.accounts.length > 0
             ? <div>
@@ -148,6 +156,9 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
                     Show debts
                 </div>
                 <div className={styles.AccountsAddButtonContainer}>
+                    <button onClick={this._requestAccountSync}>
+                        <ArrowRepeat></ArrowRepeat>
+                    </button>
                     <button onClick={this._onRequestLinkAccount}>
                         Link account
                     </button>

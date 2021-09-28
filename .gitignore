@@ -8,3 +8,4 @@ alembic.ini
 .secrets.*
 .gitsecret/keys/random_seed
 *.rdb
+src/platform/ssh/mp-devops

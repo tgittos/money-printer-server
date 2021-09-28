@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from flask import Blueprint
 from flask import request
 
-from core.repositories.stock_repository import get_repository as get_stock_repository
+from core.repositories.stock_repository import StockRepository
 from .decorators import authed
 from config import mysql_config, iex_config
 
@@ -14,7 +14,7 @@ symbol_bp = Blueprint('symbols', __name__)
 @symbol_bp.route('/v1/api/symbols/<symbol>/previous', methods=['GET'])
 @authed
 def symbol_previous(symbol):
-    repo = get_stock_repository(iex_config=iex_config, mysql_config=mysql_config)
+    repo = StockRepository()
 
     # result is a data frame
     result = repo.previous(symbol)
@@ -35,8 +35,7 @@ def symbol_previous(symbol):
 @authed
 def symbol_intraday(symbol):
     start = request.args.get('start')
-    repo = get_stock_repository(iex_config=iex_config, mysql_config=mysql_config)
-
+    repo = StockRepository()
     # parse given start date
     start_date = datetime.fromtimestamp(float(start), tz=timezone.utc)
 
@@ -53,7 +52,7 @@ def symbol_intraday(symbol):
                 start_date,
                 "now"
             )
-        }
+        }, 404
 
     return {
         'success': True,
@@ -76,8 +75,7 @@ def symbol_eod(symbol):
     else:
         end = datetime.fromtimestamp(float(end), tz=timezone.utc)
 
-    repo = get_stock_repository(iex_config=iex_config, mysql_config=mysql_config)
-
+    repo = StockRepository()
     result = repo.historical_daily(symbol, start=start, end=end)
 
     if result is None:
@@ -88,7 +86,7 @@ def symbol_eod(symbol):
                 start,
                 end
             )
-        }
+        }, 404
 
     return {
         'success': True,

@@ -10,10 +10,11 @@
       "publishable": "pk_3394e9ba369a45d2b3efdd6c0bbb168f"
     },
     "plaid": {
-      "env": "sandbox",
+      "env": "development",
       "client_id": "610b0a72aed5de0015d334ed",
       "version": "2020-09-14",
-      "country_codes": "US"
+      "country_codes": "US",
+      "products": ["Link", "Investments"]
     },
     "db": {
       "host": "mp-db.cnl8otl80kk5.us-west-2.rds.amazonaws.com",

@@ -1,3 +1,6 @@
+from typing import List
+
+
 class HoldingWithSecurity:
     def __init__(self, holding, security):
         self.holding = holding
@@ -13,3 +16,6 @@ class HoldingWithSecurity:
             'iso_currency_code': self.holding.iso_currency_code,
             'timestamp': self.holding.timestamp.isoformat()
         }
+
+
+HoldingWithSecurityList = List[HoldingWithSecurity]

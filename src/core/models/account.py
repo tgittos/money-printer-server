@@ -27,3 +27,5 @@ class Account(Base):
             'subtype': self.subtype,
             'timestamp': self.timestamp.isoformat(),
         }
+
+

@@ -4,85 +4,28 @@ from core.apis.plaid.accounts import Accounts, AccountsConfig
 from core.stores.mysql import MySql
 from core.models.plaid_item import PlaidItem
 from core.lib.logger import get_logger
+from core.lib.types import AccountList
+from config import mysql_config, plaid_config
 
-
-def get_repository(sql_config, plaid_api_config):
-    repo = PlaidRepository(sql_config=sql_config, plaid_api_config=plaid_api_config)
-    return repo
-
-
-class CreatePlaidItem:
-    profile_id = None
-    item_id = None
-    access_token = None
-    request_id = None
-
-    def __init__(self, profile_id, item_id, access_token, request_id):
-        self.profile_id = profile_id
-        self.item_id = item_id
-        self.access_token = access_token
-        self.request_id = request_id
-
-
-class UpdatePlaidItem:
-    def __init__(self, id, status):
-        self.id = id
-        self.status = status
-
-
-class GetPlaidItem:
-    id = None
-
-    def __init__(self, id):
-        self.id = id
+from .facets.plaid.crud import get_plaid_item_by_id, get_plaid_items_by_profile, create_plaid_item, update_plaid_item,\
+    get_plaid_item_by_plaid_item_id
 
 
 class PlaidRepository:
 
-    def __init__(self, sql_config, plaid_api_config):
-        self.logger = get_logger(__name__)
-        self.plaid_api_config = plaid_api_config
-        db = MySql(sql_config)
+    logger = get_logger(__name__)
+
+    def __init__(self):
+        self.plaid_api_config = plaid_config
+        self.mysql_config = mysql_config
+        db = MySql(mysql_config)
         self.db = db.get_session()
 
-    def get_plaid_items_by_profile(self, profile_id):
-        records = self.db.query(PlaidItem).filter(PlaidItem.profile_id == profile_id).all()
-        return records
+        self._init_facets()
 
-    def create_plaid_item(self, params):
-        r = PlaidItem()
-        r.profile_id = params.profile_id
-        r.item_id = params.item_id
-        r.access_token = params.access_token
-        r.request_id = params.request_id
-        r.timestamp = datetime.utcnow()
-
-        self.db.add(r)
-        self.db.commit()
-
-        return r
-
-    def update_plaid_item(self, request):
-        plaid_item = self.get_plaid_item(GetPlaidItem(request.id))
-        if plaid_item is None:
-            self.logger.error("plaid item with given id not found: {0}".format(request.id))
-            return
-
-        plaid_item.status = request.status
-        plaid_item.timestamp = datetime.utcnow()
-
-        self.db.commit()
-
-        return plaid_item
-
-    def sync_accounts(self, plaid_item_id):
-        plaid_accounts_api = Accounts(AccountsConfig(
-            plaid_config=self.plaid_api_config
-        ))
-        plaid_link = self.get_plaid_item(GetPlaidItem(id=plaid_item_id))
-        plaid_accounts = plaid_accounts_api.get_accounts(plaid_link.access_token)
-        return plaid_accounts
-
-    def get_plaid_item(self, params):
-        r = self.db.query(PlaidItem).filter(PlaidItem.id==params.id).first()
-        return r
+    def _init_facets(self):
+        self.get_plaid_item_by_id = get_plaid_item_by_id
+        self.get_plaid_item_by_plaid_item_id = get_plaid_item_by_plaid_item_id
+        self.get_plaid_items_by_profile = get_plaid_items_by_profile
+        self.create_plaid_item = create_plaid_item
+        self.update_plaid_item = update_plaid_item

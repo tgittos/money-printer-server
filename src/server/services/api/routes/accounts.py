@@ -1,10 +1,12 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, abort
 from datetime import datetime
 
-from core.repositories.security_repository import get_repository as get_security_repository
-from core.repositories.account_repository import get_repository as get_account_repository, GetAccountBalanceRequest
+from core.repositories.profile_repository import ProfileRepository
+from core.repositories.account_repository import AccountRepository
+from core.repositories.balance_repository import BalanceRepository, GetAccountBalanceRequest
+from core.repositories.security_repository import SecurityRepository
+from config import env
 from .decorators import authed, get_identity
-from config import mysql_config, plaid_config, mailgun_config, iex_config
 
 
 # define the blueprint for plaid oauth
@@ -15,76 +17,69 @@ account_bp = Blueprint('account', __name__)
 @authed
 def list_accounts():
     user = get_identity()
-    repo = get_account_repository(mysql_config=mysql_config, plaid_config=plaid_config,
-                                  mailgun_config=mailgun_config, iex_config=iex_config)
-    if user is not None and user['id'] is not None:
-        accounts = repo.get_all_accounts_by_profile(user['id'])
-        if accounts is not None:
-            return {
-                'success': True,
-                'data': [a.to_dict() for a in accounts]
-            }
-    return {
-        'success': False
-    }
+    profile_repo = ProfileRepository()
+    profile = profile_repo.get_profile_by_id(user['id'])
+    account_repo = AccountRepository()
+    accounts = account_repo.get_accounts_by_profile_with_balances(profile=profile)
+    if accounts is not None:
+        return {
+            'success': True,
+            'data': [a.to_dict() for a in accounts]
+        }
+    else:
+        abort(404)
 
 
-@account_bp.route('/v1/api/accounts/<account_id>/sync', methods=['GET'])
+@account_bp.route('/v1/api/accounts/<account_id>/sync', methods=['POST'])
 @authed
-def request_account_sync(account_id):
+def request_account_sync(account_id: int):
     user = get_identity()
-    repo = get_account_repository(mysql_config=mysql_config, plaid_config=plaid_config,
-                                  mailgun_config=mailgun_config, iex_config=iex_config)
-    if user is not None and user['id'] is not None:
-        account = repo.get_account_by_account_id(int(account_id))
-        repo.schedule_account_sync(account.profile_id, account.plaid_item_id)
+    profile_repo = ProfileRepository()
+    profile = profile_repo.get_profile_by_id(user['id'])
+    if profile is not None:
+        account_repo = AccountRepository()
+        account = account_repo.get_account_by_id(profile_id=user['id'], account_id=account_id)
+        if account is None:
+            abort(404)
+        account_repo.schedule_account_sync(account)
         return {
             'success': True
         }
-    return {
-        'success': False
-    }
+    else:
+        abort(404)
 
 
 @account_bp.route('/v1/api/accounts/<account_id>/balances', methods=['GET'])
 @authed
 def request_account_balances(account_id):
     user = get_identity()
-    repo = get_account_repository(mysql_config=mysql_config, plaid_config=plaid_config,
-                                  mailgun_config=mailgun_config, iex_config=iex_config)
-    start_qs = request.args.get('start')
-    start = None
-    end_qs = request.args.get('end')
-    end = None
-    if start_qs is not None:
-        start = datetime.fromtimestamp(start_qs)
-    if end_qs is not None:
-        end = datetime.fromtimestamp(end_qs)
-    if user is not None and user['id'] is not None:
-        balances = repo.get_account_balances(GetAccountBalanceRequest(
-            profile_id=user['id'],
-            account_id=account_id,
-            start=start,
-            end=end
-        ))
-        if balances is not None:
-            return {
-                'success': True,
-                'data': [b.to_dict() for b in balances]
-            }
+    profile_repo = ProfileRepository()
+    profile = profile_repo.get_profile_by_id(user['id'])
+    account_repo = AccountRepository()
+    accounts = account_repo.get_account_by_profile_with_balance(profile, account_id)
+    if accounts is None:
+        abort(404)
+    return {
+        'success': True,
+        'data': [a.to_dict() for a in accounts]
+    }
 
 
 @account_bp.route('/v1/api/accounts/<account_id>/holdings', methods=['GET'])
 @authed
 def list_holdings(account_id):
-    profile = get_identity()
-    repository = get_security_repository(mysql_config=mysql_config, plaid_config=plaid_config)
-    holdings = repository.get_holdings_by_profile_and_account(profile_id=profile['id'], account_id=account_id)
-    if holdings is not None:
-        return {
-            'success': True,
-            'data': [h.to_dict() for h in holdings]
-        }
+    user = get_identity()
+    profile_repo = ProfileRepository()
+    account_repo = AccountRepository()
+    profile = profile_repo.get_profile_by_id(user['id'])
+    account = account_repo.get_account_by_id(account_id)
+    if account is None:
+        abort(404)
+    security_repo = SecurityRepository()
+    holdings = security_repo.get_holdings_by_profile_and_account(profile=profile, account=account)
+    if holdings is None:
+        abort(404)
     return {
-        'success': False
+        'success': True,
+        'data': [h.to_dict() for h in holdings]
     }
