@@ -1,252 +1,111 @@
-import secrets
-import string
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-import jwt
-import bcrypt
-
+from core.models.plaid_item import PlaidItem
+from core.repositories.balance_repository import BalanceRepository
+from core.repositories.holding_repository import HoldingRepository
+from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateInstantJobRequest
 from core.stores.mysql import MySql
-from core.models.profile import Profile
-from core.models.reset_token import ResetToken
-from core.lib.notifications import notify_profile_created, ProfileCreatedNotification, MailGunConfig,\
-    PasswordResetNotification, notify_password_reset
-from config import config
+from core.apis.plaid.accounts import Accounts, AccountsConfig
+from core.lib.utilities import wrap
+from core.lib.logger import get_logger
+from config import mysql_config, plaid_config
 
+from core.lib.actions.account.crud import create_or_update_account
+from core.lib.actions.plaid.crud import get_plaid_items_by_profile
 
-def get_repository(mysql_config, mailgun_config):
-    repo = ProfileRepository(ProfileRepositoryConfig(
-        mailgun_config=mailgun_config,
-        mysql_config=mysql_config
-    ))
-    return repo
-
-
-class ProfileExistsException(Exception):
-    email = None
-
-    def __init__(self, _email):
-        self.__init__()
-        email = _email
-
-
-class RegisterProfileRequest(object):
-    email = None
-    first_name = None
-    last_name = None
-
-    def __init__(self, email, first_name, last_name):
-        self.email = email
-        self.first_name = first_name
-        self.last_name = last_name
-
-
-class RegisterProfileResponse(object):
-    success = False
-    message = None
-    data = None
-
-    def __init__(self, success, message=None, data=None):
-        self.success = success
-        self.message = message
-        self.data = data
-
-
-class ResetProfilePasswordRequest(object):
-    profile = None
-    token = None
-    password = None
-
-    def __init__(self, profile, token, password):
-        self.profile = profile
-        self.token = token
-        self.password = password
-
-
-class ResetProfilePasswordResponse(object):
-    success = False
-    message = None
-    data = None
-
-    def __init__(self, success, message=None, data=None):
-        self.success = success
-        self.message = message
-        self.data = data
-
-
-class LoginRequest(object):
-    email = None
-    password = None
-
-    def __init__(self, email, password):
-        self.email = email
-        self.password = password
-
-
-class ProfileRepositoryConfig(object):
-    mailgun_config = MailGunConfig()
-    mysql_config = None
-
-    def __init__(self, mailgun_config, mysql_config):
-        self.mailgun_config = mailgun_config
-        self.mysql_config = mysql_config
+# import all the actions so that consumers of the repo can access everything
+from core.lib.actions.profile.crud import *
+from core.lib.actions.profile.auth import *
+from core.lib.actions.profile.requests import *
+from core.lib.actions.profile.responses import *
 
 
 class ProfileRepository:
 
-    def __init__(self, profile_config):
-        self.config = profile_config
-        db = MySql(self.config.mysql_config)
-        self.db = db.get_session()
+    logger = get_logger(__name__)
+    db = MySql(mysql_config)
 
-    def get_unauthenticated_user(self):
-        demo_profile = self.db.query(Profile).where(Profile.is_demo_profile).first()
-        # TODO - maybe delete this
-        if demo_profile is None:
-            demo_profile = Profile()
-            demo_profile.timestamp = datetime.utcnow()
-            demo_profile.first_name = "Anonymous"
-            demo_profile.last_name = "Money-Printer"
-        jwt_token = self.__encode_jwt(demo_profile)
-        return {
-            "profile": demo_profile.to_dict(),
-            "token": jwt_token
-        }
+    def __init__(self):
+        self._init_facets()
 
-    def register(self, request):
-        # first, check if the request email is already taken
-        existing_profile = self.get_by_email(request.email)
-        if existing_profile is not None:
-            return RegisterProfileResponse(
-                success=False,
-                message="That email is not available"
-            )
-        new_user = self.__create_profile(request)
-        return RegisterProfileResponse(
-            success=new_user is not None,
-            data=new_user
-        )
+    def _init_facets(self):
+        self.get_profile_by_id = wrap(get_profile_by_id, self)
+        self.get_profile_by_email = wrap(get_profile_by_email, self)
+        self.get_all_profiles = wrap(get_all_profiles, self)
+        self.get_unauthenticated_user = wrap(get_unauthenticated_user, self)
+        self.create_profile = wrap(create_profile, self)
+        self.register = wrap(register, self)
+        self.login = wrap(login, self)
+        self.reset_password = wrap(reset_password, self)
+        self.continue_reset_password = wrap(continue_reset_password, self)
+        self.logout = wrap(logout, self)
 
-    def login(self, request):
-        profile = self.get_by_email(request.email)
-        if profile is not None:
-            if self.__check_password(profile.password, request.password):
-                jwt_token = self.__encode_jwt(profile)
-                return {
-                    "profile": profile.to_dict(),
-                    "token": jwt_token
+    def schedule_profile_sync(self, profile: Profile):
+        """
+        Schedules an InstantJob to perform a full sync for a given account
+        """
+        if profile is None:
+            self.logger.error("cannot schedule profile sync without Profile")
+            return
+        plaid_items = get_plaid_items_by_profile(self, profile)
+        if plaid_items is None:
+            self.logger.error("scheduled account sync for Profile, but no PlaidItems found")
+            return
+
+        for plaid_item in plaid_items:
+            scheduled_job_repo = ScheduledJobRepository()
+            scheduled_job_repo.create_instant_job(CreateInstantJobRequest(
+                job_name='sync_accounts',
+                args={
+                    'plaid_item_id': plaid_item.id
                 }
-        return None
+            ))
 
-    def reset_password(self, email):
-        profile = self.get_by_email(email)
-        if profile is not None:
-            self.__create_reset_token(profile)
-            return True
-        return False
+    def sync_all_accounts(self, plaid_item: PlaidItem):
+        """
+        Syncs the account state from Plaid for all accounts attached to the given Plaid Item
+        This will pull:
+          - account details
+          - account balances
+          - investment holdings
+        """
+        if plaid_item is None:
+            self.logger.warning("Sync all accounts requested without PlaidItem")
+            return
 
-    def continue_reset_password(self, request):
-        profile = request.profile
-        token = request.token
-        token_entry = self.__get_reset_token(token)
-        if token_entry is not None and token_entry.expiry > datetime.utcnow():
-            profile.password = self.__hash_password(request.password)
-            self.db.add(token_entry)
-            self.db.commit()
-            return ResetProfilePasswordResponse(
-                success=True
-            )
-        if token_entry is not None and token_entry.expiry < datetime.utcnow():
-            return ResetProfilePasswordResponse(
-                success=False,
-                message="Password reset token has expired"
-            )
-        return ResetProfilePasswordResponse(
-            success=False
-        )
+        self.logger.info("updating account state for PlaidItem {0}".format(plaid_item.id))
 
-    def logout(self, email):
-        raise Exception("not implemented")
+        balance_repo = BalanceRepository()
+        holdings_repo = HoldingRepository()
 
-    def get_by_email(self, email):
-        record = self.db.query(Profile).filter(Profile.email==email).first()
-        return record
-
-    def get_by_id(self, id):
-        record = self.db.query(Profile).filter(Profile.id==id).first()
-        return record
-
-    def is_token_valid(self, token):
-        decoded = self.decode_jwt(token)
-        return datetime.fromtimestamp(decoded['exp']) > datetime.utcnow()
-
-    def get_all_profiles(self):
-        records = self.db.query(Profile).all()
-        return records
-
-    def __create_profile(self, request):
-        new_pw = self.__generate_temp_password()
-        new_profile = Profile()
-        new_profile.email = request.email
-        new_profile.password = self.__hash_password(new_pw)
-        new_profile.first_name = request.first_name
-        new_profile.last_name = request.last_name
-        new_profile.timestamp = datetime.utcnow()
-
-        self.db.add(new_profile)
-        self.db.commit()
-
-        notify_profile_created(self.config.mailgun_config, ProfileCreatedNotification(
-            profile=new_profile,
-            password=new_pw
+        plaid_accounts_api = Accounts(AccountsConfig(
+            plaid_config=plaid_config
         ))
 
-        return new_profile
+        profile = self.get_profile_by_id(plaid_item.profile_id)
 
-    def __create_reset_token(self, profile):
-        temp_pw = self.__generate_temp_password()
-        reset_token = ResetToken()
-        reset_token.profile_id = profile.id
-        reset_token.token = temp_pw
-        reset_token.timestamp = datetime.utcnow()
-        reset_token.expiry = datetime.utcnow() + relativedelta(days=1)
+        if profile is None:
+            self.logger.warning("couldn't find Profile attached to fetched PlaidItem: {0}".format(plaid_item.id))
+            return
 
-        self.db.add(reset_token)
-        self.db.commit()
+        plaid_accounts_dict = plaid_accounts_api.get_accounts(plaid_item.access_token)
 
-        notify_password_reset(self.config.mailgun_config, PasswordResetNotification(
-            profile=profile,
-            token=reset_token
-        ))
+        self.logger.info("updating {0} accounts".format(len(plaid_accounts_dict['accounts'])))
 
-    def __get_reset_token(self, token_string):
-        record = self.db.query(ResetToken).filter(ResetToken.token==token_string).first()
-        return record
+        accounts = []
+        for account_dict in plaid_accounts_dict['accounts']:
+            if 'account_id' in account_dict:
+                self.logger.info("updating account details for profile {0}, account {1}"
+                                 .format(profile.id, account_dict['account_id']))
+                account = create_or_update_account(self,
+                                                   profile=profile,
+                                                   plaid_link=plaid_item,
+                                                   account_dict=account_dict)
+                accounts.append(account)
+                self.logger.info("updating account balance for account {0}".format(account.id))
+                balance_repo.sync_account_balance(account)
+            else:
+                self.logger.warning("upstream returned account response missing an id: {0}".format(account_dict))
 
-    def __hash_password(self, pt_password):
-        return bcrypt.hashpw(pt_password.encode('utf8'), bcrypt.gensalt())
+        self.logger.info("fetching investment holdings for PlaidItem {0}".format(plaid_item.id))
+        holdings_repo.update_holdings(plaid_item)
 
-    def __check_password(self, pw_hash, candidate):
-        return bcrypt.checkpw(candidate.encode('utf8'), pw_hash.encode('utf8'))
-
-    def __generate_temp_password(self, len=16):
-        alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_+=-'
-        while True:
-            password = ''.join(secrets.choice(alphabet) for i in range(len))
-            if (sum(c.islower() for c in password) >= 1
-                    and sum(c.isupper() for c in password) >= 1
-                    and sum(c.isdigit() for c in password) >= 1):
-                break
-        return password
-
-    def __encode_jwt(self, profile):
-        token = jwt.encode({
-            "profile": profile.to_dict(),
-            "authenticated": True,
-            "exp": (datetime.utcnow() + relativedelta(months=1)).timestamp(),
-            "algorithm": "HS256"
-        }, config.secret)
-        return token
-
-    def decode_jwt(self, token):
-        raw = jwt.decode(token, config.secret, algorithms=["HS256"])
-        return raw
+        self.logger.info("done updating accounts for profile {0}".format(profile.id))

@@ -1,20 +1,6 @@
-from datetime import datetime, timedelta
-
-from core.repositories.stock_repository import get_repository as get_stock_repository
-from core.repositories.security_repository import get_repository as get_security_repository
-from core.apis.plaid.common import PlaidApiConfig
+from core.repositories.stock_repository import StockRepository
+from core.repositories.security_repository import SecurityRepository
 from core.lib.logger import get_logger
-
-from server.services.api import load_config
-app_config = load_config()
-
-sql_config = app_config['db']
-iex_config = app_config['iexcloud']
-
-plaid_config = PlaidApiConfig()
-plaid_config.env = app_config['plaid']['env']
-plaid_config.client_id = app_config['plaid']['client_id']
-plaid_config.secret = app_config['plaid']['secret']
 
 
 class SyncSecurities:
@@ -25,8 +11,8 @@ class SyncSecurities:
         self.logger = get_logger(__name__)
         if redis_message is not None and 'symbol' in redis_message['args']:
             self.symbol = redis_message['args']['symbol']
-        self.stock_repo = get_stock_repository(iex_config=iex_config, mysql_config=sql_config)
-        self.security_repo = get_security_repository(mysql_config=sql_config, plaid_config=plaid_config)
+        self.stock_repo = StockRepository()
+        self.security_repo = SecurityRepository()
 
     def run(self):
         if self.symbol is not None:

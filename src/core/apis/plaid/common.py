@@ -4,8 +4,8 @@ from plaid.api import plaid_api
 from plaid.model.country_code import CountryCode
 from plaid.model.products import Products
 
-
-PLAID_PRODUCTS_STRINGS = ["assets", "transactions"]
+# TODO - make this configurable via the config.json
+PLAID_PRODUCTS_STRINGS = ["investments", "transactions"]
 PLAID_DEFAULT_COUNTRY_CODES = ["US"]
 PLAID_DEFAULT_LANGUAGE = "en"
 PLAID_PRODUCTS = list(map(lambda x: Products(x), PLAID_PRODUCTS_STRINGS))

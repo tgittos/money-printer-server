@@ -1,10 +1,8 @@
 #syntax=docker/dockerfile:1
 
-FROM python:3
+FROM tgittos/money-printer:latest
 
 ARG environment
-
-RUN apt update
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1

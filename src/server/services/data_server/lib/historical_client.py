@@ -1,9 +1,9 @@
 import redis
 import json
 
-from core.repositories.stock_repository import get_repository as get_stock_repository
+from core.repositories.stock_repository import StockRepository
 from core.lib.logger import get_logger
-from config import mysql_config, iex_config, redis_config
+from config import redis_config
 
 
 class HistoricalClient:
@@ -15,7 +15,7 @@ class HistoricalClient:
         self.logger = get_logger(__name__)
         self.r = redis.Redis(host=redis_config.host, port=redis_config.port, db=0)
         self.p = self.r.pubsub()
-        self.repository = get_stock_repository(iex_config=iex_config, mysql_config=mysql_config)
+        self.repository = StockRepository()
 
     def start(self):
         self.running = True
@@ -43,27 +43,32 @@ class HistoricalClient:
         return json.dumps(data)
 
     def __handle_message(self, data):
-        json_data = json.loads(data['data'])
+        try:
+            json_data = json.loads(data['data'])
 
-        symbol = json_data['symbol']
-        type = json_data['type']
-        start = json_data['start']
-        end = json_data['end']
+            symbol = json_data['symbol']
+            type = json_data['type']
+            start = json_data['start']
+            end = json_data['end']
 
-        if type == 'daily':
-            data = self.get_historical_daily(symbol, start, end)
+            if type == 'daily':
+                data = self.get_historical_daily(symbol, start, end)
 
-        if type == 'intraday':
-            data = self.get_historical_intraday(symbol, start)
+            if type == 'intraday':
+                data = self.get_historical_intraday(symbol, start)
 
-        if data is not None:
-            self.__dispatch({
-                'symbol': symbol,
-                'type': type,
-                'start': start,
-                'end': end,
-                'data': json.dumps(data)
-            })
+            if data is not None:
+                self.__dispatch({
+                    'symbol': symbol,
+                    'type': type,
+                    'start': start,
+                    'end': end,
+                    'data': json.dumps(data)
+                })
+        except redis.exceptions.ConnectionError:
+            # redis backbone connection terminated, shut ourselves down
+            self.logger.exception("backbone redis connection dropped, shutting down")
+            self.running = False
 
     def __dispatch(self, dict_message):
         if self.r is not None:

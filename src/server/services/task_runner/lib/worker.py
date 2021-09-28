@@ -42,6 +42,10 @@ class Worker(Thread):
                     self.__fetch_jobs(message)
                     message = self.pub_sub.get_message()
                 time.sleep(1)
+            except redis.exceptions.ConnectionError:
+                # redis backbone connection terminated, shut ourselves down
+                self.logger.exception("backbone redis connection dropped, shutting down")
+                self.running = False
             except Exception as ex:
                 if self.on_error is not None:
                     self.on_error(ex)

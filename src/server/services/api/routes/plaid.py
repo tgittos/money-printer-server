@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import request
 
 from core.apis.plaid.oauth import Oauth, OauthConfig
-from core.repositories.account_repository import get_repository as get_account_repository
+from core.repositories.account_repository import AccountRepository
 from .decorators import authed, get_identity
 from config import mysql_config, plaid_config, mailgun_config, iex_config
 
@@ -25,6 +25,7 @@ def info():
         'data': result_json
     }
 
+
 @oauth_bp.route('/v1/api/plaid/create_link_token', methods=['POST'])
 @authed
 def create_link_token():
@@ -39,6 +40,7 @@ def create_link_token():
         'data': result_json
     }
 
+
 @oauth_bp.route('/v1/api/plaid/set_access_token', methods=['POST'])
 @authed
 def get_access_token():
@@ -46,9 +48,8 @@ def get_access_token():
     public_token = request.json['public_token']
     client = Oauth(oauth_config)
     plaid_item = client.get_access_token(profile['id'], public_token)
-    account_repo = get_account_repository(mysql_config=app_config['db'], plaid_config=plaid_config,
-                                          mailgun_config=mailgun_config, iex_config=iex_config)
-    account_repo.schedule_account_sync(plaid_item_id=plaid_item.id)
+    account_repo = AccountRepository()
+    account_repo.schedule_account_sync(plaid_item=plaid_item)
     return {
         'success': plaid_item is not None,
         'message': 'Fetching accounts'

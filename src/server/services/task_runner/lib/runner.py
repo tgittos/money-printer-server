@@ -4,9 +4,9 @@ from datetime import datetime, timedelta, timezone
 import time
 from threading import Thread
 
-from core.repositories.scheduled_job_repository import get_repository as get_job_repository
+from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.lib.logger import get_logger
-from config import redis_config, mysql_config, mailgun_config
+from config import redis_config
 
 WORKER_QUEUE = "mp:worker"
 
@@ -22,7 +22,7 @@ class Runner(Thread):
         super(Runner, self).__init__()
         self.logger = get_logger(__name__)
         self.redis = redis.Redis(host=redis_config.host, port=redis_config.port, db=0)
-        self.job_repo = get_job_repository(mysql_config=mysql_config, mailgun_config=mailgun_config)
+        self.job_repo = ScheduledJobRepository()
         self.jobs = self.job_repo.get_scheduled_jobs()
         self.logger.info("found {0} scheduled jobs".format(len(self.jobs)))
 

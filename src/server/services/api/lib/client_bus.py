@@ -66,9 +66,14 @@ class ClientBus:
             }))
 
     def __proxy(self, message):
-        data_message = message['data'].decode('utf-8')
-        # self.logger.debug("emitting event to upstream {0}".format(json_message))
-        self.socketio.emit('live_quotes', data_message)
+        try:
+            data_message = message['data'].decode('utf-8')
+            # self.logger.debug("emitting event to upstream {0}".format(json_message))
+            self.socketio.emit('live_quotes', data_message)
+        except redis.exceptions.ConnectionError:
+            # redis backbone connection terminated, shut ourselves down
+            self.logger.exception("backbone redis connection dropped, shutting down")
+            self.running = False
 
     def __augment_app(self):
         self.socketio.on_event('connect', self.connect)

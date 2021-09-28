@@ -72,3 +72,17 @@ the following format: TODO
 - initialize the DB by running `alembic update head`
 - run `bin/money-printer` to run the app as a monolith, or run each individual service in its own terminal window/
 sub-process for microservices mode
+
+## Deploying
+
+Money Printer uses AWS ElasticBeanstalk to deploy itself into the development environment.
+The Money Printer application is set up as a Docker application, with a custom base docker image.
+
+If you add additional `pip` dependencies, depending on how long they take to install, you may need to move them into
+the `platform/Dockerfile` and rebuild, tag and deploy a new base Money Printer docker image.
+
+Otherwise, you can functionally ignore the `platform/Dockerfile` unless you're doing work on the application infrastructure.
+
+### Deploy Command
+
+`eb deploy` - this will deploy the environment into development

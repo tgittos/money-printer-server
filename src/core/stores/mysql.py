@@ -13,17 +13,24 @@ class MySqlConfig:
 
 
 class MySql:
-    
-    def __init__(self, config):
-        conn_str = "mysql://{0}:{1}@{2}:{3}/{4}".format(
-            config.username,
-            config.password,
-            config.host,
-            config.port,
-            config.schema
-        )
-        self.engine = create_engine(conn_str, echo=config.debug)
-        self.session = sessionmaker(bind=self.engine)
 
-    def get_session(self):
-        return self.session()
+    engine = None
+    sessionmaker = None
+
+    def __init__(self, config):
+        if not MySql.engine or not MySql.sessionmaker:
+            conn_str = "mysql://{0}:{1}@{2}:{3}/{4}".format(
+                config.username,
+                config.password,
+                config.host,
+                config.port,
+                config.schema
+            )
+            MySql.engine = create_engine(conn_str, echo=config.debug)
+            MySql.sessionmaker = sessionmaker(bind=MySql.engine)
+
+    def with_session(self, expr):
+        session = MySql.sessionmaker()
+        res = expr(session)
+        session.close()
+        return res

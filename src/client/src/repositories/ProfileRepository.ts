@@ -117,8 +117,16 @@ class ProfileRepository extends BaseRepository {
     this.getUnauthenticatedProfile();
   }
 
-  public reset_password(email: string) {
+  public resetPassword(email: string) {
     throw new Error("not implemented");
+  }
+
+  public async refreshAccounts(): Promise<void> {
+    const request = await this.authenticatedRequest({
+      // TODO: this is gross
+      url: this.http.baseApiEndpoint + "/profile/sync",
+      method: "POST"
+    });
   }
 }
 

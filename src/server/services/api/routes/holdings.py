@@ -8,15 +8,11 @@ holdings_bp = Blueprint('holding', __name__)
 @holdings_bp.route('/v1/api/holding/<holding_id>/performance', methods=['GET'])
 @authed
 def holding_performance():
-    return {
-        'success': False
-    }
+    return {}, 404
 
 
 @holdings_bp.route('/v1/api/holding/<holding_id>/forecast', methods=['GET'])
 @authed
 def holding_forecast():
-    return {
-        'success': False
-    }
+    return {}, 404
 
