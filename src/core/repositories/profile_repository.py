@@ -4,40 +4,39 @@ from core.repositories.holding_repository import HoldingRepository
 from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateInstantJobRequest
 from core.stores.mysql import MySql
 from core.apis.plaid.accounts import Accounts, AccountsConfig
+from core.lib.utilities import wrap
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 
-from .facets.account.crud import create_or_update_account
-from .facets.plaid.crud import get_plaid_items_by_profile
+from core.lib.actions.account.crud import create_or_update_account
+from core.lib.actions.plaid.crud import get_plaid_items_by_profile
 
-# import all the facets so that consumers of the repo can access everything
-from .facets.profile.crud import *
-from .facets.profile.auth import *
-from .facets.profile.requests import *
-from .facets.profile.responses import *
+# import all the actions so that consumers of the repo can access everything
+from core.lib.actions.profile.crud import *
+from core.lib.actions.profile.auth import *
+from core.lib.actions.profile.requests import *
+from core.lib.actions.profile.responses import *
 
 
 class ProfileRepository:
 
     logger = get_logger(__name__)
+    db = MySql(mysql_config)
 
     def __init__(self):
-        db = MySql(mysql_config)
-        self.db = db.get_session()
-
         self._init_facets()
 
     def _init_facets(self):
-        self.get_profile_by_id = get_profile_by_id
-        self.get_profile_by_email = get_profile_by_email
-        self.get_all_profiles = get_all_profiles
-        self.get_unauthenticated_user = get_unauthenticated_user
-        self.create_profile = create_profile
-        self.register = register
-        self.login = login
-        self.reset_password = reset_password
-        self.continue_reset_password = continue_reset_password
-        self.logout = logout
+        self.get_profile_by_id = wrap(get_profile_by_id, self)
+        self.get_profile_by_email = wrap(get_profile_by_email, self)
+        self.get_all_profiles = wrap(get_all_profiles, self)
+        self.get_unauthenticated_user = wrap(get_unauthenticated_user, self)
+        self.create_profile = wrap(create_profile, self)
+        self.register = wrap(register, self)
+        self.login = wrap(login, self)
+        self.reset_password = wrap(reset_password, self)
+        self.continue_reset_password = wrap(continue_reset_password, self)
+        self.logout = wrap(logout, self)
 
     def schedule_profile_sync(self, profile: Profile):
         """
@@ -94,8 +93,12 @@ class ProfileRepository:
         accounts = []
         for account_dict in plaid_accounts_dict['accounts']:
             if 'account_id' in account_dict:
-                self.logger.info("updating account details for account {0}".format(account_dict['account_id']))
-                account = create_or_update_account(self, profile, plaid_item, account_dict)
+                self.logger.info("updating account details for profile {0}, account {1}"
+                                 .format(profile.id, account_dict['account_id']))
+                account = create_or_update_account(self,
+                                                   profile=profile,
+                                                   plaid_link=plaid_item,
+                                                   account_dict=account_dict)
                 accounts.append(account)
                 self.logger.info("updating account balance for account {0}".format(account.id))
                 balance_repo.sync_account_balance(account)
@@ -103,6 +106,6 @@ class ProfileRepository:
                 self.logger.warning("upstream returned account response missing an id: {0}".format(account_dict))
 
         self.logger.info("fetching investment holdings for PlaidItem {0}".format(plaid_item.id))
-        holdings_repo.update_holdings(plaid_item.access_token)
+        holdings_repo.update_holdings(plaid_item)
 
         self.logger.info("done updating accounts for profile {0}".format(profile.id))

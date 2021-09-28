@@ -6,7 +6,7 @@
       "domain": "mg.moneyprintergobrr.io"
     },
     "iex": {
-      "env": "sandbox",
+      "env": "development",
       "publishable": "pk_3394e9ba369a45d2b3efdd6c0bbb168f"
     },
     "plaid": {

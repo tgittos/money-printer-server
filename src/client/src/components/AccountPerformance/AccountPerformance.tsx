@@ -49,7 +49,7 @@ class AccountPerformance extends React.Component<IAccountPerformanceProps, IAcco
                 data
             } as IMultiLineChartDataEntry;
         });
-        return chartData;
+        return chartData || [];
     }
 
     render() {

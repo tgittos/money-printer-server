@@ -10,17 +10,15 @@ from core.lib.types import ScheduledJobList
 from core.lib.constants import WORKER_QUEUE
 from config import redis_config, mailgun_config, mysql_config
 
-# import all the facets so that consumers of the repo can access everything
-from .facets.scheduled_job.requests import *
+# import all the actions so that consumers of the repo can access everything
+from core.lib.actions.scheduled_job.requests import *
 
 
 class ScheduledJobRepository:
 
-    def __init__(self):
-        self.mailgun_client = MailGun(mailgun_config)
-        db = MySql(mysql_config)
-        self.db = db.get_session()
-        self.redis = redis.Redis(host=redis_config['host'], port=redis_config['port'], db=0)
+    db = MySql(mysql_config)
+    redis = redis.Redis(host=redis_config['host'], port=redis_config['port'], db=0)
+    mailgun_client = MailGun(mailgun_config)
 
     def create_instant_job(self, request: CreateInstantJobRequest):
         """
@@ -43,8 +41,11 @@ class ScheduledJobRepository:
         job.last_run = None
         job.timestamp = datetime.utcnow()
 
-        self.db.add(job)
-        self.db.commit()
+        def save_job(session):
+            session.add(job)
+            session.commit()
+
+        self.db.with_session(save_job)
 
         return job
 
@@ -52,7 +53,7 @@ class ScheduledJobRepository:
         """
         Gets all ScheduledJobs
         """
-        r = self.db.query(ScheduledJob).all()
+        r = self.db.with_session(lambda session: session.query(ScheduledJob).all())
         return r
 
     def update_last_run(self, job: ScheduledJob) -> ScheduledJob:
@@ -62,7 +63,10 @@ class ScheduledJobRepository:
         job.last_run = datetime.utcnow()
         job.timestamp = datetime.utcnow()
 
-        self.db.add(job)
-        self.db.commit()
+        def save_job(session):
+            session.add(job)
+            session.commit()
+
+        self.db.with_session(save_job)
 
         return job

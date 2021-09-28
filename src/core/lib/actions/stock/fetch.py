@@ -10,7 +10,6 @@ from core.lib.utilities import get_last_bus_day, is_bus_day
 from .crud import add_to_iex_blacklist
 
 
-@classmethod
 def fetch_historical_daily(cls, symbol: str, start: datetime = None, end: datetime = None, close_only: bool = False)\
         -> DataFrame:
     """
@@ -38,7 +37,6 @@ def fetch_historical_daily(cls, symbol: str, start: datetime = None, end: dateti
                               .format(symbol, traceback.format_exc()))
 
 
-@classmethod
 def fetch_historical_intraday(cls, symbol: str, start: datetime = None) -> DataFrame:
     """
     Gets the per-minute historical intraday prices for the given day for the given symbol

@@ -9,7 +9,6 @@ from core.models.profile import Profile
 from config import config
 
 
-@staticmethod
 def is_token_valid(token):
     decoded = decode_jwt(token)
     """
@@ -19,7 +18,6 @@ def is_token_valid(token):
     return datetime.fromtimestamp(decoded['exp']) > datetime.utcnow()
 
 
-@staticmethod
 def hash_password(pt_password: str) -> bytes:
     """
     One-way hash a password using Bcrypt
@@ -27,7 +25,6 @@ def hash_password(pt_password: str) -> bytes:
     return bcrypt.hashpw(pt_password.encode('utf8'), bcrypt.gensalt())
 
 
-@staticmethod
 def check_password(pw_hash: str, candidate: str) -> bool:
     """
     Validate a supplied plain-text against an encrypted password
@@ -35,7 +32,6 @@ def check_password(pw_hash: str, candidate: str) -> bool:
     return bcrypt.checkpw(candidate.encode('utf8'), pw_hash.encode('utf8'))
 
 
-@staticmethod
 def generate_temp_password(l: int = 16) -> str:
     """
     Generate a strong temporary password of a given length
@@ -51,7 +47,6 @@ def generate_temp_password(l: int = 16) -> str:
     return password
 
 
-@staticmethod
 def encode_jwt(profile: Profile) -> str:
     """
     Encodes a Profile into a valid and secure JWT token
@@ -65,7 +60,6 @@ def encode_jwt(profile: Profile) -> str:
     return token
 
 
-@staticmethod
 def decode_jwt(token: str) -> dict:
     """
     Decodes a JWT token into a dict

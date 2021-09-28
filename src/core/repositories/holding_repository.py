@@ -9,20 +9,19 @@ from core.repositories.security_repository import SecurityRepository
 from core.lib.logger import get_logger
 from config import mysql_config
 
-from .facets.account.crud import get_accounts_by_plaid_item
-from .facets.profile.crud import get_profile_by_id
+from core.lib.actions.account.crud import get_accounts_by_plaid_item
+from core.lib.actions.profile.crud import get_profile_by_id
 
-# import all the facets so that consumers of the repo can access everything
-# no facets right now!
+# import all the actions so that consumers of the repo can access everything
+# no actions right now!
 
 
 class HoldingRepository:
 
     logger = get_logger(__name__)
+    db = MySql(mysql_config)
 
     def __init__(self):
-        db = MySql(mysql_config)
-        self.db = db.get_session()
         self.scheduled_job_repo = ScheduledJobRepository()
         self.security_repo = SecurityRepository()
 
@@ -61,7 +60,9 @@ class HoldingRepository:
         if plaid_item is None:
             self.logger.warning("requested update holding but no PlaidItem given")
             return None
-        accounts = self.db.query(Account).filter(Account.plaid_item_id == plaid_item.id).all()
+        accounts = self.db.with_session(
+            lambda session: session.query(Account).filter(Account.plaid_item_id == plaid_item.id).all()
+        )
         profile = None
         if accounts is None or len(accounts) == 0:
             self.logger.error("received request to update holdings with no corresponding accounts: {0}"

@@ -8,31 +8,26 @@ from core.stores.mysql import MySql
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config, mailgun_config
 
-# import all the facets so that consumers of the repo can access everything
-from .facets.balance.crud import *
-from .facets.balance.requests import *
+# import all the actions so that consumers of the repo can access everything
+from core.lib.utilities import wrap
+from core.lib.actions.balance.crud import *
+from core.lib.actions.balance.requests import *
 
 
 class BalanceRepository:
 
     logger = get_logger(__name__)
+    db = MySql(mysql_config)
 
     def __init__(self):
-        db = MySql(mysql_config)
-        self.db = db.get_session()
-        self.mysql_config = mysql_config
-        self.plaid_config = plaid_config
-        self.mailgun_config = mailgun_config
-
         self.scheduled_job_repo = ScheduledJobRepository()
         self.plaid_repo = PlaidRepository()
-
         self._init_facets()
 
     def _init_facets(self):
-        self.get_balances_by_account = get_balances_by_account
-        self.get_latest_balance_by_account = get_latest_balance_by_account
-        self.create_account_balance = create_account_balance
+        self.get_balances_by_account = wrap(get_balances_by_account, self)
+        self.get_latest_balance_by_account = wrap(get_latest_balance_by_account, self)
+        self.create_account_balance = wrap(create_account_balance, self)
 
     def schedule_update_all_balances(self, plaid_item: PlaidItem):
         """
@@ -72,7 +67,9 @@ class BalanceRepository:
             self.logger.warning("requested all balance sync with no PlaidItem")
             return None
         self.logger.info("syncing account balance/s for plaid item: {0}".format(plaid_item.id))
-        accounts = self.db.query(Account).where(Account.plaid_item_id == plaid_item.id).all()
+        accounts = self.db.with_session(
+            lambda session: session.query(Account).where(Account.plaid_item_id == plaid_item.id).all()
+        )
         if accounts and len(accounts) > 0:
             self.logger.info("found {0} accounts to update".format(len(accounts)))
             for account in accounts:
@@ -90,7 +87,9 @@ class BalanceRepository:
             self.logger.warning("requested balance sync for account with no Account")
             return
         self.logger.info("syncing account balance for account id: {0}".format(account.id))
-        plaid_item = self.db.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
+        plaid_item = self.db.with_session(
+            lambda session: session.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
+        )
         if plaid_item is None:
             self.logger.warning("could not find PlaidItem attached to account {0}".format(account.id))
             return None

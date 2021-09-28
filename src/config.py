@@ -24,7 +24,8 @@ mysql_config = MySqlConfig(
     port=config.db.port,
     username=config.db.username,
     password=config.db.password,
-    schema=config.db.schema
+    schema=config.db.schema,
+    debug=config.db.debug.lower() == "True".lower()
 )
 
 iex_config = {

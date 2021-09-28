@@ -18,7 +18,10 @@ class SyncAccounts:
 
     def run(self):
         if self.plaid_item_id:
-            plaid_item = self.plaid_repo.get_plaid_item_by_plaid_item_id(self.plaid_item_id)
+            plaid_item = self.plaid_repo.get_plaid_item_by_id(self.plaid_item_id)
+            if not plaid_item:
+                self.logger.error("not running account sync, couldnt find PlaidItem with id: {0}"
+                                  .format(self.plaid_item_id))
             self.profile_repo.sync_all_accounts(plaid_item)
         else:
             self.logger.error("not running account sync, no PlaidItem id found: {0}".format(self.plaid_item_id))

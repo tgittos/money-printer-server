@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from sqlalchemy import desc
 
 from core.models.account_balance import AccountBalance
@@ -37,11 +37,17 @@ class AccountPresenter:
     def __init__(self, db):
         self.db = db
 
-    def with_balances(self, accounts: AccountList) -> AccountWithBalanceList:
+    def with_balances(self, accounts: AccountList) -> Optional[AccountWithBalanceList]:
+        if not accounts:
+            return None
         augmented_records = []
         for account_record in accounts:
-            balance = self.db.query(AccountBalance).filter(AccountBalance.account_id == account_record.id) \
-                .order_by(desc(AccountBalance.timestamp)).first()
+            if not account_record:
+                continue
+            balance = self.db.with_session(lambda session: session.query(AccountBalance)
+                                           .filter(AccountBalance.account_id == account_record.id) \
+                                           .order_by(desc(AccountBalance.timestamp)).first()
+                                           )
             current_balance = None
             if balance is not None:
                 account_record.timestamp = balance.timestamp
@@ -51,7 +57,5 @@ class AccountPresenter:
                 balance=current_balance
             )
             augmented_records.append(augmented_record)
-            # undo the update to the account_record timestamp
-            self.db.rollback()
 
         return augmented_records

@@ -2,15 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../.gitlab-ci.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.dockerignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.ebextensions/healthcheck.config" beforeDir="false" afterPath="$PROJECT_DIR$/../.ebextensions/healthcheck.config" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/src.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/src.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../alembic/versions/b1fae9fa8231_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/../alembic/versions/b1fae9fa8231_init.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/api" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/api" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/client" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/client" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bin/data-server" beforeDir="false" afterPath="$PROJECT_DIR$/../bin/data-server" afterDir="false" />
@@ -148,6 +147,8 @@
       <change beforePath="$PROJECT_DIR$/src/testData.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/testData.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utilities.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/variables.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/variables.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../config.py" beforeDir="false" afterPath="$PROJECT_DIR$/../config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/ddg.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/ddg.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/mailgun.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/mailgun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/__init__.py" afterDir="false" />
@@ -156,9 +157,12 @@
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/enums.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/enums.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/apis/plaid/investments.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/apis/plaid/investments.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/analysis/returns.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/analysis/returns.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/lib/constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/crawlers/ddg.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/crawlers/ddg.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/lib/jwt.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/jwt.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/logger.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/notifications.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/notifications.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/lib/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/types.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/lib/utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/base.py" afterDir="false" />
@@ -166,6 +170,8 @@
       <change beforePath="$PROJECT_DIR$/../core/models/holding_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/holding_balance.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/iex_blacklist.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/iex_blacklist.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/investment_transaction.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/investment_transaction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/kb/kb_edge.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/kb/kb_edge.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/models/kb/kb_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/kb/kb_node.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/plaid_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/plaid_item.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/models/reset_token.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/models/reset_token.py" afterDir="false" />
@@ -175,18 +181,31 @@
       <change beforePath="$PROJECT_DIR$/../core/presentation/holding_presenters.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/presentation/holding_presenters.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/account_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/account_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/balance_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/balance_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/account/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/account/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/account/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/account/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/balance/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/balance/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/balance/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/balance/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/plaid/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/plaid/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/plaid/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/plaid/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/profile/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/profile/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/profile/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/profile/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/profile/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/profile/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/profile/responses.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/profile/responses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/scheduled_job/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/scheduled_job/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/security/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/security/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/security/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/security/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/stock/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/stock/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/repositories/facets/stock/fetch.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/lib/actions/stock/fetch.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/holding_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/holding_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/plaid_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/profile_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/profile_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/scheduled_job_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/scheduled_job_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/security_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/security_repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/repositories/stock_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/repositories/stock_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../core/stores/mysql.py" beforeDir="false" afterPath="$PROJECT_DIR$/../core/stores/mysql.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/password_reset.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" beforeDir="false" afterPath="$PROJECT_DIR$/../core/templates/notifications/profile_created.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose.microservices.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose.monolith.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../server/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../server/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../platform/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../platform/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/bin/data-server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/bin/data-server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/bin/money-printer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/bin/money-printer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/bin/task-runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/bin/task-runner.py" afterDir="false" />
@@ -199,6 +218,7 @@
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/accounts.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/auth.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../server/services/api/routes/health.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/health.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/holdings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/profile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../server/services/api/routes/webhooks.py" beforeDir="false" afterPath="$PROJECT_DIR$/../server/services/api/routes/webhooks.py" afterDir="false" />
@@ -288,7 +308,7 @@
       <workItem from="1630002874254" duration="8300000" />
       <workItem from="1630011654402" duration="127020000" />
       <workItem from="1632578930047" duration="598000" />
-      <workItem from="1632705606846" duration="4781000" />
+      <workItem from="1632705606846" duration="6001000" />
     </task>
     <servers />
   </component>

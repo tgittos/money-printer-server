@@ -7,36 +7,32 @@ from core.lib.types import PlaidItemList
 from .requests import CreatePlaidItem
 
 
-@classmethod
 def get_plaid_item_by_id(cls, id: int) -> PlaidItem:
     """
     Gets a PlaidItem from the DB by the primary key
     This object represents a Plaid Link object
     """
-    r = cls.db.query(PlaidItem).filter(PlaidItem.id == id).first()
+    r = cls.db.with_session(lambda session: session.query(PlaidItem).filter(PlaidItem.id == id).first())
     return r
 
 
-@classmethod
-def get_plaid_item_by_plaid_item_id(cls, id: int) -> PlaidItem:
+def get_plaid_item_by_plaid_item_id(cls, id: str) -> PlaidItem:
     """
     Gets a PlaidItem from the DB by the remote Plaid ID
     This object represents a Plaid Link object
     """
-    r = cls.db.query(PlaidItem).filter(PlaidItem.item_id == id).first()
+    r = cls.db.with_session(lambda session: query(PlaidItem).filter(PlaidItem.item_id == id).first())
     return r
 
 
-@classmethod
 def get_plaid_items_by_profile(cls, profile: Profile) -> PlaidItemList:
     """
     Returns all the PlaidItems associated with the given profile
     """
-    r = cls.db.query(PlaidItem).where(PlaidItem.profile_id == profile.id).all()
+    r = cls.db.with_session(lambda session: query(PlaidItem).where(PlaidItem.profile_id == profile.id).all())
     return r
 
 
-@classmethod
 def create_plaid_item(cls, request: CreatePlaidItem) -> PlaidItem:
     """
     Creates a PlaidItem in the DB with the data in the given request
@@ -49,17 +45,19 @@ def create_plaid_item(cls, request: CreatePlaidItem) -> PlaidItem:
     r.request_id = request.request_id
     r.timestamp = datetime.utcnow()
 
-    cls.db.add(r)
-    cls.db.commit()
+    def create(session):
+        session.add(r)
+        session.commit()
+
+    cls.db.with_session(create)
 
     return r
 
 
-@classmethod
-def update_plaid_item(self, plaid_item: PlaidItem) -> PlaidItem:
+def update_plaid_item(cls, plaid_item: PlaidItem) -> PlaidItem:
     """
     Updates a PlaidItem in the DB and touches the timestamp for it
     """
     plaid_item.timestamp = datetime.utcnow()
-    self.db.commit()
+    cls.db.with_session(lambda session: session.commit())
     return plaid_item

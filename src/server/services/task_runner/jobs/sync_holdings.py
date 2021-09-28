@@ -19,7 +19,7 @@ class SyncHoldings:
     def run(self):
         if self.plaid_item_id:
             self.logger.info("updating holdings for plaid item id: {0}".format(self.plaid_item_id))
-            plaid_item = self.plaid_repo.get_plaid_item_by_plaid_item_id(self.plaid_item_id)
+            plaid_item = self.plaid_repo.get_plaid_item_by_id(self.plaid_item_id)
             self.holding_repo.update_holdings(plaid_item)
         else:
             self.logger.error("not running holding sync, no PlaidItem id found: {0}".format(self.plaid_item_id))

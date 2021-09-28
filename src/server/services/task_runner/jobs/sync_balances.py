@@ -18,7 +18,7 @@ class SyncBalances:
     def run(self):
         if self.plaid_item_id:
             self.logger.info("syncing balances for plaid_item_id {0}".format(self.plaid_item_id))
-            plaid_item = self.plaid_repo.get_plaid_item_by_plaid_item_id(self.plaid_item_id)
+            plaid_item = self.plaid_repo.get_plaid_item_by_id(self.plaid_item_id)
             self.balance_repo.sync_all_balances(plaid_item)
             self.logger.info("done syncing balances")
         else:

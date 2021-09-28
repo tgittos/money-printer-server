@@ -10,7 +10,6 @@ from core.lib.types import AccountList
 from .requests import CreateAccountRequest
 
 
-@classmethod
 def create_account(cls, request: CreateAccountRequest) -> Account:
     """
     Creates an account object in the given database, and returns it
@@ -26,29 +25,34 @@ def create_account(cls, request: CreateAccountRequest) -> Account:
     r.subtype = request.subtype
     r.timestamp = datetime.utcnow()
 
-    cls.db.add(r)
-    cls.db.commit()
+    def create(session):
+        session.add(r)
+        session.commit()
+
+    cls.db.with_session(create)
 
     return r
 
 
-@classmethod
 def update_account(cls, account: Account) -> Account:
     """
     Updates an account object in the given database, and returns it
     """
     account.timestamp = datetime.utcnow()
-    cls.db.commit()
+    cls.db.with_session(lambda session: session.commit())
     return account
 
-@classmethod
+
 def create_or_update_account(cls, profile: Profile, plaid_link: PlaidItem, account_dict: dict) -> Account:
     """
     Updates the DB record with the remote record data, and creates it if it doesn't exist
     """
     # update the account
-    account = cls.get_account_by_account_id(profile=profile, account_id=account_dict['account_id'])
+    account_id = account_dict['account_id']
+    account = get_account_by_account_id(cls, profile=profile, account_id=account_id)
     if account is None:
+        if cls.logger:
+            cls.logger.debug("creating new account from account_dict: {0}".format(account_dict))
         account = create_account(cls, CreateAccountRequest(
             account_id=account_dict['account_id'],
             name=account_dict['name'],
@@ -59,6 +63,8 @@ def create_or_update_account(cls, profile: Profile, plaid_link: PlaidItem, accou
             profile_id=profile.id
         ))
     else:
+        if cls.logger:
+            cls.logger.debug("found existing account {0}, updating: {1}".format(account.id, account_dict))
         account.name = account_dict['name']
         account.official_name = account_dict['official_name']
         account.type = account_dict['type'],
@@ -68,42 +74,47 @@ def create_or_update_account(cls, profile: Profile, plaid_link: PlaidItem, accou
     return account
 
 
-@classmethod
 def get_account_by_id(cls, profile: Profile, account_id: int) -> Account:
     """
     Gets an account from the database for a given profile by the primary key
     """
-    r = cls.db.query(Account).where(and_(
-        Account.profile_id == profile.id,
-        Account.id == account_id
-    )).first()
+    r = cls.db.with_session(lambda session: session.query(Account)
+                            .filter(and_(
+                                Account.profile_id == profile.id,
+                                Account.id == account_id
+                            )).first()
+                            )
     return r
 
 
-@classmethod
 def get_account_by_account_id(cls, profile: Profile, account_id: str) -> Account:
     """
     Gets an account from the database from a given profile by the remote account ID
     """
-    r = cls.db.query(Account).where(and_(
-        Account.profile_id == profile.id,
-        Account.account_id == account_id)).first()
+    r = cls.db.with_session(lambda session: session.query(Account)
+                            .filter(and_(
+                                Account.profile_id == profile.id,
+                                Account.account_id == account_id
+                            )).first()
+                            )
     return r
 
 
-@classmethod
 def get_accounts_by_profile(cls, profile: Profile) -> AccountList:
     """
     Gets all accounts for a given profile from the database
     """
-    r = cls.db.query(Account).filter(Account.profile_id == profile.id).all()
+    r = cls.db.with_session(lambda session: session.query(Account)
+                            .filter(Account.profile_id == profile.id).all()
+                            )
     return r
 
 
-@classmethod
 def get_accounts_by_plaid_item(cls, plaid_item: PlaidItem) -> AccountList:
     """
     Gets all accounts for a given PlaidItem from the DB
     """
-    r = cls.db.query(Account).filter(Account.plaid_item_id == plaid_item.id).all()
+    r = cls.db.with_session(lambda session: session.query(Account)
+                            .filter(Account.plaid_item_id == plaid_item.id).all()
+                            )
     return r

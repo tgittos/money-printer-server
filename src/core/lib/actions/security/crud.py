@@ -15,39 +15,37 @@ from .requests import CreateSecurityRequest, CreateHoldingRequest, CreateInvestm
     UpdateHoldingRequest
 
 
-@classmethod
 def get_securities(cls) -> SecurityList:
-    r = cls.db.query(Security).distinct(Security.ticker_symbol).all()
+    r = cls.db.with_session(lambda session: session.query(Security).distinct(Security.ticker_symbol).all())
     return r
 
 
-@classmethod
 def get_security_by_symbol(cls, symbol: str) -> Security:
-    r = cls.db.query(Security).where(Security.ticker_symbol == symbol).first()
+    r = cls.db.with_session(lambda session: session.query(Security).where(Security.ticker_symbol == symbol).first())
     return r
 
 
-@classmethod
 def get_securities_by_account(cls, account: Account) -> SecurityList:
-    r = cls.db.query(Security).where(Security.account_id == account.id).all()
+    r = cls.db.with_session(lambda session: session.query(Security).where(Security.account_id == account.id).all())
     return r
 
 
-@classmethod
 def get_security_by_security_id(cls, plaid_security_id: str) -> Security:
-    r = cls.db.query(Security).where(Security.security_id == plaid_security_id).first()
+    r = cls.db.with_session(lambda session: session.query(Security)
+                            .where(Security.security_id == plaid_security_id).first())
     return r
 
 
-@classmethod
 def get_holdings_by_profile_and_account(cls, profile: Profile, account: Account) -> HoldingWithSecurityList:
-    account = cls.db.query(Account).where(and_(
-        Account.profile_id == profile.id,
-        Account.id == account.id,
-        )).first()
-    holdings = cls.db.query(Holding).where(Holding.account_id == account.id).all()
+    account = cls.db.with_session(lambda session: session.query(Account)
+                                  .where(and_(
+                                      Account.profile_id == profile.id,
+                                      Account.id == account.id,
+                                      )).first()
+                                  )
+    holdings = cls.db.with_session(lambda session: session.query(Holding).where(Holding.account_id == account.id).all())
     security_ids = list([h.security_id for h in holdings])
-    securities = cls.db.query(Security).filter(Security.id.in_(security_ids)).all()
+    securities = cls.db.with_session(lambda session: session.query(Security).filter(Security.id.in_(security_ids)).all())
     presentations = []
     for holding in holdings:
         security = list(filter(lambda s: s.id == holding.security_id, securities))[0]
@@ -55,34 +53,36 @@ def get_holdings_by_profile_and_account(cls, profile: Profile, account: Account)
     return presentations
 
 
-@classmethod
 def get_holding_by_plaid_account_id_and_plaid_security_id(cls, plaid_account_id: str,
                                                           plaid_security_id: str) -> Holding:
     """
     Gets a Holding for a Plaid account ID and Plaid security ID
     """
-    account = cls.db.query(Account).where(Account.account_id == plaid_account_id).first()
-    security = cls.get_security_by_security_id(plaid_security_id)
-    record = cls.db.query(Holding).where(and_(
-        Holding.account_id == account.id,
-        Holding.security_id == security.id
-    )).first()
+    account = cls.db.with_session(lambda session: session.query(Account)
+                                  .where(Account.account_id == plaid_account_id).first())
+    security = get_security_by_security_id(cls, plaid_security_id)
+    record = cls.db.with_session(lambda session: session.query(Holding)
+                                 .where(and_(
+                                     Holding.account_id == account.id,
+                                     Holding.security_id == security.id
+                                 )).first()
+                                 )
     return record
 
 
-@classmethod
 def get_holding_by_account_and_security(cls, account: Account, security: Security) -> Holding:
     """
     Gets a Holding for a given Account and Security record
     """
-    r = cls.db.query(Holding).where(and_(
-        Holding.account_id == account.id,
-        Holding.security_id == security.id
-    )).first()
+    r = cls.db.with_session(lambda session: session.query(Holding)
+                            .where(and_(
+                                Holding.account_id == account.id,
+                                Holding.security_id == security.id
+                            )).first()
+                            )
     return r
 
 
-@classmethod
 def create_security(cls, request: CreateSecurityRequest) -> Security:
     security = Security()
 
@@ -99,13 +99,15 @@ def create_security(cls, request: CreateSecurityRequest) -> Security:
     security.sedol = request.sedol
     security.timestamp = datetime.utcnow()
 
-    cls.db.add(security)
-    cls.db.commit()
+    def create(session):
+        session.add(security)
+        session.commit()
+
+    cls.db.with_session(create)
 
     return security
 
 
-@classmethod
 def create_holding(cls, request: CreateHoldingRequest) -> Holding:
     holding = Holding()
 
@@ -116,13 +118,15 @@ def create_holding(cls, request: CreateHoldingRequest) -> Holding:
     holding.iso_currency_code = request.iso_currency_code
     holding.timestamp = datetime.utcnow()
 
-    cls.db.add(holding)
-    cls.db.commit()
+    def create(session):
+        session.add(holding)
+        session.commit()
+
+    cls.db.with_session(create)
 
     return holding
 
 
-@classmethod
 def update_holding_balance(cls, request: UpdateHoldingRequest) -> HoldingBalance:
     holding_balance = HoldingBalance()
 
@@ -131,13 +135,15 @@ def update_holding_balance(cls, request: UpdateHoldingRequest) -> HoldingBalance
     holding_balance.quantity = request.quantity
     holding_balance.timestamp = datetime.utcnow()
 
-    cls.db.add(holding_balance)
-    cls.db.commit()
+    def create(session):
+        session.add(holding_balance)
+        session.commit()
+
+    cls.db.with_session(create)
 
     return holding_balance
 
 
-@classmethod
 def create_investment_transaction(cls, request: CreateInvestmentTransactionRequest) -> InvestmentTransaction:
     investment_transaction = InvestmentTransaction()
 
@@ -154,7 +160,10 @@ def create_investment_transaction(cls, request: CreateInvestmentTransactionReque
     investment_transaction.investment_transaction_id = request.investment_transaction_id
     investment_transaction.timestamp = datetime.utcnow()
 
-    cls.db.add(investment_transaction)
-    cls.db.commit()
+    def create(session):
+        session.add(investment_transaction)
+        session.commit()
+
+    cls.db.with_session(create)
 
     return investment_transaction

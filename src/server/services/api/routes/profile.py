@@ -14,13 +14,7 @@ def sync_profile():
     user = get_identity()
     profile_repo = ProfileRepository()
     profile = profile_repo.get_profile_by_id(user["id"])
-    account_repo = AccountRepository()
-    accounts = account_repo.get_accounts_by_profile(profile)
-    if accounts is None:
-        abort(404)
-    for account in accounts:
-        account_repo.schedule_account_sync(account)
-
+    profile_repo.schedule_profile_sync(profile=profile)
     return {
         'success': True
     }

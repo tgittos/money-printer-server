@@ -9,34 +9,30 @@ from config import mailgun_config
 from .requests import RegisterProfileRequest
 
 
-@classmethod
 def get_profile_by_id(cls, profile_id: int) -> Profile:
     """
     Gets a profile from the DB by its primary key
     """
-    r = cls.db.query(Profile).where(Profile.id == profile_id).first()
+    r = cls.db.with_session(lambda session: session.query(Profile).where(Profile.id == profile_id).first())
     return r
 
 
-@classmethod
 def get_profile_by_email(cls, email: str) -> Profile:
     """
     Gets a profile from the DB by the user's email address
     """
-    r = cls.db.query(Profile).filter(Profile.email == email).first()
+    r = cls.db.with_session(lambda session: session.query(Profile).filter(Profile.email == email).first())
     return r
 
 
-@classmethod
 def get_all_profiles(cls) -> AccountList:
     """
     Returns all the profiles in the DB
     """
-    r = cls.db.query(Profile).all()
+    r = cls.db.with_session(lambda session: session.query(Profile).all())
     return r
 
 
-@classmethod
 def create_profile(cls, request: RegisterProfileRequest) -> Profile:
     """
     Registers a new profile and emails the temporary password to the user
@@ -50,8 +46,11 @@ def create_profile(cls, request: RegisterProfileRequest) -> Profile:
     new_profile.last_name = request.last_name
     new_profile.timestamp = datetime.utcnow()
 
-    cls.db.add(new_profile)
-    cls.db.commit()
+    def create(session):
+        session.add(new_profile)
+        session.commit()
+
+    cls.db.with_session(create)
 
     notify_profile_created(mailgun_config, ProfileCreatedNotification(
         profile=new_profile,
@@ -61,7 +60,6 @@ def create_profile(cls, request: RegisterProfileRequest) -> Profile:
     return new_profile
 
 
-@classmethod
 def register(cls, request: RegisterProfileRequest) -> RepositoryResponse:
     """
     Registers a user with MoneyPrinter if a user with that email doesnt

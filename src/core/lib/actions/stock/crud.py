@@ -9,7 +9,6 @@ from core.lib.utilities import sanitize_float, local_to_utc
 from core.lib.types import SecurityPriceList
 
 
-@classmethod
 def create_stock_price(cls, symbol: str, resolution: str, dfs: DataFrame) -> SecurityPriceList:
     """
     Stores a SecurityPrice record in the database from a Pandas DataFrame
@@ -45,44 +44,48 @@ def create_stock_price(cls, symbol: str, resolution: str, dfs: DataFrame) -> Sec
             if 'changeOverTime' in df: price.change_over_time = sanitize_float(df['changeOverTime'])
             if 'marketChangeOverTime' in df: price.market_change_over_time = sanitize_float(df['marketChangeOverTime'])
 
-            cls.db.add(price)
-            cls.db.commit()
+            def create(session):
+                session.add(price)
+                session.commit()
+
+            cls.db.with_session(create)
 
             records.append(price)
 
     return records
 
 
-@classmethod
 def get_historical_intraday_security_prices(cls, symbol: str, start: datetime = None) -> SecurityPriceList:
     """
     Searches the database for all per-minute intraday SecurityPrices for a given symbol on a given day
     """
     cls.logger.debug("searching db intraday resolution symbol/s for {0} from {1} to now".format(symbol, start))
-    records = cls.db.query(SecurityPrice).filter(and_(
-        SecurityPrice.symbol == symbol,
-        SecurityPrice.resolution == "intraday",
-        start is None or SecurityPrice.date >= start
-    )).all()
+    records = cls.db.with_session(lambda session: session.query(SecurityPrice)
+                                  .filter(and_(
+                                      SecurityPrice.symbol == symbol,
+                                      SecurityPrice.resolution == "intraday",
+                                      start is None or SecurityPrice.date >= start
+                                  )).all()
+                                  )
     return records
 
 
-@classmethod
 def get_historical_daily_security_prices(cls, symbol: str, start: datetime = None, end: datetime = None) -> SecurityPriceList:
     """
     Searches the database for the daily close SecurityPrices for a given symbol in a given date range
     """
     cls.logger.debug(" * searching db daily resolution symbol/s for {0} from {1} - {2}".format(symbol, start, end))
-    records = cls.db.query(SecurityPrice).filter(and_(
-        SecurityPrice.symbol == symbol,
-        SecurityPrice.resolution == "daily",
-        start is None or SecurityPrice.date >= start,
-        end is None or SecurityPrice.date <= end,
-        )).all()
+    records = cls.db.with_session(lambda session: session.query(SecurityPrice)
+                                  .filter(and_(
+                                      SecurityPrice.symbol == symbol,
+                                      SecurityPrice.resolution == "daily",
+                                      start is None or SecurityPrice.date >= start,
+                                      end is None or SecurityPrice.date <= end,
+                                  )).all()
+                                  )
     return records
 
 
-@classmethod
 def create_historical_intraday_security_price(cls, symbol: str, dfs: DataFrame) -> SecurityPriceList:
     """
     Creates a day's worth of historical per-minute intraday SecurityPrice from a Pandas DataFrame
@@ -90,7 +93,6 @@ def create_historical_intraday_security_price(cls, symbol: str, dfs: DataFrame) 
     return create_stock_price(cls, symbol, "intraday", dfs)
 
 
-@classmethod
 def create_historical_daily_security_price(cls, symbol: str, dfs: DataFrame) -> SecurityPriceList:
     """
     Creates a day's closing price SecurityPrice from a Pandas DataFrame
@@ -98,7 +100,6 @@ def create_historical_daily_security_price(cls, symbol: str, dfs: DataFrame) -> 
     return create_stock_price(cls, symbol, "daily", dfs)
 
 
-@classmethod
 def add_to_iex_blacklist(cls, symbol: str) -> bool:
     """
     Add a symbol to the IEX blacklist, preventing MP from trying to request it from IEX
@@ -108,13 +109,18 @@ def add_to_iex_blacklist(cls, symbol: str) -> bool:
     iex_bl = IexBlacklist()
     iex_bl.symbol = symbol
     iex_bl.timestamp = datetime.utcnow()
-    cls.db.add(iex_bl)
-    cls.db.commit()
+
+    def create(session):
+        session.add(iex_bl)
+        session.commit()
+
+    cls.db.with_session(create)
 
 
-@classmethod
 def on_iex_blacklist(cls, symbol: str) -> bool:
     """
     Is this symbol on the IEX blacklist?
     """
-    return cls.db.query(IexBlacklist).filter(IexBlacklist.symbol == symbol).count() == 1
+    return cls.db.with_session(lambda session: session.query(IexBlacklist)
+                               .filter(IexBlacklist.symbol == symbol).count() == 1
+                               )

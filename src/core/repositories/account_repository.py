@@ -1,49 +1,54 @@
+from typing import Optional
+
 from core.presentation.account_presenters import AccountPresenter, AccountWithBalanceList
 from core.stores.mysql import MySql
 from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateInstantJobRequest
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config, mailgun_config, iex_config
 
-# import all the facets so that consumers of the repo can access everything
-from .facets.account.crud import *
-from .facets.account.requests import *
+# import all the actions so that consumers of the repo can access everything
+from core.lib.utilities import wrap
+from core.lib.actions.account.crud import *
+from core.lib.actions.account.requests import *
 
 
 class AccountRepository:
 
     logger = get_logger(__name__)
+    db = MySql(mysql_config)
 
     def __init__(self):
-        db = MySql(mysql_config)
-        self.db = db.get_session()
-
-        self.mysql_config = mysql_config
-        self.plaid_config = plaid_config
-        self.mailgun_config = mailgun_config
-        self.iex_config = iex_config
-
         self.presenter = AccountPresenter(self.db)
-
         self._init_facets()
 
     def _init_facets(self):
-        self.create_account = create_account
-        self.update_account = update_account
-        self.get_account_by_id = get_account_by_id
-        self.get_account_by_account_id = get_account_by_account_id
-        self.get_accounts_by_profile = get_accounts_by_profile
+        self.create_account = wrap(create_account, self)
+        self.update_account = wrap(update_account, self)
+        self.get_account_by_id = wrap(get_account_by_id, self)
+        self.get_account_by_account_id = wrap(get_account_by_account_id, self)
+        self.get_accounts_by_profile = wrap(get_accounts_by_profile, self)
 
-    def get_accounts_by_profile_with_balances(self, profile: Profile) -> AccountWithBalanceList:
+    def get_accounts_by_profile_with_balances(self, profile: Profile) -> Optional[AccountWithBalanceList]:
         """
         Returns a list of accounts augmented with their latest synced balances for a given profile
         """
+        if profile is None:
+            self.logger.error("requested accounts by profile without a valid Profile")
+            return None
         account_records = self.get_accounts_by_profile(profile)
         return self.presenter.with_balances(account_records)
 
-    def get_account_by_profile_with_balance(self, profile: Profile, account_id: int) -> AccountWithBalanceList:
+    def get_account_by_profile_with_balance(self, profile: Profile, account_id: int)\
+            -> Optional[AccountWithBalanceList]:
         """
         Returns the requested Account with it's latest synced balance for a given profile
         """
+        if profile is None:
+            self.logger.error("requested account by profile without a valid Profile")
+            return None
+        if account_id is None:
+            self.logger.error("requested account by profile without a valid account_id")
+            return None
         account = self.get_account_by_account_id(profile, account_id)
         return self.presenter.with_balances([account])
 
@@ -54,7 +59,9 @@ class AccountRepository:
         if account is None:
             self.logger.error("cannot schedule account sync without account")
             return
-        plaid_item = self.db.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
+        plaid_item = self.db.with_session(
+            lambda session: session.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
+        )
         if plaid_item is None:
             self.logger.error("scheduled account sync for plaid item, but no PlaidItem found")
             return

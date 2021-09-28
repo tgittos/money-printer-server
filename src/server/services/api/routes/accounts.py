@@ -38,7 +38,7 @@ def request_account_sync(account_id: int):
     profile = profile_repo.get_profile_by_id(user['id'])
     if profile is not None:
         account_repo = AccountRepository()
-        account = account_repo.get_account_by_id(profile_id=user['id'], account_id=account_id)
+        account = account_repo.get_account_by_id(profile=profile, account_id=account_id)
         if account is None:
             abort(404)
         account_repo.schedule_account_sync(account)
@@ -72,7 +72,7 @@ def list_holdings(account_id):
     profile_repo = ProfileRepository()
     account_repo = AccountRepository()
     profile = profile_repo.get_profile_by_id(user['id'])
-    account = account_repo.get_account_by_id(account_id)
+    account = account_repo.get_account_by_id(profile=profile, account_id=account_id)
     if account is None:
         abort(404)
     security_repo = SecurityRepository()

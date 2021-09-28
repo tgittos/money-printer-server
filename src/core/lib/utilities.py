@@ -4,6 +4,39 @@ from datetime import date, datetime, timezone
 import numpy as np
 
 
+# https://www.python-course.eu/currying_in_python.php
+def curry(func):
+    # to keep the name of the curried function:
+    curry.__curried_func_name__ = func.__name__
+    f_args, f_kwargs = [], {}
+
+    def f(*args, **kwargs):
+        nonlocal f_args, f_kwargs
+        if args or kwargs:
+            f_args += args
+            f_kwargs.update(kwargs)
+            return f
+        else:
+            result = func(*f_args, *f_kwargs)
+            f_args, f_kwargs = [], {}
+            return result
+
+    return f
+
+
+def wrap(f, obj):
+
+    def h(*args, **kwargs):
+        try:
+            h.__name__ = f.__name__
+            args = (obj,) + args
+            return f(*args, **kwargs)
+        except Exception as ex:
+            raise ex
+
+    return h
+
+
 def sanitize_float(val) -> float:
     """
     Ensure that the given value is really a float
@@ -16,14 +49,14 @@ def sanitize_float(val) -> float:
     return float(val)
 
 
-def add_tz(val: date) -> datetime:
+def add_tz(val: datetime) -> datetime:
     """
     Converts a time to a UTC datetime
     """
     if val is None:
         return val
     local_tz = datetime.now(tz=timezone.utc).astimezone().tzinfo
-    return datetime(date).replace(tzinfo=local_tz)
+    return val.replace(tzinfo=local_tz)
 
 
 def local_to_utc(val: date) -> Optional[datetime]:

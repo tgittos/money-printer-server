@@ -3,7 +3,7 @@ import sys
 import signal
 import traceback
 
-from flask import Flask
+from flask import Flask, abort
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
@@ -37,6 +37,7 @@ class ApiApplication:
     def run(self):
         print(" * Starting money-printer api/ws application", flush=True)
         self.client_bus.start()
+        self.flask_app.run(host=config.host, port=config.port)
         self.socket_app.run(self.flask_app, host=config.host, port=config.port)
 
     def init(self, first_name, last_name, email):
@@ -83,8 +84,13 @@ class ApiApplication:
             'error': ex,
         }
         if env != 'production':
-            error_json['traceback'] = traceback.format_exc(ex)
-        return error_json, 500
+            # apparently traceback can throw an exception ¯\_(ツ)_/¯
+            try:
+                error_json['traceback'] = traceback.format_exc(ex)
+            except Exception as ex:
+                error_json['traceback'] = ex
+        self.logger.exception("uncaught exception from Flask app: {0}".format(error_json))
+        abort(500, error_json)
 
     def _configure_signals(self):
         self.logger.debug("intercepting sigints for graceful shutdown")

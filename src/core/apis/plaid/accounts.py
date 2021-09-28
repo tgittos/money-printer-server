@@ -6,6 +6,7 @@ from plaid.model.accounts_balance_get_request import AccountsBalanceGetRequest
 from plaid.model.accounts_balance_get_request_options import AccountsBalanceGetRequestOptions
 
 from core.apis.plaid.common import get_plaid_api_client
+from core.lib.logger import get_logger
 
 
 class AccountsConfig(object):
@@ -16,6 +17,9 @@ class AccountsConfig(object):
 
 
 class Accounts:
+
+    logger = get_logger(__name__)
+
     def __init__(self, accounts_config=None):
         self.config = accounts_config or AccountsConfig()
         self.client = get_plaid_api_client(self.config.plaid_config)
@@ -30,8 +34,9 @@ class Accounts:
         except ApiException as e:
             return json.loads(e.body)
 
-    def get_account_balance(self, access_token, plaid_account_id):
+    def get_account_balance(self, access_token: str, plaid_account_id: str):
         try:
+            self.logger.debug("sending account balance get request for account id: {0}".format(plaid_account_id))
             request = AccountsBalanceGetRequest(
                 access_token=access_token,
                 options=AccountsBalanceGetRequestOptions(
