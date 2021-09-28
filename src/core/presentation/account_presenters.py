@@ -1,7 +1,8 @@
+from typing import List
 from sqlalchemy import desc
 
 from core.models.account_balance import AccountBalance
-from core.lib.types import AccountList, AccountWithBalanceList
+from core.lib.types import AccountList
 
 
 class AccountWithBalance:
@@ -27,6 +28,9 @@ class AccountWithBalance:
             'balance': self.balance,
             'timestamp': self.timestamp,
         }
+
+
+AccountWithBalanceList = List[AccountWithBalance]
 
 
 class AccountPresenter:

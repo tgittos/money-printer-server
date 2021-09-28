@@ -1,21 +1,16 @@
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 
 from core.stores.mysql import MySql
 from core.apis.plaid.investments import Investments, InvestmentsConfig
 from core.models.plaid_item import PlaidItem
-from core.models.profile import Profile
-from core.models.account import Account
-from core.models.investment_transaction import InvestmentTransaction
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 
 from .facets.plaid.crud import get_plaid_item_by_id
-from .facets.security.crud import create_security, create_holding, create_investment_transaction,\
-    get_security_by_security_id, get_holdings_by_profile_and_account, update_holding_balance,\
-    get_holding_by_plaid_account_id_and_plaid_security_id, get_security_by_symbol, get_securities_by_account,\
-    get_securities
-from .facets.security.requests import CreateSecurityRequest, CreateHoldingRequest, CreateInvestmentTransactionRequest,\
-    UpdateHoldingRequest
+
+# import all the facets so that consumers of the repo can access everything
+from .facets.security.crud import *
+from .facets.security.requests import *
 
 
 class SecurityRepository:

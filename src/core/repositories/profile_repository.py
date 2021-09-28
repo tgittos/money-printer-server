@@ -1,4 +1,3 @@
-from core.models.profile import Profile
 from core.models.plaid_item import PlaidItem
 from core.repositories.balance_repository import BalanceRepository
 from core.repositories.holding_repository import HoldingRepository
@@ -9,10 +8,13 @@ from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 
 from .facets.account.crud import create_or_update_account
-from .facets.profile.crud import get_profile_by_id, get_profile_by_email, get_all_profiles, create_profile
-from .facets.profile.auth import get_unauthenticated_user, register, login, reset_password, continue_reset_password, \
-    logout, is_token_valid, decode_jwt
 from .facets.plaid.crud import get_plaid_items_by_profile
+
+# import all the facets so that consumers of the repo can access everything
+from .facets.profile.crud import *
+from .facets.profile.auth import *
+from .facets.profile.requests import *
+from .facets.profile.responses import *
 
 
 class ProfileRepository:
@@ -36,8 +38,6 @@ class ProfileRepository:
         self.reset_password = reset_password
         self.continue_reset_password = continue_reset_password
         self.logout = logout
-        self.is_token_valid = is_token_valid
-        self.decode_jwt = decode_jwt
 
     def schedule_profile_sync(self, profile: Profile):
         """

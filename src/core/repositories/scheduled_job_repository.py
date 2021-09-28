@@ -10,7 +10,8 @@ from core.lib.types import ScheduledJobList
 from core.lib.constants import WORKER_QUEUE
 from config import redis_config, mailgun_config, mysql_config
 
-from .facets.scheduled_job.requests import CreateScheduledJobRequest, CreateInstantJobRequest
+# import all the facets so that consumers of the repo can access everything
+from .facets.scheduled_job.requests import *
 
 
 class ScheduledJobRepository:

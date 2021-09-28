@@ -1,18 +1,16 @@
 from typing import Optional
 
 from core.apis.plaid.accounts import Accounts, AccountsConfig
-from core.models.account_balance import AccountBalance
-from core.models.account import Account
 from core.models.plaid_item import PlaidItem
 from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateInstantJobRequest
 from core.repositories.plaid_repository import PlaidRepository
 from core.stores.mysql import MySql
 from core.lib.logger import get_logger
-from core.lib.types import AccountBalanceList
 from config import mysql_config, plaid_config, mailgun_config
 
-from .facets.balance.crud import get_balances_by_account, get_latest_balance_by_account, create_account_balance
-from .facets.balance.requests import CreateAccountBalanceRequest, GetAccountBalanceRequest
+# import all the facets so that consumers of the repo can access everything
+from .facets.balance.crud import *
+from .facets.balance.requests import *
 
 
 class BalanceRepository:
@@ -26,8 +24,7 @@ class BalanceRepository:
         self.plaid_config = plaid_config
         self.mailgun_config = mailgun_config
 
-        self.scheduled_job_repo = get_scheduled_job_repository(mailgun_config=self.mailgun_config,
-                                                               mysql_config=self.mysql_config)
+        self.scheduled_job_repo = ScheduledJobRepository()
         self.plaid_repo = PlaidRepository()
 
         self._init_facets()

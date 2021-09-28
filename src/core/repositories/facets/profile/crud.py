@@ -1,13 +1,12 @@
 from datetime import datetime
 
 from core.models.profile import Profile
-from core.models.plaid_item import PlaidItem
+from core.lib.jwt import generate_temp_password, hash_password
 from core.lib.notifications import ProfileCreatedNotification, notify_profile_created
-from core.lib.types import AccountList
+from core.lib.types import AccountList, RepositoryResponse
 from config import mailgun_config
 
 from .requests import RegisterProfileRequest
-from .auth import generate_temp_password, hash_password
 
 
 @classmethod
@@ -60,3 +59,23 @@ def create_profile(cls, request: RegisterProfileRequest) -> Profile:
     ))
 
     return new_profile
+
+
+@classmethod
+def register(cls, request: RegisterProfileRequest) -> RepositoryResponse:
+    """
+    Registers a user with MoneyPrinter if a user with that email doesnt
+    already exist
+    """
+    # first, check if the request email is already taken
+    existing_profile = get_profile_by_email(cls, request.email)
+    if existing_profile is not None:
+        return RepositoryResponse(
+            success=False,
+            message="That email is not available"
+        )
+    new_user = create_profile(cls, request)
+    return RepositoryResponse(
+        success=new_user is not None,
+        data=new_user
+    )

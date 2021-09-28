@@ -13,8 +13,6 @@ from core.models.scheduled_job import ScheduledJob
 from core.models.security import Security
 from core.models.security_price import SecurityPrice
 
-from core.presentation.account_presenters import AccountWithBalance
-
 StringList = List[str]
 
 AccountList = List[Account]
@@ -31,7 +29,6 @@ SecurityList = List[Security]
 SecurityPriceList = List[SecurityPrice]
 
 
-AccountWithBalanceList = List[AccountWithBalance]
 
 
 class RepositoryResponse:

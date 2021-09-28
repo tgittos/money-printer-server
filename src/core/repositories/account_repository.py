@@ -1,14 +1,12 @@
-from core.models.account import Account
-from core.models.profile import Profile
-from core.models.plaid_item import PlaidItem
-from core.presentation.account_presenters import AccountPresenter, AccountWithBalance, AccountWithBalanceList
+from core.presentation.account_presenters import AccountPresenter, AccountWithBalanceList
 from core.stores.mysql import MySql
 from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateInstantJobRequest
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config, mailgun_config, iex_config
 
-from .facets.account.crud import create_account, update_account, get_account_by_account_id, get_account_by_id,\
-    get_accounts_by_profile
+# import all the facets so that consumers of the repo can access everything
+from .facets.account.crud import *
+from .facets.account.requests import *
 
 
 class AccountRepository:

@@ -1,20 +1,17 @@
-import bcrypt
-import secrets
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-import string
-import jwt
 from typing import Optional
 
 from core.models.profile import Profile
 from core.models.reset_token import ResetToken
-from core.lib.notifications import ProfileCreatedNotification, PasswordResetNotification, notify_password_reset
+from core.lib.jwt import encode_jwt, hash_password, check_password, generate_temp_password
+from core.lib.notifications import PasswordResetNotification, notify_password_reset
 from core.lib.types import RepositoryResponse
-from config import config, mailgun_config
+from config import mailgun_config
 
-from .crud import create_profile, get_by_email
-from .requests import ResetProfilePasswordRequest, RegisterProfileRequest, LoginRequest
+from .requests import ResetProfilePasswordRequest, LoginRequest
 from .responses import AuthResponse
+from .crud import get_profile_by_email
 
 
 @classmethod
@@ -36,25 +33,6 @@ def get_unauthenticated_user(cls) -> AuthResponse:
     )
 
 
-@classmethod
-def register(cls, request: RegisterProfileRequest) -> RepositoryResponse:
-    """
-    Registers a user with MoneyPrinter if a user with that email doesnt
-    already exist
-    """
-    # first, check if the request email is already taken
-    existing_profile = cls.get_by_email(request.email)
-    if existing_profile is not None:
-        return RepositoryResponse(
-            success=False,
-            message="That email is not available"
-        )
-    new_user = create_profile(cls, request)
-    return RepositoryResponse(
-        success=new_user is not None,
-        data=new_user
-    )
-
 
 @classmethod
 def login(cls, request: LoginRequest) -> Optional[AuthResponse]:
@@ -62,7 +40,7 @@ def login(cls, request: LoginRequest) -> Optional[AuthResponse]:
     Performs an authentication of the given user credentials
     Returns None of the credentials couldn't be authenticated
     """
-    profile = get_by_email(request.email)
+    profile = get_profile_by_email(cls, request.email)
     if profile is not None:
         if check_password(profile.password, request.password):
             jwt_token = encode_jwt(profile)
@@ -78,7 +56,7 @@ def reset_password(cls, email: str) -> bool:
     """
     Starts the reset password flow by creating a reset token for a user
     """
-    profile = get_by_email(cls, email)
+    profile = get_profile_by_email(cls, email)
     if profile is not None:
         create_reset_token(cls, profile)
         return True
@@ -148,67 +126,3 @@ def get_reset_token(cls, token_string: str) -> ResetToken:
     r = cls.db.query(ResetToken).filter(ResetToken.token == token_string).first()
     return r
 
-
-@staticmethod
-def is_token_valid(token):
-    decoded = decode_jwt(token)
-    """
-    Returns a boolean to indicate if the given JWT token is valid
-    aside from cryptographic validity
-    """
-    return datetime.fromtimestamp(decoded['exp']) > datetime.utcnow()
-
-
-@staticmethod
-def hash_password(pt_password: str) -> bytes:
-    """
-    One-way hash a password using Bcrypt
-    """
-    return bcrypt.hashpw(pt_password.encode('utf8'), bcrypt.gensalt())
-
-
-@staticmethod
-def check_password(pw_hash: str, candidate: str) -> bool:
-    """
-    Validate a supplied plain-text against an encrypted password
-    """
-    return bcrypt.checkpw(candidate.encode('utf8'), pw_hash.encode('utf8'))
-
-
-@staticmethod
-def generate_temp_password(l: int = 16) -> str:
-    """
-    Generate a strong temporary password of a given length
-    Defaults to 16 characters
-    """
-    alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_+=-'
-    while True:
-        password = ''.join(secrets.choice(alphabet) for i in range(l))
-        if (sum(c.islower() for c in password) >= 1
-                and sum(c.isupper() for c in password) >= 1
-                and sum(c.isdigit() for c in password) >= 1):
-            break
-    return password
-
-
-@staticmethod
-def encode_jwt(profile: Profile) -> str:
-    """
-    Encodes a Profile into a valid and secure JWT token
-    """
-    token = jwt.encode({
-        "profile": profile.to_dict(),
-        "authenticated": True,
-        "exp": (datetime.utcnow() + relativedelta(months=1)).timestamp(),
-        "algorithm": "HS256"
-    }, config.secret)
-    return token
-
-
-@staticmethod
-def decode_jwt(token: str) -> dict:
-    """
-    Decodes a JWT token into a dict
-    """
-    raw = jwt.decode(token, config.secret, algorithms=["HS256"])
-    return raw

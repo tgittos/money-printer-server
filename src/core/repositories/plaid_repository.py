@@ -1,14 +1,10 @@
-from datetime import datetime
-
-from core.apis.plaid.accounts import Accounts, AccountsConfig
 from core.stores.mysql import MySql
-from core.models.plaid_item import PlaidItem
 from core.lib.logger import get_logger
-from core.lib.types import AccountList
 from config import mysql_config, plaid_config
 
-from .facets.plaid.crud import get_plaid_item_by_id, get_plaid_items_by_profile, create_plaid_item, update_plaid_item,\
-    get_plaid_item_by_plaid_item_id
+# import all the facets so that consumers of the repo can access everything
+from .facets.plaid.crud import *
+from .facets.plaid.requests import *
 
 
 class PlaidRepository:

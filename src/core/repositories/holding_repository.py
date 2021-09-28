@@ -12,6 +12,9 @@ from config import mysql_config
 from .facets.account.crud import get_accounts_by_plaid_item
 from .facets.profile.crud import get_profile_by_id
 
+# import all the facets so that consumers of the repo can access everything
+# no facets right now!
+
 
 class HoldingRepository:
 

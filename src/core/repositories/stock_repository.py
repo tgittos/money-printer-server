@@ -1,20 +1,16 @@
 import os
-from datetime import timedelta, datetime, timezone
 from typing import Union, Optional
 
 import pandas as pd
-from sqlalchemy import and_
 
 from core.stores.mysql import MySql
-from core.models.security_price import SecurityPrice
 from core.lib.logger import get_logger
-from core.lib.types import SecurityPriceList, StringList
-from core.lib.utilities import get_last_bus_day
+from core.lib.types import StringList
 from config import iex_config, mysql_config
 
-from .facets.stock.crud import on_iex_blacklist, get_historical_daily_security_prices, get_historical_intraday_security_prices,\
-    create_historical_daily_security_price, create_historical_intraday_security_price
-from .facets.stock.fetch import fetch_historical_daily, fetch_historical_intraday
+# import all the facets so that consumers of the repo can access everything
+from .facets.stock.crud import *
+from .facets.stock.fetch import *
 
 
 class StockRepository:
