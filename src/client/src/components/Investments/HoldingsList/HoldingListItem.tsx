@@ -93,6 +93,10 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
         return moment.utc(this.props.holding.timestamp).fromNow();
     }
 
+    private get latestPrice(): number {
+        return this.state.latestPrice?.close ?? this.props.holding.latestPrice;
+    }
+
     public formatLastPrice(val: number): string {
         if (!val || val === -1) {
             return '???';
@@ -103,26 +107,31 @@ class HoldingListItem extends React.Component<IHoldingListItemProps, IHoldingLis
     render() {
         return <div className={styles.HoldingsListItem}>
             <div>
-                <p className={styles.HoldingsListItemSymbol}>
-                    { this.props.holding.securitySymbol ?? '???' }
-                    <span className={styles.HoldingListItemTimestamp}>
-                        { this.getTimestamp() }
-                    </span>
-                </p>
-                <p className={styles.HoldingListItemDetail}>
-                    <span className={styles.HoldingListItemDetailQuantity}>
-                        { this.formatQuantity(this.props.holding.quantity) }
-                    </span>
-                    <span className={styles.HoldingListItemAt}>@</span>
-                    <span className={styles.HoldingListItemDetailCost}>
-                        { this.formatLastPrice(this.state.latestPrice?.close ?? this.props.holding.latestPrice) }
-                    </span>
-                </p>
-                {
-                    this.state.loading && <p className={styles.HoldingListItemLoading}>
-                      Updating price...
+                    <div>
+                    <p className={styles.HoldingsListItemSymbol}>
+                        { this.props.holding.securitySymbol ?? '???' }
+                        <span className={styles.HoldingListItemTimestamp}>
+                            { this.getTimestamp() }
+                        </span>
                     </p>
-                }
+                    <p className={styles.HoldingListItemDetail}>
+                        <span className={styles.HoldingListItemDetailQuantity}>
+                            { this.formatQuantity(this.props.holding.quantity) }
+                        </span>
+                        <span className={styles.HoldingListItemAt}>@</span>
+                        <span className={styles.HoldingListItemDetailCost}>
+                            { this.formatLastPrice(this.latestPrice) }
+                        </span>
+                    </p>
+                    {
+                        this.state.loading && <p className={styles.HoldingListItemLoading}>
+                          Updating price...
+                        </p>
+                    }
+                </div>
+                <div>
+                    { this.formatLastPrice(this.props.holding.quantity * (this.latestPrice ?? 0)) }
+                </div>
             </div>
         </div>
     }

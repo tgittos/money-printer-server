@@ -1,5 +1,6 @@
 import styles from "./InvestmentAccountSummary.module.scss";
 import React from "react";
+import moment from "moment";
 import Account, {IAccount} from "../../../models/Account";
 import {Col, Container, Row} from "react-bootstrap";
 import HoldingsList from "../HoldingsList/HoldingsList";
@@ -71,7 +72,6 @@ class InvestmentAccountSummary extends React.Component<IInvestmentAccountSummary
     }
 
     private get pieChartData(): IPieData[] {
-        console.log('holdings:', this.holdings);
         return this.holdings.map(holding => ({
             name: holding.securitySymbol ?? '???',
             value: holding.quantity * holding.latestPrice
@@ -96,11 +96,34 @@ class InvestmentAccountSummary extends React.Component<IInvestmentAccountSummary
                         {
                             this.activeHolding
                                 ? <InvestmentPerformance holding={this.activeHolding}/>
-                                : <StaticChart chart={PieChart}
-                                               dimensions={this.chartDimensions}
-                                               data={this.pieChartData}
-                                               labelFormatter={datum => datum.name}
-                                               />
+                                : (<div>
+                                        <div className={styles.InvestmentAccountSummaryHeader}>
+                                            <Container>
+                                                <Row>
+                                                    <Col>
+                                                        { this.props.account.name }
+                                                    </Col>
+                                                    <Col>
+                                                        { this.props.account.type} ({this.props.account.subtype})
+                                                    </Col>
+                                                    <Col>
+                                                        Balance: { this.props.account.balance }
+                                                    </Col>
+                                                    <Col>
+                                                        Performance: TODO
+                                                    </Col>
+                                                    <Col>
+                                                        Last updated: { moment.utc(this.props.account.timestamp).fromNow() }
+                                                    </Col>
+                                                </Row>
+                                            </Container>
+                                        </div>
+                                        <StaticChart chart={PieChart}
+                                                   dimensions={this.chartDimensions}
+                                                   data={this.pieChartData}
+                                                   labelFormatter={datum => datum.name}
+                                                   />
+                                    </div>)
                         }
                     </Col>
                 </Row>

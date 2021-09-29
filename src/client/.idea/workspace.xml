@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.dockerignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.ebextensions/healthcheck.config" beforeDir="false" afterPath="$PROJECT_DIR$/../.ebextensions/healthcheck.config" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
@@ -21,7 +20,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/loaders/nyan.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" afterDir="false" />
@@ -72,6 +70,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentPerformance/InvestmentPerformance.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentPerformance/InvestmentPerformance.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentPerformance/InvestmentPerformance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentPerformance/InvestmentPerformance.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Investments/Investments.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/Investments.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/Investments.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/Investments.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/Investments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/Investments.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/MiniProfile/MiniProfile.lazy.tsx" afterDir="false" />
@@ -306,7 +305,7 @@
       <workItem from="1630002874254" duration="8300000" />
       <workItem from="1630011654402" duration="127020000" />
       <workItem from="1632578930047" duration="598000" />
-      <workItem from="1632705606846" duration="11095000" />
+      <workItem from="1632705606846" duration="13087000" />
     </task>
     <servers />
   </component>
