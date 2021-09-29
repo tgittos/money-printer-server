@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './../mp-theme.scss'
+import '../../mp-theme.scss'
 
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import Header from '../components/Header/Header';
-import Profile, {IServerProfile} from "../models/Profile";
+import Header from '../../components/Header/Header';
+import Profile, {IServerProfile} from "../../models/Profile";
 
 export default {
     title: 'Components/Header',

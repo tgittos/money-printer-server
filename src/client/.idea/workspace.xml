@@ -2,7 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/stories/atoms/Buttons.stories.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Accounts.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/components/Accounts.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/BigLoader.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/components/BigLoader.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Charts/CandleChart.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/charts/CandleChart.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Charts/LineChart.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/charts/LineChart.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Common/Buttons.stories.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Common/Modals.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/molecules/Modals.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Common/Panels.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/atoms/Panels.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Header.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/components/Header.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/HoldingList.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/components/HoldingList.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Login.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/components/Login.stories.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stories/Profiles.stories.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/stories/components/Profiles.stories.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,11 +70,11 @@
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stories" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/stories/molecules" />
+      <recent name="$PROJECT_DIR$/src/stories/components" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\shared" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\models" />
-      <recent name="C:\Users\Tim\src\money-printer\src\client\src\responses" />
-      <recent name="C:\Users\Tim\src\money-printer\src\client\src\stores" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -78,7 +90,7 @@
       <workItem from="1632578930047" duration="598000" />
       <workItem from="1632705606846" duration="13087000" />
       <workItem from="1632882346836" duration="364000" />
-      <workItem from="1632882738076" duration="6388000" />
+      <workItem from="1632882738076" duration="7991000" />
     </task>
     <servers />
   </component>

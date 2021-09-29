@@ -1,8 +1,8 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import Accounts from '../components/Accounts/Accounts';
-import Account from '../models/Account';
+import Accounts from '../../components/Accounts/Accounts';
+import Account from '../../models/Account';
 
 export default {
     title: 'Components/Accounts',

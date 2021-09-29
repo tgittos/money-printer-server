@@ -6,7 +6,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Panel from "../../components/shared/Panel/Panel";
 
 export default {
-    title: 'Components/Common/Panel',
+    title: 'Components/atoms/Panel',
     component: Panel,
 } as ComponentMeta<typeof Panel>;
 

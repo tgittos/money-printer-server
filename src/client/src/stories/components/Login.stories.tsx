@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import Login from '../components/Login/Login';
+import Login from '../../components/Login/Login';
 
 export default {
     title: 'Components/Login',

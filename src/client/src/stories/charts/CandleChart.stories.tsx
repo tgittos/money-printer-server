@@ -1,18 +1,18 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import BasicLineChart from "../../components/Charts/lib/charts/BasicLineChart";
 import StaticChart from "../../components/Charts/StaticChart";
 import IChartDimensions from "../../components/Charts/interfaces/IChartDimensions";
 import IChartMargin from "../../components/Charts/interfaces/IChartMargin";
-import { lineGenerator } from "../data";
+import BasicCandleChart from "../../components/Charts/lib/charts/BasicCandleChart";
+import { candleGenerator } from "./../data";
 
 export default {
-    title: 'Components/Charts/LineChart',
+    title: 'Components/charts/CandleChart',
     component: StaticChart,
 } as ComponentMeta<typeof StaticChart>;
 
 const Template: ComponentStory<typeof StaticChart> = (args) => <StaticChart
-    chart={BasicLineChart}
+    chart={BasicCandleChart}
     dimensions={{
         width: 1200,
         height: 800,
@@ -32,10 +32,10 @@ EmptyState.args = {
 
 export const PopulatedState = Template.bind({});
 PopulatedState.args = {
-    data: lineGenerator()
+    data: candleGenerator()
 };
 
 export const PartialDataState = Template.bind({});
 PartialDataState.args = {
-    data: lineGenerator(500, true)
+    data: candleGenerator(500, true)
 }

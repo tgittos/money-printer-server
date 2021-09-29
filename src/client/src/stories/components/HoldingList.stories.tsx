@@ -1,15 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './../mp-theme.scss'
+import '../../mp-theme.scss'
 
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import HoldingsList from "../components/Investments/HoldingsList/HoldingsList";
-import Account, {IAccount} from "../models/Account";
+import HoldingsList from "../../components/Investments/HoldingsList/HoldingsList";
+import Account, {IAccount} from "../../models/Account";
 import moment from "moment";
-import HoldingListItem from "../components/Investments/HoldingsList/HoldingListItem";
-import Holding, {IHolding} from "../models/Holding";
-import {IHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
+import HoldingListItem from "../../components/Investments/HoldingsList/HoldingListItem";
+import Holding, {IHolding} from "../../models/Holding";
+import {IHistoricalEoDSymbol} from "../../models/symbols/HistoricalEoDSymbol";
 
 export default {
     title: 'Components/HoldingsList',

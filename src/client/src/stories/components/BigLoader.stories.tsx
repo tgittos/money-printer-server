@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import BigLoader from '../components/shared/Loaders/BigLoader';
+import BigLoader from '../../components/shared/Loaders/BigLoader';
 
 export default {
     title: 'Components/BigLoader',
