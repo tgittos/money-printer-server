@@ -1,20 +1,32 @@
-$mp-dark-grey: #0E1B26;
+// greys
 $mp-mid-grey: #283740;
 $mp-light-grey: #384D59;
+$mp-white: #C9F2E3;
+
+// greens
 $mp-dark-green: #022612;
 $mp-mid-green: #07401B;
 $mp-light-green: #5ABF69;
 $mp-ultra-light-green: #AEF2B9;
-$mp-white: #C9F2E3;
+
+// blues
+$mp-blue-grey: #0E1B26;
 $mp-light-blue: #6295D9;
 $mp-blue: #2B718C;
+
+// yellows
 $mp-bright-yellow: #D9B91A;
+
+// browns
 $mp-mid-brown: #593B03;
 $mp-tan: #F28B50;
 $mp-dark-brown: #261901;
+
+// reds
 $mp-bright-red: #A60303;
 $mp-red: #590202;
 
+// role based color defs
 $background-dark: $mp-dark-green;
 $background-light: $mp-mid-green;
 $background: $background-dark;

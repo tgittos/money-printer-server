@@ -45,8 +45,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "styleguide": "npx styleguidist server",
+    "styleguide:build": "npx styleguidist build"
   },
   "eslintConfig": {
     "extends": [
@@ -86,6 +86,7 @@
     "@types/bluebird": "^3.5.36",
     "@types/d3": "^7.0.0",
     "@types/react-router-dom": "^5.1.8",
-    "@types/ws": "^7.4.7"
+    "@types/ws": "^7.4.7",
+    "react-styleguidist": "^11.1.7"
   }
 }
