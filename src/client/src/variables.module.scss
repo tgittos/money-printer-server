@@ -43,3 +43,22 @@ $secondary-highlight: $mp-light-green;
 
 $border-primary: $mp-mid-grey;
 $border-secondary: $mp-light-grey;
+
+:export {
+  mpMidGrey: $mp-mid-grey;
+  mpLightGrey: $mp-light-grey;
+  mpWhite: $mp-white;
+  mpDarkGreen: $mp-dark-green;
+  mpMidGreen: $mp-mid-green;
+  mpLightGreen: $mp-light-green;
+  mpUltraLightGreen: $mp-ultra-light-green;
+  mpBlueGrey: $mp-blue-grey;
+  mpLightBlue: $mp-light-blue;
+  mpBlue: $mp-blue;
+  mpBrightYellow: $mp-bright-yellow;
+  mpTan: $mp-tan;
+  mpMidBrown: $mp-mid-brown;
+  mpDarkBrown: $mp-dark-brown;
+  mpBrightRed: $mp-bright-red;
+  mpRed: $mp-red;
+}

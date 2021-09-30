@@ -1,6 +1,6 @@
-import ICandleDataPoint from "../components/Charts/interfaces/ICandleDataPoint";
+import ICandleDataPoint from "../src/components/Charts/interfaces/ICandleDataPoint";
 import moment from "moment";
-import ILineDataPoint from "../components/Charts/interfaces/ILineDataPoint";
+import ILineDataPoint from "../src/components/Charts/interfaces/ILineDataPoint";
 
 type Generator = () => number;
 
