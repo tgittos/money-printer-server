@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 
 import React from "react";
+
 import AppStore, {getAccountsState, getAppState, getHoldingsState, getProfileState} from './stores/AppStore';
 import { IAppState } from "./slices/AppSlice";
 import I18nRepository from "./repositories/I18nRepository";
@@ -101,7 +102,7 @@ class App extends React.Component<{}, IAppState> {
                 <Investments accounts={this.filterInvestmentAccounts(accountState.accounts)} />
               </Route>
               <Route path="/forecasting">
-                <Forecasting></Forecasting>
+                <Forecasting />
               </Route>
             </Switch>
           </div>

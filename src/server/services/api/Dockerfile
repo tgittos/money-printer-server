@@ -30,6 +30,7 @@ EXPOSE 8000
 ENV MP_ENVIRONMENT=environment:-development
 # Bind to the public IP of the container
 ENV MP_HOST=0.0.0.0
+ENV MP_PORT=8000
 # Add our current path to the Python path
 ENV PYTHONPATH=$PYTHONPATH:.
 

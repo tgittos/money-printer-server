@@ -22,6 +22,7 @@ RUN mkdir logs
 
 ENV MP_ENVIRONMENT=environment:-development
 ENV MP_HOST=0.0.0.0
+ENV MP_PORT=8000
 
 EXPOSE 8000
 

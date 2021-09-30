@@ -1,4 +1,4 @@
-@import './../../variables';
+@import '../../../public/styles/variables.module';
 
 .SymbolTracker {
 
@@ -8,6 +8,6 @@
   .SymbolChipList {
     margin: 20px auto 20px auto;
     align-content: center;
-    border: 1px solid $olive-green;
+    border: 1px solid $border-secondary;
   }
 }

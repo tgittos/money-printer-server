@@ -1,5 +1,5 @@
-@import './variables';
-@import './fonts';
+@import '_variables.module';
+@import '_fonts.module';
 
 html, body {
   font-family: 'Dosis', sans-serif;
