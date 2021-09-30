@@ -1,3 +1,62 @@
+In order to enforce spacing rules across the Money Printer application, most UI elements are comprised of nested `Grid`
+and `Panel` objects. `Panel`s can go inside `Grid`s, and `Grid`s can go inside `Panel`s.
+
+This results in a pleasing and intentional 'boxy' look that goes hand in hand with the color philosphy to enforce the
+design "vibe"
+
+## Layout
+
+The `Grid` is the basic organizational structural element, and is used to layout components and the content of components.
+
+There are several specialized types of `Grid` to assist in common layout goals.
+
+### Grid
+```js noeditor
+import Grid from '../src/components/shared/Grid/Grid';
+import vars from '../public/styles/_variables.module.scss';
+
+<Grid>
+  <Grid.Row>
+    <Grid.Col style={{backgroundColor: vars.mpGrey5}}>1 of 2</Grid.Col>
+    <Grid.Col style={{backgroundColor: vars.mpGrey5}}>2 of 2</Grid.Col>
+  </Grid.Row>
+  <Grid.Row>
+    <Grid.Col style={{backgroundColor: vars.mpGrey5}}>1 of 3</Grid.Col>
+    <Grid.Col style={{backgroundColor: vars.mpGrey5}}>2 of 3</Grid.Col>
+    <Grid.Col style={{backgroundColor: vars.mpGrey5}}>3 of 3</Grid.Col>
+  </Grid.Row>
+</Grid>
+```
+
+### Nx2Grid
+
+The `Nx2Grid` is a specialized `Grid` intended for use inside `Panel` objects for more consistent layout.
+
+While you can nest a regular `Grid` inside a `Panel`, often `Panel`s tend to be small and it can be nice to enforce a
+2 column layout inside the panels.
+
+```js noeditor
+import Nx2Grid from '../src/components/shared/Grid/Nx2Grid';
+import vars from '../public/styles/_variables.module.scss';
+
+<Nx2Grid>
+  <Nx2Grid.Row>
+    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>1 of 2</Nx2Grid.Col>
+    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>2 of 2</Nx2Grid.Col>
+  </Nx2Grid.Row>
+  <Nx2Grid.Row>
+    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>1 of 2</Nx2Grid.Col>
+    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>2 of 2</Nx2Grid.Col>
+  </Nx2Grid.Row>
+  <Nx2Grid.Row>
+    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>1 of 2</Nx2Grid.Col>
+    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>2 of 2</Nx2Grid.Col>
+  </Nx2Grid.Row>
+</Nx2Grid>
+```
+
+Attempting to create an `Nx2Grid` with a `Row` with more than 2 `Col` objects will throw an error.
+
 ## Containers
 
 ### Panel
@@ -7,7 +66,7 @@ They help give a consistent "wireframe" style across the application.
 
 A panel can be used as anything from a simple container:
 
-```js
+```js noeditor
 import Panel from '../src/components/shared/Panel/Panel';
 
 <Panel>
@@ -17,7 +76,7 @@ import Panel from '../src/components/shared/Panel/Panel';
 
 All the way up to a full complex dashboard-like panel with control hooks:
 
-```js
+```js noeditor
 import Panel from '../src/components/shared/Panel/Panel';
 import Button from "../src/components/shared/Button/Button";
 
@@ -48,3 +107,4 @@ import Button from "../src/components/shared/Button/Button";
 ```
 
 Check the full documentation for the `Panel` component for details on full usage.
+
