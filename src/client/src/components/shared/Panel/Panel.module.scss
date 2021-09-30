@@ -1,15 +1,21 @@
-@import "./../../../mp-theme";
+@import "../../../../public/styles/variables.module";
 
 .Panel {
   border: 1px solid $border-primary;
 }
-.PanelBody {
-  padding: 0.3em;
-}
+
 .PanelTitle {
   border: 1px solid $border-primary;
   margin-top: -1px;
   margin-left: -1px;
   margin-right: -1px;
+  padding: 0.3em;
+}
+
+.PanelBody {
+  padding: 0.3em;
+}
+
+.PanelFooter {
   padding: 0.3em;
 }

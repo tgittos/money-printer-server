@@ -1,4 +1,4 @@
-@import '../../../variables.module';
+@import '../../../../public/styles/variables.module';
 
 .HoldingsList {
   font-size: 0.8em;
@@ -31,7 +31,7 @@
     font-size: 0.6em;
     font-weight: lighter;
     background: $secondary-highlight;
-    color: $text-dark;
+    color: $text;
   }
 
   .HoldingsListItemSymbol {

@@ -1,0 +1,31 @@
+@import '_colors.module';
+@import '_fonts.module';
+
+:export {
+  mpBlack: $mp-black;
+  mpWhite: $mp-white;
+  mpGrey1: $mp-grey1;
+  mpGrey2: $mp-grey2;
+  mpGrey3: $mp-grey3;
+  mpGrey4: $mp-grey4;
+  mpGrey5: $mp-grey5;
+  mpGreen1: $mp-green1;
+  mpGreen2: $mp-green2;
+  mpGreen3: $mp-green3;
+  mpGreen4: $mp-green4;
+  mpGreen5: $mp-green5;
+  mpGreen6: $mp-green6;
+  mpGreen7: $mp-green7;
+  mpGreen8: $mp-green8;
+  mpGreen9: $mp-green9;
+  mpGreen10: $mp-green10;
+  mpBlueGrey: $mp-blue-grey;
+  mpLightBlue: $mp-light-blue;
+  mpBlue: $mp-blue;
+  mpBrightYellow: $mp-bright-yellow;
+  mpTan: $mp-tan;
+  mpMidBrown: $mp-mid-brown;
+  mpDarkBrown: $mp-dark-brown;
+  mpBrightRed: $mp-bright-red;
+  mpRed: $mp-red;
+}

@@ -1,37 +1,73 @@
 ## Colors
 
-### Greys
+Green is the color of money, baby! The primary design palette of Money Printer is dominated by the green spectrum, with
+additional complementary shades from the violet and orange families and splashes of yellow and blue.
+
+The design "vibe" of Money Printer is kind of "digital cyberpunk'. We're big fans of minimalist UI design that fades
+away from the data, making it the star of the application.
+
+## Primary Palette
+
+The primary palette is where the coloring for large and important visual elements should be selected from. Most of the
+colors from this palette should work well together, just don't go creating a rainbow vomit mess.
+
+```js noeditor
+```
+
+## Secondary Palette
+
+The secondary palette is for drawing attention to various elements in the design. These colors are used to bring attention
+to elements of the design. Think button state during interactions, alert notifications, etc.
+
+```js noeditor
+```
+
+## Grey Palette
+
+Grey goes with everything. Here are some greys we like.
 
 ```js noeditor
 import ColorChip from '../src/guidebook/components/ColorChip';
-import vars from './../src/variables.module.scss';
+import vars from './../public/styles/_variables.module.scss';
 
 <>
-    <ColorChip name="$mp-mid-grey" value={vars.mpMidGrey}/>
-    <ColorChip name="$mp-light-grey" value={vars.mpLightGrey}/>
-    <ColorChip name="$mp-white" value={vars.mpWhite}/>
+  <ColorChip name="$mp-white" value={vars.mpWhite}/>
+  <ColorChip name="$mp-grey1" value={vars.mpGrey1}/>
+  <ColorChip name="$mp-grey2" value={vars.mpGrey2}/>
+  <ColorChip name="$mp-grey3" value={vars.mpGrey3}/>
+  <ColorChip name="$mp-grey4" value={vars.mpGrey4}/>
+  <ColorChip name="$mp-grey5" value={vars.mpGrey5}/>
+  <ColorChip name="$mp-black" value={vars.mpBlack}/>
 </>
 ```
 
-### Greens
+## Role Variables
+
+In order to keep the color theme consistent across the application, a number of role-specific color variables have been
+defined. These include variables for primary and secondary borders, headers, highlights, etc.
+
+## Spectrum
+
+In the rare instances you want to use a color outside the primary, secondary or grey palettes, below is a selection of
+vetted shades from the entire color spectrum. These shades are all selected to work well with each other and other
+colors in the 
+
+
+### Reds
 
 ```js noeditor
 import ColorChip from '../src/guidebook/components/ColorChip';
-import vars from './../src/variables.module.scss';
+import vars from './../public/styles/_variables.module.scss';
 
 <>
-    <ColorChip name="$mp-dark-green" value={vars.mpDarkGreen}/>
-    <ColorChip name="$mp-mid-green" value={vars.mpMidGreen}/>
-    <ColorChip name="$mp-light-green" value={vars.mpLightGreen}/>
-    <ColorChip name="$mp-ultra-light-green" value={vars.mpUltraLightGreen}/>
 </>
 ```
 
-### Blues
+### Oranges
 
 ```js noeditor
 import ColorChip from '../src/guidebook/components/ColorChip';
-import vars from './../src/variables.module.scss';
+import vars from './../public/styles/_variables.module.scss';
 
 <>
     <ColorChip name="$mp-blue-grey" value={vars.mpBlueGrey}/>
@@ -44,31 +80,38 @@ import vars from './../src/variables.module.scss';
 
 ```js noeditor
 import ColorChip from '../src/guidebook/components/ColorChip';
-import vars from './../src/variables.module.scss';
+import vars from './../public/styles/_variables.module.scss';
 
 <>
     <ColorChip name="$mp-bright-yellow" value={vars.mpBrightYellow}/>
 </>
 ```
 
-### Browns
+### Greens
 
 ```js noeditor
 import ColorChip from '../src/guidebook/components/ColorChip';
-import vars from './../src/variables.module.scss';
+import vars from './../public/styles/_variables.module.scss';
 
 <>
-    <ColorChip name="$mp-tan" value={vars.mpTan}/>
-    <ColorChip name="$mp-mid-brown" value={vars.mpMidBrown}/>
-    <ColorChip name="$mp-dark-brown" value={vars.mpDarkBrown}/>
+  <ColorChip name="$mp-green1" value={vars.mpGreen1}/>
+  <ColorChip name="$mp-green2" value={vars.mpGreen2}/>
+  <ColorChip name="$mp-green3" value={vars.mpGreen3}/>
+  <ColorChip name="$mp-green4" value={vars.mpGreen4}/>
+  <ColorChip name="$mp-green5" value={vars.mpGreen5}/>
+  <ColorChip name="$mp-green6" value={vars.mpGreen6}/>
+  <ColorChip name="$mp-green7" value={vars.mpGreen7}/>
+  <ColorChip name="$mp-green8" value={vars.mpGreen8}/>
+  <ColorChip name="$mp-green9" value={vars.mpGreen9}/>
+  <ColorChip name="$mp-green10" value={vars.mpGreen10}/>
 </>
 ```
 
-### Reds
+### Blues
 
 ```js noeditor
 import ColorChip from '../src/guidebook/components/ColorChip';
-import vars from './../src/variables.module.scss';
+import vars from './../public/styles/_variables.module.scss';
 
 <>
     <ColorChip name="$mp-bright-red" value={vars.mpBrightRed}/>
@@ -76,6 +119,9 @@ import vars from './../src/variables.module.scss';
 </>
 ```
 
+### Indigos
+
+### Violets
 
 
 ## Typography
