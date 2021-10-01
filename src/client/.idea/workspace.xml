@@ -21,10 +21,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/watcherTasks.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/images/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/loaders/nyan.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_colors.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_colors.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/styles/_effects.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_effects.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_fonts.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_fonts.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_variables.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_variables.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/mp-theme.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/mp-theme.module.scss" afterDir="false" />
@@ -94,7 +93,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Button/Button.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Button/Button.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Button/Button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Button/Button.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/shared/Button/IconButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Button/IconButton.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorMessage/ErrorMessage.module.scss" afterDir="false" />
@@ -105,13 +104,13 @@
       <change beforePath="$PROJECT_DIR$/src/components/shared/Grid/Nx2Row.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Grid/Nx2Row.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Panel.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Panel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/PanelBody.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/PanelBody.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/PanelFooter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/PanelFooter.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/PanelHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/PanelHeader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/guidebook/components/ColorChip.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/guidebook/components/ColorChip.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
@@ -160,6 +159,7 @@
       <change beforePath="$PROJECT_DIR$/styleguide.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styleguide/Atoms.md" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide/Atoms.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styleguide/Branding.md" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide/Branding.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/styleguide/Charts.md" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide/Charts.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styleguide/Introduction.md" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide/Introduction.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styleguide/Structure.md" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide/Structure.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styleguide/Styleguide.scss" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide/Styleguide.scss" afterDir="false" />

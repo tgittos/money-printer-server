@@ -23,7 +23,8 @@ class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     }
 
     private renderCol() {
-        return <Col className={styles.ToolbarVertical} {...this.props}>
+        const s = [styles.ToolbarVertical, 'mp-toolbar', 'mp-toolbar-vertical'];
+        return <Col xs={1} className={s} {...this.props}>
             { this.props.children.map(child => child) }
         </Col>
     }

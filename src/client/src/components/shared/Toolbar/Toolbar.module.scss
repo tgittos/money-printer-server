@@ -6,10 +6,17 @@
 
 .Toolbar {
 
+  margin: 0;
+
   :global {
     .mp-icon-btn {
-      border-top: 0;
-      border-bottom: 0;
+      border: none;
+    }
+    .mp-icon-btn + .mp-icon-btn {
+      border-left: 1px solid $border-primary;
+    }
+    .mp-icon-btn:last-child {
+      border-right: 1px solid $border-primary;
     }
   }
 
@@ -20,9 +27,20 @@
 
 .ToolbarVertical {
 
+  width: 2em;
+  padding: 0;
+
   :global {
-    .btn {
+    .mp-icon-btn {
       display: block;
+      width: 1.85em;
+      border: none;
+      padding-left: 1px;
+      padding-right: 1px;
+      padding-top: 1px;
+    }
+    .mp-icon-btn + .mp-icon-btn {
+      border-top: 1px solid $border-primary;
     }
   }
 }
