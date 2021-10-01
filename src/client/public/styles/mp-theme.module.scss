@@ -42,23 +42,6 @@ input:checked {
   color: $text-dark;
 }
 
-button {
-  background: transparent;
-  color: $text-light;
-  border-radius: 0.25rem;
-  border-style: solid;
-  border-width: 1px;
-  border-color: $border-secondary;
-}
-button:hover {
-  background: $background-light;
-  color: $text-dark;
-}
-button:focus {
-  background: $background-light;
-  color: $text-dark;
-}
-
 .content {
   height: 100%;
   max-height: 100%;

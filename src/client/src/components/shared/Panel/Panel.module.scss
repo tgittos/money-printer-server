@@ -2,20 +2,36 @@
 
 .Panel {
   border: 1px solid $border-primary;
+  padding: 6px;
+
+  :global {
+    p {
+      margin-bottom: 0;
+    }
+    p + p {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .PanelTitle {
-  border: 1px solid $border-primary;
-  margin-top: -1px;
-  margin-left: -1px;
-  margin-right: -1px;
+  border-bottom: 1px solid $border-primary;
+  margin-top: -7px;
+  margin-left: -7px;
+  margin-right: -7px;
   padding: 0.3em;
 }
 
 .PanelBody {
   padding: 0.3em;
+  margin-left: -7px;
+  margin-right: -7px;
 }
 
 .PanelFooter {
+  border-top: 1px solid $border-primary;
+  margin-bottom: -7px;
+  margin-left: -7px;
+  margin-right: -7px;
   padding: 0.3em;
 }

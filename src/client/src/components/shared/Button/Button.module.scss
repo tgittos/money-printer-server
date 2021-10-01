@@ -1,0 +1,18 @@
+@import "./../../../../public/styles/_variables.module.scss";
+
+.Button {
+    background: transparent;
+    color: $text;
+    border-radius: 0.25rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: $border-secondary;
+
+  &:hover {
+    color: $text;
+  }
+
+  &:focus {
+    color: $text;
+  }
+}

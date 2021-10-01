@@ -1,7 +1,8 @@
 ## Buttons
 
-```js noeditor
+```js noeditor padded
 import Button from './../src/components/shared/Button/Button';
+
 <>
     <Button>Click me</Button>
     <Button disabled={true}>Disabled</Button>

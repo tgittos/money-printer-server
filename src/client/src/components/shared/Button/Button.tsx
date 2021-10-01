@@ -1,3 +1,4 @@
+import styles from "./Button.module.scss";
 import React, {ReactNode} from "react";
 import { Button as ReactButton } from "react-bootstrap";
 
@@ -16,6 +17,7 @@ export interface IButtonState {
 class Button extends React.Component<IButtonProps, IButtonState> {
     render() {
         return <ReactButton
+            className={styles.Button}
             variant={"outline-" + this.props.variant}
             size={this.props.size}
             active={this.props.active}
