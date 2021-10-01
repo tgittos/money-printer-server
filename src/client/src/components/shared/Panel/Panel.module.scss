@@ -20,6 +20,14 @@
   margin-left: -7px;
   margin-right: -7px;
   padding: 0.3em;
+  position: relative;
+
+  :global {
+    .btn, .btn-close {
+      position: absolute;
+      right: 0;
+    }
+  }
 }
 
 .PanelBody {
@@ -34,4 +42,11 @@
   margin-left: -7px;
   margin-right: -7px;
   padding: 0.3em;
+  text-align: right;
+
+  :global {
+    .btn + .btn {
+      margin-left: 0.3em;
+    }
+  }
 }

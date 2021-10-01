@@ -133,3 +133,27 @@ import vars from './../public/styles/_variables.module.scss';
 ## Interactions
 
 ## Theming
+
+The design of Money Printer is intended to invoke feelings of retro-futurism and a general cyberpunk vibe. Finance is
+changing, it's democratizing and digital currencies at least have a place at the table, if not dominate the future.
+
+Using Money Printer to do something as dry as manage your financial future should feel fun, and this vibe is part of
+that fun.
+
+Not included as part of the stylesheet for this style guide are some affects that the theme applies to the body.
+
+These are demonstrated below:
+
+```jsx noeditor
+import fx from "./../public/styles/_effects.module.scss";
+import vars from "./../public/styles/_variables.module.scss";
+import Panel from '../src/components/shared/Panel/Panel';
+
+const s = { backgroundColor: vars.mpGreen1 };
+
+<Panel className={fx.glow} style={s}>
+  <p>A simple panel that can hold any child elements.</p>
+  <p>Some more content to make the panel bigger.</p>
+  <p>Try selecting some of the text.</p>
+</Panel>
+```

@@ -1,9 +1,9 @@
 @import "./../../../../public/styles/_variables.module.scss";
 
-.Button {
+.Button, .IconButton {
     background: transparent;
     color: $text;
-    border-radius: 0.25rem;
+    border-radius: 0.2rem;
     border-style: solid;
     border-width: 1px;
     border-color: $border-secondary;
@@ -15,4 +15,15 @@
   &:focus {
     color: $text;
   }
+}
+
+.IconButton {
+  padding: 0;
+  border-radius: 0;
+  width: 2em;
+  height: 2em;
+}
+
+.IconButton + .IconButton {
+  border-left: none;
 }

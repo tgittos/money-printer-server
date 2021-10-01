@@ -1,13 +1,11 @@
 import styles from "./Button.module.scss";
-import React, {ReactNode} from "react";
+import React  from "react";
 import { Button as ReactButton } from "react-bootstrap";
 
-export interface IButtonProps {
-    children: ReactNode;
-    variant: string;
-    size: string;
-    active: boolean;
-    disabled: boolean;
+export interface IButtonProps extends React.ComponentPropsWithoutRef<ReactButton> {
+    // wraps the React button's variant so we can always set it to outline
+    variant?: string;
+    className?: string | object;
 }
 
 export interface IButtonState {
@@ -15,14 +13,21 @@ export interface IButtonState {
 }
 
 class Button extends React.Component<IButtonProps, IButtonState> {
+
+    private get variant(): string {
+        let variant = "outline";
+        if (this.props.variant) {
+            variant += "-" + this.props.variant
+        }
+        return variant;
+    }
+
     render() {
         return <ReactButton
-            className={styles.Button}
-            variant={"outline-" + this.props.variant}
-            size={this.props.size}
-            active={this.props.active}
-            disabled={this.props.disabled}
-        >{ this.props.children }</ReactButton>
+            className={this.props.className ?? styles.Button}
+            variant={this.variant}
+            {...this.props}
+        />
     }
 }
 

@@ -1,0 +1,29 @@
+@import "./_colors.module.scss";
+
+// give everything a subtle "glow"
+.glow {
+  text-shadow: 0 0 5px $mp-green4;
+}
+
+// scan lines
+.glow::after {
+  content: "";
+  // position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(
+      0deg,
+      rgba(black, 0.15),
+      rgba(black, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+  );
+}
+
+// customize selection styling
+.glow ::selection {
+  // background: #0080FF;
+  text-shadow: none;
+}

@@ -2,15 +2,13 @@
   padding: 0.3em;
 
   :global {
-    .row, .col {
-      padding: 0.3em;
+    .row + .row {
+      margin-top: 0.3em;
+      margin-bottom: 0.3em;
     }
     .col + .col {
       margin-left: 0.3em;
       margin-right: 0.3em;
     }
   }
-}
-
-.Row {
 }

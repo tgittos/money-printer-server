@@ -1,10 +1,11 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 
-@import '_variables.module';
+@import '_colors.module';
 @import '_fonts.module';
+@import '_effects.module';
+@import '_variables.module';
 
 html, body {
-  font-family: 'Dosis', sans-serif;
   background: $background;
   height: 100%;
   max-height: 100%;

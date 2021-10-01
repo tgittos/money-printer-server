@@ -19,12 +19,17 @@ module.exports = {
       content: 'styleguide/Atoms.md'
     },
     {
+      name: 'Charts',
+      content: 'styleguide/Charts.md'
+    },
+    {
       name: 'Component Reference',
-      // content: 'docs/ui.md',
       components: 'src/components/**/*.{ts,tsx}',
       exampleMode: 'expand', // 'hide' | 'collapse' | 'expand'
       usageMode: 'expand' // 'hide' | 'collapse' | 'expand'
     }
   ],
+  // only include documented components
+  skipComponentsWithoutExample: true,
   theme: 'styleguide/Styleguide.scss',
 }

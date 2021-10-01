@@ -1,0 +1,28 @@
+@import "../../../../public/styles/variables.module";
+
+.Toolbar, .ToolbarVertical {
+  border: 1px solid $border-primary;
+}
+
+.Toolbar {
+
+  :global {
+    .mp-icon-btn {
+      border-top: 0;
+      border-bottom: 0;
+    }
+  }
+
+  .ToolbarCol {
+    padding: 0;
+  }
+}
+
+.ToolbarVertical {
+
+  :global {
+    .btn {
+      display: block;
+    }
+  }
+}
