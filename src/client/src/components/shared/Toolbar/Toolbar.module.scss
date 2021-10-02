@@ -6,19 +6,11 @@
 
 .Toolbar {
 
-  margin: 0;
-
-  :global {
-    .mp-icon-btn {
-      border: none;
-    }
-    .mp-icon-btn + .mp-icon-btn {
-      border-left: 1px solid $border-primary;
-    }
-    .mp-icon-btn:last-child {
-      border-right: 1px solid $border-primary;
-    }
-  }
+  // don't collapse this or it loses specificity
+  margin-top: -11px;
+  margin-left: -0.6em;
+  margin-right: -0.6em;
+  margin-bottom: 0;
 
   .ToolbarCol {
     padding: 0;
@@ -29,18 +21,5 @@
 
   width: 2em;
   padding: 0;
-
-  :global {
-    .mp-icon-btn {
-      display: block;
-      width: 1.85em;
-      border: none;
-      padding-left: 1px;
-      padding-right: 1px;
-      padding-top: 1px;
-    }
-    .mp-icon-btn + .mp-icon-btn {
-      border-top: 1px solid $border-primary;
-    }
-  }
+  margin: -10px 0 0 -0.9em;
 }

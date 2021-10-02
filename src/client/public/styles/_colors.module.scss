@@ -39,8 +39,6 @@ $mp-bright-red: #A60303;
 $mp-red: #590202;
 
 // role based color defs
-$background: $mp-grey1;
-
 $text: $mp-green2;
 
 $link: #19a64d;
@@ -51,3 +49,10 @@ $secondary-highlight: $mp-green8;
 
 $border-primary: $mp-grey2;
 $border-secondary: $mp-grey3;
+
+$btn-primary: $mp-green3;
+$btn-primary-hover: $mp-green4;
+$btn-secondary: $mp-green1;
+$btn-secondary-hover: $mp-green2;
+$btn-disabled: $mp-grey3;
+$btn-outline-hover: #19171620;

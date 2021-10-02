@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.dockerignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.ebextensions/healthcheck.config" beforeDir="false" afterPath="$PROJECT_DIR$/../.ebextensions/healthcheck.config" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
@@ -93,6 +94,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SymbolTracker/SymbolTracker.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Button/Button.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Button/Button.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/shared/Button/Button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Button/Button.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Button/IconButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Button/IconButton.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/ErrorList/ErrorList.tsx" afterDir="false" />
@@ -326,6 +328,7 @@
       <workItem from="1632705606846" duration="13087000" />
       <workItem from="1632882346836" duration="364000" />
       <workItem from="1632882738076" duration="7991000" />
+      <workItem from="1633184999000" duration="5770000" />
     </task>
     <servers />
   </component>

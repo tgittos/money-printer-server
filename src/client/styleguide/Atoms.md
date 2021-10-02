@@ -1,33 +1,77 @@
 ## Buttons
 
+#### Variants
+
+Button appearance is controlled through passing in variant key works as props on the buttons.
+Some variants change the color/border of the buttons:
+
+- `primary`
+- `secondary`
+- `disabled`
+- `outline`
+- `link`
+
+While others change the size of the buttons:
+
+- `small`
+- `medium`
+- `large`
+- `xl`
+- `full`
+
+Variants of different types can be mixed and matched (`primary small`), but the component default to the last specified
+variant if multiple types conflict.
+
 ### Basic Button
 
-Your basic, run of the mill button with a variety of styled states:
+Your basic, run-of-the-mill button with a variety of styled states:
 
-```jsx padded noeditor
+```jsx padded
 import Button from './../src/components/shared/Button/Button';
 
 <>
-    <Button>Click me</Button>
-    <Button disabled>Disabled</Button>
-    <Button active>Active</Button>
+  <Button primary>Primary</Button>
+  <Button secondary>Secondary</Button>
+  <Button disabled>Disabled</Button>
+  <Button outline>Outline</Button>
+  <Button link>Link</Button>
 </>
 ```
+
+#### Size Variants
+
+```jsx padded
+import Button from './../src/components/shared/Button/Button';
+
+<>
+  <Button small primary>Small</Button>
+  <Button medium primary>Medium</Button>
+  <Button large primary>Large</Button>
+  <Button xl primary>Extra Large</Button>
+  <Button full primary>Full Width</Button>
+</>
+```
+
+The `medium` variant is the standard button variant, and if no size is given will be the size used.
 
 ### Icon Button
 
 Sometimes a picture is worth 1,000 words. Icon buttons are probably worth a handful.
 
-```jsx padded noeditor
+```jsx padded
 import IconButton from './../src/components/shared/Button/IconButton';
 import {BiBarChartAlt, BiBarChart, BiBarChartAlt2} from "react-icons/all";
 
 <>
-    <IconButton primary icon={BiBarChart} />
-    <IconButton disabled icon={BiBarChartAlt} />
-    <IconButton active icon={BiBarChartAlt2} />
+  <IconButton primary icon={BiBarChart} />
+  <IconButton secondary icon={BiBarChart} />
+  <IconButton disabled icon={BiBarChartAlt} />
+  <IconButton x-large icon={BiBarChartAlt} />
+  <IconButton link icon={BiBarChartAlt} />
 </>
 ```
+
+All the variants for the regular button work with the icon button.
 
 ## Toolbars
 
@@ -38,7 +82,7 @@ or `Col` component. You can use `Toolbar` components with `Grid` components as `
 the placement of toolbars and keep the design consistent.
 
 
-```jsx noeditor
+```jsx
 import IconButton from './../src/components/shared/Button/IconButton';
 import {BiBarChartAlt, BiBarChart, BiBarChartAlt2, BiX} from "react-icons/all";
 import Grid from './../src/components/shared/Grid/Grid';
@@ -55,7 +99,7 @@ import Toolbar from './../src/components/shared/Toolbar/Toolbar';
 
 ### Horizontal Toolbar
 
-```jsx noeditor
+```jsx
 import Button from './../src/components/shared/Button/Button';
 import IconButton from './../src/components/shared/Button/IconButton';
 import {BiBarChartAlt, BiBarChart, BiBarChartAlt2, BiX} from "react-icons/all";
@@ -92,7 +136,7 @@ import {CloseButton} from "react-bootstrap";
 
 ### Vertical Toolbar
 
-```jsx noeditor
+```jsx
 import Button from './../src/components/shared/Button/Button';
 import IconButton from './../src/components/shared/Button/IconButton';
 import {BiBarChartAlt, BiBarChart, BiBarChartAlt2, BiX} from "react-icons/all";

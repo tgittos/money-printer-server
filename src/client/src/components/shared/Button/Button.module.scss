@@ -1,19 +1,12 @@
-@import "./../../../../public/styles/_variables.module.scss";
+@import "./../../../../public/styles/colors.module";
 
 .Button, .IconButton {
-    background: transparent;
-    color: $text;
-    border-radius: 0.2rem;
-    border-style: solid;
-    border-width: 1px;
-    border-color: $border-secondary;
-
-  &:hover {
-    color: $text;
-  }
-
-  &:focus {
-    color: $text;
+  :global {
+    .btn-full {
+      display: block;
+      width: 100%;
+      margin: 0.3em;
+    }
   }
 }
 

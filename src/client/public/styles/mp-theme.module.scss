@@ -5,134 +5,142 @@
 @import '_effects.module';
 @import '_variables.module';
 
-html, body {
-  background: $background;
+html.mp, html.mp body {
   height: 100%;
   max-height: 100%;
-  color: $text;
-}
 
-a {
-  color: $link;
-}
-a:hover {
-  color: $link-hover;
-}
-
-a.nav-link {
-  color: $link;
-}
-a.nav-link.active {
-  color: $link-hover;
-}
-a.nav-link:hover {
-  color: $link-hover;
-}
-
-p {
-  margin: 0;
-}
-
-input {
-  background: $background;
-  color: $text-light;
-  border-width: 1px;
-}
-input:checked {
-  background: $primary-highlight;
-  color: $text-dark;
-}
-
-.content {
-  height: 100%;
-  max-height: 100%;
-}
-
-.modal-content {
-  background: $background;
-  color: $text;
-  border: $border-secondary solid 1px;
-
-  .modal-header {
-    background: $primary-highlight;
-    color: $text-dark;
-    font-family: "Share", sans-serif;
+  a {
+    color: $link;
   }
-}
-
-.navbar {
-  text-transform: uppercase;
-  font-family: "Share", sans-serif;
-
-  .nav-item {
-    cursor: pointer;
+  a:hover {
+    color: $link-hover;
   }
-}
 
-.nav-tabs {
-  border-bottom: $border-secondary solid 1px;
-
-  .nav-link {
-    background-color: transparent;
-    color: $text-light;
+  a.nav-link {
+    color: $link;
   }
-  .nav-link.active {
-    background-color: transparent;
-    color: $text-light;
-    border: $border-secondary solid 1px;
+  a.nav-link.active {
+    color: $link-hover;
   }
-  .nav-link:hover {
-    border: $border-secondary solid 1px;
+  a.nav-link:hover {
+    color: $link-hover;
   }
-}
 
-.dropdown-menu {
-  background: $background;
-  border: $border-secondary solid 1px;
-}
+  p {
+    margin: 0;
+  }
 
-.dropdown-item {
-  color: $text-light;
-}
+  input {
+    color: $text;
+    border-width: 1px;
+  }
 
-.show > .btn-primary.dropdown-toggle {
-  background-color: $secondary-highlight;
-  border-color: #5FA23F;
-}
-
-.btn-primary {
-  background-color: transparent;
-  border: $border-primary solid 1px;
-  color: $text-light;
-}
-.btn-primary:hover {
-  border: $border-primary solid 1px;
-  background-color: $secondary-highlight;
-  color: $text-dark;
-}
-
-/* TODO: move this to the accounts module? */
-.accounts-modal {
-  width: 90vw;
-  max-width: 90vw;
-
-  height: 80vh;
-  max-height: 80vh;
+  .content {
+    height: 100%;
+    max-height: 100%;
+  }
 
   .modal-content {
-    height: 100%;
+    color: $text;
+    border: $border-secondary solid 1px;
 
-    .modal-body {
-      padding: 0;
+    .modal-header {
+      color: $text;
+      font-family: "Share", sans-serif;
+    }
+  }
 
-      .nav-item {
-        padding-left: 1rem;
-        cursor: pointer;
-      }
+  .navbar {
+    text-transform: uppercase;
+    font-family: "Share", sans-serif;
 
-      .nav-item + .nav-item {
-        border-top: black solid 1px;
+    .nav-item {
+      cursor: pointer;
+    }
+  }
+
+  .nav-tabs {
+    border-bottom: $border-secondary solid 1px;
+
+    .nav-link {
+      background-color: transparent;
+      color: $text;
+    }
+    .nav-link.active {
+      background-color: transparent;
+      color: $text;
+      border: $border-secondary solid 1px;
+    }
+    .nav-link:hover {
+      border: $border-secondary solid 1px;
+    }
+  }
+
+  .dropdown-menu {
+    border: $border-secondary solid 1px;
+  }
+
+  .dropdown-item {
+    color: $text;
+  }
+
+  /* TODO: move this to the accounts module? */
+  .accounts-modal {
+    width: 90vw;
+    max-width: 90vw;
+
+    height: 80vh;
+    max-height: 80vh;
+
+    .modal-content {
+      height: 100%;
+
+      .modal-body {
+        padding: 0;
+
+        .nav-item {
+          padding-left: 1rem;
+          cursor: pointer;
+        }
+
+        .nav-item + .nav-item {
+          border-top: black solid 1px;
+        }
       }
     }
   }
+}
+
+.btn {
+  border: 1px solid $border-primary;
+}
+
+.btn-primary {
+  background-color: $btn-primary;
+  &:hover {
+    background-color: $btn-primary-hover;
+  }
+}
+
+.btn-secondary {
+  background-color: $btn-secondary;
+  &:hover {
+    background-color: $btn-secondary-hover;
+  }
+}
+
+.btn-disabled {
+  background-color: $btn-disabled;
+  cursor: default;
+}
+
+.btn-outline {
+  background-color: transparent;
+  &:hover {
+    background-color: $btn-outline-hover;
+  }
+}
+
+.btn-link {
+  border: none;
 }
