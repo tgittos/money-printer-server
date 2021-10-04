@@ -2,7 +2,7 @@ import styles from "./Button.module.scss";
 import React  from "react";
 import { Button as ReactButton } from "react-bootstrap";
 
-export interface IButtonProps extends React.ComponentPropsWithoutRef<ReactButton> {
+export interface IButtonProps extends React.ComponentPropsWithoutRef<any> {
     // wraps the React button's variant so we can always set it to outline
     primary?: boolean;
     secondary?: boolean;
@@ -42,7 +42,7 @@ class Button extends React.Component<IButtonProps, IButtonState> {
         if (secondary) return prefix + "secondary";
         if (link) return "link";
         if (outline) return "outline";
-        return null;
+        return "primary";
     }
 
     render() {
@@ -53,7 +53,7 @@ class Button extends React.Component<IButtonProps, IButtonState> {
         if (this.props.className) s = s.concat(Array.of(this.props.className));
 
         return <ReactButton
-            className={s}
+            className={s.join(' ')}
             variant={variant}
             size={size}
             {...this.props}

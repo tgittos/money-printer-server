@@ -10,6 +10,7 @@ $mp-grey4: #B3B3B3;
 $mp-grey5: #D9D9D9;
 
 // greens
+$mp-green: #47E0B4;
 $mp-green1: #022612;
 $mp-green2: #067036;
 $mp-green3: #1D7024;
@@ -39,7 +40,7 @@ $mp-bright-red: #A60303;
 $mp-red: #590202;
 
 // role based color defs
-$text: $mp-green2;
+$text: #26544C;
 
 $link: #19a64d;
 $link-hover: #34e073;
@@ -50,9 +51,10 @@ $secondary-highlight: $mp-green8;
 $border-primary: $mp-grey2;
 $border-secondary: $mp-grey3;
 
-$btn-primary: $mp-green3;
-$btn-primary-hover: $mp-green4;
-$btn-secondary: $mp-green1;
-$btn-secondary-hover: $mp-green2;
-$btn-disabled: $mp-grey3;
+$btn-border: #317A6C;
+$btn-primary: $mp-green;
+$btn-primary-hover: #4ABAA4;
+$btn-secondary: #80E0D0;
+$btn-secondary-hover: #4ABAA4;
+$btn-disabled: $mp-grey4;
 $btn-outline-hover: #19171620;

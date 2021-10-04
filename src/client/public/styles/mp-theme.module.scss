@@ -1,9 +1,11 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 
-@import '_colors.module';
-@import '_fonts.module';
-@import '_effects.module';
-@import '_variables.module';
+@import 'colors.module';
+@import 'fonts.module';
+@import 'effects.module';
+@import 'variables.module';
+@import 'buttons';
+@import 'containers';
 
 html.mp, html.mp body {
   height: 100%;
@@ -109,38 +111,4 @@ html.mp, html.mp body {
       }
     }
   }
-}
-
-.btn {
-  border: 1px solid $border-primary;
-}
-
-.btn-primary {
-  background-color: $btn-primary;
-  &:hover {
-    background-color: $btn-primary-hover;
-  }
-}
-
-.btn-secondary {
-  background-color: $btn-secondary;
-  &:hover {
-    background-color: $btn-secondary-hover;
-  }
-}
-
-.btn-disabled {
-  background-color: $btn-disabled;
-  cursor: default;
-}
-
-.btn-outline {
-  background-color: transparent;
-  &:hover {
-    background-color: $btn-outline-hover;
-  }
-}
-
-.btn-link {
-  border: none;
 }

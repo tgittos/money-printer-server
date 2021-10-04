@@ -1,8 +1,8 @@
 import styles from "./Panel.module.scss";
 import React from "react";
-import PanelHeader from "./PanelHeader";
-import PanelBody from "./PanelBody";
-import PanelFooter from "./PanelFooter";
+import PanelHeader from "./Components/PanelHeader";
+import PanelBody from "./Components/PanelBody";
+import PanelFooter from "./Components/PanelFooter";
 
 export interface IPanelProps extends React.ComponentPropsWithoutRef<any>{
     children?: React.ReactNode;

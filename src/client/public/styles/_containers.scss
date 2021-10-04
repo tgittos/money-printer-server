@@ -1,0 +1,33 @@
+@import 'colors.module';
+
+.mp-panel {
+  border: 1px solid $mp-green;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .mp-panel-header {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-color: inherit;
+    background-color: #C2E6CF;
+    border-radius: 4px 4px 0 0;
+    text-transform: uppercase;
+    font-weight: 500;
+    text-space: 0.4em;
+  }
+
+  .mp-panel-body {
+    padding: 0.6em;
+  }
+
+  .mp-panel-footer {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-color: inherit;
+    border-radius: 0 0 4px 4px;
+  }
+}
+
+.mp-panel > .mp-panel, .mp-panel-body > .mp-panel {
+  margin: 0.3em;
+}

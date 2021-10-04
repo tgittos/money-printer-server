@@ -2,7 +2,7 @@ The `Panel` is one of the structural building blocks of Money Printer. Almost al
 
 They help give a consistent "wireframe" style across the application.
 
-```js
+```jsx
 import Panel from './Panel';
 
 <Panel>
@@ -10,18 +10,20 @@ import Panel from './Panel';
 </Panel>
 ```
 
-```js
+```jsx
 import Panel from './Panel';
 
 <Panel>
-  <Panel.PanelHeader>
+  <Panel.Header>
     A Panel with a Title
-  </Panel.PanelHeader>
-  <p>A simple panel with a title that can hold any child elements.</p>
+  </Panel.Header>
+  <Panel.Body>
+      <p>A simple panel with a title that can hold any child elements.</p>
+  </Panel.Body>
 </Panel>
 ```
 
-```js
+```jsx
 import Panel from './Panel';
 
 <Panel>
@@ -32,47 +34,55 @@ import Panel from './Panel';
 </Panel>
 ```
 
-```js
+```jsx
 import Panel from './Panel';
 
 <Panel>
-  <Panel.PanelHeader>
+  <Panel.Header>
     Nested Panel with a Title
-  </Panel.PanelHeader>
-  <p>A simple panel with a title and a nested panel inside</p>
-  <Panel>
-    The nested panel content
-  </Panel>
+  </Panel.Header>
+  <Panel.Body>
+      <p>A simple panel with a title and a nested panel inside</p>
+      <Panel>
+        The nested panel content
+      </Panel>
+  </Panel.Body>
 </Panel>
 ```
 
-```js
+```jsx
 import Panel from './Panel';
 
 <Panel>
   <p>A simple panel with a title and a nested panel inside</p>
   <Panel>
-    <Panel.PanelHeader>
+    <Panel.Header>
       Nested Panel with Title
-    </Panel.PanelHeader>
-    The nested panel content
+    </Panel.Header>
+      <Panel.Body>
+        The nested panel content
+      </Panel.Body>
   </Panel>
 </Panel>
 ```
 
-```js
+```jsx
 import Panel from './Panel';
 
 <Panel>
-  <Panel.PanelHeader>
+  <Panel.Header>
     Nested Panel with a Title
-  </Panel.PanelHeader>
+  </Panel.Header>
+    <Panel.Body>
   <p>A simple panel with a title and a nested panel inside</p>
   <Panel>
-    <Panel.PanelHeader>
+    <Panel.Header>
       Nested Panel with a Title
-    </Panel.PanelHeader>
-    The nested panel content
+    </Panel.Header>
+      <Panel.Body>
+        The nested panel content
+      </Panel.Body>
   </Panel>
+    </Panel.Body>
 </Panel>
 ```

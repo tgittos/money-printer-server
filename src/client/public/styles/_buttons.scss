@@ -1,0 +1,53 @@
+@import 'colors.module';
+
+.btn {
+  color: $text;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:focus, .btn:active {
+  background-color: #5CE6CA;
+  border-color: #317A6C;
+  box-shadow: none;
+}
+
+.btn-primary {
+  background-color: $btn-primary;
+  &:hover {
+    background-color: $btn-primary-hover;
+  }
+}
+
+.btn-secondary {
+  background-color: $btn-secondary;
+  &:hover {
+    background-color: $btn-secondary-hover;
+  }
+}
+
+.btn-disabled {
+  background-color: $btn-disabled;
+  cursor: default;
+}
+
+.btn-outline {
+  border: 1px solid $mp-green;
+  background-color: transparent;
+  box-shadow: none;
+  &:hover {
+    background-color: $btn-outline-hover;
+  }
+}
+
+.btn-link {
+  border: none;
+  box-shadow: none;
+}
+
+.btn-xl {
+  font-size: 1.5rem;
+  padding: 0.7rem 1.2rem;
+}

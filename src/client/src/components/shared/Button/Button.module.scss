@@ -1,14 +1,14 @@
 @import "./../../../../public/styles/colors.module";
 
 .Button, .IconButton {
-  :global {
-    .btn-full {
-      display: block;
-      width: 100%;
-      margin: 0.3em;
-    }
-  }
 }
+
+.Button.btn-full {
+  display: block;
+  width: 100%;
+  margin: 0.3em;
+}
+
 
 .IconButton {
   padding: 0;

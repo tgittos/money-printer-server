@@ -15,6 +15,12 @@
   .ToolbarCol {
     padding: 0;
   }
+
+  :global {
+    .btn {
+      box-shadow: none;
+    }
+  }
 }
 
 .ToolbarVertical {
