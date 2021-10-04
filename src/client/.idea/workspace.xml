@@ -3,12 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/styles/_containers.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_containers.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/styles/_graphs.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_graphs.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Panel.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/styleguide/Charts.md" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide/Charts.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/SimpleXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/SimpleXAxis.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

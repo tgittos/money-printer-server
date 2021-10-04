@@ -52,10 +52,14 @@ class SimpleXAxis implements IAxis<ITimeBasedDataPoint> {
     }
 
     private createAxis() {
+        const { dimensions } = this.props;
         const scale = this._scale;
 
+        const svgWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right;
+
         this._axis = d3.axisBottom(scale)
-            .tickFormat(d3.timeFormat('%m/%d/%y %H:%M'));
+            .ticks(svgWidth / 30)
+            .tickFormat(d3.timeFormat('%m/%y'));
     }
 }
 

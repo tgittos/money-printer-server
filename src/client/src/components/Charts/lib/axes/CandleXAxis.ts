@@ -49,10 +49,13 @@ class CandleXAxis implements IAxis<ITimeBasedDataPoint> {
     }
 
     private createAxis() {
+        const { dimensions } = this.props;
         const scale = this._scale;
         const data = [].concat(this.props.data);
+        const svgWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right;
 
         this._axis = d3.axisBottom(scale)
+            .ticks(svgWidth / 80)
             .tickFormat(function(d, i) {
                 const datum = data[d.valueOf()];
                 if (datum) {
