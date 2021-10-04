@@ -34,6 +34,27 @@ library for creating new charts that abstracts away some D3 nonsense.
 
 #### `StaticChart`
 
+```jsx
+import StaticChart from "./../src/components/Charts/StaticChart";
+import BasicLineChart from "./../src/components/Charts/lib/charts/BasicLineChart";
+import { lineGenerator } from "./../src/guidebook/data";
+
+<StaticChart chart={BasicLineChart}
+               dimensions={{
+                 width: 400,
+                 height: 300,
+                 margin: {
+                   top: 10,
+                   left: 45,
+                   right: 10,
+                   bottom: 45
+                 }
+               }}
+               data={lineGenerator()}
+  />
+
+```
+
 #### `LiveChart`
 
 #### `DynamicChart`
@@ -44,7 +65,47 @@ library for creating new charts that abstracts away some D3 nonsense.
 
 #### `BasicLineChart`
 
+```jsx
+import StaticChart from "./../src/components/Charts/StaticChart";
+import BasicLineChart from "./../src/components/Charts/lib/charts/BasicLineChart";
+import { lineGenerator } from "./../src/guidebook/data";
+
+<StaticChart chart={BasicLineChart}
+               dimensions={{
+                 width: 400,
+                 height: 300,
+                 margin: {
+                   top: 10,
+                   left: 45,
+                   right: 10,
+                   bottom: 45
+                 }
+               }}
+               data={lineGenerator()}
+  />
+```
+
 #### `BasicCandleChart`
+
+```jsx
+import StaticChart from "./../src/components/Charts/StaticChart";
+import BasicCandleChart from "./../src/components/Charts/lib/charts/BasicCandleChart";
+import { candleGenerator } from "./../src/guidebook/data";
+
+<StaticChart chart={BasicCandleChart}
+               dimensions={{
+                 width: 400,
+                 height: 300,
+                 margin: {
+                   top: 10,
+                   left: 45,
+                   right: 10,
+                   bottom: 45
+                 }
+               }}
+               data={candleGenerator()}
+  />
+```
 
 #### `PieChart`
 

@@ -1,10 +1,19 @@
 @import "../../../../public/styles/variables.module";
 
 .Toolbar, .ToolbarVertical {
-  border: 1px solid $border-primary;
+  border-width: 1px;
+  border-style: solid;
+
+  :global {
+    .btn {
+      box-shadow: none;
+      background-color: transparent;
+    }
+  }
 }
 
 .Toolbar {
+  border-width: 0 0 1px 0;
 
   // don't collapse this or it loses specificity
   margin-top: -11px;
@@ -17,15 +26,28 @@
   }
 
   :global {
-    .btn {
-      box-shadow: none;
+    .btn + .btn {
+      border-left-style: solid;
+      border-left-width: 1px;
+    }
+    .btn:last-child {
+      border-right-width: 1px;
+      border-right-style: solid;
     }
   }
 }
 
 .ToolbarVertical {
-
   width: 2em;
   padding: 0;
   margin: -10px 0 0 -0.9em;
+  border-width: 0 1px 0 0;
+
+  :global {
+    .btn + .btn {
+      border-top-style: solid;
+      border-top-width: 1px;
+    }
+  }
+
 }

@@ -114,12 +114,12 @@ import {CloseButton} from "react-bootstrap";
     <CloseButton />
   </Panel.Header>
   <Panel.Body>
+    <Toolbar>
+      <IconButton icon={BiBarChart}/>
+      <IconButton icon={BiBarChartAlt}/>
+      <IconButton icon={BiBarChartAlt2}/>
+    </Toolbar>
     <Grid>
-      <Toolbar>
-        <IconButton icon={BiBarChart}/>
-        <IconButton icon={BiBarChartAlt}/>
-        <IconButton icon={BiBarChartAlt2}/>
-      </Toolbar>
       <Grid.Row>
         <Grid.Col>
           Tool contents in here, which respond to buttons in the toolbar

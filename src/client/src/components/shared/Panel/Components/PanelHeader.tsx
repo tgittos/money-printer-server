@@ -1,5 +1,6 @@
 import React, {ReactNode} from "react";
 import styles from "../Panel.module.scss";
+import PanelControls from "./PanelControls";
 
 export interface IPanelControl {
     icon: React.ReactNode;
@@ -17,6 +18,7 @@ export interface IPanelHeaderState {
 }
 
 class PanelHeader extends React.Component<IPanelHeaderProps, IPanelHeaderState> {
+    static Controls = PanelControls;
     render() {
         const { className } = (this.props as IPanelHeaderProps);
         let s = [styles.PanelTitle, 'mp-panel-header'];

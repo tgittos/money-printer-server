@@ -6,6 +6,7 @@
 @import 'variables.module';
 @import 'buttons';
 @import 'containers';
+@import 'graphs';
 
 html.mp, html.mp body {
   height: 100%;
@@ -110,5 +111,14 @@ html.mp, html.mp body {
         }
       }
     }
+  }
+}
+
+.mp-toolbar {
+  border-color: $mp-green;
+  padding: 0 !important;
+
+  .btn {
+    border-color: $mp-green;
   }
 }

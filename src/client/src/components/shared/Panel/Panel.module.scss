@@ -14,17 +14,26 @@
 }
 
 .PanelTitle {
+  font-size: 1.2em;
+  font-weight: 500;
   border-bottom: 1px solid inherit;
   margin-top: -7px;
   margin-left: -7px;
   margin-right: -7px;
   padding: 0.3em;
   position: relative;
+  min-height: 2.5em;
+  line-height: 2.5em;
+
+  .PanelControls {
+    float: right;
+  }
 
   :global {
-    .btn, .btn-close {
-      position: absolute;
-      right: 0;
+    .mp-panel-header-controls .btn {
+      border: none;
+      box-shadow: none;
+      background-color: transparent;
     }
   }
 }
