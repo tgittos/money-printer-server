@@ -198,10 +198,10 @@ Analysis < /span>
                  width: 400,
                  height: 300,
                  margin: {
-                   top: 10,
-                   left: 45,
-                   right: 10,
-                   bottom: 45
+                   top: 0,
+                   left: 35,
+                   right: 0,
+                   bottom: 25
                  }
                }}
                data={lineGenerator()}

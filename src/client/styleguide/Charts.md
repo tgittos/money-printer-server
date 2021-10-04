@@ -41,13 +41,11 @@ import { lineGenerator } from "./../src/guidebook/data";
 
 <StaticChart chart={BasicLineChart}
                dimensions={{
-                 width: 400,
-                 height: 300,
                  margin: {
-                   top: 10,
-                   left: 45,
-                   right: 10,
-                   bottom: 45
+                   top: 0,
+                   left: 35,
+                   right: 0,
+                   bottom: 25
                  }
                }}
                data={lineGenerator()}
@@ -75,10 +73,10 @@ import { lineGenerator } from "./../src/guidebook/data";
                  width: 400,
                  height: 300,
                  margin: {
-                   top: 10,
-                   left: 45,
-                   right: 10,
-                   bottom: 45
+                   top: 0,
+                   left: 35,
+                   right: 0,
+                   bottom: 25
                  }
                }}
                data={lineGenerator()}
@@ -97,10 +95,10 @@ import { candleGenerator } from "./../src/guidebook/data";
                  width: 400,
                  height: 300,
                  margin: {
-                   top: 10,
-                   left: 45,
-                   right: 10,
-                   bottom: 45
+                   top: 0,
+                   left: 35,
+                   right: 0,
+                   bottom: 25
                  }
                }}
                data={candleGenerator()}
