@@ -24,13 +24,10 @@ class Line<T extends ILineDataPoint> {
             // this filtering by 0 thing is kinda dodgy
             .defined(d => d !== undefined && !isNaN(d.y) && d.y > 0)
             .x((d) => {
-                const parsedDate = moment(d.x);
-                const val = xScale(parsedDate);
-                return val;
+                return xScale(d.x);
             })
             .y((d) => {
-                const val = yScale(d.y);
-                return val;
+                return yScale(d.y);
             });
 
         svg.append("g")

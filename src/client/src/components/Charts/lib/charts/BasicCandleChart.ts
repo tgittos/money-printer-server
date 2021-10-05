@@ -3,10 +3,9 @@ import * as d3 from "d3";
 import Candle, {ICandleProps} from "../figures/Candle";
 import IChart from "../../interfaces/IChart";
 import {MutableRefObject} from "react";
-import {ScaleBand} from "d3";
 import ICandleDataPoint from "../../interfaces/ICandleDataPoint";
-import XAxis from "../axes/XAxis";
-import YAxis from "../axes/YAxis";
+import XAxis, {IXAxisProps} from "../axes/XAxis";
+import YAxis, {IYAxisProps} from "../axes/YAxis";
 import moment from "moment";
 
 class BasicCandleChart implements IChart {
@@ -14,9 +13,11 @@ class BasicCandleChart implements IChart {
 
     private props: IChartProps<ICandleDataPoint>;
     private svgRef: MutableRefObject<null>;
+    private xScale: d3.ScaleTime<number, Date>
+    private yScale: d3.ScaleLinear<number, number>
+    private xBand: d3.ScaleBand<any>;
     private xAxis: XAxis<Date>;
     private yAxis: YAxis;
-    private xBand: ScaleBand<any>;
     private candles: Candle;
 
     constructor(props: IChartProps<ICandleDataPoint>) {
@@ -45,37 +46,42 @@ class BasicCandleChart implements IChart {
         const svgWidth = margin.left + margin.right + width;
         const svgHeight = margin.top + margin.bottom + height;
 
-        const mapper =
+        const xMapper = (datum: ICandleDataPoint, idx: number, arr: ICandleDataPoint[]) => datum.date;
+        const yMapper = (datum: ICandleDataPoint, idx: number, arr: ICandleDataPoint[]) => datum.close;
+
+        const dateDomain = this.props.data.map(xMapper);
+        const valDomain = this.props.data.map(yMapper);
+
+        this.xScale = d3.scaleTime(d3.extent(dateDomain), [0, width]);
+        this.xBand = d3.scaleBand<number>([0, dateDomain.length], [0, width])
+            .padding(0.3);
+        this.yScale = d3.scaleLinear(valDomain, [height, 0]);
 
         this.xAxis = new XAxis<Date>({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            scale: d3.scaleTime,
+            scale: this.xScale,
             axis: d3.axisBottom,
-            mapper: (datum: ICandleDataPoint, idx: number, arr: ICandleDataPoint[]) => datum.date,
+            mapper: xMapper,
             tickFormatter: (d, i) => {
                 const date = moment.utc(d.valueOf());
-                return date.format("");
+                return date.format();
             }
-        });
+        } as IXAxisProps<Date>);
 
         this.yAxis = new YAxis({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            scale: d3.scaleLinear,
+            scale: this.yScale,
             axis: d3.axisLeft,
-            mapper: (datum: ICandleDataPoint, idx: number, arr: ICandleDataPoint[]) => datum?.close,
-        });
+            mapper: yMapper
+        } as IYAxisProps);
 
-        this.xBand = d3.scaleBand<number>()
-            .domain(d3.range(-1, this.props.data.length))
-            .range([0, width])
-            .padding(0.3)
 
         this.candles = new Candle({
             data: this.props.data,
-            xScale: this.xAxis.scale,
-            yScale: this.yAxis.scale,
+            xScale: this.xScale,
+            yScale: this.yScale,
             xBand: this.xBand,
             dimensions: this.props.dimensions
         } as ICandleProps);
