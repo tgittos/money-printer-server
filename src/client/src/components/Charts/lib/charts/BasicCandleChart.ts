@@ -15,7 +15,6 @@ class BasicCandleChart implements IChart {
     private svgRef: MutableRefObject<null>;
     private xScale: d3.ScaleTime<number, Date>
     private yScale: d3.ScaleLinear<number, number>
-    private xBand: d3.ScaleBand<any>;
     private xAxis: XAxis<Date>;
     private yAxis: YAxis;
     private candles: Candle;
@@ -47,22 +46,23 @@ class BasicCandleChart implements IChart {
         const svgHeight = margin.top + margin.bottom + height;
 
         const xMapper = (datum: ICandleDataPoint, idx: number, arr: ICandleDataPoint[]) => datum.date;
-        const yMapper = (datum: ICandleDataPoint, idx: number, arr: ICandleDataPoint[]) => datum.close;
+        const yValMin = d3.min(this.props.data, (datum: ICandleDataPoint) => {
+            return Math.min(datum.open, datum.close, datum.low, datum.high);
+        });
+        const yValMax = d3.max(this.props.data, (datum:ICandleDataPoint) => {
+            return Math.max(datum.open, datum.close, datum.low, datum.high);
+        })
 
         const dateDomain = this.props.data.map(xMapper);
-        const valDomain = this.props.data.map(yMapper);
 
         this.xScale = d3.scaleTime(d3.extent(dateDomain), [0, width]);
-        this.xBand = d3.scaleBand<number>([0, dateDomain.length], [0, width])
-            .padding(0.3);
-        this.yScale = d3.scaleLinear(valDomain, [height, 0]);
+        this.yScale = d3.scaleLinear([yValMin, yValMax], [height, 0]);
 
         this.xAxis = new XAxis<Date>({
             data: this.props.data,
             dimensions: this.props.dimensions,
             scale: this.xScale,
             axis: d3.axisBottom,
-            mapper: xMapper,
             tickFormatter: (d, i) => {
                 const date = moment.utc(d.valueOf());
                 return date.format();
@@ -74,7 +74,6 @@ class BasicCandleChart implements IChart {
             dimensions: this.props.dimensions,
             scale: this.yScale,
             axis: d3.axisLeft,
-            mapper: yMapper
         } as IYAxisProps);
 
 
@@ -82,7 +81,6 @@ class BasicCandleChart implements IChart {
             data: this.props.data,
             xScale: this.xScale,
             yScale: this.yScale,
-            xBand: this.xBand,
             dimensions: this.props.dimensions
         } as ICandleProps);
 

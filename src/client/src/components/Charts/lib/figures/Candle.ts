@@ -5,7 +5,6 @@ import ICandleDataPoint from "../../interfaces/ICandleDataPoint";
 
 export interface ICandleProps extends IFigureProps {
     data: ICandleDataPoint[];
-    xBand: d3.ScaleBand<number>;
 }
 
 class Candle {
@@ -16,8 +15,11 @@ class Candle {
     }
 
     public draw(svg: d3.Selection<SVGElement, ICandleDataPoint[], HTMLElement, undefined>) {
-        const { data, xScale, yScale, xBand, dimensions } = this.props;
-        const { margin } = dimensions;
+        const { data, xScale, yScale, dimensions: { margin, width } } = this.props;
+
+        const dates = this.props.data.map((datum: ICandleDataPoint) => datum.date);
+        const xBand = d3.scaleBand<number>(dates, [0, width])
+            .padding(0.3);
 
         const mySvg = svg.append("g")
             .attr("class", "candles")
@@ -28,7 +30,7 @@ class Candle {
             .data(data)
             .enter()
             .append("rect")
-            .attr('x', (d, i) => xScale(i) - xBand.bandwidth())
+            .attr('x', (d, i) => xBand(d.date) - xBand.bandwidth())
             .attr("class", "candle")
             .attr('y', d => yScale(Math.max(d?.open, d?.close)))
             .attr('width', xBand.bandwidth())
@@ -41,8 +43,8 @@ class Candle {
             .enter()
             .append("line")
             .attr("class", "stem")
-            .attr("x1", (d, i) => xScale(i) - xBand.bandwidth()/2)
-            .attr("x2", (d, i) => xScale(i) - xBand.bandwidth()/2)
+            .attr("x1", (d, i) => xBand(d.date) - xBand.bandwidth()/2)
+            .attr("x2", (d, i) => xBand(d.date) - xBand.bandwidth()/2)
             .attr("y1", d => yScale(d?.high))
             .attr("y2", d => yScale(d?.low))
             .attr("stroke", d => (d?.open === d?.close) ? "white" : (d?.open > d?.close) ? "red" : "green");
