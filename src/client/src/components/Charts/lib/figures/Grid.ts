@@ -20,7 +20,8 @@ class Grid {
         const { height, width, margin } = dimensions;
 
         const mySvg = svg.append("g")
-            .attr("class", "grid");
+            .attr("class", "grid")
+            .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");
 
         mySvg.attr("stroke", "currentColor")
             .attr("stroke-opacity", 0.1)
@@ -30,16 +31,16 @@ class Grid {
                 .join("line")
                 .attr("x1", d => 0.5 + xDomain(d))
                 .attr("x2", d => 0.5 + xDomain(d))
-                .attr("y1", margin.top)
-                .attr("y2", height - margin.bottom))
+                .attr("y1", 0)
+                .attr("y2", height))
             .call(g => g.append("g")
                 .selectAll("line")
                 .data(yDomain.ticks())
                 .join("line")
                 .attr("y1", d => 0.5 + yDomain(d))
                 .attr("y2", d => 0.5 + yDomain(d))
-                .attr("x1", margin.left)
-                .attr("x2", width - margin.right));
+                .attr("x1", 0)
+                .attr("x2", width));
     }
 }
 
