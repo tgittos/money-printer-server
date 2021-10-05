@@ -14,7 +14,7 @@ export interface IButtonProps extends React.ComponentPropsWithoutRef<any> {
     large?: boolean;
     xl?: boolean;
     full?: boolean;
-    className?: string | object;
+    className?: string;
 }
 
 export interface IButtonState {
@@ -46,12 +46,18 @@ class Button extends React.Component<IButtonProps, IButtonState> {
     }
 
     render() {
+        const { className } = this.props;
+
         const size = this.highestSize;
         const variant = this.variant;
 
         let s = [styles.Button];
-        if (this.props.className) s = s.concat(Array.of(this.props.className));
+        if (this.props.className) s = s.concat(Array.of(className));
 
+        // suppressing a linting complaint about size only accepting 'sm' or 'lg'
+        // we know that, we don't care, we define other variants in our theme
+
+        // @ts-ignore
         return <ReactButton
             className={s.join(' ')}
             variant={variant}

@@ -1,7 +1,7 @@
 import IFigureDataPoint from "./IFigureDataPoint";
-import ITimeBasedDataPoint from "./ITimeBasedDataPoint";
 
-interface ICandleDataPoint extends IFigureDataPoint, ITimeBasedDataPoint {
+interface ICandleDataPoint extends IFigureDataPoint {
+    date: Date;
     high: number;
     low: number;
     open: number;

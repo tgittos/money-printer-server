@@ -1,7 +1,6 @@
 import * as d3 from "d3";
 import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
 import {ScaleOrdinal, style} from "d3";
-import {IPieData} from "./Pie";
 
 export interface ILegendProps {
     x: number,

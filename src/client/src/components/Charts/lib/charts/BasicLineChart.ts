@@ -1,19 +1,22 @@
 import IChartProps from "../../interfaces/IChartProps";
 import * as d3 from "d3";
 import Line, {ILineProps} from "../figures/Line";
-import SimpleYAxis from "../axes/SimpleYAxis";
 import IChart from "../../interfaces/IChart";
 import {MutableRefObject} from "react";
 import ILineDataPoint from "../../interfaces/ILineDataPoint";
-import SimpleXAxis from "../axes/SimpleXAxis";
+import Grid from "../figures/Grid";
+import XAxis from "../axes/XAxis";
+import YAxis from "../axes/YAxis";
+import moment from "moment";
 
 class BasicLineChart implements IChart {
     readonly svg: d3.Selection<SVGElement, ILineDataPoint[], HTMLElement, undefined>;
 
     private props: IChartProps<ILineDataPoint>;
     private svgRef: MutableRefObject<null>;
-    private xAxis: SimpleXAxis;
-    private yAxis: SimpleYAxis;
+    private xAxis: XAxis<Date>;
+    private yAxis: YAxis;
+    private grid: Grid;
     private line: Line;
 
     constructor(props: IChartProps<ILineDataPoint>) {
@@ -38,16 +41,34 @@ class BasicLineChart implements IChart {
         const svgWidth = margin.left + margin.right + width;
         const svgHeight = margin.top + margin.bottom + height;
 
-        this.xAxis = new SimpleXAxis({
+        const mapper = (datum: ILineDataPoint, idx: number, arr: ILineDataPoint[]) =>
+            (datum as ILineDataPoint).y;
+
+        this.xAxis = new XAxis({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            mapper: (data: ILineDataPoint) => data?.x
-        });
-        this.yAxis = new SimpleYAxis({
+            scale: d3.scaleTime,
+            axis: d3.axisBottom,
+            mapper,
+            tickFormatter: (d, i) => {
+                const date = moment.utc(d.valueOf());
+                return date.format("");
+            }
+        }) as XAxis<Date>;
+
+        this.yAxis = new YAxis({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            mapper: (data: ILineDataPoint) => data?.y
+            scale: d3.scaleLinear,
+            axis: d3.axisLeft,
+            mapper
         });
+
+        this.grid = new Grid({
+            dimensions: this.props.dimensions,
+            xDomain: this.xAxis.scale,
+            yDomain: this.yAxis.scale
+        })
 
         this.line = new Line({
             data: this.props.data,

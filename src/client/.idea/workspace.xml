@@ -3,8 +3,21 @@
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/SimpleXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/SimpleXAxis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/styles/_containers.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_containers.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/IAxisProps.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/ICandleDataPoint.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/ICandleDataPoint.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/ITimeBasedDataPoint.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/RealtimeXAxis.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/SimpleXAxis.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/SimpleYAxis.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/MultiLineChart.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Legend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Legend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/shared/Button/Button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Button/Button.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/guidebook/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/guidebook/data.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +43,9 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/components/shared/Button/Button.tsx" root0="SKIP_HIGHLIGHTING" />
+  </component>
   <component name="ProjectId" id="1xHCwzvvk7max1CFw6eZbxTDe5v" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -45,7 +61,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/components/Charts/lib/axes" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="watcher.settings" />
@@ -54,6 +70,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/Charts/lib/axes" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stories\Charts" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Plaid" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Charts\lib\charts" />

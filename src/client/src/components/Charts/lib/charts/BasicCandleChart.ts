@@ -1,22 +1,21 @@
 import IChartProps from "../../interfaces/IChartProps";
 import * as d3 from "d3";
-import SimpleYAxis from "../axes/SimpleYAxis";
 import Candle, {ICandleProps} from "../figures/Candle";
-import CandleXAxis from "../axes/CandleXAxis";
 import IChart from "../../interfaces/IChart";
 import {MutableRefObject} from "react";
-import IAxis from "../../interfaces/IAxis";
 import {ScaleBand} from "d3";
 import ICandleDataPoint from "../../interfaces/ICandleDataPoint";
-import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
+import XAxis from "../axes/XAxis";
+import YAxis from "../axes/YAxis";
+import moment from "moment";
 
 class BasicCandleChart implements IChart {
     readonly svg: d3.Selection<SVGElement, ICandleDataPoint[], HTMLElement, undefined>;
 
     private props: IChartProps<ICandleDataPoint>;
     private svgRef: MutableRefObject<null>;
-    private xAxis: CandleXAxis;
-    private yAxis: SimpleYAxis;
+    private xAxis: XAxis<Date>;
+    private yAxis: YAxis;
     private xBand: ScaleBand<any>;
     private candles: Candle;
 
@@ -46,16 +45,26 @@ class BasicCandleChart implements IChart {
         const svgWidth = margin.left + margin.right + width;
         const svgHeight = margin.top + margin.bottom + height;
 
+        const mapper =
 
-        this.xAxis = new CandleXAxis({
+        this.xAxis = new XAxis<Date>({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            mapper: (data: ICandleDataPoint) => data?.x
+            scale: d3.scaleTime,
+            axis: d3.axisBottom,
+            mapper: (datum: ICandleDataPoint, idx: number, arr: ICandleDataPoint[]) => datum.date,
+            tickFormatter: (d, i) => {
+                const date = moment.utc(d.valueOf());
+                return date.format("");
+            }
         });
-        this.yAxis = new SimpleYAxis({
+
+        this.yAxis = new YAxis({
             data: this.props.data,
             dimensions: this.props.dimensions,
-            mapper: (data: ICandleDataPoint) => data?.close
+            scale: d3.scaleLinear,
+            axis: d3.axisLeft,
+            mapper: (datum: ICandleDataPoint, idx: number, arr: ICandleDataPoint[]) => datum?.close,
         });
 
         this.xBand = d3.scaleBand<number>()
