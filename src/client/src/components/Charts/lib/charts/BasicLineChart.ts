@@ -40,7 +40,7 @@ class BasicLineChart implements IChart {
         this.yAxis.draw(this.svg);
 
         // draw the grid
-        // this.grid.draw(this.svg);
+        this.grid.draw(this.svg);
 
         // draw the data line
         this.line.draw(this.svg);
@@ -77,7 +77,8 @@ class BasicLineChart implements IChart {
             dimensions: this.props.dimensions,
             scale: this.yScale,
             axis: d3.axisLeft,
-            mapper: (datum: ILineDataPoint, idx: number, arr: ILineDataPoint[]) => (datum as ILineDataPoint).y,
+            mapper: (datum: ILineDataPoint, idx: number, arr: ILineDataPoint[]) =>
+                (datum as ILineDataPoint).y,
         } as IYAxisProps);
 
         // add a grid at each tick on each axis
@@ -85,7 +86,7 @@ class BasicLineChart implements IChart {
             dimensions: this.props.dimensions,
             xDomain: this.xScale,
             yDomain: this.yScale
-        })
+        });
 
         // add a line figure for the data in the chart
         this.line = new Line({

@@ -7,6 +7,7 @@ import ICandleDataPoint from "../../interfaces/ICandleDataPoint";
 import XAxis, {IXAxisProps} from "../axes/XAxis";
 import YAxis, {IYAxisProps} from "../axes/YAxis";
 import moment from "moment";
+import Grid from "../figures/Grid";
 
 class BasicCandleChart implements IChart {
     readonly svg: d3.Selection<SVGElement, ICandleDataPoint[], HTMLElement, undefined>;
@@ -17,6 +18,7 @@ class BasicCandleChart implements IChart {
     private yScale: d3.ScaleLinear<number, number>
     private xAxis: XAxis<Date>;
     private yAxis: YAxis;
+    private grid: Grid;
     private candles: Candle;
 
     constructor(props: IChartProps<ICandleDataPoint>) {
@@ -36,6 +38,8 @@ class BasicCandleChart implements IChart {
 
         this.xAxis.draw(this.svg);
         this.yAxis.draw(this.svg);
+
+        this.grid.draw(this.svg);
 
         this.candles.draw(this.svg);
     }
@@ -76,6 +80,12 @@ class BasicCandleChart implements IChart {
             axis: d3.axisLeft,
         } as IYAxisProps);
 
+        // add a grid at each tick on each axis
+        this.grid = new Grid({
+            dimensions: this.props.dimensions,
+            xDomain: this.xScale,
+            yDomain: this.yScale
+        })
 
         this.candles = new Candle({
             data: this.props.data,

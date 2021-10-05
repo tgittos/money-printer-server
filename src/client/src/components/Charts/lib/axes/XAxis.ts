@@ -12,10 +12,7 @@ class XAxis<T extends number | Date> extends Axis<IFigureDataPoint, T> {
     protected _axis: d3.Axis<d3.AxisDomain>;
 
     constructor(props: IXAxisProps<T>) {
-        super({
-            ...props,
-            axis: d3.axisBottom
-        });
+        super(props);
 
         this._axis = this.props.axis(this.props.scale)
             .ticks(props.tickCount)

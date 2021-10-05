@@ -1,6 +1,5 @@
 import Axis, {IAxisProps} from "./Axis";
 import * as d3 from "d3";
-import IChartDimensions from "../../interfaces/IChartDimensions";
 import IFigureDataPoint from "../../interfaces/IFigureDataPoint";
 
 export interface IYAxisProps extends IAxisProps<IFigureDataPoint, number>{
@@ -13,10 +12,7 @@ class YAxis extends Axis<IFigureDataPoint, number> {
     protected _axis: d3.Axis<d3.AxisDomain>;
 
     constructor(props: IYAxisProps) {
-        super({
-            ...props,
-            axis: d3.axisLeft
-        } as IYAxisProps);
+        super(props);
 
         // set the tick format
         this._axis = this.props.axis(this.props.scale)
