@@ -16,14 +16,20 @@ class XAxis<T extends number | Date> extends Axis<IFigureDataPoint, T> {
         });
 
         // set the tick format
-        this._axis
-            .ticks(props.tickCount)
-            .tickFormat(props.tickFormatter);
+        if (props.tickCount) {
+            this._axis.ticks(props.tickCount)
+        }
+
+        if (props.tickFormatter) {
+            this._axis.tickFormat(props.tickFormatter);
+        }
     }
 
     draw(svg: d3.Selection<SVGElement, IFigureDataPoint[], HTMLElement, undefined>): void {
         const xAxis = this._axis;
         const { margin, height } = this.props.dimensions;
+
+        console.log('drawing')
 
         svg.append("g")
             .attr("class", "axis x-axis") //Assign "axis" class

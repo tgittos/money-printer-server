@@ -8,13 +8,14 @@ import Grid from "../figures/Grid";
 import XAxis from "../axes/XAxis";
 import YAxis from "../axes/YAxis";
 import moment from "moment";
+import XAxisTime from "../axes/XAxisTime";
 
 class BasicLineChart implements IChart {
     readonly svg: d3.Selection<SVGElement, ILineDataPoint[], HTMLElement, undefined>;
 
     private props: IChartProps<ILineDataPoint>;
     private svgRef: MutableRefObject<null>;
-    private xAxis: XAxis<Date>;
+    private xAxis: XAxisTime;
     private yAxis: YAxis;
     private grid: Grid;
     private line: Line;
@@ -31,9 +32,9 @@ class BasicLineChart implements IChart {
         this.reset();
 
         this.xAxis.draw(this.svg);
-        this.yAxis.draw(this.svg);
+        // this.yAxis.draw(this.svg);
 
-        this.line.draw(this.svg);
+        // this.line.draw(this.svg);
     }
 
     private init() {
@@ -44,15 +45,15 @@ class BasicLineChart implements IChart {
         const mapper = (datum: ILineDataPoint, idx: number, arr: ILineDataPoint[]) =>
             (datum as ILineDataPoint).y;
 
-        this.xAxis = new XAxis({
+        this.xAxis = new XAxisTime({
             data: this.props.data,
             dimensions: this.props.dimensions,
             scale: d3.scaleTime,
             axis: d3.axisBottom,
-            mapper,
+            mapper: (datum: ILineDataPoint, idx: number, arr: ILineDataPoint[]) => datum.x,
             tickFormatter: (d, i) => {
                 const date = moment.utc(d.valueOf());
-                return date.format("");
+                return date.format("f");
             }
         }) as XAxis<Date>;
 
