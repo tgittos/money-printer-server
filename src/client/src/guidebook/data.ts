@@ -1,6 +1,6 @@
-import ICandleDataPoint from "../src/components/Charts/interfaces/ICandleDataPoint";
+import ICandleDataPoint from "../Charts/interfaces/ICandleDataPoint";
 import moment from "moment";
-import ILineDataPoint from "../src/components/Charts/interfaces/ILineDataPoint";
+import ILineDataPoint from "../Charts/interfaces/ILineDataPoint";
 
 type Generator = () => number;
 
@@ -69,7 +69,7 @@ export const lineGenerator = (n: number = 500, gaps = false) => genData<ILineDat
 export const candleGenerator = (n: number = 500, gaps = false) => {
     const v = Math.random() * 5000;
     return genData<ICandleDataPoint>({
-        x: moment.utc().subtract(n, 'days').toDate(),
+        date: moment.utc().subtract(n, 'days').toDate(),
         open: v,
         close: v,
         high: v,
@@ -79,7 +79,7 @@ export const candleGenerator = (n: number = 500, gaps = false) => {
         gaps,
         propertySelector: p => p.close,
         pointConstructor: (d, next) => ({
-            x: d,
+            date: d,
             open: next(),
             close: next(),
             high: next(),

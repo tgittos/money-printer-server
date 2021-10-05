@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="106a520a-224e-440f-a06c-16afccfdd99c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/CandleXAxis.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/SimpleXAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/SimpleXAxis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/XAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/XAxis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/YAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/YAxis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +32,9 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/components/shared/Button/Button.tsx" root0="SKIP_HIGHLIGHTING" />
+  </component>
   <component name="ProjectId" id="1xHCwzvvk7max1CFw6eZbxTDe5v" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -45,7 +50,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/components/Charts/lib/axes" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="watcher.settings" />
@@ -54,6 +59,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/Charts/lib/axes" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stories\Charts" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Plaid" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Charts\lib\charts" />
@@ -83,6 +89,7 @@
       <workItem from="1632882738076" duration="7991000" />
       <workItem from="1633184999000" duration="5770000" />
       <workItem from="1633356406396" duration="11130000" />
+      <workItem from="1633458743486" duration="123000" />
     </task>
     <servers />
   </component>
