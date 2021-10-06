@@ -1,6 +1,15 @@
 @import 'colors.module';
 
+$panel-padding: 0.3em;
+
 .mp-panel {
+
+  & > * {
+    padding: $panel-padding;
+  }
+
+  // reset the padding so that nested panels don't have padding in the headers/footers
+  padding: 0 !important;
   border: 1px solid $mp-green;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -17,7 +26,13 @@
   }
 
   .mp-panel-body {
-    padding: 0.3em;
+
+    & > * {
+      padding: $panel-padding;
+    }
+
+    // reset the padding so that nested panels don't have padding in the headers/footers
+    padding: 0 !important;
   }
 
   .mp-panel-footer {
@@ -25,9 +40,13 @@
     border-top-style: solid;
     border-color: inherit;
     border-radius: 0 0 4px 4px;
+
+    .btn + .btn {
+      margin-left: $panel-padding;
+    }
   }
 }
 
 .mp-panel > .mp-panel, .mp-panel-body > .mp-panel {
-  margin: 0.3em;
+  margin: $panel-padding;
 }

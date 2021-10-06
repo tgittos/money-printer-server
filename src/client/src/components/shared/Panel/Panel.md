@@ -18,7 +18,7 @@ import Panel from './Panel';
 <Panel>
   <p>A simple panel with a nested panel inside</p>
   <Panel>
-    The nested panel content
+    <p>The nested panel content</p>
   </Panel>
 </Panel>
 ```
@@ -49,7 +49,7 @@ import Panel from './Panel';
   <Panel.Body>
       <p>A simple panel with a title and a nested panel inside</p>
       <Panel>
-        The nested panel content
+        <p>The nested panel content</p>
       </Panel>
   </Panel.Body>
 </Panel>
@@ -65,7 +65,7 @@ import Panel from './Panel';
       Nested Panel with Title
     </Panel.Header>
       <Panel.Body>
-        The nested panel content
+        <p>The nested panel content</p>
       </Panel.Body>
   </Panel>
 </Panel>
@@ -79,15 +79,15 @@ import Panel from './Panel';
     Nested Panel with a Title
   </Panel.Header>
     <Panel.Body>
-  <p>A simple panel with a title and a nested panel inside</p>
-  <Panel>
-    <Panel.Header>
-      Nested Panel with a Title
-    </Panel.Header>
-      <Panel.Body>
-        The nested panel content
-      </Panel.Body>
-  </Panel>
+      <p>A simple panel with a title and a nested panel inside</p>
+      <Panel>
+        <Panel.Header>
+          Nested Panel with a Title
+        </Panel.Header>
+          <Panel.Body>
+            <p>The nested panel content</p>
+          </Panel.Body>
+      </Panel>
     </Panel.Body>
 </Panel>
 ```
@@ -178,34 +178,33 @@ import StaticChart from "./../../Charts/StaticChart";
 import BasicLineChart from "./../../Charts/lib/charts/BasicLineChart";
 import {lineGenerator} from "./../../../guidebook/data";
 
-<Panel >
-< Panel.Header >
-< span > Return
-Analysis < /span>
-<Panel.Header.Controls>
-  <Panel.Header.Controls.Close/>
-</Panel.Header.Controls>
-</Panel.Header>
-<Panel.Body>
-  <Toolbar>
-    <IconButton icon={BiBarChart}/>
-    <IconButton icon={BiBarChartAlt}/>
-    <IconButton icon={BiBarChartAlt2}/>
-  </Toolbar>
-  <p>The security XYZ has achieved 10.3% returns over the last 90 days.</p>
-  <StaticChart chart={BasicLineChart}
-               dimensions={{
-                 width: 400,
-                 height: 300,
-                 margin: {
-                   top: 0,
-                   left: 35,
-                   right: 0,
-                   bottom: 25
-                 }
-               }}
-               data={lineGenerator()}
-  />
-</Panel.Body>
+<Panel>
+    <Panel.Header>
+        <span> Return Analysis </span>
+        <Panel.Header.Controls>
+          <Panel.Header.Controls.Close/>
+        </Panel.Header.Controls>
+    </Panel.Header>
+    <Panel.Body>
+          <Toolbar>
+            <IconButton icon={BiBarChart}/>
+            <IconButton icon={BiBarChartAlt}/>
+            <IconButton icon={BiBarChartAlt2}/>
+          </Toolbar>
+          <p>The security XYZ has achieved 10.3% returns over the last 90 days.</p>
+          <StaticChart chart={BasicLineChart}
+                       dimensions={{
+                         width: 400,
+                         height: 300,
+                         margin: {
+                           top: 0,
+                           left: 35,
+                           right: 0,
+                           bottom: 25
+                         }
+                       }}
+                       data={lineGenerator()}
+          />
+    </Panel.Body>
 </Panel>
 ```

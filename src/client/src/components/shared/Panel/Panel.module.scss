@@ -1,29 +1,15 @@
 @import "../../../../public/styles/variables.module";
 
 .Panel {
-  padding: 6px;
-
-  :global {
-    p {
-      margin-bottom: 0;
-    }
-    p + p {
-      margin-bottom: 0;
-    }
-  }
 }
 
 .PanelTitle {
   font-size: 1.2em;
   font-weight: 500;
   border-bottom: 1px solid inherit;
-  margin-top: -7px;
-  margin-left: -7px;
-  margin-right: -7px;
-  padding: 0 0.6em;
   position: relative;
-  min-height: 2.5em;
-  line-height: 2.5em;
+  min-height: 2.0em;
+  line-height: 2.0em;
 
   .PanelControls {
     float: right;
@@ -39,22 +25,9 @@
 }
 
 .PanelBody {
-  padding: 0.3em;
-  margin-left: -7px;
-  margin-right: -7px;
 }
 
 .PanelFooter {
   border-top: 1px solid inherit;
-  margin-bottom: -7px;
-  margin-left: -7px;
-  margin-right: -7px;
-  padding: 0.6em 0.9em;
   text-align: right;
-
-  :global {
-    .btn + .btn {
-      margin-left: 0.3em;
-    }
-  }
 }

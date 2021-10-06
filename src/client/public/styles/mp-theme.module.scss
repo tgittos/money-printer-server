@@ -1,11 +1,9 @@
-@import '~bootstrap/dist/css/bootstrap.min.css';
-
+@import 'mp-base';
 @import 'colors.module';
 @import 'fonts.module';
 @import 'effects.module';
 @import 'variables.module';
 @import 'buttons';
-@import 'containers';
 @import 'graphs';
 
 html.mp, html.mp body {

@@ -5,6 +5,7 @@ import {Col, Row } from "react-bootstrap";
 
 export interface IToolbarProps {
     orientation: "horizontal" | "vertical";
+    position: "top" | "bottom" | "left" | "right"
     children: IconButton[];
 }
 
@@ -14,17 +15,19 @@ interface IToolbarState {
 
 class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     private renderRow() {
-        const s = [styles.Toolbar, 'mp-toolbar', 'mp-toolbar-horizontal'];
+        const s = [styles.Toolbar, 'mp-toolbar', 'mp-toolbar-horizontal',
+            this.props.position ? this.props.position : 'top'];
         return <Row className={s} {...this.props}>
-            <Col className={styles.ToolbarCol}>
+            <Col>
                 { this.props.children.map(child => child) }
             </Col>
         </Row>
     }
 
     private renderCol() {
-        const s = [styles.ToolbarVertical, 'mp-toolbar', 'mp-toolbar-vertical'];
-        return <Col xs={1} className={s} {...this.props}>
+        const s = [styles.ToolbarVertical, 'mp-toolbar', 'mp-toolbar-vertical',
+            this.props.position ? this.props.position : 'left'];
+        return <Col xs={1} className={s.join(' ')} {...this.props}>
             { this.props.children.map(child => child) }
         </Col>
     }
