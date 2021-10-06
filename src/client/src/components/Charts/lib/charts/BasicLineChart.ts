@@ -64,6 +64,7 @@ class BasicLineChart implements IChart {
             dimensions: this.props.dimensions,
             scale: this.xScale,
             axis: d3.axisBottom,
+            // tickCount: d3.utcDay.every(5)
             mapper: (datum: ILineDataPoint, idx: number, arr: ILineDataPoint[]) => datum.x,
             tickFormatter: (d, i): string => {
                 const date = moment.utc(d.valueOf());
