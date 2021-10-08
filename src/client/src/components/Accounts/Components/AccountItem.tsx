@@ -1,4 +1,4 @@
-import styles from './Accounts.module.scss';
+import styles from './../Accounts.module.scss';
 
 import React from "react";
 import {
@@ -13,8 +13,9 @@ import {
 } from "react-bootstrap-icons";
 import moment from "moment";
 
-import Account from "../../models/Account";
-import AccountRepository from "../../repositories/AccountRepository";
+import Account from "../../../models/Account";
+import AccountRepository from "../../../repositories/AccountRepository";
+import AccountIcon from "../../shared/Icons/AccountIcon";
 
 export interface IAccountItemProps {
     account: Account;
@@ -61,28 +62,6 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
         return moment(date).fromNow();
     }
 
-    private getIconForSubtype(subtype: string) {
-        if (subtype === 'credit card') {
-            return <CreditCard2Front></CreditCard2Front>
-        }
-        if (subtype === 'cd') {
-            return <Calendar2Month></Calendar2Month>
-        }
-        if (subtype === "money market") {
-            return <CashCoin></CashCoin>
-        }
-        if (subtype === "mortgage") {
-            return <House></House>
-        }
-        if (["401k", "ira"].includes(subtype)) {
-            return <PiggyBank></PiggyBank>
-        }
-        if (subtype === "student") {
-            return <Book></Book>
-        }
-        return <CashStack></CashStack>
-    }
-
     private async requestSync(accountId: number) {
         await this._accountRepo.refreshAccounts(accountId);
     }
@@ -90,7 +69,9 @@ class AccountItem extends React.Component<IAccountItemProps, IAccountState> {
     render() {
         return <div key={this.id}>
             <div className={styles.AccountItem}>
-                <span className={styles.AccountItemIcon}>{ this.getIconForSubtype(this.subType) }</span>
+                <span className={styles.AccountItemIcon}>
+                    <AccountIcon account={this.props.account} />
+                </span>
                 <span className={styles.AccountItemName}>{ this.accountName }</span>
                 <span className={styles.AccountItemBalance}> { this.balance }</span>
                 <span className={styles.AccountItemTimestamp}>last updated { this.formatDate(this.timestamp)}</span>

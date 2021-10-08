@@ -47,6 +47,7 @@ class BasicLineChart implements IChart {
     }
 
     private init() {
+
         const { margin, width, height } = this.props.dimensions;
         const svgWidth = margin.left + margin.right + width;
         const svgHeight = margin.top + margin.bottom + height;
@@ -103,6 +104,7 @@ class BasicLineChart implements IChart {
             .attr("height", svgHeight)
             .append("g")
             .attr("transform", "translate(" +margin.left+ "," +margin.top+ ")");
+
     }
 
     private reset() {
@@ -110,6 +112,7 @@ class BasicLineChart implements IChart {
         this.svg.selectAll('*').remove();
         this.init();
     }
+
 }
 
 export default BasicLineChart;

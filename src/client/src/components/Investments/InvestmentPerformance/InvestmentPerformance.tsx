@@ -144,55 +144,6 @@ class InvestmentPerformance extends React.Component<IInvestmentPerformanceProps,
         }
     }
 
-    private _formatDataForLine() {
-        const { intradayData, eodData } = this.state;
-
-        let data: ISymbol[] = intradayData;
-        if (data.length === 0) {
-            data = eodData;
-        };
-
-        const formattedData = data.map(datum => {
-            return {
-                x: datum.date,
-                y: datum.close
-            } as ILineDataPoint;
-        });
-
-        return formattedData;
-    }
-
-    private _formatDataForCandle() {
-        const { intradayData, eodData } = this.state;
-
-        let data: ISymbol[] = intradayData;
-        if (data.length === 0) {
-            data = eodData;
-        };
-
-        const formattedData = data.map(datum => {
-            const datapoint = {
-                x: datum.date,
-                open: datum.open,
-                close: datum.close,
-                high: datum.high,
-                low: datum.low,
-            } as ICandleDataPoint;
-
-            // this seems fishy too on some tickers, like MIPTX
-            if (datapoint.low == 0) {
-                datapoint.low = Math.min(datapoint.open, datapoint.close);
-            }
-
-            return datapoint;
-        });
-
-        console.log('data:', data);
-        console.log('formattedData:', formattedData);
-
-        return formattedData;
-    }
-
     render() {
         if (this.state.loading) {
             return <BigLoader></BigLoader>

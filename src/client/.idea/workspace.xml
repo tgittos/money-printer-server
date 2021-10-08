@@ -22,15 +22,15 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/images/loaders/nyan.gif" beforeDir="false" afterPath="$PROJECT_DIR$/public/images/loaders/nyan.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_colors.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_colors.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/styles/_containers.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_containers.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_effects.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_effects.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_fonts.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_fonts.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_graphs.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_graphs.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_variables.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_variables.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/styles/mp-base.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/mp-base.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/mp-theme.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/mp-theme.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Accounts/AccountItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Components/AccountItem.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" afterDir="false" />
@@ -105,12 +105,12 @@
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelFooter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelFooter.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelHeader.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Panel.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/guidebook/components/ColorChip.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/guidebook/components/ColorChip.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/guidebook/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/guidebook/data.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Account.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Account.ts" afterDir="false" />
@@ -152,7 +152,7 @@
       <change beforePath="$PROJECT_DIR$/src/slices/PlaidSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/slices/PlaidSlice.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/slices/ProfileSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/slices/ProfileSlice.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/stores/AppStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/stores/AppStore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/testData.csv" beforeDir="false" afterPath="$PROJECT_DIR$/src/testData.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/testData.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utilities.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utilities.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styleguide.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styleguide/Atoms.md" beforeDir="false" afterPath="$PROJECT_DIR$/styleguide/Atoms.md" afterDir="false" />
@@ -307,11 +307,11 @@
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\stories" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Tim\src\money-printer\src\client\src\components\Accounts\Components" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\src\guidebook" />
       <recent name="$PROJECT_DIR$/src/components/shared/Panel/Components" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\styleguide" />
       <recent name="C:\Users\Tim\src\money-printer\src\client\public\styles" />
-      <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

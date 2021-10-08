@@ -1,6 +1,34 @@
-import ICandleDataPoint from "../Charts/interfaces/ICandleDataPoint";
 import moment from "moment";
-import ILineDataPoint from "../Charts/interfaces/ILineDataPoint";
+import ICandleDataPoint from "../components/Charts/interfaces/ICandleDataPoint";
+import ILineDataPoint from "../components/Charts/interfaces/ILineDataPoint";
+import Account from "../models/Account";
+
+export const accounts: Account[] = [
+    new Account({
+        id: 34523,
+        name: "Retirement IRA",
+        balance: 224352.0,
+        type: "investment",
+        subtype: "ira",
+        timestamp: new Date()
+    }),
+    new Account({
+        id: 34563,
+        name: "Credit Card",
+        balance: -2342.0,
+        type: "credit",
+        subtype: "credit card",
+        timestamp: new Date()
+    }),
+    new Account({
+        id: 987987,
+        name: "Retirement 401k",
+        balance: 63542.0,
+        type: "investment",
+        subtype: "401k",
+        timestamp: new Date()
+    })
+];
 
 type Generator = () => number;
 
