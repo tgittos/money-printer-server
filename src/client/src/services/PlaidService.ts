@@ -1,26 +1,31 @@
-import BaseRepository from "./BaseRepository";
-import AppStore from '../stores/AppStore';
-import {setLinkToken} from "../slices/PlaidSlice";
-import PlaidSetAccessTokenRequest from "../requests/PlaidSetAccessTokenRequest";
-import PlaidSetAccessTokenResponse from "../responses/PlaidSetAccessTokenResponse";
-import PlaidCreateLinkTokenResponse from "../responses/PlaidCreateLinkTokenRequest";
 import PlaidGetInfoResponse from "../responses/PlaidGetInfoResponse";
-import {addAccount, setAccounts} from "../slices/AccountSlice";
-import Account from "../models/Account";
+import PlaidCreateLinkTokenResponse from "../responses/PlaidCreateLinkTokenRequest";
+import PlaidSetAccessTokenResponse from "../responses/PlaidSetAccessTokenResponse";
+import PlaidSetAccessTokenRequest from "../requests/PlaidSetAccessTokenRequest";
+import HttpService from "./HttpService";
+import {AppDispatch} from "../store/AppStore";
+import {useAppDispatch} from "../store/AppHooks";
+import {AddAccounts} from "../store/actions/AccountActions";
 
-class PlaidRepository extends BaseRepository {
+class PlaidService {
+
+    readonly http: HttpService;
+    readonly dispatch: AppDispatch;
+
+    private get endpoint(): string {
+        return this.http.baseApiEndpoint + "/oauth/";
+    }
 
     constructor() {
-        super();
-
-        this.apiEndpoint = "plaid/";
+        this.http = new HttpService();
+        this.dispatch = useAppDispatch();
     }
 
     /*
      * Get the Plaid key information from the server?
      */
     public async getInfoFromServer(): Promise<PlaidGetInfoResponse> {
-        const response = await this.authenticatedRequest<null, PlaidGetInfoResponse>({
+        const response = await this.http.authenticatedRequest<null, PlaidGetInfoResponse>({
             url: this.endpoint + "info",
             method: "POST"
         }).then(response => (response as any).data as PlaidGetInfoResponse);
@@ -32,7 +37,7 @@ class PlaidRepository extends BaseRepository {
      * to use in their authorization flow
      */
     public async createLinkToken(): Promise<PlaidCreateLinkTokenResponse> {
-        const response = await this.authenticatedRequest<null, PlaidCreateLinkTokenResponse>({
+        const response = await this.http.authenticatedRequest<null, PlaidCreateLinkTokenResponse>({
             url: this.endpoint + "create_link_token",
             method: "POST"
         }).then(response => (response as any).data as PlaidCreateLinkTokenResponse);
@@ -46,7 +51,7 @@ class PlaidRepository extends BaseRepository {
      * Money Printer Account object
      */
     public async setAccessToken(publicToken: string): Promise<PlaidSetAccessTokenResponse> {
-        const response = await this.authenticatedRequest<PlaidSetAccessTokenRequest, PlaidSetAccessTokenResponse>({
+        const response = await this.http.authenticatedRequest<PlaidSetAccessTokenRequest, PlaidSetAccessTokenResponse>({
             url: this.endpoint + "set_access_token",
             method: "POST",
             data: {
@@ -55,11 +60,12 @@ class PlaidRepository extends BaseRepository {
         }).then(response => (response as any).data as PlaidSetAccessTokenResponse);
 
         if (response.success) {
-            AppStore.dispatch(addAccount(new Account(response.data)));
+            this.dispatch(AddAccounts([response.data]));
         }
 
         return response;
     }
+
 }
 
-export default PlaidRepository;
+export default PlaidService;

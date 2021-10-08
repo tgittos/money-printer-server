@@ -3,7 +3,7 @@ import styles from './Register.module.scss';
 import React, {ChangeEvent} from 'react';
 import {Subject, Subscription} from "rxjs";
 
-import I18nRepository from '../../repositories/I18nRepository'
+import I18nService from '../../repositories/I18nRepository'
 import ProfileRepository from '../../repositories/ProfileRepository'
 import IRegisterProfileRequest from '../../requests/RegisterProfileRequest';
 import IRegisterProfileResponse from '../../responses/RegisterProfileResponse';
@@ -23,7 +23,7 @@ type RegisterState = {
 
 class Register extends React.Component<RegisterProps, RegisterState> {
 
-    private _i18n: I18nRepository;
+    private _i18n: I18nService;
     private _profile: ProfileRepository;
 
     constructor(props: RegisterProps) {
@@ -33,7 +33,7 @@ class Register extends React.Component<RegisterProps, RegisterState> {
         this.handleSubmit = this.handleSubmit.bind(this);
 
         // initialize repositories
-        this._i18n = new I18nRepository();
+        this._i18n = new I18nService();
         this._profile = new ProfileRepository();
     }
 

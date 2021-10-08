@@ -4,7 +4,7 @@ import React from "react";
 
 import AppStore, {getAccountsState, getAppState, getHoldingsState, getProfileState} from './stores/AppStore';
 import { IAppState } from "./slices/AppSlice";
-import I18nRepository from "./repositories/I18nRepository";
+import I18nService from "./repositories/I18nRepository";
 import ProfileRepository from "./repositories/ProfileRepository";
 import Dashboard from "./components/Dashboard/Dashboard.lazy";
 import BigLoader from "./components/shared/Loaders/BigLoader";
@@ -17,7 +17,7 @@ import Forecasting from "./components/Forecasting/Forecasting";
 
 class App extends React.Component<{}, IAppState> {
 
-  private _i18n: I18nRepository;
+  private _i18n: I18nService;
   private _profileRepo: ProfileRepository;
   private _accountRepo: AccountRepository;
 
@@ -33,7 +33,7 @@ class App extends React.Component<{}, IAppState> {
     this.state = getAppState();
 
     // load in all our stores and sync the current data state from the server
-    this._i18n = new I18nRepository();
+    this._i18n = new I18nService();
     this._profileRepo = new ProfileRepository();
     this._accountRepo = new AccountRepository();
 

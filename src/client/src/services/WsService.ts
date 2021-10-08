@@ -1,6 +1,5 @@
-import BaseRepository from "./BaseRepository";
 import {io, Socket} from "socket.io-client";
-import {BehaviorSubject, observable, Observable, ReplaySubject, Subject} from "rxjs";
+import {BehaviorSubject, Observable, ReplaySubject} from "rxjs";
 import Env from "../env";
 import ISymbol from "../interfaces/ISymbol";
 
@@ -20,7 +19,8 @@ export interface ISubscriptionRequest {
     data: any
 }
 
-class ClientHubRepository extends BaseRepository {
+class WsService {
+
 
     private MESSAGE_BUFFER_SIZE: number = 1000;
 
@@ -38,18 +38,15 @@ class ClientHubRepository extends BaseRepository {
         return this._connectionStateSubject.getValue();
     }
 
-    private static _instance: ClientHubRepository;
-    public static get instance(): ClientHubRepository {
+    private static _instance: WsService;
+    public static get instance(): WsService {
         if (!this._instance) {
-            this._instance = new ClientHubRepository();
+            this._instance = new WsService();
         }
         return this._instance;
     }
 
     private constructor() {
-        super();
-
-        this.apiEndpoint = "symbols/"
     }
 
     public connect() {
@@ -245,6 +242,7 @@ class ClientHubRepository extends BaseRepository {
             console.log('SymbolRepository::_ws_on_close - closing connection to client-hub');
         }
     }
+
 }
 
-export default ClientHubRepository;
+export default WsService;

@@ -3,7 +3,7 @@ import i18next from "i18next";
 import Env from "../env";
 import en from "../i18n/en.json"
 
-class I18nRepository {
+class I18nService {
 
   constructor(lang='en') {
     i18next.init({
@@ -27,4 +27,4 @@ class I18nRepository {
 
 }
 
-export default I18nRepository;
+export default I18nService;

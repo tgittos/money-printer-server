@@ -1,5 +1,4 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IProfileState} from "./ProfileSlice";
 
 export interface IPlaidState {
     linkToken: string;
@@ -20,5 +19,4 @@ const PlaidSlice = createSlice({
     }
 });
 
-export const { setLinkToken } = PlaidSlice.actions;
-export default PlaidSlice.reducer;
+export default PlaidSlice;

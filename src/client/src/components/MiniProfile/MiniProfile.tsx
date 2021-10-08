@@ -1,7 +1,7 @@
 import React, {ChangeEvent} from 'react';
 import styles from './MiniProfile.module.scss';
 
-import I18nRepository from "../../repositories/I18nRepository";
+import I18nService from "../../repositories/I18nRepository";
 import Profile, {IProfile} from "../../models/Profile";
 import ProfileRepository from "../../repositories/ProfileRepository";
 import {Button, Modal, NavDropdown} from "react-bootstrap";
@@ -24,7 +24,7 @@ interface MiniProfileState {
 class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
 
     private _profileRepository: ProfileRepository;
-    private _i18nRepository: I18nRepository;
+    private _i18nRepository: I18nService;
 
     public get currentProfile(): Profile {
         return this.state.profile
@@ -50,7 +50,7 @@ class MiniProfile extends React.Component<MiniProfileProps, MiniProfileState> {
         this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
 
         this._profileRepository = new ProfileRepository();
-        this._i18nRepository = new I18nRepository();
+        this._i18nRepository = new I18nService();
     }
 
     private async handleLogin() {

@@ -1,21 +1,16 @@
 export interface IAuthedProfile {
-  profile: IServerProfile
+  profile: IProfile
   token: string
-}
-
-export interface IServerProfile {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  timestamp: Date;
 }
 
 export interface IProfile {
   id: number | null;
   username: string;
+  email?: string;
   firstName: string;
+  first_name?: string;
   lastName: string;
+  last_name?: string;
   timestamp: Date;
 }
 
@@ -26,7 +21,7 @@ class Profile implements IProfile {
   public lastName: string;
   public timestamp: Date;
 
-  constructor(obj: IServerProfile = {} as IServerProfile) {
+  constructor(obj: IProfile) {
     this.id = obj?.id ?? null;
     this.username = obj?.email ?? '';
     this.firstName = obj?.first_name ?? '';

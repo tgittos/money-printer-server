@@ -2,7 +2,7 @@ import React, {ChangeEvent} from 'react';
 import styles from './Login.module.scss';
 
 import ProfileRepository from '../../repositories/ProfileRepository';
-import I18nRepository from './../../repositories/I18nRepository';
+import I18nService from './../../repositories/I18nRepository';
 import IAuthProfileRequest from './../../requests/AuthProfileRequest';
 import IAuthProfileResponse from "../../responses/AuthProfileResponse";
 import ErrorMessage from "../shared/ErrorMessage/ErrorMessage";
@@ -17,7 +17,7 @@ type LoginState = {
 class Login extends React.Component<LoginProps, LoginState> {
 
     private _profileRepository: ProfileRepository;
-    private _i18nRepository: I18nRepository;
+    private _i18nRepository: I18nService;
 
     constructor(props: LoginProps) {
         super(props);
@@ -31,7 +31,7 @@ class Login extends React.Component<LoginProps, LoginState> {
         this.handleFieldChange = this.handleFieldChange.bind(this);
 
         this._profileRepository = new ProfileRepository();
-        this._i18nRepository = new I18nRepository();
+        this._i18nRepository = new I18nService();
     }
 
     private async handleLogin() {
