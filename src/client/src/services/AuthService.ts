@@ -38,12 +38,16 @@ class AuthService {
             return () => profiles as IProfileState;
         });
         this.dispatch = useAppDispatch();
+
+        this.loadProfileFromToken();
     }
 
     public async auth(username: string, password: string): Promise<Profile> {
-        if (this.selector().authenticated) {
-            // already authed, we can just return a synthetic response
+        if (this.selector().authenticated && this.currentProfile) {
+            // already authed, we can just return the current profile
+            return Promise<Profile>.resolve(this.currentProfile)
         }
+        // not authed, or missing profile, lets fire an auth request
         this.dispatch(AuthenticateUser({ username, password }));
     }
 

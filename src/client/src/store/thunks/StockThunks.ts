@@ -5,7 +5,6 @@ import {IHistoricalIntradaySymbol} from "../../models/symbols/HistoricalIntraday
 import IHistoricalIntradayResponse from "../../responses/HistoricalIntradayResponse";
 import HttpService from "../../services/HttpService";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {IBalance} from "../../models/Balance";
 import {wrapThunk} from "../../utilities";
 
 const http = new HttpService();

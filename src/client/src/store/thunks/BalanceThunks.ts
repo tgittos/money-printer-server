@@ -1,7 +1,6 @@
 import GetAccountBalancesResponse from "../../responses/GetAccountBalancesResponse";
 import Balance, {IBalance} from "../../models/Balance";
 import HttpService from "../../services/HttpService";
-import {IAccountState} from "../reducers/AccountReducers";
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {wrapThunk} from "../../utilities";
 

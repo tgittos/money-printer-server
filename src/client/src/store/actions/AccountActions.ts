@@ -1,14 +1,6 @@
 import {createAction} from "@reduxjs/toolkit";
 import {IAccount} from "../../models/Account";
-import Profile from "../../models/Profile";
-import {profileToIProfile} from "../../models/mappers/ProfileMappers";
-import {IProfileActionArgs} from "./ProfileActions";
+import {withType} from "../../utilities";
 
-function withAccountList() {
-    return (a: IAccount[]) => ({
-        payload: a
-    });
-}
-
-export const AddAccounts = createAction('addAccounts', withAccountList());
+export const AddAccounts = createAction('addAccounts', withType<IAccount[]>());
 export const ClearAccounts = createAction<void, 'clearAccounts'>('clearAccounts');

@@ -1,13 +1,8 @@
 import HttpService from "./HttpService";
-import IHistoricalEoDResponse from "../responses/HistoricalEoDResponse";
-import moment from "moment";
-import IHistoricalIntradayResponse from "../responses/HistoricalIntradayResponse";
-import {IHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
-import {IHistoricalIntradaySymbol} from "../models/symbols/HistoricalIntradaySymbol";
 import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import RealtimeSymbol from "../models/symbols/RealtimeSymbol";
 import Env from "../env";
-import WsService, {IChannel, NullableSymbol} from "./WsService";
+import WsService, {IChannel, ISubscriptionRequest, NullableSymbol} from "./WsService";
 
 class StockService {
 
@@ -79,7 +74,7 @@ class StockService {
         if (connected) {
             // subscribe to the live quotes channel
             console.log("LiveQuoteRepository::_onHubConnected - subscribing to live quotes channel");
-            const channel = this._chRepo.subscribeToChannel({
+            const channel = this.ws.subscribeToChannel({
                 channelName: this.LIVE_QUOTES,
                 handler: (data: any) => {
                     const jsonData = JSON.parse(data);
