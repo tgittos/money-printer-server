@@ -50,6 +50,8 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/ILineDataPoint.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/ILineDataPoint.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartFactory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartFactory.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/Axis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/Axis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/XAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/XAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/PieChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/PieChart.ts" afterDir="false" />

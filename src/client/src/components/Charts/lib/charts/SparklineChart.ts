@@ -12,7 +12,7 @@ class SparklineChart implements IChart {
     private props: IChartProps<ILineDataPoint>;
     private svgRef: MutableRefObject<null>;
     private xScale: d3.ScaleTime<number, Date>;
-    private yScale: d3.ScaleLinear<number, number>;
+    private yScale: d3.ScaleLogarithmic<number, number>;
     private xAxis: XAxis;
     private line: Line;
 
@@ -41,7 +41,7 @@ class SparklineChart implements IChart {
 
         // build scales from data and chart dimensions
         this.xScale = d3.scaleTime(d3.extent(dateDomain), [0, width]);
-        this.yScale = d3.scaleLinear(d3.extent(valDomain), [height, 0]);
+        this.yScale = d3.scaleLog(d3.extent(valDomain), [height, 0]);
 
         // build a date based XAxis, and format each date for the x axis
         this.xAxis = new XAxis<Date>({
@@ -49,6 +49,7 @@ class SparklineChart implements IChart {
             dimensions: this.props.dimensions,
             scale: this.xScale,
             axis: d3.axisBottom,
+            alignment: "middle",
             // tickCount: d3.utcDay.every(5)
             mapper: (datum: ILineDataPoint, idx: number, arr: ILineDataPoint[]) => datum.x,
             tickFormatter: (d, i): string => ""

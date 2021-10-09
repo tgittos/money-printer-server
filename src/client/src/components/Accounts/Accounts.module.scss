@@ -4,17 +4,17 @@
 }
 
 .AccountChip {
-  max-height: 200px;
-  max-width: 400px;
   display: inline-block;
   margin: 0.3em;
   padding: 0.3em;
+  height: 65px;
+  max-width: 200px;
 
   background-repeat: no-repeat;
   background-size: 100%;
 
   .AccountChipId {
-    width: 100px;
+    width: calc(100px - 0.15em);
     display: inline-block;
 
     .AccountChipIdTitle {
@@ -46,8 +46,14 @@
   }
 
   .AccountChipSparkline {
-    width: 50%;
+    width: calc(100px - 0.15em);
     display: inline-block;
+
+    :global {
+      svg {
+        vertical-align: inherit;
+      }
+    }
   }
 }
 

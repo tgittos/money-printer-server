@@ -2,7 +2,7 @@ import moment from "moment";
 import ICandleDataPoint from "../components/Charts/interfaces/ICandleDataPoint";
 import ILineDataPoint from "../components/Charts/interfaces/ILineDataPoint";
 import Account from "../models/Account";
-import Balance from "../models/Balance";
+import Balance, {IBalance} from "../models/Balance";
 
 export const accounts: Account[] = [
     new Account({
@@ -30,13 +30,6 @@ export const accounts: Account[] = [
         timestamp: new Date()
     })
 ];
-
-export const balances: Balance[] = [
-    new Balance({
-        id: 23423,
-        accountId: 34523
-    })
-]
 
 type Generator = () => number;
 
@@ -123,3 +116,23 @@ export const candleGenerator = (n: number = 500, gaps = false) => {
         } as ICandleDataPoint)
     } as IGenDataOpts<ICandleDataPoint>)
 };
+
+export const balanceHistoryGenerator = (account: Account, n: number = 500) => {
+    return genData<IBalance>({
+        id: 0,
+        timestamp: moment.utc().subtract(n, 'days').toDate(),
+        accountId: account.id,
+        current: account.balance,
+        available: account.balance
+    }, {
+        n,
+        gaps: false,
+        propertySelector: p => p.current,
+        pointConstructor: (d, next) => ({
+            timestamp: d,
+            accountId: account.id,
+            current: next(),
+            available: next()
+        } as IBalance)
+    } as IGenDataOpts<IBalance>)
+}
