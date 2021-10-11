@@ -1,55 +1,62 @@
 @import '../../../public/styles/variables.module';
 
 .Accounts {
+}
 
-  .AccountsFilter {
-    border: $border-primary solid 1px;
-    margin-bottom: 10px;
+.AccountChip {
+  display: inline-block;
+  margin: 0.3em;
+  padding: 0.3em;
+  height: 65px;
+  max-width: 200px;
 
-    div {
+  background-repeat: no-repeat;
+  background-size: 100%;
+
+  .AccountChipId {
+    width: calc(100px - 0.15em);
+    display: inline-block;
+
+    .AccountChipIdTitle {
+      font-size: 0.9em;
       display: inline-block;
+      margin-bottom: 0;
+
+      :global {
+        div {
+          display: inline-block;
+        }
+        .mp-icon {
+          font-size: 2em;
+          margin-right: 0.15em;
+        }
+      }
     }
 
-    div > input {
-      margin-right: 2px;
-    }
+    :global {
+      .timestamp {
+        font-size: 0.7em;
+      }
 
-    div + div {
-      margin-left: 25px;
-    }
-
-    .AccountsAddButtonContainer {
-      float: right;
+      .balance {
+        font-size: 1.3em;
+        margin-bottom: 0;
+      }
     }
   }
 
-  .AccountItem {
+  .AccountChipSparkline {
+    width: calc(100px - 0.15em);
+    display: inline-block;
 
-    border: $border-primary solid 1px;
-    padding: 3px 5px;
-
-    .AccountItemIcon {
-    }
-
-    .AccountItemName {
-      margin: 0 10px;
-    }
-
-    .AccountItemBalance {
-      font-weight: bolder;
-    }
-
-    .AccountItemTimestamp {
-      margin-left: 10px;
-      font-size: 0.7em;
-      font-weight: lighter;
-      font-style: italic;
-    }
-
-    .AccountItemRefresh {
-      float: right;
-      display: inline-block;
+    :global {
+      svg {
+        vertical-align: inherit;
+      }
     }
   }
+}
+
+.AccountTile {
 
 }

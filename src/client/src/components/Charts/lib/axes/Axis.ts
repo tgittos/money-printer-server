@@ -11,7 +11,7 @@ export default interface IAxis {
 }
 
 export interface IAxisProps<T, U extends Date | number> {
-    dimensions: IChartDimensions
+    dimensions: IChartDimensions;
     data: IFigureDataPoint[];
     mapper: (datum: IFigureDataPoint, idx: number, arr: Iterable<IFigureDataPoint>) => U;
     scale: d3.AxisScale<any>;
@@ -34,7 +34,7 @@ abstract class Axis<T, U extends Date | number> implements IAxis {
     }
 
     protected constructor(props: IAxisProps<T, U>) {
-        this.props = props;
+        this.props = props
     }
 
     abstract draw(svg: d3.Selection<SVGElement, IFigureDataPoint[], HTMLElement, undefined>): void;

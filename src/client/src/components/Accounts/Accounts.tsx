@@ -1,7 +1,7 @@
 import styles from "./Accounts.module.scss";
 import React, {ChangeEvent} from "react";
 import Account from "../../models/Account";
-import AccountItem from "./AccountItem";
+import AccountItem from "./Components/AccountItem";
 import {ArrowRepeat, Search} from "react-bootstrap-icons";
 import PlaidRepository from "../../repositories/PlaidRepository";
 import OpenLink from "../Plaid/OpenLink";

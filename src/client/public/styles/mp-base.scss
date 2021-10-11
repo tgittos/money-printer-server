@@ -1,6 +1,7 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 
 @import 'containers';
+@import 'icons';
 
 // format the border for horizontal toolbars inside panels
 .mp-panel-body > .mp-toolbar-horizontal {
@@ -32,4 +33,9 @@
     border-right: none;
     margin-right: -0.7em;
   }
+}
+
+.timestamp {
+  font-weight: 100;
+  color: $mp-grey4;
 }
