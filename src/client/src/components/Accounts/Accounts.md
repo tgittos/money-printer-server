@@ -18,7 +18,7 @@ import {Container} from "react-bootstrap";
 ```jsx
 import AccountTile from './Components/AccountTile';
 import Account from './../../models/Account';
-import { accounts } from './../../guidebook/data';
+import { accounts, balanceHistoryGenerator } from './../../guidebook/data';
 
-<AccountTile account={accounts[0]} />
+<AccountTile account={accounts[0]} balanceHistory={balanceHistoryGenerator(accounts[0])} />
 ```

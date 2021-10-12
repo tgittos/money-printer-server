@@ -13,7 +13,7 @@ class SparklineChart implements IChart {
     private svgRef: MutableRefObject<null>;
     private xScale: d3.ScaleTime<number, Date>;
     private yScale: d3.ScaleLogarithmic<number, number>;
-    private xAxis: XAxis;
+    private xAxis: XAxis<Date>;
     private line: Line;
 
     constructor(props: IChartProps<ILineDataPoint>) {

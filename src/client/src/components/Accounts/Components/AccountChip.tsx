@@ -1,7 +1,6 @@
 import styles from "../Accounts.module.scss";
 import React from "react";
 import Account from "../../../models/Account";
-import AccountIcon from "../../shared/Icons/AccountIcon";
 import {formatAsCurrency} from "../../../utilities";
 import moment from "moment";
 import Panel from "../../shared/Panel/Panel";
@@ -9,6 +8,7 @@ import StaticChart from "../../Charts/StaticChart";
 import SparklineChart from "../../Charts/lib/charts/SparklineChart";
 import {IBalance} from "../../../models/Balance";
 import {formatBalancesForLine} from "../../../lib/ChartData";
+import {cssSubtype, cssType, returnClass} from "../AccountsHelper";
 
 export interface IAccountChipProps {
     account: Account;
@@ -18,29 +18,15 @@ export interface IAccountChipProps {
 
 class AccountChip extends React.Component<IAccountChipProps, {}> {
 
-    private get returnClass(): string {
-        return this.props.account.balance > 0
-            ? this.props.account.balance === 0
-                ? ""
-                : "gain"
-            : "loss";
-    }
-
-    private get cssType(): string { return this.props.account.type.replace(' ', '-') + '-bg'; }
-    private get cssSubtype(): string {
-        return this.props.account.type.replace(' ', '-') + '-' +
-            this.props.account.subtype.replace(' ', '-') + '-bg';
-    }
-
     render() {
-        let s = [styles.AccountChip, 'mp-account-chip', this.cssType, this.cssSubtype];
+        let s = [styles.AccountChip, 'mp-account-chip', cssType(this.props.account), cssSubtype(this.props.account)];
         if (this.props.className) s = s.concat(Array.of(this.props.className));
         return <Panel className={s.join(' ')}>
             <div className={[styles.AccountChipId].join(' ')}>
                 <div className={styles.AccountChipIdTitle}>
                     { this.props.account.name }
                 </div>
-                <div className={["balance", this.returnClass].join(' ')}>{ formatAsCurrency(this.props.account.balance) }</div>
+                <div className={["balance", returnClass(this.props.account)].join(' ')}>{ formatAsCurrency(this.props.account.balance) }</div>
                 <div className="timestamp">
                     <span>{ moment.utc(this.props.account.timestamp).fromNow() }</span>
                 </div>

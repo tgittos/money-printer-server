@@ -120,3 +120,11 @@ html.mp, html.mp body {
     border-color: $mp-green;
   }
 }
+
+.gain .balance {
+  color: $mp-green4;
+}
+
+.loss .balance {
+  color: $mp-red;
+}

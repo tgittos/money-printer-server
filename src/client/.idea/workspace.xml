@@ -25,17 +25,14 @@
       <change beforePath="$PROJECT_DIR$/public/styles/_effects.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_effects.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_fonts.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_fonts.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_graphs.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_graphs.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/styles/_icons.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_icons.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/_variables.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/_variables.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/styles/mp-base.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/mp-base.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/styles/mp-theme.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/public/styles/mp-theme.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/AccountPerformance/AccountPerformance.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Accounts/Accounts.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Accounts.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Components/AccountChip.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Components/AccountChip.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Accounts/Components/AccountItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Components/AccountItem.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Accounts/Components/AccountTile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Accounts/Components/AccountTile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/LiveChart.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/StaticChart.tsx" afterDir="false" />
@@ -50,10 +47,8 @@
       <change beforePath="$PROJECT_DIR$/src/components/Charts/interfaces/ILineDataPoint.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/interfaces/ILineDataPoint.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartFactory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartFactory.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/ChartUtils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/Axis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/Axis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/axes/XAxis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/axes/XAxis.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicCandleChart.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/BasicLineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/PieChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/PieChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/charts/SparklineChart.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/charts/SparklineChart.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Charts/lib/figures/Candle.ts" afterDir="false" />
@@ -66,7 +61,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Dashboard/Dashboard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Forecasting/Forecasting.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Forecasting/Forecasting.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Forecasting/Forecasting.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Forecasting/Forecasting.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header/Header.lazy.tsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header/Header.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/HoldingsList/HoldingListItem.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/HoldingsList/HoldingListItem.tsx" afterDir="false" />
@@ -75,7 +70,6 @@
       <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentAccountSummary/InvestmentAccountSummary.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentPerformance/InvestmentPerformance.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentPerformance/InvestmentPerformance.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Investments/InvestmentPerformance/InvestmentPerformance.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/InvestmentPerformance/InvestmentPerformance.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/Investments.lazy.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/Investments.lazy.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/Investments.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/Investments.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Investments/Investments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Investments/Investments.tsx" afterDir="false" />
@@ -101,9 +95,6 @@
       <change beforePath="$PROJECT_DIR$/src/components/shared/Grid/Grid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Grid/Grid.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Grid/Nx2Grid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Grid/Nx2Grid.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Grid/Nx2Row.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Grid/Nx2Row.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Icons/AccountIcon.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Icons/AccountIcon.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Icons/Icons.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Icons/Icons.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Icons/Icons.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Icons/Icons.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Loaders/BigLoader.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Components/Controls/PanelControlClose.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Components/Controls/PanelControlClose.tsx" afterDir="false" />
@@ -113,16 +104,11 @@
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelControls.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelControls.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelFooter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelFooter.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelHeader.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Components/PanelHeader.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Panel/Panel.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/PrivateRoute.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/Toolbar/Toolbar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/env.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/guidebook/components/ColorChip.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/guidebook/components/ColorChip.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/guidebook/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/guidebook/data.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/i18n/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/i18n/en.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/ISymbol.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/ChartData.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/ChartData.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Account.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Account.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Balance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Balance.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/Holding.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/Holding.ts" afterDir="false" />
@@ -368,7 +354,7 @@
       <workItem from="1632882738076" duration="7991000" />
       <workItem from="1633184999000" duration="5770000" />
       <workItem from="1633356406396" duration="11130000" />
-      <workItem from="1633458743486" duration="1097000" />
+      <workItem from="1633458743486" duration="7216000" />
     </task>
     <servers />
   </component>
