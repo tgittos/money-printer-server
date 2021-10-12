@@ -27,17 +27,17 @@ to elements of the design. Think button state during interactions, alert notific
 Grey goes with everything. Here are some greys we like.
 
 ```js noeditor
-import ColorChip from '../src/guidebook/components/ColorChip';
+import ColorChip from '../src/styleguide/components/ColorChip';
 import vars from './../public/styles/_variables.module.scss';
 
 <>
-  <ColorChip name="$mp-white" value={vars.mpWhite}/>
-  <ColorChip name="$mp-grey1" value={vars.mpGrey1}/>
-  <ColorChip name="$mp-grey2" value={vars.mpGrey2}/>
-  <ColorChip name="$mp-grey3" value={vars.mpGrey3}/>
-  <ColorChip name="$mp-grey4" value={vars.mpGrey4}/>
-  <ColorChip name="$mp-grey5" value={vars.mpGrey5}/>
-  <ColorChip name="$mp-black" value={vars.mpBlack}/>
+    <ColorChip name="$mp-white" value={vars.mpWhite}/>
+    <ColorChip name="$mp-grey1" value={vars.mpGrey1}/>
+    <ColorChip name="$mp-grey2" value={vars.mpGrey2}/>
+    <ColorChip name="$mp-grey3" value={vars.mpGrey3}/>
+    <ColorChip name="$mp-grey4" value={vars.mpGrey4}/>
+    <ColorChip name="$mp-grey5" value={vars.mpGrey5}/>
+    <ColorChip name="$mp-black" value={vars.mpBlack}/>
 </>
 ```
 
@@ -56,7 +56,7 @@ colors in the
 ### Reds
 
 ```js noeditor
-import ColorChip from '../src/guidebook/components/ColorChip';
+import ColorChip from '../src/styleguide/components/ColorChip';
 import vars from './../public/styles/_variables.module.scss';
 
 <>
@@ -66,7 +66,7 @@ import vars from './../public/styles/_variables.module.scss';
 ### Oranges
 
 ```js noeditor
-import ColorChip from '../src/guidebook/components/ColorChip';
+import ColorChip from '../src/styleguide/components/ColorChip';
 import vars from './../public/styles/_variables.module.scss';
 
 <>
@@ -79,7 +79,7 @@ import vars from './../public/styles/_variables.module.scss';
 ### Yellows
 
 ```js noeditor
-import ColorChip from '../src/guidebook/components/ColorChip';
+import ColorChip from '../src/styleguide/components/ColorChip';
 import vars from './../public/styles/_variables.module.scss';
 
 <>
@@ -90,27 +90,27 @@ import vars from './../public/styles/_variables.module.scss';
 ### Greens
 
 ```js noeditor
-import ColorChip from '../src/guidebook/components/ColorChip';
+import ColorChip from '../src/styleguide/components/ColorChip';
 import vars from './../public/styles/_variables.module.scss';
 
 <>
-  <ColorChip name="$mp-green1" value={vars.mpGreen1}/>
-  <ColorChip name="$mp-green2" value={vars.mpGreen2}/>
-  <ColorChip name="$mp-green3" value={vars.mpGreen3}/>
-  <ColorChip name="$mp-green4" value={vars.mpGreen4}/>
-  <ColorChip name="$mp-green5" value={vars.mpGreen5}/>
-  <ColorChip name="$mp-green6" value={vars.mpGreen6}/>
-  <ColorChip name="$mp-green7" value={vars.mpGreen7}/>
-  <ColorChip name="$mp-green8" value={vars.mpGreen8}/>
-  <ColorChip name="$mp-green9" value={vars.mpGreen9}/>
-  <ColorChip name="$mp-green10" value={vars.mpGreen10}/>
+    <ColorChip name="$mp-green1" value={vars.mpGreen1}/>
+    <ColorChip name="$mp-green2" value={vars.mpGreen2}/>
+    <ColorChip name="$mp-green3" value={vars.mpGreen3}/>
+    <ColorChip name="$mp-green4" value={vars.mpGreen4}/>
+    <ColorChip name="$mp-green5" value={vars.mpGreen5}/>
+    <ColorChip name="$mp-green6" value={vars.mpGreen6}/>
+    <ColorChip name="$mp-green7" value={vars.mpGreen7}/>
+    <ColorChip name="$mp-green8" value={vars.mpGreen8}/>
+    <ColorChip name="$mp-green9" value={vars.mpGreen9}/>
+    <ColorChip name="$mp-green10" value={vars.mpGreen10}/>
 </>
 ```
 
 ### Blues
 
 ```js noeditor
-import ColorChip from '../src/guidebook/components/ColorChip';
+import ColorChip from '../src/styleguide/components/ColorChip';
 import vars from './../public/styles/_variables.module.scss';
 
 <>

@@ -1,19 +1,41 @@
 import './App.scss';
-import React, {useContext} from "react";
+import React from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import {Route, BrowserRouter as Router, Switch, useHistory} from "react-router-dom";
 
 import Header from "./components/Header/Header";
 import MainNav from "./components/MainNav/MainNav";
-import {IAppState} from "./slices/AppSlice";
+import {SelectApp} from "./store/actions/AppActions";
+import ProfileApp from "./apps/profile/Profile.lazy";
+import {connect} from "react-redux";
+import Profile from "./models/Profile";
 
-class App extends React.Component<{}, {}> {
+const mapState: any = (state: AppState) => {
+  const { profile } = state;
+  return {
+    currentProfile: new Profile(profile.current)
+  };
+}
+type AppState = ReturnType<typeof mapState>;
+
+const mapDispatch: any = (dispatch: AppDispatch) => {
+  return {
+    selectApp: (e: string) => dispatch(SelectApp(e))
+  }
+};
+type AppDispatch = ReturnType<typeof mapDispatch>;
+
+type IAppProps = {} & AppState & AppDispatch;
+
+class App extends React.Component {
   readonly cssClasses: string[] = [
       'mp', 'app'
   ];
+  readonly props: IAppProps;
 
-  private get getState(): IAppState {
-    return useContext(s:  => s:)
+  constructor(props: IAppProps) {
+    super(props);
+    this.props = props;
   }
 
   componentDidMount() {
@@ -23,8 +45,7 @@ class App extends React.Component<{}, {}> {
   }
 
   private _onNavigate(eventKey: string) {
-    const history = useHistory();
-    history.push("/" + eventKey);
+    this.props.selectApp(eventKey);
   }
 
   render() {
@@ -49,6 +70,7 @@ class App extends React.Component<{}, {}> {
                   <Route path="/algo">
                   </Route>
                   <Route path="/profile">
+                    <ProfileApp profile={this.props.currentProfile} />
                   </Route>
                   <Route path="/accounts">
                   </Route>
@@ -61,4 +83,4 @@ class App extends React.Component<{}, {}> {
   }
 }
 
-export default App;
+export default connect(mapState, mapDispatch)(App);

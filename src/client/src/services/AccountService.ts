@@ -12,7 +12,7 @@ class AccountService {
     public async refreshAccountDetails(accountId: number): Promise<void> {
     }
 
-    public async getBalanceHistoryForAccount(accountId: number, start: Date | null = null, end: Date | null = null): Promise<Balance[]> {
+    public async getBalanceHistoryForAccount(accountId: number, start: Date | null = null, end: Date | null = null): Promise<void> {
 
     }
 }

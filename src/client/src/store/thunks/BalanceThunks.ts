@@ -2,22 +2,9 @@ import GetAccountBalancesResponse from "../../responses/GetAccountBalancesRespon
 import Balance, {IBalance} from "../../models/Balance";
 import HttpService from "../../services/HttpService";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {wrapThunk} from "../../utilities";
+import {wrapThunk} from "../../lib/Utilities";
 
 const http = new HttpService();
-
-const globalThunkOptions = {
-    condition(args , thunkApi): boolean | undefined {
-        /*
-        const { accounts } = thunkApi.getState();
-        const inFlight = accounts.requests.length > 0;
-        if (inFlight) {
-            return false;
-        }
-         */
-        return true;
-    }
-}
 
 export const GetBalanceHistoryForAccount = createAsyncThunk<IBalance[], { start: Date, end: Date, id: number}>(
     'balance/getHistoryForAccount', wrapThunk<IBalance[]>('balances', async (args, thunkApi) => {
@@ -47,5 +34,5 @@ export const GetBalanceHistoryForAccount = createAsyncThunk<IBalance[], { start:
             thunkApi.rejectWithValue(response.message);
         }
 
-    }), globalThunkOptions);
+    }));
 

@@ -6,7 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
 
-import store from './stores/AppStore';
+import store from './store/AppStore';
 
 ReactDOM.render(
   <React.StrictMode>

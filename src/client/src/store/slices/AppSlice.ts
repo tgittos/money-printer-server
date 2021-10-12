@@ -1,16 +1,12 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {appReducers} from "../reducers/AppReducers";
-
-export interface IAppState {
-    loading: boolean;
-    initialized: boolean;
-}
+import {appReducers, IAppState} from "../reducers/AppReducers";
 
 const AppSlice = createSlice({
     name: 'App',
     initialState: {
+        idle: false,
         loading: true,
-        initialized: false
+        activeApp: ''
     } as IAppState,
     reducers: appReducers
 });

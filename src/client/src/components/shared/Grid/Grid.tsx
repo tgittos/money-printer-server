@@ -1,9 +1,9 @@
 import styles from "./Grid.module.scss";
-import React from "react";
+import React, {ElementType, ReactNode} from "react";
 import {Col, Container, Row} from "react-bootstrap";
 
-export interface IGridProps extends React.ComponentPropsWithoutRef<HTMLDivElement>{
-    children: Row[];
+export interface IGridProps extends React.ComponentPropsWithoutRef<ElementType<any>>{
+    children: typeof Row[];
 }
 
 class Grid extends React.Component<IGridProps, {}> {

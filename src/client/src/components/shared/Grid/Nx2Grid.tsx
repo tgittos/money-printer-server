@@ -8,6 +8,9 @@ export interface IGridProps {
 }
 
 class Nx2Grid extends React.Component<IGridProps, {}> {
+    static Row = Nx2Row;
+    static Col = Col;
+
     render() {
         return <>
             <Container fluid className={styles.Grid}>
@@ -17,7 +20,5 @@ class Nx2Grid extends React.Component<IGridProps, {}> {
     }
 }
 
-Nx2Grid.Row = Nx2Row;
-Nx2Grid.Col = Col;
 
 export default Nx2Grid;

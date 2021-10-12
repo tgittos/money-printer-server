@@ -1,12 +1,7 @@
 import Cookies from "universal-cookie";
 import Profile, {IProfile} from "../models/Profile";
 import HttpService from "./HttpService";
-import type {AppDispatch} from "../store/AppStore";
-import {useAppDispatch, useAppSelector} from "../store/AppHooks";
-import {ClearCurrentProfile} from "../store/actions/ProfileActions";
-import {AuthenticateUser, InitializeUnauthenticated} from "../store/thunks/ProfileThunks";
 import jwt from "jwt-decode";
-import {IProfileState} from "../store/reducers/ProfileReducers";
 
 export type NullableProfile = Profile | null;
 
@@ -16,8 +11,6 @@ class AuthService {
     readonly cookies: Cookies;
     private tokenProfile: NullableProfile;
     readonly http: HttpService;
-    readonly selector: () => IProfileState;
-    readonly dispatch: AppDispatch;
 
     public get currentProfile(): NullableProfile {
         return this.tokenProfile
@@ -33,22 +26,17 @@ class AuthService {
     constructor() {
         this.http = new HttpService();
         this.cookies = new Cookies();
-        this.selector = useAppSelector((state) => {
-            const { profiles } = state;
-            return () => profiles as IProfileState;
-        });
-        this.dispatch = useAppDispatch();
 
         this.loadProfileFromToken();
     }
 
-    public async auth(username: string, password: string): Promise<Profile> {
-        if (this.selector().authenticated && this.currentProfile) {
+    public async auth(username: string, password: string): Promise<void> {
+        //if (this.selector().authenticated && this.currentProfile) {
             // already authed, we can just return the current profile
-            return Promise<Profile>.resolve(this.currentProfile)
-        }
+        //     return new Promise<Profile>(p => p(this.currentProfile))
+        //}
         // not authed, or missing profile, lets fire an auth request
-        this.dispatch(AuthenticateUser({ username, password }));
+        // this.dispatch(AuthenticateUser({ username, password }));
     }
 
     public loadProfileFromToken(): Profile | null {
@@ -65,8 +53,8 @@ class AuthService {
     }
 
     public logout() {
-        this.dispatch(ClearCurrentProfile());
-        this.dispatch(InitializeUnauthenticated());
+        // this.dispatch(ClearCurrentProfile());
+        // this.dispatch(InitializeUnauthenticated());
     }
 
     public resetPassword(email: string) {

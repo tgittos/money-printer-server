@@ -42,7 +42,7 @@ class StockService {
 
     constructor() {
         this.http = new HttpService();
-        this.ws = new WsService();
+        this.ws = WsService.instance;
 
         this._handleLiveQuoteMessage = this._handleLiveQuoteMessage.bind(this);
         this._onHubConnected = this._onHubConnected.bind(this)

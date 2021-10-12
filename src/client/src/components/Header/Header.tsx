@@ -1,13 +1,11 @@
 import React from 'react';
 import styles from './Header.module.scss';
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
-import MiniProfile from "../MiniProfile/MiniProfile";
 import Profile, {IProfile} from "../../models/Profile";
-import Env from "../../env";
 
 type HeaderProps = {
-    profile: IProfile,
-    authenticated: boolean
+    profile?: IProfile,
+    authenticated?: boolean
 }
 
 type HeaderState = {
@@ -42,12 +40,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                          alt="logo" />{' '}
                     Money Printer
                 </Navbar.Brand>
-                <Nav className={cssClassName}>
-                    <Nav.Link href="/">Dashboard</Nav.Link>
-                    <Nav.Link href="/investments">Investments</Nav.Link>
-                    <Nav.Link href="/forecasting">Forecasting</Nav.Link>
-                    <MiniProfile profile={this.props.profile} authenticated={this.props.authenticated}></MiniProfile>
-               </Nav>
             </Container>
         </Navbar>
     }

@@ -4,13 +4,11 @@ import PlaidSetAccessTokenResponse from "../responses/PlaidSetAccessTokenRespons
 import PlaidSetAccessTokenRequest from "../requests/PlaidSetAccessTokenRequest";
 import HttpService from "./HttpService";
 import {AppDispatch} from "../store/AppStore";
-import {useAppDispatch} from "../store/AppHooks";
 import {AddAccounts} from "../store/actions/AccountActions";
 
 class PlaidService {
 
     readonly http: HttpService;
-    readonly dispatch: AppDispatch;
 
     private get endpoint(): string {
         return this.http.baseApiEndpoint + "/oauth/";
@@ -18,7 +16,6 @@ class PlaidService {
 
     constructor() {
         this.http = new HttpService();
-        this.dispatch = useAppDispatch();
     }
 
     /*
@@ -60,7 +57,7 @@ class PlaidService {
         }).then(response => (response as any).data as PlaidSetAccessTokenResponse);
 
         if (response.success) {
-            this.dispatch(AddAccounts([response.data]));
+            // this.dispatch(AddAccounts([response.data]));
         }
 
         return response;

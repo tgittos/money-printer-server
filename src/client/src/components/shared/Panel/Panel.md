@@ -174,37 +174,37 @@ import IconButton from './../Button/IconButton';
 import Grid from './../Grid/Grid';
 import Panel from './../Panel/Panel';
 import Toolbar from './../Toolbar/Toolbar';
-import StaticChart from "./../../Charts/StaticChart";
-import BasicLineChart from "./../../Charts/lib/charts/BasicLineChart";
-import {lineGenerator} from "./../../../guidebook/data";
+import StaticChart from "../Charts/StaticChart";
+import BasicLineChart from "../Charts/lib/charts/BasicLineChart";
+import {lineGenerator} from "../../../styleguide/data";
 
 <Panel>
     <Panel.Header>
         <span> Return Analysis </span>
         <Panel.Header.Controls>
-          <Panel.Header.Controls.Close/>
+            <Panel.Header.Controls.Close/>
         </Panel.Header.Controls>
     </Panel.Header>
     <Panel.Body>
-          <Toolbar>
+        <Toolbar>
             <IconButton icon={BiBarChart}/>
             <IconButton icon={BiBarChartAlt}/>
             <IconButton icon={BiBarChartAlt2}/>
-          </Toolbar>
-          <p>The security XYZ has achieved 10.3% returns over the last 90 days.</p>
-          <StaticChart chart={BasicLineChart}
-                       dimensions={{
+        </Toolbar>
+        <p>The security XYZ has achieved 10.3% returns over the last 90 days.</p>
+        <StaticChart chart={BasicLineChart}
+                     dimensions={{
                          width: 400,
                          height: 300,
                          margin: {
-                           top: 0,
-                           left: 35,
-                           right: 0,
-                           bottom: 25
+                             top: 0,
+                             left: 35,
+                             right: 0,
+                             bottom: 25
                          }
-                       }}
-                       data={lineGenerator()}
-          />
+                     }}
+                     data={lineGenerator()}
+        />
     </Panel.Body>
 </Panel>
 ```

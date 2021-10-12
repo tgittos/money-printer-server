@@ -18,7 +18,7 @@ export interface IHoldingState {
 export const holdingReducers = {
 }
 
-export const createHoldingThunks = (builder =>
+export const createHoldingThunks = ((builder: any) =>
     builder
         .addCase(GetHoldingsForAccount.fulfilled, (state: IHoldingState, action: PayloadAction<IHolding[]>) => {
             // figure out how to insert the holdings for this account into the map

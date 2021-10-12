@@ -1,10 +1,8 @@
-import {PayloadAction} from "@reduxjs/toolkit";
+import {Action, PayloadAction} from "@reduxjs/toolkit";
 import {IAccount} from "../../models/Account";
 import {GetAccounts, RefreshAccountDetails} from "../thunks/AccountThunks";
 import {AddAccounts, ClearAccounts} from "../actions/AccountActions";
-import {IBalance} from "../../models/Balance";
 import {IHolding} from "../../models/Holding";
-import {useAppDispatch} from "../AppHooks";
 import {IProfileState} from "./ProfileReducers";
 
 export interface IAccountHolding {
@@ -19,34 +17,32 @@ export interface IAccountState {
     accounts: IAccount[]
 }
 
-const dispatch = useAppDispatch();
-
 export const accountReducers = {
     [AddAccounts.type]: (state: IAccountState, action: PayloadAction<IAccount[]>) => {
         state.accounts = state.accounts.concat(action.payload);
         state.loading = false;
     },
-    [ClearAccounts.type]: (state: IAccountState, action) => {
+    [ClearAccounts.type]: (state: IAccountState, action: Action) => {
         state.accounts = [];
     }
 }
 
-export const createAccountThunks = (builder =>
+export const createAccountThunks = ((builder: any) =>
         builder
             .addCase(GetAccounts.fulfilled, (state: IProfileState, action: PayloadAction<IAccount[]>) => {
-                dispatch(AddAccounts(action.payload));
+                // dispatch(AddAccounts(action.payload));
                 state.loading = false;
             })
-            .addCase(GetAccounts.rejected, (state: IProfileState, action) => {
+            .addCase(GetAccounts.rejected, (state: IProfileState, action: string) => {
                 state.error = action;
                 state.loading = false;
             })
             .addCase(RefreshAccountDetails.fulfilled, (state: IProfileState, action: PayloadAction<IAccount[]>) => {
-                dispatch(AddAccounts(action.payload));
+                // dispatch(AddAccounts(action.payload));
                 state.error = '';
                 state.loading = false;
             })
-            .addCase(RefreshAccountDetails.rejected, (state: IProfileState, action) => {
+            .addCase(RefreshAccountDetails.rejected, (state: IProfileState, action: string) => {
                 state.error = action;
                 state.loading = false;
             })

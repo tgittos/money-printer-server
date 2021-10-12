@@ -1,10 +1,7 @@
 import {IBalance} from "../../models/Balance";
-import {useAppDispatch} from "../AppHooks";
 import {PayloadAction} from "@reduxjs/toolkit";
 import {IProfileState} from "./ProfileReducers";
 import {GetBalanceHistoryForAccount} from "../thunks/BalanceThunks";
-
-const dispatch = useAppDispatch();
 
 export interface IAccountBalance {
     accountId: number;
@@ -34,12 +31,12 @@ export const balanceReducers = {
 };
 
 
-export const createBalanceThunks = (builder =>
+export const createBalanceThunks = ((builder: any) =>
         builder
             .addCase(GetBalanceHistoryForAccount.fulfilled, (state: IProfileState, action: PayloadAction<IBalance[]>) => {
                 state.loading = false;
             })
-            .addCase(GetBalanceHistoryForAccount.rejected, (state: IProfileState, action) => {
+            .addCase(GetBalanceHistoryForAccount.rejected, (state: IProfileState, action: string) => {
                 state.error = action;
                 state.loading = false;
             })

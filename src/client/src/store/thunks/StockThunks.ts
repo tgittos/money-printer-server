@@ -5,22 +5,9 @@ import {IHistoricalIntradaySymbol} from "../../models/symbols/HistoricalIntraday
 import IHistoricalIntradayResponse from "../../responses/HistoricalIntradayResponse";
 import HttpService from "../../services/HttpService";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {wrapThunk} from "../../utilities";
+import {wrapThunk} from "../../lib/Utilities";
 
 const http = new HttpService();
-
-const globalThunkOptions = {
-    condition(args , thunkApi): boolean | undefined {
-        /*
-        const { accounts } = thunkApi.getState();
-        const inFlight = accounts.requests.length > 0;
-        if (inFlight) {
-            return false;
-        }
-         */
-        return true;
-    }
-}
 
 export const GetSymbolPreviousClose = createAsyncThunk<IHistoricalEoDSymbol>(
     'stock/getSymbolPreviousClose', wrapThunk<IHistoricalEoDSymbol>('stocks', async (symbol: string, thunkApi) => {
@@ -28,7 +15,7 @@ export const GetSymbolPreviousClose = createAsyncThunk<IHistoricalEoDSymbol>(
             throw Error(`cannot fetch previous for invalid symbol: ${symbol}`);
         }
 
-        const response = await this.http.authenticatedRequest<null, IHistoricalEoDResponse>({
+        const response = await http.authenticatedRequest<null, IHistoricalEoDResponse>({
             method: "GET",
             url: http.baseApiEndpoint + "/symbols/" + symbol + "/previous"
         }).then(response => (response.data as unknown) as IHistoricalEoDResponse);
@@ -39,7 +26,7 @@ export const GetSymbolPreviousClose = createAsyncThunk<IHistoricalEoDSymbol>(
             console.log('StockService::previous - error fetching previous for symbol', symbol, response.message);
             return thunkApi.rejectWithValue(response.message);
         }
-}), globalThunkOptions);
+}));
 
 export const GetSymbolHistoricalCloses = createAsyncThunk<IHistoricalEoDSymbol[]>(
     'stock/getSymbolPreviousClose', wrapThunk<IHistoricalEoDSymbol[]>('stocks', async (args, thunkApi) => {
@@ -48,7 +35,7 @@ export const GetSymbolHistoricalCloses = createAsyncThunk<IHistoricalEoDSymbol[]
         const startTs = moment(start).utc().toDate().getTime() / 1000.0;
         const endTs = moment(end ?? moment.utc()).utc().toDate().getTime() / 1000.0;
 
-        const response = await this.http.authenticatedRequest<null, IHistoricalEoDResponse>({
+        const response = await http.authenticatedRequest<null, IHistoricalEoDResponse>({
             method: "GET",
             url: http.baseApiEndpoint + "/symbols/" + symbol + "/eod?start=" + startTs + "&end=" + endTs
         }).then(response => (response.data as unknown) as IHistoricalEoDResponse);
@@ -64,7 +51,7 @@ export const GetSymbolHistoricalCloses = createAsyncThunk<IHistoricalEoDSymbol[]
     }
 
     return response.data;
-}), globalThunkOptions);
+}));
 
 export const GetSymbolHistoricalIntraday = createAsyncThunk<IHistoricalIntradaySymbol[]>(
     'stock/getSymbolPreviousClose', wrapThunk<IHistoricalIntradaySymbol[]>('stocks', async (args, thunkApi) => {
@@ -72,7 +59,7 @@ export const GetSymbolHistoricalIntraday = createAsyncThunk<IHistoricalIntradayS
 
         const startTs = start.getTime() / 1000;
 
-        const response = await this.http.authenticatedRequest<null, IHistoricalIntradayResponse>({
+        const response = await http.authenticatedRequest<null, IHistoricalIntradayResponse>({
             method: "GET",
             url: http.baseApiEndpoint + "/symbols/" + symbol +"/intraday?start=" + startTs,
         }).then(response => (response.data as unknown) as IHistoricalIntradayResponse)
@@ -87,4 +74,4 @@ export const GetSymbolHistoricalIntraday = createAsyncThunk<IHistoricalIntradayS
                 response.message);
             return thunkApi.rejectWithValue(response.message);
         }
-}), globalThunkOptions);
+}));

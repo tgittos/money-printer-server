@@ -6,8 +6,8 @@ const ProfileSlice = createSlice({
     initialState: {
         idle: true,
         loading: false,
-        accounts: [],
-    } as IProfileState,
+        current: null
+    } as unknown as IProfileState,
     reducers: profileReducers,
     extraReducers: createProfileThunks,
 });

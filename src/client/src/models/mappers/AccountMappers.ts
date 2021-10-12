@@ -1,7 +1,7 @@
 import Account, {IAccount} from "../Account";
 import Balance, {IBalance} from "../Balance";
 import Holding, {IHolding} from "../Holding";
-import {modelToInterface} from "../../utilities";
+import {modelToInterface} from "../../lib/Utilities";
 
 export function accountToIAccount(data: Account | Account[]): IAccount | IAccount[] {
     return modelToInterface<Account, IAccount>(data, (account => ({

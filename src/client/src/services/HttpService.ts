@@ -1,7 +1,6 @@
 import axios from "axios";
 import Env from "../env";
 import AuthService from "./AuthService";
-import {useAppDispatch} from "../store/AppHooks";
 import {ClearCurrentProfile} from "../store/actions/ProfileActions";
 
 class HttpService {
@@ -53,7 +52,7 @@ class HttpService {
                         console.log('HttpService::wireAuthInterceptors - axios response interceptor: received 401 from server, clearing auth information');
                     }
                     this.authService.logout();
-                    useAppDispatch()(ClearCurrentProfile());
+                    // useAppDispatch()(ClearCurrentProfile());
                 }
             }
             return Promise.reject(error);

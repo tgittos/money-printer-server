@@ -3,14 +3,12 @@ import {
     ClearCurrentProfile, IProfileActionArgs,
 } from "../actions/ProfileActions";
 import {PayloadAction} from "@reduxjs/toolkit";
-import {useAppDispatch} from "../AppHooks";
 import {ClearAccounts} from "../actions/AccountActions";
 import {GetAccounts} from "../thunks/AccountThunks";
 import {IAuthedProfile, IProfile} from "../../models/Profile";
 import {AuthenticateUser, InitializeUnauthenticated} from "../thunks/ProfileThunks";
 import AuthService from "../../services/AuthService";
 
-const dispatch = useAppDispatch();
 const auth = new AuthService();
 
 export interface IProfileState {
@@ -27,32 +25,32 @@ export const profileReducers = {
     [SetCurrentProfile.type]: (state: IProfileState, action: PayloadAction<IProfileActionArgs>) => {
         state.current = action.payload.profile;
         state.authenticated = action.payload.authenticated;
-        dispatch(GetAccounts());
+        // dispatch(GetAccounts());
     },
-    [ClearCurrentProfile.type]: (state: IProfileState, action) => {
+    [ClearCurrentProfile.type]: (state: IProfileState) => {
         state.current = null;
         state.authenticated = false;
-        dispatch(ClearAccounts());
+        // dispatch(ClearAccounts());
     }
 };
 
-export const createProfileThunks = (builder =>
+export const createProfileThunks = ((builder: any) =>
     builder
         .addCase(InitializeUnauthenticated.fulfilled, (state: IProfileState, action: PayloadAction<IProfile>) => {
-            dispatch(SetCurrentProfile(action.payload, false));
+            // dispatch(SetCurrentProfile(action.payload, false));
             state.loading = false;
         })
-        .addCase(InitializeUnauthenticated.rejected, (state: IProfileState, action) => {
+        .addCase(InitializeUnauthenticated.rejected, (state: IProfileState, action: string) => {
             state.error = action;
             state.loading = false;
         })
         .addCase(AuthenticateUser.fulfilled, (state: IProfileState, action: PayloadAction<IAuthedProfile>) => {
             state.error = '';
             auth.setToken(action.payload.token);
-            dispatch(SetCurrentProfile(action.payload.profile, true));
+            // dispatch(SetCurrentProfile(action.payload.profile, true));
             state.loading = false;
         })
-        .addCase(AuthenticateUser.rejected, (state: IProfileState, action) => {
+        .addCase(AuthenticateUser.rejected, (state: IProfileState, action: string) => {
             state.error = action;
             state.loading = false;
             })

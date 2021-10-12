@@ -6,10 +6,6 @@ import {GetSymbolHistoricalCloses, GetSymbolHistoricalIntraday, GetSymbolPreviou
 import {IHistoricalIntradaySymbol} from "../../models/symbols/HistoricalIntradaySymbol";
 import {IHistoricalEoDSymbol} from "../../models/symbols/HistoricalEoDSymbol";
 import HttpService from "../../services/HttpService";
-import {useAppDispatch} from "../AppHooks";
-
-const http = new HttpService();
-const dispatch = useAppDispatch();
 
 export interface IStockIntradays {
     symbol: string;
@@ -34,17 +30,17 @@ export const stockReducers = {
 
 };
 
-export const createStockThunks = (builder =>
+export const createStockThunks = ((builder: any) =>
         builder
             .addCase(GetSymbolPreviousClose.fulfilled, (state: IStockState, action: PayloadAction<IHistoricalEoDSymbol>) => {
 
                 state.loading = false;
             })
-            .addCase(GetSymbolPreviousClose.rejected, (state: IStockState, action) => {
+            .addCase(GetSymbolPreviousClose.rejected, (state: IStockState, action: string) => {
                 state.error = action;
                 state.loading = false;
             })
-            .addCase(GetSymbolHistoricalCloses.fulfilled, (state: IStockState, action: PayloadAction<IAccount[]>) => {
+            .addCase(GetSymbolHistoricalCloses.fulfilled, (state: IStockState, action: PayloadAction<IHistoricalEoDSymbol[]>) => {
                 state.error = '';
                 state.loading = false;
             })
@@ -52,7 +48,7 @@ export const createStockThunks = (builder =>
                 state.error = action;
                 state.loading = false;
             })
-            .addCase(GetSymbolHistoricalIntraday.fulfilled, (state: IStockState, action) => {
+            .addCase(GetSymbolHistoricalIntraday.fulfilled, (state: IStockState, action: PayloadAction<IHistoricalIntradaySymbol[]>) => {
 
             })
             .addCase(GetSymbolHistoricalIntraday.rejected, (state: IStockState, action: string) => {

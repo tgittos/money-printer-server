@@ -1,6 +1,6 @@
 import ISymbol from "../interfaces/ISymbol";
-import ILineDataPoint from "../components/Charts/interfaces/ILineDataPoint";
-import ICandleDataPoint from "../components/Charts/interfaces/ICandleDataPoint";
+import ILineDataPoint from "../components/shared/Charts/interfaces/ILineDataPoint";
+import ICandleDataPoint from "../components/shared/Charts/interfaces/ICandleDataPoint";
 import {IHistoricalEoDSymbol} from "../models/symbols/HistoricalEoDSymbol";
 import {IHistoricalIntradaySymbol} from "../models/symbols/HistoricalIntradaySymbol";
 import {IBalance} from "../models/Balance";
@@ -25,7 +25,7 @@ export function formatSymbolsForCandle(data: SymbolType[]): ICandleDataPoint[] {
             close: datum.close,
             high: datum.high,
             low: datum.low,
-        } as ICandleDataPoint;
+        } as unknown as ICandleDataPoint;
 
         // this seems fishy too on some tickers, like MIPTX
         if (datapoint.low == 0) {
