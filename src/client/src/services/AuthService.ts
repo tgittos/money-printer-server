@@ -10,7 +10,6 @@ class AuthService {
     private JWT_TOKEN_KEY: string = "mp:jwt"
     readonly cookies: Cookies;
     private tokenProfile: NullableProfile;
-    readonly http: HttpService;
 
     public get currentProfile(): NullableProfile {
         return this.tokenProfile
@@ -19,12 +18,7 @@ class AuthService {
         return this.getToken();
     }
 
-    private get endpoint(): string {
-        return this.http.baseApiEndpoint + "/auth"
-    }
-
     constructor() {
-        this.http = new HttpService();
         this.cookies = new Cookies();
 
         this.loadProfileFromToken();

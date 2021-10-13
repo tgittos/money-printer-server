@@ -29,7 +29,7 @@ export const GetSymbolPreviousClose = createAsyncThunk<IHistoricalEoDSymbol>(
 }));
 
 export const GetSymbolHistoricalCloses = createAsyncThunk<IHistoricalEoDSymbol[]>(
-    'stock/getSymbolPreviousClose', wrapThunk<IHistoricalEoDSymbol[]>('stocks', async (args, thunkApi) => {
+    'stock/getSymbolHistoricalClose', wrapThunk<IHistoricalEoDSymbol[]>('stocks', async (args, thunkApi) => {
         const { symbol, start, end } = args;
 
         const startTs = moment(start).utc().toDate().getTime() / 1000.0;
@@ -54,7 +54,7 @@ export const GetSymbolHistoricalCloses = createAsyncThunk<IHistoricalEoDSymbol[]
 }));
 
 export const GetSymbolHistoricalIntraday = createAsyncThunk<IHistoricalIntradaySymbol[]>(
-    'stock/getSymbolPreviousClose', wrapThunk<IHistoricalIntradaySymbol[]>('stocks', async (args, thunkApi) => {
+    'stock/getSymbolHistoricalIntraday', wrapThunk<IHistoricalIntradaySymbol[]>('stocks', async (args, thunkApi) => {
         const { symbol, start } = args;
 
         const startTs = start.getTime() / 1000;
