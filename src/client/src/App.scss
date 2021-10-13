@@ -1,1 +1,30 @@
 @import './../public/styles/mp-theme.module';
+
+div.mp {
+  height: 100%;
+
+  .mp-app-row {
+    height: 100%;
+
+    .mp-nav-col {
+      padding: 0;
+      margin: 0;
+    }
+
+    .mp-app-col {
+      padding: 0;
+      margin: 0;
+
+      .navbar {
+        height: 60px;
+        padding: 0;
+        margin: 0;
+      }
+
+      .mp-app {
+        height: 100%;
+      }
+    }
+  }
+
+}

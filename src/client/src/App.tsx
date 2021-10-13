@@ -3,8 +3,8 @@ import React from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import {Route, BrowserRouter as Router, Switch, useHistory} from "react-router-dom";
 
-import Header from "./components/Header/Header";
-import MainNav from "./components/MainNav/MainNav";
+import Header from "./components/chrome/Header/Header";
+import MainNav from "./components/chrome/MainNav/MainNav";
 import {SelectApp} from "./store/actions/AppActions";
 import ProfileApp from "./apps/profile/Profile.lazy";
 import {connect} from "react-redux";
@@ -36,6 +36,8 @@ class App extends React.Component {
   constructor(props: IAppProps) {
     super(props);
     this.props = props;
+
+    this._onNavigate = this._onNavigate.bind(this);
   }
 
   componentDidMount() {
@@ -49,12 +51,12 @@ class App extends React.Component {
   }
 
   render() {
-    return <Container className={this.cssClasses.join(' ')}>
-        <Row>
-          <Col>
+    return <div className={this.cssClasses.join(' ')}>
+        <Row className="mp-app-row">
+          <Col xs="2" className="mp-nav-col">
             <MainNav onNavigate={this._onNavigate} />
           </Col>
-          <Col>
+          <Col className="mp-app-col">
             <Header />
             <Router>
               <div className="mp-app">
@@ -79,7 +81,7 @@ class App extends React.Component {
             </Router>
           </Col>
         </Row>
-    </Container>;
+    </div>;
   }
 }
 

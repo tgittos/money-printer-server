@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Header.module.scss';
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
-import Profile, {IProfile} from "../../models/Profile";
+import Profile, {IProfile} from "../../../models/Profile";
 
 type HeaderProps = {
     profile?: IProfile,

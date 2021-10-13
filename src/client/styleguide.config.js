@@ -24,7 +24,7 @@ module.exports = {
     },
     {
       name: 'Component Reference',
-      components: 'src/components/**/*.{ts,tsx}',
+      components: 'src/components/shared/**/*.{ts,tsx}',
       exampleMode: 'expand', // 'hide' | 'collapse' | 'expand'
       usageMode: 'expand' // 'hide' | 'collapse' | 'expand'
     }
