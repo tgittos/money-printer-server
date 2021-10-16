@@ -1,0 +1,76 @@
+.Header {
+  & > * {
+    display: inline-block;
+  }
+}
+
+.MarketTracker {
+}
+
+.MarketTrackerItem {
+    display: inline-block;
+    max-width: 120px;
+    clear: both;
+    margin: 0 0.6em;
+
+  :global {
+
+      .mp-ticker {
+        font-size: 0.9em;
+        height: 24px;
+        text-align: center;
+
+        .mp-trend-icon {
+          font-size: 1.5em;
+          margin: 0 0.2em;
+        }
+      }
+
+      .mp-ticker-trend {
+        font-size: 1.4em;
+      }
+
+      .mp-ticker-price {
+        font-size: 1.4em;
+        text-align: center;
+      }
+
+      .mp-ticker-change {
+        font-size: 0.9em;
+
+        .mp-price {
+          text-align: left;
+        }
+
+        .mp-percent {
+          text-align: right;
+        }
+      }
+    }
+}
+
+.NotificationsBadge {
+  display: inline-block;
+  width: auto;
+  font-size: 2em;
+
+  :global {
+    .mp-badge-count {
+      position: absolute;
+      font-size: 0.4em;
+      border-radius: 1em;
+    }
+  }
+}
+
+.ProfileBadge {
+  :global {
+    .mp-avatar {
+      font-size: 2em;
+    }
+    .mp-username {
+      display: inline-block;
+      margin-left: 0.3em;
+    }
+  }
+}

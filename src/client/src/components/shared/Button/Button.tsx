@@ -51,7 +51,7 @@ class Button extends React.Component<IButtonProps, IButtonState> {
         const size = this.highestSize;
         const variant = this.variant;
 
-        let s = [styles.Button];
+        let s = [styles.Button, size];
         if (this.props.className) s = s.concat(Array.of(className));
 
         // suppressing a linting complaint about size only accepting 'sm' or 'lg'
@@ -61,7 +61,6 @@ class Button extends React.Component<IButtonProps, IButtonState> {
         return <ReactButton
             className={s.join(' ')}
             variant={variant}
-            size={size}
             {...this.props}
         />
     }

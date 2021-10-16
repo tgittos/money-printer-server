@@ -1,14 +1,14 @@
 import Cookies from "universal-cookie";
-import Profile, {IProfile, IServerProfile} from "../models/Profile";
+import Profile, {IProfile} from "../models/Profile";
+import HttpService from "./HttpService";
 import jwt from "jwt-decode";
-import Env from "../env";
 
 export type NullableProfile = Profile | null;
 
 class AuthService {
 
     private JWT_TOKEN_KEY: string = "mp:jwt"
-    private cookies: Cookies;
+    readonly cookies: Cookies;
     private tokenProfile: NullableProfile;
 
     public get currentProfile(): NullableProfile {
@@ -20,16 +20,17 @@ class AuthService {
 
     constructor() {
         this.cookies = new Cookies();
+
+        this.loadProfileFromToken();
     }
 
-    public setProfile(token: string) {
-        this.storeToken(token);
-        this.tokenProfile = this.loadProfileFromToken();
-    }
-
-    public clearProfile() {
-        this.clearToken()
-        this.tokenProfile = null;
+    public async auth(username: string, password: string): Promise<void> {
+        //if (this.selector().authenticated && this.currentProfile) {
+            // already authed, we can just return the current profile
+        //     return new Promise<Profile>(p => p(this.currentProfile))
+        //}
+        // not authed, or missing profile, lets fire an auth request
+        // this.dispatch(AuthenticateUser({ username, password }));
     }
 
     public loadProfileFromToken(): Profile | null {
@@ -38,22 +39,31 @@ class AuthService {
         if (fetchedToken) {
             const jwtProfile: any = jwt(fetchedToken);
             if (jwtProfile?.profile) {
-                loadedProfile = new Profile(jwtProfile.profile as IServerProfile);
+                loadedProfile = new Profile(jwtProfile.profile as IProfile);
             }
         }
         this.tokenProfile = loadedProfile;
         return loadedProfile;
     }
 
-    protected storeToken(token: string) {
+    public logout() {
+        // this.dispatch(ClearCurrentProfile());
+        // this.dispatch(InitializeUnauthenticated());
+    }
+
+    public resetPassword(email: string) {
+        throw new Error("not implemented");
+    }
+
+    public setToken(token: string) {
         this.cookies.set(this.JWT_TOKEN_KEY, token);
     }
 
-    protected getToken() {
+    private getToken() {
         return this.cookies.get(this.JWT_TOKEN_KEY);
     }
 
-    private clearToken() {
+    public clearToken() {
         this.cookies.remove(this.JWT_TOKEN_KEY);
     }
 }

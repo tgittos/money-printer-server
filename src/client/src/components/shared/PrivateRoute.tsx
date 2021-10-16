@@ -1,11 +1,12 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import AppStore, {getProfileState} from './../../stores/AppStore';
+import AppStore, {AppState} from './../../store/AppStore'
 import Env from "../../env";
+import {useAppSelector} from "../../store/AppHooks";
 
 export const PrivateRoute = ({ component: Component, ...rest }: any) => (
     <Route {...rest} render={props => {
-        const profileState = getProfileState();
+        const profileState = useAppSelector((s: AppState) => s.profile);
         if (Env.DEBUG) {
             console.log('PrivateRoute - profileState:', profileState);
         }

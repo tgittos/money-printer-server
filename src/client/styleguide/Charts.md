@@ -35,21 +35,21 @@ library for creating new charts that abstracts away some D3 nonsense.
 #### `StaticChart`
 
 ```jsx
-import StaticChart from "./../src/components/Charts/StaticChart";
-import BasicLineChart from "./../src/components/Charts/lib/charts/BasicLineChart";
-import { lineGenerator } from "./../src/guidebook/data";
+import StaticChart from "../src/components/shared/Charts/StaticChart";
+import BasicLineChart from "../src/components/shared/Charts/lib/charts/BasicLineChart";
+import {lineGenerator} from "../src/styleguide/data";
 
 <StaticChart chart={BasicLineChart}
-               dimensions={{
+             dimensions={{
                  margin: {
-                   top: 0,
-                   left: 35,
-                   right: 0,
-                   bottom: 25
+                     top: 0,
+                     left: 35,
+                     right: 0,
+                     bottom: 25
                  }
-               }}
-               data={lineGenerator()}
-  />
+             }}
+             data={lineGenerator()}
+/>
 
 ```
 
@@ -64,45 +64,45 @@ import { lineGenerator } from "./../src/guidebook/data";
 #### `BasicLineChart`
 
 ```jsx
-import StaticChart from "./../src/components/Charts/StaticChart";
-import BasicLineChart from "./../src/components/Charts/lib/charts/BasicLineChart";
-import { lineGenerator } from "./../src/guidebook/data";
+import StaticChart from "../src/components/shared/Charts/StaticChart";
+import BasicLineChart from "../src/components/shared/Charts/lib/charts/BasicLineChart";
+import {lineGenerator} from "../src/styleguide/data";
 
 <StaticChart chart={BasicLineChart}
-               dimensions={{
+             dimensions={{
                  width: 400,
                  height: 300,
                  margin: {
-                   top: 0,
-                   left: 35,
-                   right: 0,
-                   bottom: 25
+                     top: 0,
+                     left: 35,
+                     right: 0,
+                     bottom: 25
                  }
-               }}
-               data={lineGenerator()}
-  />
+             }}
+             data={lineGenerator()}
+/>
 ```
 
 #### `BasicCandleChart`
 
 ```jsx
-import StaticChart from "./../src/components/Charts/StaticChart";
-import BasicCandleChart from "./../src/components/Charts/lib/charts/BasicCandleChart";
-import { candleGenerator } from "./../src/guidebook/data";
+import StaticChart from "../src/components/shared/Charts/StaticChart";
+import BasicCandleChart from "../src/components/shared/Charts/lib/charts/BasicCandleChart";
+import {candleGenerator} from "../src/styleguide/data";
 
 <StaticChart chart={BasicCandleChart}
-               dimensions={{
+             dimensions={{
                  width: 400,
                  height: 300,
                  margin: {
-                   top: 0,
-                   left: 35,
-                   right: 0,
-                   bottom: 25
+                     top: 0,
+                     left: 35,
+                     right: 0,
+                     bottom: 25
                  }
-               }}
-               data={candleGenerator()}
-  />
+             }}
+             data={candleGenerator()}
+/>
 ```
 
 #### `PieChart`

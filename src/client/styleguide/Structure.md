@@ -28,35 +28,6 @@ import vars from '../public/styles/_variables.module.scss';
 </Grid>
 ```
 
-### Nx2Grid
-
-The `Nx2Grid` is a specialized `Grid` intended for use inside `Panel` objects for more consistent layout.
-
-While you can nest a regular `Grid` inside a `Panel`, often `Panel`s tend to be small and it can be nice to enforce a
-2 column layout inside the panels.
-
-```js noeditor
-import Nx2Grid from '../src/components/shared/Grid/Nx2Grid';
-import vars from '../public/styles/_variables.module.scss';
-
-<Nx2Grid>
-  <Nx2Grid.Row>
-    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>1 of 2</Nx2Grid.Col>
-    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>2 of 2</Nx2Grid.Col>
-  </Nx2Grid.Row>
-  <Nx2Grid.Row>
-    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>1 of 2</Nx2Grid.Col>
-    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>2 of 2</Nx2Grid.Col>
-  </Nx2Grid.Row>
-  <Nx2Grid.Row>
-    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>1 of 2</Nx2Grid.Col>
-    <Nx2Grid.Col style={{backgroundColor: vars.mpGrey5}}>2 of 2</Nx2Grid.Col>
-  </Nx2Grid.Row>
-</Nx2Grid>
-```
-
-Attempting to create an `Nx2Grid` with a `Row` with more than 2 `Col` objects will throw an error.
-
 ## Containers
 
 ### Panel

@@ -24,13 +24,14 @@ COPY config* .
 RUN mkdir logs
 
 # Expose the port that the app runs on
-EXPOSE 8000
+EXPOSE 80
+EXPOSE 443
 
 # If an invironment _wasn't_ passed in, default to development
 ENV MP_ENVIRONMENT=environment:-development
 # Bind to the public IP of the container
 ENV MP_HOST=0.0.0.0
-ENV MP_PORT=8000
+ENV MP_PORT=80
 # Add our current path to the Python path
 ENV PYTHONPATH=$PYTHONPATH:.
 

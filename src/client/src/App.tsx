@@ -1,113 +1,56 @@
 import './App.scss';
-
 import React from "react";
+import {Col, Container, Row} from "react-bootstrap";
+import {Route, BrowserRouter as Router, Switch, Link} from "react-router-dom";
 
-import AppStore, {getAccountsState, getAppState, getHoldingsState, getProfileState} from './stores/AppStore';
-import { IAppState } from "./slices/AppSlice";
-import I18nRepository from "./repositories/I18nRepository";
-import ProfileRepository from "./repositories/ProfileRepository";
-import Dashboard from "./components/Dashboard/Dashboard.lazy";
-import BigLoader from "./components/shared/Loaders/BigLoader";
-import AccountRepository from "./repositories/AccountRepository";
-import Account, {IAccount} from "./models/Account";
-import {Route, BrowserRouter as Router, Switch} from "react-router-dom";
-import Header from "./components/Header/Header";
-import Investments from "./components/Investments/Investments.lazy";
-import Forecasting from "./components/Forecasting/Forecasting";
+import Header from "./components/chrome/Header/Header";
+import MainNav from "./components/chrome/MainNav/MainNav";
+import ProfileApp from "./apps/profile/Profile.lazy";
+import {currentProfileState, profileState} from "./apps/profile/Profile";
+import {atom, RecoilRoot, useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
+import ErrorBoundary from "./components/shared/ErrorBoundary/ErrorBoundary";
 
-class App extends React.Component<{}, IAppState> {
+export const appState = atom({
+  key: 'appState',
+  default: 'dashboard'
+});
 
-  private _i18n: I18nRepository;
-  private _profileRepo: ProfileRepository;
-  private _accountRepo: AccountRepository;
+const App = () => {
+  const cssClasses: string[] = [
+      'mp', 'app'
+  ];
 
-  public get loading(): boolean {
-    const profileState = getProfileState();
-    const accountState = getAccountsState();
-    return profileState.loading || (profileState.authenticated && accountState.loading);
-  }
-
-  constructor(props: {}) {
-    super(props);
-
-    this.state = getAppState();
-
-    // load in all our stores and sync the current data state from the server
-    this._i18n = new I18nRepository();
-    this._profileRepo = new ProfileRepository();
-    this._accountRepo = new AccountRepository();
-
-    // subscribe to any realtime data sources we need to keep everything realtime
-
-    AppStore.subscribe(() => {
-      const newState = getAppState();
-      this.setState(prev => ({
-        ...prev,
-        ...newState
-      }));
-    });
-  }
-
-  componentDidMount() {
-    this._profileRepo.init();
-    this._accountRepo.listAccounts();
-  }
-
-  componentWillUnmount() {
-  }
-
-  private filterInvestmentAccounts(accountShapes: IAccount[]): Account[] {
-    return accountShapes.map(shape => new Account(shape))
-        .filter(account => account.isInvestment);
-  }
-
-  render() {
-    const profileState = getProfileState();
-    const accountState = getAccountsState();
-
-    if (this.loading) {
-      return <div className="App">
-        <BigLoader></BigLoader>
-      </div>
-    }
-
-    if (!this.state.initialized) {
-      return <div className="App">
-        <div className="content">
-          <div id="unconfigured">
-            <img src="/loaders/nyan.gif" width="350" height="350" alt="nyan!" />
-            <p>Uh oh! It looks like your install of Money Printer hasn't been initialized!</p>
-            <p>Pop over to your server, and run <span className="code">bin/init</span> command to set 'er up.</p>
-            <p>You'll be printing money in no time.</p>
-          </div>;
-        </div>
-      </div>
-    }
-
-    // TODO convert router output components to lazy loaded ones
-    return <div className="App">
+  return <div className={cssClasses.join(' ')}>
         <Router>
-          <div className="content">
-            <Header profile={profileState.current} authenticated={profileState.authenticated} />
-            <Switch>
-              <Route path="/" exact>
-                <Dashboard profile={profileState.current}
-                           authenticated={profileState.authenticated}
-                           accounts={accountState.accounts.map(account => new Account(account))}
-                           balances={accountState.balances}
-                />
-              </Route>
-              <Route path="/investments">
-                <Investments accounts={this.filterInvestmentAccounts(accountState.accounts)} />
-              </Route>
-              <Route path="/forecasting">
-                <Forecasting />
-              </Route>
-            </Switch>
-          </div>
-        </Router>
-      </div>;
-  }
+          <Row className="mp-app-row">
+          <Col md="auto" className="mp-nav-col">
+            <MainNav onNavigate={useSetRecoilState(appState)} />
+          </Col>
+          <Col className="mp-app-col">
+            <Header profile={useRecoilValue(currentProfileState)} />
+              <div className="mp-app">
+                  <Switch>
+                    <Route path="/" exact>
+                    </Route>
+                    <Route path="/market">
+                    </Route>
+                    <Route path="/analysis">
+                    </Route>
+                    <Route path="/projection">
+                    </Route>
+                    <Route path="/algo">
+                    </Route>
+                    <Route path="/profile">
+                      <ProfileApp profile={useRecoilValue(currentProfileState)} />
+                    </Route>
+                    <Route path="/accounts">
+                    </Route>
+                  </Switch>
+              </div>
+          </Col>
+        </Row>
+    </Router>
+</div>;
 }
 
 export default App;

@@ -4,15 +4,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {Provider} from "react-redux";
-
-import store from './stores/AppStore';
+import {RecoilRoot} from "recoil";
 
 ReactDOM.render(
   <React.StrictMode>
-      <Provider store={store}>
-        <App />
-      </Provider>
+      <RecoilRoot>
+          <React.Suspense fallback={<h1>Loading</h1>}>
+              <App />
+          </React.Suspense>
+      </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 );

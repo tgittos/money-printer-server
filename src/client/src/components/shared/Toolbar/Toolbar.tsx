@@ -17,7 +17,7 @@ class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
     private renderRow() {
         const s = [styles.Toolbar, 'mp-toolbar', 'mp-toolbar-horizontal',
             this.props.position ? this.props.position : 'top'];
-        return <Row className={s} {...this.props}>
+        return <Row className={s.join(' ')} {...this.props}>
             <Col>
                 { this.props.children.map(child => child) }
             </Col>

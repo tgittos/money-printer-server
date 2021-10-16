@@ -11,6 +11,10 @@ module.exports = {
       content: 'styleguide/Branding.md'
     },
     {
+      name: 'Chrome',
+      content: 'src/components/chrome/Chrome.md'
+    },
+    {
       name: 'Structure',
       content: 'styleguide/Structure.md'
     },
@@ -24,7 +28,7 @@ module.exports = {
     },
     {
       name: 'Component Reference',
-      components: 'src/components/**/*.{ts,tsx}',
+      components: 'src/components/shared/**/*.{ts,tsx}',
       exampleMode: 'expand', // 'hide' | 'collapse' | 'expand'
       usageMode: 'expand' // 'hide' | 'collapse' | 'expand'
     }

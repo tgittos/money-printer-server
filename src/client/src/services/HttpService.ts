@@ -1,8 +1,7 @@
 import axios from "axios";
 import Env from "../env";
 import AuthService from "./AuthService";
-import AppStore from '../stores/AppStore';
-import {clearCurrentProfile} from "../slices/ProfileSlice";
+import {ClearCurrentProfile} from "../store/actions/ProfileActions";
 
 class HttpService {
 
@@ -52,8 +51,8 @@ class HttpService {
                     if (Env.DEBUG) {
                         console.log('HttpService::wireAuthInterceptors - axios response interceptor: received 401 from server, clearing auth information');
                     }
-                    this.authService.clearProfile();
-                    AppStore.dispatch(clearCurrentProfile());
+                    this.authService.logout();
+                    // useAppDispatch()(ClearCurrentProfile());
                 }
             }
             return Promise.reject(error);

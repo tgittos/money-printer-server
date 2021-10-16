@@ -45,6 +45,10 @@
 .btn-link {
   border: none;
   box-shadow: none;
+
+  &:focus, &:active {
+    background-color: transparent;
+  }
 }
 
 .btn-xl {
