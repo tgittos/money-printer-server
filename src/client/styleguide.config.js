@@ -11,6 +11,10 @@ module.exports = {
       content: 'styleguide/Branding.md'
     },
     {
+      name: 'Chrome',
+      content: 'src/components/chrome/Chrome.md'
+    },
+    {
       name: 'Structure',
       content: 'styleguide/Structure.md'
     },

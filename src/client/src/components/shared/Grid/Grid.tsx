@@ -2,23 +2,24 @@ import styles from "./Grid.module.scss";
 import React, {ElementType, ReactNode} from "react";
 import {Col, Container, Row} from "react-bootstrap";
 
-export interface IGridProps extends React.ComponentPropsWithoutRef<ElementType<any>>{
-    children: typeof Row[];
+export interface IGridProps {
+    children: React.ReactNode;
+    className?: string;
 }
 
-class Grid extends React.Component<IGridProps, {}> {
-    static Row = Row;
-    static Col = Col;
+const Grid = (props: IGridProps) => {
+    const { className } = props;
+    const classes = [
+        styles.Grid,
+        'mp-grid',
+        className
+    ]
 
-    render() {
-        const { className } = this.props;
-        const s = [styles.Grid, className, 'mp-grid'].join(' ')
-        return <>
-            <Container fluid className={s}
-                {...this.props}
-            />
-        </>
-    }
+    return <>
+        <Container className={classes.join(' ')} {...props} />
+    </>
 }
+Grid.Row = Row;
+Grid.Col = Col;
 
 export default Grid;

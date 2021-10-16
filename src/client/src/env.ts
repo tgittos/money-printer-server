@@ -1,5 +1,5 @@
 
-const apiHost = "localhost:8000";
+const apiHost = "localhost";
 //const apiHost = "api.moneyprintergobrr.io";
 //const apiHost = "development.eba-jgr836tj.us-west-2.elasticbeanstalk.com";
 

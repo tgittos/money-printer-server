@@ -10,6 +10,7 @@ const http = new HttpService();
 
 export const InitializeUnauthenticated = createAsyncThunk<IProfile>(
     'profile/getUnauthenticatedProfile', wrapThunk<IProfile>('profile', async (_, thunkApi) => {
+
         const response = await http.unauthenticatedRequest<null, IGetUnauthenticatedProfileResponse>({
             url: http.baseApiEndpoint + "/profile/unauthenticated"
         }).then(response => (response.data as unknown) as IGetUnauthenticatedProfileResponse);
@@ -19,6 +20,7 @@ export const InitializeUnauthenticated = createAsyncThunk<IProfile>(
         } else {
             return thunkApi.rejectWithValue(response.message);
         }
+
     }));
 
 export const AuthenticateUser = createAsyncThunk<IAuthedProfile, { username: string, password: string }>(

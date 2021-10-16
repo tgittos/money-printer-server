@@ -3,6 +3,13 @@
 @import 'containers';
 @import 'icons';
 
+.shift-right {
+  float: right;
+}
+.shift-left {
+  float: left;
+}
+
 // format the border for horizontal toolbars inside panels
 .mp-panel-body > .mp-toolbar-horizontal {
   border-left: none;
@@ -38,4 +45,11 @@
 .timestamp {
   font-weight: 100;
   color: $mp-grey4;
+}
+
+.mp-nav-item {
+  display: block;
+  height: 40px;
+  text-align: center;
+  text-transform: uppercase;
 }

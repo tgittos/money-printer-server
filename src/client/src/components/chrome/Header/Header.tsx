@@ -2,47 +2,21 @@ import React from 'react';
 import styles from './Header.module.scss';
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import Profile, {IProfile} from "../../../models/Profile";
+import MarketTracker from "./components/MarketTracker";
+import NotificationsBadge from "./components/NotificationsBadge";
+import ProfileBadge from "./components/ProfileBadge";
 
-type HeaderProps = {
-    profile?: IProfile,
-    authenticated?: boolean
+export interface IHeaderProps {
+    profile: IProfile;
 }
 
-type HeaderState = {
-}
+const Header = (props: IHeaderProps) => {
 
-class Header extends React.Component<HeaderProps, HeaderState> {
-
-    constructor(props: HeaderProps) {
-        super(props);
-
-        this.state = {
-        } as HeaderProps;
-    }
-
-    componentDidMount() {
-    }
-
-    componentWillUnmount() {
-    }
-
-    render() {
-        const cssClassName = [
-            styles.Header, "justify-content-end"
-        ].join(' ');
-
-        return <Navbar variant="dark">
-            <Container>
-                <Navbar.Brand href="#dashboard">
-                    <img src="/logo192.png"
-                         width="30" height="30"
-                         className="d-inline-block align-top"
-                         alt="logo" />{' '}
-                    Money Printer
-                </Navbar.Brand>
-            </Container>
-        </Navbar>
-    }
+    return <div className={styles.Header}>
+        <MarketTracker />
+        <ProfileBadge className="shift-right" profile={props.profile} />
+        <NotificationsBadge className="shift-right" notificationCount={0} />
+    </div>
 };
 
 export default Header;

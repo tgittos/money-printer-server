@@ -6,109 +6,146 @@
 @import 'buttons';
 @import 'graphs';
 
-html.mp, html.mp body {
-  height: 100%;
-  max-height: 100%;
+.mp {
 
-  a {
-    color: $link;
-  }
-  a:hover {
-    color: $link-hover;
-  }
-
-  a.nav-link {
-    color: $link;
-  }
-  a.nav-link.active {
-    color: $link-hover;
-  }
-  a.nav-link:hover {
-    color: $link-hover;
-  }
-
-  p {
-    margin: 0;
-  }
-
-  input {
-    color: $text;
-    border-width: 1px;
-  }
-
-  .content {
+  html, html body {
     height: 100%;
     max-height: 100%;
-  }
 
-  .modal-content {
-    color: $text;
-    border: $border-secondary solid 1px;
+    a {
+      color: $link;
+    }
 
-    .modal-header {
+    a:hover {
+      color: $link-hover;
+    }
+
+    a.nav-link {
+      color: $link;
+    }
+
+    a.nav-link.active {
+      color: $link-hover;
+    }
+
+    a.nav-link:hover {
+      color: $link-hover;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    input {
       color: $text;
-      font-family: "Share", sans-serif;
+      border-width: 1px;
     }
-  }
 
-  .navbar {
-    text-transform: uppercase;
-    font-family: "Share", sans-serif;
-
-    .nav-item {
-      cursor: pointer;
+    .content {
+      height: 100%;
+      max-height: 100%;
     }
-  }
-
-  .nav-tabs {
-    border-bottom: $border-secondary solid 1px;
-
-    .nav-link {
-      background-color: transparent;
-      color: $text;
-    }
-    .nav-link.active {
-      background-color: transparent;
-      color: $text;
-      border: $border-secondary solid 1px;
-    }
-    .nav-link:hover {
-      border: $border-secondary solid 1px;
-    }
-  }
-
-  .dropdown-menu {
-    border: $border-secondary solid 1px;
-  }
-
-  .dropdown-item {
-    color: $text;
-  }
-
-  /* TODO: move this to the accounts module? */
-  .accounts-modal {
-    width: 90vw;
-    max-width: 90vw;
-
-    height: 80vh;
-    max-height: 80vh;
 
     .modal-content {
-      height: 100%;
+      color: $text;
+      border: $border-secondary solid 1px;
 
-      .modal-body {
-        padding: 0;
+      .modal-header {
+        color: $text;
+        font-family: "Share", sans-serif;
+      }
+    }
 
-        .nav-item {
-          padding-left: 1rem;
-          cursor: pointer;
-        }
+    .navbar {
+      text-transform: uppercase;
+      font-family: "Share", sans-serif;
 
-        .nav-item + .nav-item {
-          border-top: black solid 1px;
+      .nav-item {
+        cursor: pointer;
+      }
+    }
+
+    .nav-tabs {
+      border-bottom: $border-secondary solid 1px;
+
+      .nav-link {
+        background-color: transparent;
+        color: $text;
+      }
+
+      .nav-link.active {
+        background-color: transparent;
+        color: $text;
+        border: $border-secondary solid 1px;
+      }
+
+      .nav-link:hover {
+        border: $border-secondary solid 1px;
+      }
+    }
+
+    .dropdown-menu {
+      border: $border-secondary solid 1px;
+    }
+
+    .dropdown-item {
+      color: $text;
+    }
+
+    /* TODO: move this to the accounts module? */
+    .accounts-modal {
+      width: 90vw;
+      max-width: 90vw;
+
+      height: 80vh;
+      max-height: 80vh;
+
+      .modal-content {
+        height: 100%;
+
+        .modal-body {
+          padding: 0;
+
+          .nav-item {
+            padding-left: 1rem;
+            cursor: pointer;
+          }
+
+          .nav-item + .nav-item {
+            border-top: black solid 1px;
+          }
         }
       }
     }
+  }
+}
+
+.mp {
+  .mp-main-nav {
+    .navbar-brand {
+      height: 60px;
+    }
+  }
+
+  .mp-nav-col {
+    .mp-nav-bg {
+      height: 100%;
+
+      .navbar-brand {
+        display: block;
+        height: 60px;
+      }
+    }
+  }
+
+  .mp-app-col {
+    .navbar {
+    }
+  }
+
+  .mp-app {
+    background: $mp-green3;
+    box-shadow: inset 4px 4px 6px 0 rgb(0, 0, 0, 0.1);
   }
 }
 
@@ -121,10 +158,10 @@ html.mp, html.mp body {
   }
 }
 
-.gain .balance {
+.gain .balance, .gain .mp-price, .gain .mp-percent, .gain .mp-ticker-trend, .gain .mp-trend-icon {
   color: $mp-green4;
 }
 
-.loss .balance {
-  color: $mp-red;
+.loss .balance, .loss .mp-price, .loss .mp-percent, .loss .mp-ticker-trend, .loss .mp-trend-icon {
+  color: $mp-bright-red;
 }

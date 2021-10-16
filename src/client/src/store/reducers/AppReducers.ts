@@ -15,8 +15,7 @@ export interface IAppState {
 
 export const appReducers = {
     [SelectApp.type]: (state: IAppState, action: PayloadAction<string>) => {
-        const history = useHistory();
-        history.push("/" + action.payload);
+        state.activeApp = action.payload
     },
     [Initialize.type]: (state: IAppState, action: Action) => {
         // all the server side bootstrapping gets triggered from here
