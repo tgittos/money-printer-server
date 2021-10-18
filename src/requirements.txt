@@ -1,10 +1,12 @@
 alembic==1.7.3
+arrow==1.2.0
 bcrypt==3.2.0
 bidict==0.21.3
 certifi==2021.5.30
 cffi==1.14.6
 charset-normalizer==2.0.6
 click==8.0.1
+croniter==1.0.15
 dynaconf==3.1.7
 Flask==2.0.1
 Flask-Cors==3.0.10
@@ -33,6 +35,9 @@ python-socketio==5.4.0
 pytz==2021.1
 redis==3.5.3
 requests==2.26.0
+rq==1.10.0
+rq-dashboard==0.6.1
+rq-scheduler==0.11.0
 six==1.16.0
 SQLAlchemy==1.4.25
 sseclient-py==1.7.2

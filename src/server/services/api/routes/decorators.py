@@ -1,5 +1,7 @@
 from functools import wraps
-from flask import request, Response
+
+import pkg_resources
+from flask import request, Response, g
 from jwt import DecodeError
 
 from core.lib.jwt import is_token_valid, decode_jwt
@@ -30,12 +32,31 @@ def authed(func):
 
             if token is not None:
                 if is_token_valid(token):
+                    g.profile = decode_jwt(token)['profile']
                     return func(*args, **kwargs)
             return Response({
                 "success": False
             }, status=401, mimetype='application/json')
         except DecodeError:
             logger.exception("auth decorator received bad token from request: {0}", token)
+            return Response({
+                "success": False
+            }, status=401, mimetype='application/json')
+    return decorated
+
+
+def admin(func):
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        # this needs to be invoked after `authed` to get g.profile
+        try:
+            if not g.profile.is_admin:
+                return Response({
+                    "success": False
+                }, status=401, mimetype='application/json')
+            return func(*args, **kwargs)
+        except Exception as ex:
+            logger.exception("admin decorator received some kind of exception: {0}", ex)
             return Response({
                 "success": False
             }, status=401, mimetype='application/json')

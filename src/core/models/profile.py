@@ -14,6 +14,7 @@ class Profile(Base):
     last_name = Column(String(32))
     force_password_reset = Column(Boolean, nullable=False, default=True)
     is_demo_profile = Column(Boolean, nullable=False, default=False)
+    is_admin = Column(Boolean, nullable=False, default=False)
     timestamp = Column(DateTime)
 
     def to_dict(self):
@@ -22,6 +23,8 @@ class Profile(Base):
             'email': self.email,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'timestamp': self.timestamp.isoformat()
+            'timestamp': self.timestamp.isoformat(),
+            'is_demo': self.is_demo_profile,
+            'is_admin': self.is_admin
         }
 

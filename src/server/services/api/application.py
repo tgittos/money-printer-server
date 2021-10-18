@@ -6,6 +6,7 @@ import traceback
 from flask import Flask, abort
 from flask_cors import CORS
 from flask_socketio import SocketIO
+import rq_dashboard
 
 from config import config, mysql_config, mailgun_config, env
 from core.repositories.profile_repository import ProfileRepository, RegisterProfileRequest
@@ -54,9 +55,12 @@ class ApiApplication:
         self.flask_app.url_map.strict_slashes = False
         CORS(self.flask_app)
         self.flask_app.handle_exception = self._rescue_exceptions
+        self.flask_app.config.from_object(rq_dashboard.default_settings)
         self._configure_routes()
 
     def _configure_routes(self):
+        self.logger.info("registering rq blueprint")
+        self.flask_app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
         self.logger.info("registering health blueprint")
         self.flask_app.register_blueprint(health_bp)
         self.logger.info("registering auth blueprint")
