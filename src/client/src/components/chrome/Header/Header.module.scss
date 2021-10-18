@@ -1,7 +1,4 @@
 .Header {
-  & > * {
-    display: inline-block;
-  }
 }
 
 .MarketTracker {
@@ -9,7 +6,7 @@
 
 .MarketTrackerItem {
     display: inline-block;
-    max-width: 120px;
+    max-width: 150px;
     clear: both;
     margin: 0 0.6em;
 
