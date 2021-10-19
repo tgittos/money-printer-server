@@ -16,8 +16,8 @@ config = context.config
 env = 'development'
 if 'MP_ENVIRONMENT' in os.environ:
     env = os.environ['MP_ENVIRONMENT']
-f1 = open('./server/config.json',)
-f2 = open('./server/.secrets.json',)
+f1 = open('./config.json',)
+f2 = open('./.secrets.json',)
 config_json = json.loads(f1.read())
 secrets_json = json.loads(f2.read())
 f1.close()
@@ -48,7 +48,8 @@ from core.models.account_balance import AccountBalance
 from core.models.holding_balance import HoldingBalance
 from core.models.plaid_item import PlaidItem
 from core.models.reset_token import ResetToken
-from core.models.scheduled_job import ScheduledJob
+from core.models.scheduler.scheduled_job import ScheduledJob
+from core.models.scheduler.job_result import JobResult
 from core.models.security import Security
 from core.models.holding import Holding
 from core.models.security_price import SecurityPrice

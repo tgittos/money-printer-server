@@ -6,6 +6,7 @@ import time
 import redis
 from rq import Connection, Worker
 
+from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.lib.logger import init_logger, get_logger
 from core.lib.constants import WORKER_QUEUE
 from config import redis_config
@@ -23,8 +24,12 @@ class TaskRunnerApplication:
 
     def run(self):
         print(" * Starting money-printer task runner application", flush=True)
+        print(" * Ensuring persistent jobs scheduled", flush=True)
+        repo = ScheduledJobRepository()
+        repo.schedule_persistent_jobs()
+        q = sys.argv[1:] or [WORKER_QUEUE]
+        print(" * Starting worker on queue/s {0}".format(q), flush=True)
         with Connection(self.r):
-            q = sys.argv[1:] or [WORKER_QUEUE]
             self.worker = Worker(q)
             self.worker.work()
 

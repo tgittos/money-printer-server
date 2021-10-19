@@ -31,15 +31,23 @@ class ScheduledJobRepository:
         r = self.db.with_session(lambda session: session.query(ScheduledJob).all())
         return r
 
-    def create_instant_job(self, queue: str, request: CreateInstantJobRequest):
+    def get_scheduled_job_by_id(self, id: int):
+        """
+        Gets a ScheduledJob by it's primary key
+        """
+        r = self.db.with_session(lambda session: session.query(ScheduledJob)
+                                 .where(ScheduledJob.id == id)).first()
+        return r
+
+    def create_instant_job(self, request: CreateInstantJobRequest):
         """
         Pushes a message into Redis to perform the requested job ASAP
         """
-        q = self.get_or_create_queue(queue)
+        q = self.get_or_create_queue(WORKER_QUEUE)
         job = q.enqueue(request.job_name, request.args)
         return job
 
-    def create_scheduled_job(self, queue: str, request: CreateScheduledJobRequest):
+    def create_scheduled_job(self, request: CreateScheduledJobRequest):
         """
         Creates a record in the DB to schedule a job in the worker
         """
@@ -48,7 +56,7 @@ class ScheduledJobRepository:
         job.cron = request.cron
         job.json_args = request.json_args
         job.last_run = None
-        job.queue = queue
+        job.queue = WORKER_QUEUE
         job.timestamp = datetime.utcnow()
 
         def save_job(session):
@@ -57,12 +65,12 @@ class ScheduledJobRepository:
 
         self.db.with_session(save_job)
 
-        self.ensure_scheduled(job)
+        self.ensure_scheduled(WORKER_QUEUE, job)
 
         return job
 
     def update_scheduled_job(self, job):
-        self.unschedule_job(job)
+        self.unschedule_job(job.queue, job)
 
         def save_job(session):
             session.add(job)

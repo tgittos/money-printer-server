@@ -1,9 +1,9 @@
 
 class CreateScheduledJobRequest:
-    def __init__(self, job_name: str, cron: str, json_args: dict):
+    def __init__(self, job_name: str, cron: str, args: dict):
         self.job_name = job_name
         self.cron = cron
-        self.json_args = json_args
+        self.args = args
 
 
 class CreateInstantJobRequest:

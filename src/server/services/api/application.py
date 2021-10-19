@@ -8,7 +8,7 @@ from flask_cors import CORS
 from flask_socketio import SocketIO
 import rq_dashboard
 
-from config import config, mysql_config, mailgun_config, env
+from config import config, redis_config, env
 from core.repositories.profile_repository import ProfileRepository, RegisterProfileRequest
 from core.lib.logger import init_logger, get_logger
 
@@ -34,6 +34,11 @@ class ApiApplication:
         self.logger = get_logger("server.services.api")
         self._configure_flask()
         self._configure_ws()
+        # override RQ redis url
+        self.flask_app.config["RQ_DASHBOARD_REDIS_URL"] = "redis://{0}:{1}".format(
+            redis_config.host,
+            redis_config.port
+        )
 
     def run(self):
         print(" * Starting money-printer api/ws application", flush=True)
