@@ -1,5 +1,6 @@
 from flask import Blueprint, abort
 
+from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from .decorators import authed, admin, get_identity
 
 scheduler_bp = Blueprint('scheduler', __name__)
@@ -9,6 +10,13 @@ scheduler_bp = Blueprint('scheduler', __name__)
 @authed
 @admin
 def list_schedules():
+    repo = ScheduledJobRepository()
+    scheduled = repo.get_scheduled_jobs()
+    if scheduled:
+        return {
+            'success': True,
+            'data': [s.to_dict for s in scheduled]
+        }
     return {
         'success': False
     }
@@ -27,6 +35,7 @@ def create_schedule():
 @authed
 @admin
 def update_schedule():
+
     return {
         'success': False
     }

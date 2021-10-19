@@ -37,3 +37,13 @@ services:
       MP_REDIS__HOST: redis
     depends_on:
       - redis
+  scheduler:
+    build:
+      dockerfile: server/services/scheduler/Dockerfile
+      context: .
+    environment:
+      MP_REDIS__HOST: "redis"
+    depends_on:
+      - redis
+    image: mp_scheduler
+
