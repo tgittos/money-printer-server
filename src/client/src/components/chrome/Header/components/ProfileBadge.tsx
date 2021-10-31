@@ -8,17 +8,11 @@ export interface IProfileBadgeProps {
     className?: string;
     profile: IProfile;
     authenticated?: boolean;
-    launchProfile?: (profile: IProfile) => void,
-    launchLogin?: () => void,
-    launchLogout?: (profile: IProfile) => void;
 }
 
 interface IProfileBadgeButtonProps {
    name: string
 }
-
-const NullThunk = () => {};
-const NullableFn = (fn?: (_?: any) => void) => fn ? fn : NullThunk;
 
 const ProfileBadgeButton = (props: IProfileBadgeButtonProps) => {
     return <Dropdown.Toggle size="sm" variant="link">
@@ -46,16 +40,10 @@ const ProfileBadge = (props: IProfileBadgeProps) => {
         <Dropdown.Menu>
             {authed ?
                 <>
-                    <Dropdown.Item
-                        onClick={() => NullableFn(props.launchProfile)(props.profile)}
-                    >Profile</Dropdown.Item>
-                    <Dropdown.Item
-                        onClick={() => NullableFn(props.launchLogout)(props.profile)}
-                    >Logout</Dropdown.Item>
+                    <Dropdown.Item href="/profile">Profile</Dropdown.Item>
+                    <Dropdown.Item href="/profile/logout">Logout</Dropdown.Item>
                 </>
-                : <Dropdown.Item
-                    onClick={() => NullableFn(props.launchLogin)()}
-                >Login</Dropdown.Item>
+                : <Dropdown.Item href="/profile/login" >Login</Dropdown.Item>
             }
         </Dropdown.Menu>
     </Dropdown>

@@ -27,6 +27,10 @@ module.exports = {
       content: 'styleguide/Charts.md'
     },
     {
+      name: 'Profile',
+      content: 'src/apps/profile/Profile.md'
+    },
+    {
       name: 'Component Reference',
       components: 'src/components/shared/**/*.{ts,tsx}',
       exampleMode: 'expand', // 'hide' | 'collapse' | 'expand'

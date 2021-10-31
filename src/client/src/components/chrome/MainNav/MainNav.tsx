@@ -7,6 +7,7 @@ import MainNavItem from "./components/MainNavItem";
 
 export interface IMainNavProps {
     onNavigate: (e: string) => void;
+    showAdmin?: boolean;
 }
 
 const MainNav = (props: IMainNavProps) => {
@@ -44,6 +45,11 @@ const MainNav = (props: IMainNavProps) => {
             <Nav.Link eventKey="accounts">
                 <MainNavItem>Accounts</MainNavItem>
             </Nav.Link>
+            { (props.showAdmin ?? false) &&
+                <Nav.Link eventKey="admin">
+                  <MainNavItem>Admin</MainNavItem>
+                </Nav.Link>
+            }
         </Nav>
     </div>
 }
