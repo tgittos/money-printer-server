@@ -26,11 +26,15 @@ class MySql:
                 config.port,
                 config.schema
             )
-            MySql.engine = create_engine(conn_str, echo=config.debug)
-            MySql.sessionmaker = sessionmaker(bind=MySql.engine)
+            self.engine = create_engine(conn_str, echo=config.debug)
+            self.sessionmaker = sessionmaker(bind=self.engine)
+
+    def get_session(self):
+        session = self.sessionmaker()
+        return session
 
     def with_session(self, expr):
-        session = MySql.sessionmaker()
+        session = self.sessionmaker()
         res = expr(session)
         session.close()
         return res
