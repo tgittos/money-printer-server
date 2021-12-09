@@ -23,7 +23,6 @@ importlib-resources==5.2.2
 iniconfig==1.1.1
 itsdangerous==2.0.1
 Jinja2==3.0.1
-jwt==1.2.0
 lxml==4.6.3
 Mako==1.1.5
 MarkupSafe==2.0.1
@@ -41,6 +40,7 @@ pycodestyle==2.7.0
 pycparser==2.20
 pyflakes==2.3.1
 PyJWT==2.1.0
+jwt==1.2.0
 pyparsing==3.0.6
 pytest==6.2.5
 pytest-mock==3.6.1
