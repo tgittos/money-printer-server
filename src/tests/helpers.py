@@ -7,14 +7,10 @@ from server.services.api.application import ApiApplication
 from core.stores.mysql import MySql
 from config import mysql_config
 
-from tests.fixtures import seed_fixtures
-
-
 @pytest.fixture
 def db():
     db = MySql(mysql_config)
     db.create_all()
-    seed_fixtures(db)
     yield db
     db.drop_all()
 

@@ -15,7 +15,7 @@ class SyncAccounts:
             self.logger.error("attempting to run account sync job without a valid PlaidItem id: {0}"
                               .format(redis_message))
         self.store = MySql(mysql_config)
-        self.plaid_repo = PlaidRepository()
+        self.plaid_repo = PlaidRepository(self.store)
         self.profile_repo = ProfileRepository(self.store)
         self.plaid_item_id = redis_message['args']['plaid_item_id']
 

@@ -1,5 +1,7 @@
-from typing import Optional
+import random
+import string
 from datetime import date, datetime, timezone
+from typing import Optional
 
 import numpy as np
 
@@ -83,3 +85,7 @@ def is_bus_day(d: date) -> bool:
     Is this date a business day?
     """
     return np.is_busday(d)
+
+
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
