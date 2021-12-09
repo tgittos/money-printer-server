@@ -7,6 +7,7 @@ from server.services.api.application import ApiApplication
 from core.stores.mysql import MySql
 from config import mysql_config
 
+
 @pytest.fixture
 def db():
     db = MySql(mysql_config)
@@ -15,7 +16,7 @@ def db():
     db.drop_all()
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def client():
     db = MySql(mysql_config)
     app = ApiApplication(db)

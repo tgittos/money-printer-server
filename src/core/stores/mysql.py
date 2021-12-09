@@ -31,7 +31,7 @@ class MySql:
                 config.schema
             )
             MySql.engine = create_engine(conn_str, echo=config.debug)
-            MySql.sm = sessionmaker(bind=MySql.engine)
+            MySql.sm = sessionmaker(bind=MySql.engine, autoflush=True)
 
     def get_session(self):
         session = MySql.sm()
