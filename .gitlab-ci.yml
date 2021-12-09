@@ -25,6 +25,7 @@ run_tests:
     - python -m venv ~/.venv/
     - source ~/.venv/bin/activate
     - pip install -r requirements.txt
+    - mkdir -p logs
     - MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:." MP_DB__HOST="$MYSQL_HOST" pytest ./tests
 
 # deploy-job:      # This job runs in the deploy stage.
