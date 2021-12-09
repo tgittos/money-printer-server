@@ -39,7 +39,7 @@
       "username": "moneyprinter",
       "password": "mp!QAZxsw2",
       "schema": "mp-test",
-      "debug": "false"
+      "debug": "true"
     },
     "redis": {
       "host": "localhost",
