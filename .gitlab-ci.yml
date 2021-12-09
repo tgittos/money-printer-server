@@ -1,36 +1,36 @@
-# This file is a template, and might need editing before it works on your project.
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
+variables:
+  MYSQL_DATABASE: "mp-test"
+  MYSQL_ROOT_PASSWORD: "test root password",
+  MYSQL_USER: "moneyprinter",
+  MYSQL_PASSWORD: "mp!QAZxsw2",
+  MYSQL_HOST: mysql
 
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
-#
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
-#
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
 
-stages:          # List of stages for jobs, and their order of execution
+default:
+  image: tgittos/money-printer:latest
+
+stages:
   - build
   - test
 
-build-job:       # This job runs in the build stage, which runs first.
+build-job:
   stage: build
   script:
     - echo "installing pip dependencies"
     - pip install -r ./src/requirements.txt
     - echo "pip install complete"
 
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
+unit-test-job:
+  stage: test
+  services:
+    - mysql:5.7
   script:
-    - echo "decrypting secrets for test run"
-    - echo "decryption complete"
+    - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
+    - mysql --version
+    - mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --host=$MYSQL_HOST --execute="CREATE DATABASE 'mp-test';"
+    - mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="SHOW DATABASES; ALTER USER '$MYSQL_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD'"
     - echo "running pytest on ./src/tests"
-    - MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:./src pytest ./src/tests
+    - MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:./src" pytest ./src/tests
 
 # deploy-job:      # This job runs in the deploy stage.
 #   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
