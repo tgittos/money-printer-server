@@ -21,22 +21,22 @@ from core.lib.actions.profile.responses import *
 class ProfileRepository:
 
     logger = get_logger(__name__)
-    db = MySql(mysql_config)
 
-    def __init__(self):
+    def __init__(self, store):
+        self.db = store
         self._init_facets()
 
     def _init_facets(self):
-        self.get_profile_by_id = wrap(get_profile_by_id, self)
-        self.get_profile_by_email = wrap(get_profile_by_email, self)
-        self.get_all_profiles = wrap(get_all_profiles, self)
-        self.get_unauthenticated_user = wrap(get_unauthenticated_user, self)
-        self.create_profile = wrap(create_profile, self)
-        self.register = wrap(register, self)
-        self.login = wrap(login, self)
-        self.reset_password = wrap(reset_password, self)
-        self.continue_reset_password = wrap(continue_reset_password, self)
-        self.logout = wrap(logout, self)
+        self.get_profile_by_id = wrap(get_profile_by_id, self.db)
+        self.get_profile_by_email = wrap(get_profile_by_email, self.db)
+        self.get_all_profiles = wrap(get_all_profiles, self.db)
+        self.get_unauthenticated_user = wrap(get_unauthenticated_user, self.db)
+        self.create_profile = wrap(create_profile, self.db)
+        self.register = wrap(register, self.db)
+        self.login = wrap(login, self.db)
+        self.reset_password = wrap(reset_password, self.db)
+        self.continue_reset_password = wrap(continue_reset_password, self.db)
+        self.logout = wrap(logout, self.db)
 
     def schedule_profile_sync(self, profile: Profile):
         """
@@ -45,7 +45,7 @@ class ProfileRepository:
         if profile is None:
             self.logger.error("cannot schedule profile sync without Profile")
             return
-        plaid_items = get_plaid_items_by_profile(self, profile)
+        plaid_items = get_plaid_items_by_profile(self.db, profile)
         if plaid_items is None:
             self.logger.error("scheduled account sync for Profile, but no PlaidItems found")
             return
@@ -95,7 +95,7 @@ class ProfileRepository:
             if 'account_id' in account_dict:
                 self.logger.info("updating account details for profile {0}, account {1}"
                                  .format(profile.id, account_dict['account_id']))
-                account = create_or_update_account(self,
+                account = create_or_update_account(self.db,
                                                    profile=profile,
                                                    plaid_link=plaid_item,
                                                    account_dict=account_dict)

@@ -28,10 +28,12 @@ class ApiApplication:
     flask_app = Flask(__name__)
     socket_app = None
     client_bus = None
+    store = None
 
-    def __init__(self):
+    def __init__(self, store):
         init_logger(self.log_path)
         self.logger = get_logger("server.services.api")
+        self.store = store
         self._configure_flask()
         self._configure_ws()
         # override RQ redis url
@@ -47,7 +49,8 @@ class ApiApplication:
         self.socket_app.run(self.flask_app, host=config.host, port=config.port)
 
     def init(self, first_name, last_name, email):
-        repo = ProfileRepository()
+
+        repo = ProfileRepository(self.store)
         result = repo.register(RegisterProfileRequest(
             email=email, first_name=first_name, last_name=last_name
         ))

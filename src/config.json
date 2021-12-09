@@ -30,5 +30,29 @@
   "staging": {
   },
   "production": {
+  },
+  "test": {
+    "secret": "test secret",
+    "db": {
+      "host": "127.0.0.1",
+      "port": "3306",
+      "username": "moneyprinter",
+      "password": "mp!QAZxsw2",
+      "schema": "mp-test",
+      "debug": "false"
+    },
+    "iex": {
+      "secret": "",
+      "env": "test"
+    },
+    "mailgun": {
+      "api_key": "",
+      "domain": "example.org"
+    },
+    "plaid": {
+      "secret": "",
+      "env": "test",
+      "client_id": ""
+    }
   }
 }

@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy core app code required to run the app
 COPY core core
 COPY server server
-COPY .secrets.json .secrets.json
+COPY server/.secrets.json server/.secrets.json
 COPY config* .
 
 # Create a logs dir
