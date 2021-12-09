@@ -7,7 +7,7 @@ variables:
 
 
 default:
-  image: tgittos/money-printer:latest
+  image: python:3.9.7-slim
 
 stages:
 #  - build
@@ -25,7 +25,7 @@ run_tests:
     - python -m venv ~/.venv/
     - source ~/.venv/bin/activate
     - pip install -r requirements.txt
-    - MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:." pytest ./tests
+    - MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:." MP_DB__HOST="$MYSQL_HOST" pytest ./tests
 
 # deploy-job:      # This job runs in the deploy stage.
 #   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
