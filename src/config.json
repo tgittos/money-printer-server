@@ -41,6 +41,10 @@
       "schema": "mp-test",
       "debug": "false"
     },
+    "redis": {
+      "host": "localhost",
+      "port": "6379"
+    },
     "iex": {
       "secret": "",
       "env": "test"
