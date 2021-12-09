@@ -1,8 +1,8 @@
 variables:
   MYSQL_DATABASE: "mp-test"
-  MYSQL_ROOT_PASSWORD: "test root password",
-  MYSQL_USER: "moneyprinter",
-  MYSQL_PASSWORD: "mp!QAZxsw2",
+  MYSQL_ROOT_PASSWORD: "test root password"
+  MYSQL_USER: "moneyprinter"
+  MYSQL_PASSWORD: "mp!QAZxsw2"
   MYSQL_HOST: mysql
 
 
