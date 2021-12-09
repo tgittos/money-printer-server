@@ -9,7 +9,7 @@ from core.models.investment_transaction import InvestmentTransaction
 from core.models.plaid_item import PlaidItem
 from core.models.profile import Profile
 from core.models.reset_token import ResetToken
-from core.models.scheduled_job import ScheduledJob
+from core.models.scheduler.scheduled_job import ScheduledJob
 from core.models.security import Security
 from core.models.security_price import SecurityPrice
 
@@ -27,8 +27,6 @@ ResetTokenList = List[ResetToken]
 ScheduledJobList = List[ScheduledJob]
 SecurityList = List[Security]
 SecurityPriceList = List[SecurityPrice]
-
-
 
 
 class RepositoryResponse:

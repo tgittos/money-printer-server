@@ -56,3 +56,13 @@ services:
     volumes:
       - ./:/app
     image: mp_runner
+  scheduler:
+    build:
+      dockerfile: server/services/scheduler/Dockerfile
+      context: .
+    environment:
+      MP_REDIS__HOST: "redis"
+    depends_on:
+      - redis
+    image: mp_scheduler
+

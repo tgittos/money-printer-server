@@ -14,11 +14,11 @@ from .responses import AuthResponse
 from .crud import get_profile_by_email
 
 
-def get_unauthenticated_user(cls) -> AuthResponse:
+def get_unauthenticated_user(db) -> AuthResponse:
     """
     Gets the demo profile encoded as a token so the frontend thinks it's "authed"
     """
-    demo_profile = cls.db.with_session(lambda session: session.query(Profile).where(Profile.is_demo_profile).first())
+    demo_profile = db.with_session(lambda session: session.query(Profile).where(Profile.is_demo_profile).first())
     # TODO - maybe delete this
     if demo_profile is None:
         demo_profile = Profile()
@@ -59,21 +59,20 @@ def reset_password(cls, email: str) -> bool:
     return False
 
 
-def continue_reset_password(cls, request: ResetProfilePasswordRequest):
+def continue_reset_password(db, request: ResetProfilePasswordRequest):
     """
     Continues the user-initiated password reset flow
     """
     profile = request.profile
     token = request.token
-    token_entry = get_reset_token(cls, token)
+    token_entry = get_reset_token(db, token)
     if token_entry is not None and token_entry.expiry > datetime.utcnow():
         profile.password = hash_password(request.password)
 
-        def create(session):
-            session.add(token_entry)
-            session.commit()
+        session = db.get_session()
+        session.add(token_entry)
+        db.commit_session(session)
 
-        cls.db.with_session(create)
         return RepositoryResponse(
             success=True
         )
@@ -87,14 +86,14 @@ def continue_reset_password(cls, request: ResetProfilePasswordRequest):
     )
 
 
-def logout(cls, email: str):
+def logout(db, email: str):
     """
     Logs a user out and expires their token (& all open tokens)
     """
     raise Exception("not implemented")
 
 
-def create_reset_token(cls, profile: Profile):
+def create_reset_token(db, profile: Profile):
     """
     Generates a ResetToken for the user and emails it to them
     """
@@ -106,11 +105,9 @@ def create_reset_token(cls, profile: Profile):
     reset_token.timestamp = datetime.utcnow()
     reset_token.expiry = datetime.utcnow() + relativedelta(days=1)
 
-    def create(session):
-        session.add(reset_token)
-        session.commit()
-
-    cls.db.with_session(create)
+    session = db.get_session()
+    session.add(reset_token)
+    db.commit_session(session)
 
     notify_password_reset(mailgun_config, PasswordResetNotification(
         profile=profile,
@@ -118,10 +115,11 @@ def create_reset_token(cls, profile: Profile):
     ))
 
 
-def get_reset_token(cls, token_string: str) -> ResetToken:
+def get_reset_token(db, token_string: str) -> ResetToken:
     """
     Gets a ResetToken from the DB by the unique code sent to the user
     """
-    r = cls.db.with_session(lambda session: session.query(ResetToken).filter(ResetToken.token == token_string).first())
+    session = db.get_session()
+    r = session.query(ResetToken).filter(ResetToken.token == token_string).first()
+    session.close()
     return r
-

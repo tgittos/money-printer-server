@@ -12,6 +12,8 @@ export interface IProfile {
   lastName: string;
   last_name?: string;
   timestamp: Date;
+  is_admin?: boolean;
+  isAdmin: boolean;
 }
 
 class Profile implements IProfile {
@@ -20,6 +22,7 @@ class Profile implements IProfile {
   public firstName: string;
   public lastName: string;
   public timestamp: Date;
+  public isAdmin: boolean;
 
   constructor(obj: IProfile) {
     this.id = obj?.id ?? null;
@@ -27,6 +30,7 @@ class Profile implements IProfile {
     this.firstName = obj?.first_name ?? '';
     this.lastName = obj?.last_name ?? '';
     this.timestamp = obj?.timestamp ?? new Date();
+    this.isAdmin = obj?.is_admin ?? false;
   }
 }
 

@@ -32,7 +32,7 @@ class ProfileService {
             data: { username, password }
         })
             .then(response => (response.data as unknown) as IAuthProfileResponse);
-        if (!response.success) {
+        if (response.success) {
             return response.data.profile;
         }
         throw new Error(response.message);

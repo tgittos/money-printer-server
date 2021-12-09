@@ -6,8 +6,9 @@ import traceback
 from flask import Flask, abort
 from flask_cors import CORS
 from flask_socketio import SocketIO
+import rq_dashboard
 
-from config import config, mysql_config, mailgun_config, env
+from config import config, redis_config, env
 from core.repositories.profile_repository import ProfileRepository, RegisterProfileRequest
 from core.lib.logger import init_logger, get_logger
 
@@ -27,12 +28,19 @@ class ApiApplication:
     flask_app = Flask(__name__)
     socket_app = None
     client_bus = None
+    store = None
 
-    def __init__(self):
+    def __init__(self, store):
         init_logger(self.log_path)
         self.logger = get_logger("server.services.api")
+        self.store = store
         self._configure_flask()
         self._configure_ws()
+        # override RQ redis url
+        self.flask_app.config["RQ_DASHBOARD_REDIS_URL"] = "redis://{0}:{1}".format(
+            redis_config.host,
+            redis_config.port
+        )
 
     def run(self):
         print(" * Starting money-printer api/ws application", flush=True)
@@ -41,7 +49,8 @@ class ApiApplication:
         self.socket_app.run(self.flask_app, host=config.host, port=config.port)
 
     def init(self, first_name, last_name, email):
-        repo = ProfileRepository()
+
+        repo = ProfileRepository(self.store)
         result = repo.register(RegisterProfileRequest(
             email=email, first_name=first_name, last_name=last_name
         ))
@@ -54,9 +63,12 @@ class ApiApplication:
         self.flask_app.url_map.strict_slashes = False
         CORS(self.flask_app)
         self.flask_app.handle_exception = self._rescue_exceptions
+        self.flask_app.config.from_object(rq_dashboard.default_settings)
         self._configure_routes()
 
     def _configure_routes(self):
+        self.logger.info("registering rq blueprint")
+        self.flask_app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
         self.logger.info("registering health blueprint")
         self.flask_app.register_blueprint(health_bp)
         self.logger.info("registering auth blueprint")

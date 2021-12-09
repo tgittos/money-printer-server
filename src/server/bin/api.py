@@ -1,5 +1,8 @@
 from server.services.api.application import ApiApplication
+from core.stores.mysql import MySql
+from config import mysql_config
 
 if __name__ == '__main__':
-    app = ApiApplication()
+    store = MySql(mysql_config)
+    app = ApiApplication(store)
     app.run()
