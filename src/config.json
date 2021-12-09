@@ -52,7 +52,8 @@
     "plaid": {
       "secret": "",
       "env": "test",
-      "client_id": ""
+      "client_id": "",
+      "version": ""
     }
   }
 }

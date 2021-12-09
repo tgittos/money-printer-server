@@ -13,7 +13,7 @@ def get_profile_by_id(db, profile_id: int) -> Profile:
     """
     Gets a profile from the DB by its primary key
     """
-    session = db.get_session
+    session = db.get_session()
     r = session.query(Profile).where(Profile.id == profile_id).first()
     session.close()
     return r
