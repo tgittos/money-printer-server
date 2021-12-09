@@ -27,7 +27,9 @@ def test_get_schedule_returns_a_schedule(db, client):
     session = db.get_session()
     try:
         job = create_scheduled_job(session)
-        r = client.get('/v1/api/admin/schedules/' + str(job.id), follow_redirects=True)
+        r = client.get('/v1/api/admin/schedules/' + str(job.id),
+                       headers={'Authorization': ''},
+                       follow_redirects=True)
         json = r.get_json()
         print(json)
         assert False
