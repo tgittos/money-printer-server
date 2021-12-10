@@ -28,11 +28,6 @@ variables:
 before_script:
   # First test that gitlab-runner has access to Docker
   - docker --version
-  # Install bash
-  - apk add --no-cache bash
-  # Add environment variables stored in GitLab, to .env file
-  # - chmod +x ./setup_env.sh
-  # - bash ./setup_env.sh
   # Login to the Gitlab registry and pull existing images to use as cache
   - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
