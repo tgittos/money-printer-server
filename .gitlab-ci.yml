@@ -29,7 +29,7 @@ before_script:
   # First test that gitlab-runner has access to Docker
   - docker --version
   # Login to the Gitlab registry and pull existing images to use as cache
-  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build
@@ -41,7 +41,7 @@ build:
     - docker pull task_runner || true
     - docker pull scheduler || true
     # Build and push Docker images to the Gitlab registry
-    - docker-compose --profile test build
+    - docker-compose --profile dev build
     - docker push api
     - docker push client
     - docker push data_server
@@ -60,8 +60,8 @@ test:
     - docker pull task_runner
     - docker pull scheduler
     # Start the containers and run the tests before deployment
-    - docker-compose --profile test up api -d
-    - docker-compose --profile test up db -d
+    - docker-compose --profile dev up api -d
+    - docker-compose --profile dev up db -d
     - docker exec --tty $(docker-compose -f docker-compose.yml ps -q db) mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="ALTER USER '$MYSQL_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD'"
     - docker exec --tty $(docker-compose -f docker-compose.yml ps -q api) /bin/bash -c "cd app && MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:/app" pytest ./tests"
     - docker-compose --profile test down api
