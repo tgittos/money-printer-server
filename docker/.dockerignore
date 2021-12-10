@@ -4,6 +4,6 @@
 .winvenv
 .idea
 logs
-.git
 .gitignore
+.gitsecret
 node_modules
