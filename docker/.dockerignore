@@ -4,7 +4,6 @@
 .winvenv
 .idea
 logs
-.elasticbeanstalk/*
-.git
 .gitignore
+.gitsecret
 node_modules

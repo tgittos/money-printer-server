@@ -16,6 +16,7 @@ RUN chown -R node:node /home/node/app
 RUN mkdir /home/node/.npm-global
 ENV PATH=/home/node/.npm-global/bin:$PATH
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+ENV NODE_OPTIONS=--max_old_space_size=8192
 
 # copy package.jsons
 COPY --chown=node:node package*.json .

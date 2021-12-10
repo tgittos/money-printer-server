@@ -17,8 +17,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy core app code required to run the app
 COPY core core
 COPY server server
-COPY server/.secrets.json server/.secrets.json
 COPY config* .
+# TODO refactor this to external env vars
+COPY .secrets.json .secrets.json
 
 # Create a logs dir
 RUN mkdir logs
@@ -27,7 +28,7 @@ RUN mkdir logs
 EXPOSE 80
 EXPOSE 443
 
-# If an invironment _wasn't_ passed in, default to development
+# If an environment _wasn't_ passed in, default to development
 ENV MP_ENVIRONMENT=environment:-development
 # Bind to the public IP of the container
 ENV MP_HOST=0.0.0.0

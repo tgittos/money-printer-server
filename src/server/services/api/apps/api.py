@@ -49,7 +49,6 @@ class ApiApplication:
         self.socket_app.run(self.flask_app, host=config.host, port=config.port)
 
     def init(self, first_name, last_name, email):
-
         repo = ProfileRepository(self.store)
         result = repo.register(RegisterProfileRequest(
             email=email, first_name=first_name, last_name=last_name

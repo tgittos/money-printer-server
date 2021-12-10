@@ -15,15 +15,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY core core
 COPY server server
 COPY .secrets.json .secrets.json
-COPY config* ./
-COPY bin/money-printer bin/money-printer
+COPY config* .
 
 RUN mkdir logs
 
 ENV MP_ENVIRONMENT=environment:-development
-ENV MP_HOST=0.0.0.0
-ENV MP_PORT=8000
+ENV PYTHONPATH=$PYTHONPATH:.
 
-EXPOSE 8000
-
-ENTRYPOINT bin/money-printer && tail -f logs/mp.log
+ENTRYPOINT python server/bin/data-server.py && tail -f logs/mp.log
