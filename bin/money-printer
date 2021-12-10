@@ -1,9 +1,6 @@
 #!/bin/sh
 
-redis-server &
-
 env="${1:-development}"
 echo 'MONEY PRINTER GOING BRRR'
 echo "BRRRing in $env"
-export PYTHONPATH="$PYTHONPATH:."
-export MP_ENVIRONMENT=$env && python server/bin/money-printer.py
+docker-compose -f docker/docker-compose.yml --profile dev -d up

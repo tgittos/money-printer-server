@@ -1,7 +1,6 @@
 import os
 import sys
 import traceback
-import time
 
 import redis
 from rq import Connection, Worker

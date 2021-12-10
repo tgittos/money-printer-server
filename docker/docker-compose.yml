@@ -64,4 +64,6 @@ services:
     profiles: ["dev"]
   db:
     image: "mysql/mysql-server:5.7"
+    environment:
+      MYSQL_ROOT_PASSWORD: test-root-password
     profiles: ["dev"]

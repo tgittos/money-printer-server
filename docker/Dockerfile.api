@@ -9,20 +9,23 @@ ARG environment
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+RUN mkdir app
+
 # Install dependencies
-COPY requirements.txt requirements.txt
+COPY requirements.txt app/requirements.txt
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r app/requirements.txt
 
 # Copy core app code required to run the app
-COPY core core
-COPY server server
-COPY config* .
+COPY core app/core
+COPY server app/server
+COPY tests app/tests
+COPY config* app/.
 # TODO refactor this to external env vars
-COPY .secrets.json .secrets.json
+COPY .secrets.json app/.secrets.json
 
 # Create a logs dir
-RUN mkdir logs
+RUN mkdir app/logs
 
 # Expose the port that the app runs on
 EXPOSE 80
@@ -34,6 +37,6 @@ ENV MP_ENVIRONMENT=environment:-development
 ENV MP_HOST=0.0.0.0
 ENV MP_PORT=80
 # Add our current path to the Python path
-ENV PYTHONPATH=$PYTHONPATH:.
+ENV PYTHONPATH=$PYTHONPATH:/app
 
-ENTRYPOINT python server/bin/api.py && tail -f logs/mp.log
+ENTRYPOINT cd app && python ./server/bin/api.py && tail -f ./server/logs/mp.log

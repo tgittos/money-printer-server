@@ -1,35 +1,93 @@
+image:
+  name: docker/compose:1.29.2
+  # Override the entrypoint (important)
+  entrypoint: [""]
+
+# Must have this service
+# Note: --privileged is required for Docker-in-Docker to function properly,
+# but it should be used with care as it provides full access to the host environment
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - deploy
+
 variables:
+  # DOCKER_HOST is essential
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  # SQL stuff for testing in a local db
   MYSQL_DATABASE: "mp-test"
   MYSQL_ROOT_PASSWORD: "test root password"
   MYSQL_USER: "moneyprinter"
   MYSQL_PASSWORD: "mp!QAZxsw2"
   MYSQL_HOST: mysql
 
+before_script:
+  # First test that gitlab-runner has access to Docker
+  - docker --version
+  # Install bash
+  - apk add --no-cache bash
+  # Add environment variables stored in GitLab, to .env file
+  # - chmod +x ./setup_env.sh
+  # - bash ./setup_env.sh
+  # Login to the Gitlab registry and pull existing images to use as cache
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
-default:
-  image: tgittos/money-printer:latest
-
-stages:
-#  - build
-  - test
-
-run_tests:
-  stage: test
-  services:
-    - mysql:5.7
+build:
+  stage: build
   script:
-    - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
-    - mysql --version
-    - mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="SHOW DATABASES; ALTER USER '$MYSQL_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD'"
-    - cd src
-    - python -m venv ~/.venv/
-    - source ~/.venv/bin/activate
-    - pip install -r requirements.txt
-    - mkdir -p logs
-    - MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:." MP_DB__HOST="$MYSQL_HOST" pytest ./tests
+    # Pull the image for the build cache, and continue even if this image download fails (it'll fail the very first time)
+    - docker pull api || true
+    - docker pull client || true
+    - docker pull data_server || true
+    - docker pull task_runner || true
+    - docker pull scheduler || true
+    # Build and push Docker images to the Gitlab registry
+    - docker-compose --profile test build
+    - docker push api
+    - docker push client
+    - docker push data_server
+    - docker push task_runner
+    - docker push scheduler
+  #only:
+  #  - master
 
-# deploy-job:      # This job runs in the deploy stage.
-#   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-#   script:
-#     - echo "Deploying application..."
-#     - echo "Application successfully deployed."
+test:
+  stage: test
+  script:
+    # Pull the images
+    - docker pull api
+    - docker pull client
+    - docker pull data_server
+    - docker pull task_runner
+    - docker pull scheduler
+    # Start the containers and run the tests before deployment
+    - docker-compose --profile test up api -d
+    - docker-compose --profile test up db -d
+    - docker exec --tty $(docker-compose -f docker-compose.yml ps -q db) mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="ALTER USER '$MYSQL_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD'"
+    - docker exec --tty $(docker-compose -f docker-compose.yml ps -q api) /bin/bash -c "cd app && MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:/app" pytest ./tests"
+    - docker-compose --profile test down api
+    - docker-compose --profile test down db
+  #only:
+  #  - master
+
+deploy_staging:
+  stage: deploy_staging
+  script:
+    - echo 'Deploy to ECS staging env'
+    # - bash deploy.staging.sh
+  only:
+    - master
+
+deploy_prod:
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^release\//'
+      when: manual
+  stage: deploy_prod
+  script:
+    - bash deploy.prod.sh
+  only:
+    - master
