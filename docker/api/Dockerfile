@@ -27,7 +27,7 @@ RUN mkdir logs
 EXPOSE 80
 EXPOSE 443
 
-# If an invironment _wasn't_ passed in, default to development
+# If an environment _wasn't_ passed in, default to development
 ENV MP_ENVIRONMENT=environment:-development
 # Bind to the public IP of the container
 ENV MP_HOST=0.0.0.0

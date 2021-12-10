@@ -1,0 +1,62 @@
+services:
+  redis:
+    image: "redis:alpine"
+  client:
+    build:
+      dockerfile: ./../../docker/client/Dockerfile
+      context: ../src/client/
+    ports:
+      - 3000:3000
+      - 3080:3080
+    environment:
+      MP_API__HOST: api
+    depends_on:
+      - api
+  api:
+    build:
+      dockerfile: ./../docker/api/Dockerfile
+      context: ../src
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      MP_REDIS__HOST: redis
+      MP_LOCAL_DB_HOST: db
+    depends_on:
+      - redis
+  data-server:
+    build:
+      dockerfile: ../docker/data_server/Dockerfile
+      context: ../src
+    environment:
+      MP_REDIS__HOST: redis
+      MP_LOCAL_DB_HOST: db
+    depends_on:
+      - redis
+  task-runner:
+    build:
+      dockerfile: ../docker/task_runner/Dockerfile
+      context: ../src
+    environment:
+      MP_REDIS__HOST: redis
+      MP_LOCAL_DB_HOST: db
+    depends_on:
+      - redis
+  scheduler:
+    build:
+      dockerfile: ../docker/data_server/Dockerfile
+      context: ../src
+    environment:
+      MP_REDIS__HOST: "redis"
+      MP_LOCAL_DB_HOST: db
+    depends_on:
+      - redis
+    image: mp_scheduler
+  platform:
+    build:
+      dockerfile: ../docker/platform/Dockerfile
+      context: ../src
+    profiles: ["dev"]
+  db:
+    image: "mysql/mysql-server:5.7"
+    profiles: ["dev"]
