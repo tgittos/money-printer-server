@@ -34,7 +34,7 @@
   "test": {
     "secret": "test secret",
     "db": {
-      "host": "127.0.0.1",
+      "host": "",
       "port": "3306",
       "username": "moneyprinter",
       "password": "mp!QAZxsw2",

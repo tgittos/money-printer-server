@@ -9,7 +9,7 @@ services:
       - 3000:3000
       - 6060:6060
     environment:
-      MP_API__HOST: api
+      MP_API_HOST: api
     depends_on:
       - api
   api:
@@ -21,7 +21,7 @@ services:
       - 443:443
     environment:
       MP_REDIS__HOST: redis
-      MP_LOCAL_DB_HOST: db
+      MP_DB__HOST: db
     depends_on:
       - redis
   data-server:
@@ -30,7 +30,7 @@ services:
       context: ../src
     environment:
       MP_REDIS__HOST: redis
-      MP_LOCAL_DB_HOST: db
+      MP_DB__HOST: db
     depends_on:
       - redis
   task-runner:
@@ -39,7 +39,7 @@ services:
       context: ../src
     environment:
       MP_REDIS__HOST: redis
-      MP_LOCAL_DB_HOST: db
+      MP_DB__HOST: db
     depends_on:
       - redis
   scheduler:
@@ -48,7 +48,7 @@ services:
       context: ../src
     environment:
       MP_REDIS__HOST: "redis"
-      MP_LOCAL_DB_HOST: db
+      MP_DB__HOST: db
     depends_on:
       - redis
     image: mp_scheduler
