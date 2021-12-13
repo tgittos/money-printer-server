@@ -1,5 +1,5 @@
 data "template_file" "api_task_definition" {
-  template = file("${path.module}/../task-definitions/${var.task_definition_filename}")// file("${path.module}/../task-definitions/api.json.tpl")
+  template = file(var.task_definition_filename)
   vars = {
     repository_url = var.ecr_repo_url
   }

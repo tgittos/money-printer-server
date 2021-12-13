@@ -10,8 +10,8 @@ resource "aws_db_instance" "mp_app_staging_mysql" {
   instance_class            = "db.t2.micro"
   name                      = "mp-staging-mysql"
   port                      = "3306"
-  db_subnet_group_name      = aws_db_subnet_group.mp_db_subnet_group.id
-  vpc_security_group_ids    = [aws_security_group.mp_app_rds_sg.id, aws_security_group.mp_app_ecs_sg.id]
+  db_subnet_group_name      = var.subnet_group_id
+  vpc_security_group_ids    = [var.db_security_group_id, var.ecs_security_group_id]
   skip_final_snapshot       = true
   final_snapshot_identifier = "mp-staging-mysql-final"
   publicly_accessible       = true

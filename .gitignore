@@ -9,3 +9,5 @@ src/logs/**/*
 *.rdb
 src/platform/ssh/mp-devops
 **/.idea
+.terraform
+.terraform.lock.hcl

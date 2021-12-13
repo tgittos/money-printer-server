@@ -6,8 +6,9 @@ terraform {
     }
   }
   backend "s3" {
-      bucket = "moneyprinter_aws"
-      key    = "terraform/staging/state.tfstate"
+    bucket = "moneyprinter-aws"
+    key    = "terraform/state.tfstate"
+    profile = "default"
   }
   required_version = ">= 0.14.9"
 }
@@ -25,15 +26,37 @@ module "vpc" {
   source = "../modules/vpc"
 }
 
-module "_cluster" {
-  source = "../modules/small-cluster"
+module "mysql" {
+  source = "./storage/mysql"
 
-  cluster_prefix = "api_staging"
-  task_definition_filename = "api.json.tpl"
+  subnet_group_id = module.vpc.subnet_id
+  ecs_security_group_id = module.vpc.ecs_security_group_id
+  db_security_group_id = module.vpc.db_security_group_id
+}
+
+module "api" {
+  source = "./services/api"
+
   ecr_repo_url = module.core.ecr_repository_endpoint
-  image_id = ""
-  instance_type = ""
   iam_instance_profile_name = module.core.iam_role_name
-  security_group_id = module.vpc.security_group_name
+  security_group_id = module.vpc.ecs_security_group_id
+  subnet_id = module.vpc.subnet_id
+}
+
+module "ds" {
+  source = "./services/data-server"
+
+  ecr_repo_url = module.core.ecr_repository_endpoint
+  iam_instance_profile_name = module.core.iam_role_name
+  security_group_id = module.vpc.ecs_security_group_id
+  subnet_id = module.vpc.subnet_id
+}
+
+module "tr" {
+  source = "./services/task-runner"
+
+  ecr_repo_url = module.core.ecr_repository_endpoint
+  iam_instance_profile_name = module.core.iam_role_name
+  security_group_id = module.vpc.ecs_security_group_id
   subnet_id = module.vpc.subnet_id
 }

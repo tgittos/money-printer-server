@@ -2,7 +2,7 @@ module "api_cluster" {
   source = "../../../modules/small-cluster"
 
   cluster_prefix = "api_staging"
-  task_definition_filename = "api.json.tpl"
+  task_definition_filename = "${path.module}/../../task-definitions/api.json.tpl"
   ecr_repo_url = var.ecr_repo_url
   image_id = ""
   instance_type = ""

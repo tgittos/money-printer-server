@@ -1,6 +1,6 @@
 
 data "template_file" "runner_task_definition" {
-  template = file("${path.module}/../task-definitions/build-server.json.tpl")
+  template = file("${path.module}/build-server.json.tpl")
   vars = {
     repository_url = var.ecr_repo_url
   }
