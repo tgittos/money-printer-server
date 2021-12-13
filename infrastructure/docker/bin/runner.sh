@@ -1,0 +1,11 @@
+sudo gitlab-runner register \
+  --non-interactive \
+  --url "https://gitlab.com/" \
+  --registration-token "$MP_RUNNER_ACCESS_TOKEN" \
+  --executor "docker:dind" \
+  --docker-image alpine:latest \
+  --description "mp-app-ci-docker-runner" \
+  --tag-list "docker,aws" \
+  --run-untagged="true" \
+  --locked="false" \
+  --access-level="not_protected"

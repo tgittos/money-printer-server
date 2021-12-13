@@ -1,6 +1,0 @@
-#!/bin/sh
-
-env="${1:-$MP_ENVIRONMENT}"
-env="${env:-development}"
-export PYTHONPATH="$PYTHONPATH:."
-export MP_ENVIRONMENT=$env && ./.venv/bin/python3 ./server/bin/data-server.py

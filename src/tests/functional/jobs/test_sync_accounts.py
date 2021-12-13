@@ -2,7 +2,7 @@ from tests.factories import create_plaid_item
 from core.models.plaid_item import PlaidItem
 from core.repositories.profile_repository import ProfileRepository
 
-from server.services.task_runner.jobs.sync_accounts import SyncAccounts
+from server.services.api.jobs.sync_accounts import SyncAccounts
 
 
 def test_sync_accounts_all_accounts_associated_with_plaid_id(mocker):

@@ -1,0 +1,28 @@
+#syntax=docker/dockerfile:1
+
+FROM tgittos/money-printer:latest
+
+ARG environment
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir app
+
+COPY requirements.txt app/requirements.txt
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r app/requirements.txt
+
+COPY core app/core
+COPY server app/server
+COPY .secrets.json app/.secrets.json
+COPY config* app/.
+
+RUN mkdir app/logs
+
+ENV MP_ENVIRONMENT=environment:-development
+ENV MP_REDIS__HOST=MP_REDIS__HOST:-localhost
+ENV PYTHONPATH=$PYTHONPATH:/app
+
+ENTRYPOINT cd app && rqscheduler --host $MP_REDIS__HOST --port 6379 --db 0

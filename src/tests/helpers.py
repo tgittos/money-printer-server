@@ -1,6 +1,3 @@
-import os
-os.environ["MP_ENVIRONMENT"] = "test"
-
 import pytest
 
 from server.services.api.apps.api import ApiApplication

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker exec --tty $(docker-compose -f infrastructure/docker/docker-compose.dev.yml ps -q db) mysql --user=root --password=dev-root-password --execute="CREATE USER 'mp_dev'@'%' IDENTIFIED BY 'mp!QAZxsw2'; GRANT ALL PRIVILEGES ON *.* TO 'mp_dev'@'%' WITH GRANT OPTION;"
+docker exec --tty $(docker-compose -f infrastructure/docker/docker-compose.test.yml ps -q db) mysql --user=root --password=dev-root-password --execute="CREATE SCHEMA mp_dev;"
+cd src && alembic upgrade head

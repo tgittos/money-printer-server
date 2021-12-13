@@ -17,9 +17,9 @@
       "products": ["Link", "Investments"]
     },
     "db": {
-      "host": "mp-db.cnl8otl80kk5.us-west-2.rds.amazonaws.com",
+      "host": "127.0.0.1",
       "port": "3306",
-      "schema": "mp-dev",
+      "schema": "mp_dev",
       "debug": "false"
     },
     "redis": {
@@ -34,11 +34,9 @@
   "test": {
     "secret": "test secret",
     "db": {
-      "host": "",
+      "host": "127.0.0.1",
       "port": "3306",
-      "username": "moneyprinter",
-      "password": "mp!QAZxsw2",
-      "schema": "mp-test",
+      "schema": "mp_test",
       "debug": "false"
     },
     "redis": {

@@ -40,6 +40,3 @@ mailgun_config = MailGunConfig(
     domain=config.mailgun.domain,
     api_key=config.mailgun.api_key
 )
-
-# `envvar_prefix` = export envvars with `export DYNACONF_FOO=bar`.
-# `settings_files` = Load these files in the order.

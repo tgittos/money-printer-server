@@ -19,9 +19,9 @@ variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
   # SQL stuff for testing in a local db
-  MYSQL_DATABASE: "mp-test"
+  MYSQL_DATABASE: "mp_test"
   MYSQL_ROOT_PASSWORD: "test root password"
-  MYSQL_USER: "moneyprinter"
+  MYSQL_USER: "mp_test"
   MYSQL_PASSWORD: "mp!QAZxsw2"
   MYSQL_HOST: mysql
 
@@ -41,7 +41,7 @@ build:
     - docker pull task_runner || true
     - docker pull scheduler || true
     # Build and push Docker images to the Gitlab registry
-    - docker-compose -f /builds/tgittos/money-printer/docker/docker-compose.yml --profile dev build
+    - docker-compose -f $($CI_PROJECT_DIR)/infrastructure/docker/docker-compose.yml --profile dev build
     - docker push api
     - docker push client
     - docker push data_server
@@ -55,17 +55,10 @@ test:
   script:
     # Pull the images
     - docker pull api
-    - docker pull client
-    - docker pull data_server
-    - docker pull task_runner
-    - docker pull scheduler
     # Start the containers and run the tests before deployment
-    - docker-compose -f /builds/tgittos/money-printer/docker/docker-compose.yml --profile dev up api -d
-    - docker-compose -f /builds/tgittos/money-printer/docker/docker-compose.yml --profile dev up db -d
-    - docker exec --tty /builds/tgittos/money-printer/docker/docker-compose.yml ps -q db) mysql --user=$MYSQL_USER --password=$MYSQL_PASSWORD --database=$MYSQL_DATABASE --host=$MYSQL_HOST --execute="ALTER USER '$MYSQL_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD'"
-    - docker exec --tty /builds/tgittos/money-printer/docker/docker-compose.yml ps -q api) /bin/bash -c "cd app && MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:/app" pytest ./tests"
-    - docker-compose -f /builds/tgittos/money-printer/docker/docker-compose.yml --profile dev down api
-    - docker-compose -f /builds/tgittos/money-printer/docker/docker-compose.yml --profile dev down db
+    - docker-compose -f $CI_PROJECT_DIR/infrastructure/docker/docker-compose.test.yml --profile dev up -d
+    - cd $CI_PROJECT_DIR && MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:src" pytest ./tests"
+    - docker-compose -f $CI_PROJECT_DIR/infrastructure/docker/docker-compose.test.yml down
   #only:
   #  - master
 

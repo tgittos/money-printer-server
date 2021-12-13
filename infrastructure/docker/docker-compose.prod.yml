@@ -1,0 +1,45 @@
+services:
+  redis:
+    image: "redis:alpine"
+  client:
+    build:
+      dockerfile: ./../../docker/Dockerfile.client
+      context: ../src/client/
+    ports:
+      - 3000:3000
+      - 6060:6060
+    environment:
+      MP_API_HOST: api
+    depends_on: ["api"]
+  api:
+    build:
+      dockerfile: ./../docker/Dockerfile.api
+      context: ../src
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      MP_REDIS__HOST: redis
+    depends_on: ["redis"]
+  data-server:
+    build:
+      dockerfile: ../docker/Dockerfile.data_server
+      context: ../src
+    environment:
+      MP_REDIS__HOST: redis
+    depends_on: ["redis"]
+  task-runner:
+    build:
+      dockerfile: ../docker/Dockerfile.task_runner
+      context: ../src
+    environment:
+      MP_REDIS__HOST: redis
+    depends_on: ["redis"]
+  scheduler:
+    build:
+      dockerfile: ../docker/Dockerfile.scheduler
+      context: ../src
+    environment:
+      MP_REDIS__HOST: "redis"
+    depends_on: ["redis"]
+    image: mp_scheduler
