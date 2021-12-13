@@ -1,25 +1,21 @@
-// vpc
 resource "aws_vpc" "mp_vpc" {
   cidr_block = "10.0.0.0/24"
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags       = {
-    Name = "MoneyPrinter VPC"
-  }
 }
 
-resource "aws_internet_gateway" "internet_gateway" {
+resource "aws_internet_gateway" "mp_ig" {
   vpc_id = aws_vpc.mp_vpc.id
 }
 
 // subnets
-resource "aws_subnet" "mp_pub_subnet" {
+resource "aws_subnet" "mp_public_subnet" {
   vpc_id                  = aws_vpc.mp_vpc.id
   cidr_block              = "10.1.0.0/22"
 }
 
 resource "aws_db_subnet_group" "mp_db_subnet_group" {
-  subnet_ids  = [aws_subnet.mp_pub_subnet.id]
+  subnet_ids  = [aws_subnet.mp_public_subnet.id]
 }
 
 // route table
@@ -28,12 +24,12 @@ resource "aws_route_table" "mp_rt_public" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.internet_gateway.id
+    gateway_id = aws_internet_gateway.mp_ig.id
   }
 }
 
-resource "aws_route_table_association" "route_table_association" {
-  subnet_id      = aws_subnet.mp_pub_subnet.id
+resource "aws_route_table_association" "mp_rta" {
+  subnet_id      = aws_subnet.mp_public_subnet.id
   route_table_id = aws_route_table.mp_rt_public.id
 }
 

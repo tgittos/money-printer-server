@@ -1,4 +1,4 @@
-api.json.tpl[
+[
   {
     "essential": true,
     "memory": 512,

@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3" {
       bucket = "moneyprinter_aws"
-      key    = "platform/state.tfstate"
+      key    = "terraform/staging/state.tfstate"
   }
   required_version = ">= 0.14.9"
 }
@@ -17,51 +17,23 @@ provider "aws" {
   region  = "us-west-2"
 }
 
-//******************************************************
-//* Data template files
-//******************************************************
-
-//******************************************************
-//* Networking
-//******************************************************
-
-//******************************************************
-//* IAM Roles and Permissions
-//******************************************************
-
-//******************************************************
-//* Autoscaling groups
-//******************************************************
-
-
-//******************************************************
-//* Database
-//******************************************************
-
-//******************************************************
-//* ECR
-//******************************************************
-
-//******************************************************
-//* ECS clusters
-//******************************************************
-
-//******************************************************
-//* ECS task definition
-//******************************************************
-
-//******************************************************
-//* ECS services
-//******************************************************
-
-//******************************************************
-//* Outputs
-//******************************************************
-
-output "mysql_endpoint" {
-    value = aws_db_instance.mp_app_mysql.endpoint
+module "core" {
+  source = "../core"
 }
 
-output "ecr_repository_app_endpoint" {
-    value = aws_ecr_repository.mp_app.repository_url
+module "vpc" {
+  source = "../modules/vpc"
+}
+
+module "_cluster" {
+  source = "../modules/small-cluster"
+
+  cluster_prefix = "api_staging"
+  task_definition_filename = "api.json.tpl"
+  ecr_repo_url = module.core.ecr_repository_endpoint
+  image_id = ""
+  instance_type = ""
+  iam_instance_profile_name = module.core.iam_role_name
+  security_group_id = module.vpc.security_group_name
+  subnet_id = module.vpc.subnet_id
 }

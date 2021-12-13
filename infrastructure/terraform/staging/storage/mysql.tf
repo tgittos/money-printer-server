@@ -1,5 +1,5 @@
-resource "aws_db_instance" "mp_app_mysql" {
-  identifier                = "mp-mysql"
+resource "aws_db_instance" "mp_app_staging_mysql" {
+  identifier                = "mp-staging-mysql"
   allocated_storage         = 5
   backup_retention_period   = 2
   backup_window             = "01:00-01:30"
@@ -8,13 +8,11 @@ resource "aws_db_instance" "mp_app_mysql" {
   engine                    = "mysql"
   engine_version            = "5.7"
   instance_class            = "db.t2.micro"
-  name                      = "worker_db"
-  username                  = "worker"
-  password                  = "worker"
+  name                      = "mp-staging-mysql"
   port                      = "3306"
   db_subnet_group_name      = aws_db_subnet_group.mp_db_subnet_group.id
   vpc_security_group_ids    = [aws_security_group.mp_app_rds_sg.id, aws_security_group.mp_app_ecs_sg.id]
   skip_final_snapshot       = true
-  final_snapshot_identifier = "worker-final"
+  final_snapshot_identifier = "mp-staging-mysql-final"
   publicly_accessible       = true
 }
