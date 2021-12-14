@@ -1,4 +1,0 @@
-#! /bin/sh
-
-npm run start 2>&1 &
-npm run styleguide 2>&1
