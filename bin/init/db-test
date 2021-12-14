@@ -1,4 +1,0 @@
-#!/bin/bash
-
-docker exec --tty $(docker-compose -f infrastructure/docker/docker-compose.test.yml ps -q db) mysql --user=root --password=test-root-password --execute="CREATE USER 'mp_test'@'%' IDENTIFIED BY 'mp!QAZxsw2'; GRANT ALL PRIVILEGES ON *.* TO 'mp_test'@'%' WITH GRANT OPTION;"
-docker exec --tty $(docker-compose -f infrastructure/docker/docker-compose.test.yml ps -q db) mysql --user=root --password=test-root-password --execute="CREATE SCHEMA mp_test;"

@@ -1,0 +1,51 @@
+services:
+  redis:
+    image: "redis:alpine"
+  db:
+    image: "mysql/mysql-server:5.7"
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: dev-root-password
+    ports:
+      - 3306:3306
+  api:
+    build:
+      dockerfile: ./../infrastructure/docker/app/Dockerfile.api
+      context: ../../src
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      MP_REDIS__HOST: redis
+      MP_DB__HOST: db
+    depends_on: ["redis", "db"]
+  data-server:
+    image: api
+    environment:
+      MP_REDIS__HOST: redis
+      MP_DB__HOST: db
+    depends_on: ["redis", "db"]
+    entrypoint: cd app && python server/bin/data-server.py && tail -f logs/mp.log
+  task-runner:
+    image: api
+    environment:
+      MP_REDIS__HOST: redis
+      MP_DB__HOST: db
+    depends_on: ["redis", "db"]
+    entrypoint: cd app && python server/bin/task-runner.py && tail -f logs/mp.log
+  scheduler:
+    image: api
+    environment:
+      MP_REDIS__HOST: "redis"
+      MP_DB__HOST: db
+    depends_on: ["redis", "db"]
+    entrypoint: cd app && rqscheduler --host $MP_REDIS__HOST --port 6379 --db 0
+  platform:
+    build:
+      dockerfile: ../infrastructure/docker/app/base/Dockerfile.server
+      context: ../../src
+    profiles: ["platform"]
+  
+  volumes:
+    db-data:

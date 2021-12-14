@@ -1,42 +1,88 @@
-# Money Printer
+# Money Printer Server
 
-There's a not-so-invisible class war currently in progress in the US. It's the 1% vs the rest
-of us. What's a lone person to do in such a world? How can you fight back in a system that's
-rigged against you?
+The server application for the Money Printer, written in Python and backed to MySQL, using Redis as a transport backbone.
 
-You print money. If you can't beat 'em, join 'em.
+Consists of a handful of services:
 
-Money Printer aims to help you with that.
+- data server
+- task runner
+- api
 
-Money Printer is most accurately a personal wealth modeling platform, but that's not as catchy
-'Money Printer'.
+### Data Server
 
-With Money Printer, you can:
+The data server is a threaded server that listens to client requests from the api and services them by
+dispatching requests to a variety of upstream services, specifically IEX via SSE, and proxies the results back to the
+api, backboned by Redis.
 
-- sync financial account balances and investment holdings
-- live monitor investment holding price and performance
-- perform fundamental & technical analysis on securities and derivatives (options only for now)
-  to help screen investment decisions
-- perform return analysis on holdings to identify best and worst performers
-- perform probabilistic forecasting on current holdings to identify possible outcomes
-- perform simulations on virtual holdings to plan future investments
+### Task Runner
 
-In a nutshell, think Credit Karma, but for your investment performance instead of your credit score.
+A threaded server that services a work queue backed by Redis. Various services such as the API push jobs into the Redis
+queue and the task runner pulls jobs off and executes them. 
 
-## Installation
+The task runner server is also responsible for scheduling and running tasks from stored jobs. These are scheduled as
+messages onto the task runner queue.
 
-Money Printer is available as a docker image, see [`tgittos/money-printer`](https://hub.docker.com/repository/docker/tgittos/money-printer) for tags and details
+### API
 
-## Development
+The main RESTful HTTP API server implemented in Flask that services the bulk of client requests. Supports RESTful
+and web socket requests. All private resources secured by  JWT based authentication.
 
-Money Printer consists of two main applications:
+## Development setup
 
-- `client` - a nodejs client built with React
-- `server` - a Python server that hosts a RESTful API with websocket support
+### 3rd Party Dependencies
+Money Printer depends on the following 3rd party services, which you will need API keys for:
 
-Details on setting up and working in the individual projects are in their respective `README` files
+- IEXCloud
+- Mailgun
+- Plaid
 
-## Support
+#### IEXCloud ####
 
-Right now support is minimal given how private this project is. Just email [hi@timgittos](mailto:hi@timgittos.com) with
-questions and issues.
+Money Printer uses IEX Cloud for both historical stock market price querying and real time stock market price streaming.
+This is a pretty fundamental part of the application and is required.
+
+#### Mailgun ####
+
+Money Printer uses email to communicate non-real time messages. Failing to provide valid Mailgun creds will result in
+initialization failing to deliver your password, but that can be worked around with minimal effort in the source.
+
+#### Plaid ####
+
+Plaid is used to sync account holdings and balances for the more wealth planning feature set. This can be optionally
+written out if you're willing to keep your own accounts in sync, though no UI exists for that yet. Nor API endpoints.
+
+### Environment setup
+
+#### The Easy Way
+
+- install Docker Desktop
+- run `docker-compose -f docker-compose.microservices.yml up` to run in microservice mode (recommended),
+or `docker-compose -f docker-compose.monolith.yml up` to run as a monolith (matches AWS deployment)
+
+#### The Hard Way
+
+- install Python 3, redis, MySQL
+- create a .venv with `python3 -m venv .venv`
+- activate with `source .venv/bin/activate`
+- `pip install -r requirements`
+- fill `config.json` with values that make sense for your project
+- decrypt the secrets using `git-secret` if working on this project, else create your own `.secrets.json` file with
+the following format: TODO
+- create the schema you wish to use in MySQL, add config to appropriate places
+- initialize the DB by running `alembic update head`
+- run `bin/money-printer` to run the app as a monolith, or run each individual service in its own terminal window/
+sub-process for microservices mode
+
+## Deploying
+
+Money Printer uses AWS ElasticBeanstalk to deploy itself into the development environment.
+The Money Printer application is set up as a Docker application, with a custom base docker image.
+
+If you add additional `pip` dependencies, depending on how long they take to install, you may need to move them into
+the `platform/Dockerfile` and rebuild, tag and deploy a new base Money Printer docker image.
+
+Otherwise, you can functionally ignore the `platform/Dockerfile` unless you're doing work on the application infrastructure.
+
+### Deploy Command
+
+`eb deploy` - this will deploy the environment into development

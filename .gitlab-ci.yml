@@ -1,80 +1,12 @@
-image:
-  name: docker/compose:1.29.2
-  # Override the entrypoint (important)
-  entrypoint: [""]
-
-# Must have this service
-# Note: --privileged is required for Docker-in-Docker to function properly,
-# but it should be used with care as it provides full access to the host environment
-services:
-  - docker:dind
-
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 stages:
-  - build
-  - test
-  - deploy
-
-variables:
-  # DOCKER_HOST is essential
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
-  # SQL stuff for testing in a local db
-  MYSQL_DATABASE: "mp_test"
-  MYSQL_ROOT_PASSWORD: "test root password"
-  MYSQL_USER: "mp_test"
-  MYSQL_PASSWORD: "mp!QAZxsw2"
-  MYSQL_HOST: mysql
-
-before_script:
-  # First test that gitlab-runner has access to Docker
-  - docker --version
-  # Login to the Gitlab registry and pull existing images to use as cache
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-
-build:
-  stage: build
-  script:
-    # Pull the image for the build cache, and continue even if this image download fails (it'll fail the very first time)
-    - docker pull api || true
-    - docker pull client || true
-    - docker pull data_server || true
-    - docker pull task_runner || true
-    - docker pull scheduler || true
-    # Build and push Docker images to the Gitlab registry
-    - docker-compose -f $($CI_PROJECT_DIR)/infrastructure/docker/docker-compose.yml --profile dev build
-    - docker push api
-    - docker push client
-    - docker push data_server
-    - docker push task_runner
-    - docker push scheduler
-  #only:
-  #  - master
-
-test:
+- test
+sast:
   stage: test
-  script:
-    # Pull the images
-    - docker pull api
-    # Start the containers and run the tests before deployment
-    - docker-compose -f $CI_PROJECT_DIR/infrastructure/docker/docker-compose.test.yml --profile dev up -d
-    - cd $CI_PROJECT_DIR && MP_ENVIRONMENT=test PYTHONPATH="$PYTHONPATH:src" pytest ./tests"
-    - docker-compose -f $CI_PROJECT_DIR/infrastructure/docker/docker-compose.test.yml down
-  #only:
-  #  - master
-
-deploy_staging:
-  rules:
-    - if: '$CI_COMMIT_TAG =~ /^release\//'
-      when: manual
-  stage: deploy
-  script:
-    - echo 'Deploy to ECS staging env'
-    # - bash deploy.staging.sh
-
-deploy_prod:
-  rules:
-    - if: '$CI_COMMIT_TAG =~ /^release\//'
-      when: manual
-  stage: deploy
-  script:
-    - bash deploy.prod.sh
+include:
+- template: Security/SAST.gitlab-ci.yml

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-MP_ENVIRONMENT=test PYTHONPATH=$PYTHONPATH:src pytest ./src/tests
