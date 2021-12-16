@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy core app code required to run the app
 COPY src src
-copy bin bin
-copy config.json config.json
+COPY bin bin
+COPY config.json config.json
 
 # Create a logs dir
 RUN mkdir logs
