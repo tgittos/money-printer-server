@@ -43,7 +43,9 @@
       "host": "127.0.0.1",
       "port": "3306",
       "schema": "mp_test",
-      "debug": "false"
+      "debug": "false",
+      "username": "mp_dev",
+      "password": "mp!QAZxsw2"
     },
     "redis": {
       "host": "localhost",
