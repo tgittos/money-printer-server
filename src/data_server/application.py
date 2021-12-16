@@ -12,7 +12,7 @@ from .lib.historical_client import HistoricalClient
 
 class DataServerApplication:
 
-    log_path = os.path.dirname(__file__) + "/../../../logs/"
+    log_path = os.path.dirname(__file__) + "/../../logs/"
 
     def __init__(self):
         init_logger(self.log_path)

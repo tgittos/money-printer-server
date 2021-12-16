@@ -16,18 +16,15 @@ config = context.config
 env = 'development'
 if 'MP_ENVIRONMENT' in os.environ:
     env = os.environ['MP_ENVIRONMENT']
-f1 = open('./config.json',)
-f2 = open('./.secrets.json',)
+f1 = open('./../config.json',)
 config_json = json.loads(f1.read())
-secrets_json = json.loads(f2.read())
 f1.close()
-f2.close()
 
 config.set_main_option('sqlalchemy.url',
                        "mysql://{0}:{1}@{2}:{3}/{4}".format(
-                           secrets_json[env]['db']['username'],
-                           secrets_json[env]['db']['password'],
-                           config_json[env]['db']['host'],
+                           os.environ['MP_DB__USERNAME'],
+                           os.environ['MP_DB__PASSWORD'],
+                           os.environ['MP_DB__HOST'],
                            config_json[env]['db']['port'],
                            config_json[env]['db']['schema']
                        ))

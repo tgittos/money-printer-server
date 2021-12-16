@@ -1,4 +1,4 @@
-from server.services.api.apps.api import ApiApplication
+from api.apps.api import ApiApplication
 from core.stores.mysql import MySql
 from config import mysql_config
 

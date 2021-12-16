@@ -12,14 +12,14 @@ from config import config, redis_config, env
 from core.repositories.profile_repository import ProfileRepository, RegisterProfileRequest
 from core.lib.logger import init_logger, get_logger
 
-from server.services.api.routes.plaid import oauth_bp as plaid_bp
-from server.services.api.routes.auth import auth_bp
-from server.services.api.routes.accounts import account_bp
-from server.services.api.routes.symbols import symbol_bp
-from server.services.api.routes.webhooks import webhooks_bp
-from server.services.api.routes.health import health_bp
-from server.services.api.routes.profile import profile_bp
-from server.services.api.lib.client_bus import ClientBus
+from api.routes.plaid import oauth_bp as plaid_bp
+from api.routes.auth import auth_bp
+from api.routes.accounts import account_bp
+from api.routes.symbols import symbol_bp
+from api.routes.webhooks import webhooks_bp
+from api.routes.health import health_bp
+from api.routes.profile import profile_bp
+from api.lib.client_bus import ClientBus
 
 
 class ApiApplication:

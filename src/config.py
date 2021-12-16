@@ -14,7 +14,7 @@ config = Dynaconf(
     default_env="development",
     environments=True,
     env_switcher="MP_ENVIRONMENT",
-    settings_files=['config.json', '.secrets.json']
+    settings_files=['../config.json']
 )
 
 redis_config = config.redis

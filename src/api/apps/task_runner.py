@@ -17,7 +17,7 @@ class TaskRunnerApplication:
     worker = None
 
     def __init__(self):
-        init_logger(os.path.dirname(__file__) + "/../../../logs/")
+        init_logger(self.log_path)
         self.logger = get_logger("server.services.task_runner")
         self.r = redis.Redis(host=redis_config.host, port=redis_config.port, db=0)
 
