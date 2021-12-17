@@ -13,6 +13,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    volumes:
+      - ./src:/app/src
     ports:
       - 80:80
       - 443:443
@@ -21,9 +23,17 @@ services:
       MP_DB__HOST: db
     env_file:
       - .env.dev
-    depends_on: ["redis", "db"]
+    depends_on: [ "redis", "db" ]
     image: api
-    entrypoint: ["python", "bin/api-server.py", "&&", "tail", "-f", "logs/mp.log"]
+    entrypoint:
+      [
+        "python",
+        "bin/api-server.py",
+        "&&",
+        "tail",
+        "-f",
+        "logs/mp.log"
+      ]
   data-server:
     image: api
     environment:
@@ -31,8 +41,16 @@ services:
       MP_DB__HOST: db
     env_file:
       - .env.dev
-    depends_on: ["redis", "db"]
-    entrypoint: ["python", "bin/data-server.py", "&&", "tail", "-f", "logs/mp.log"]
+    depends_on: [ "redis", "db" ]
+    entrypoint:
+      [
+        "python",
+        "bin/data-server.py",
+        "&&",
+        "tail",
+        "-f",
+        "logs/mp.log"
+      ]
   task-runner:
     image: api
     environment:
@@ -40,8 +58,8 @@ services:
       MP_DB__HOST: db
     env_file:
       - .env.dev
-    depends_on: ["redis", "db"]
-    entrypoint: ["python", "bin/task-runner.py"]
+    depends_on: [ "redis", "db" ]
+    entrypoint: [ "python", "bin/task-runner.py" ]
   scheduler:
     image: api
     environment:
@@ -49,13 +67,22 @@ services:
       MP_DB__HOST: db
     env_file:
       - .env.dev
-    depends_on: ["redis", "db"]
-    entrypoint: ["rqscheduler", "--host", redis, "--port", "6379", "--db", "0"]
+    depends_on: [ "redis", "db" ]
+    entrypoint:
+      [
+        "rqscheduler",
+        "--host",
+        redis,
+        "--port",
+        "6379",
+        "--db",
+        "0"
+      ]
   platform:
     build:
       dockerfile: Dockerfile.platform
       context: .
-    profiles: ["platform"]
-  
+    profiles: [ "platform" ]
+
 volumes:
-  db-data:
+  db-data: null
