@@ -38,8 +38,10 @@ def test_register_fails_on_used_email(db, valid_register_request):
     original_profile = create_user_profile(
         session, email="tgittos@moneyprintergoesbrr.io")
     assert original_profile.id is not None
-    with pytest.raises(Exception):
-        register(db, valid_register_request)
+    result = register(db, valid_register_request)
+    assert not result.success
+    #with pytest.raises(Exception):
+    #    register(db, valid_register_request)
     session.close()
 
 
@@ -52,13 +54,17 @@ def test_register_creates_a_new_profile_with_valid_data(db, valid_register_reque
 
 
 def test_register_fails_with_invalid_data(db, invalid_register_request):
-    with pytest.raises(Exception):
-        create_profile(db, invalid_register_request)
+    result = create_profile(db, invalid_register_request)
+    assert not result.success
 
 
 def test_create_profile_creates_profile_record(db, valid_register_request):
     result = create_profile(db, valid_register_request)
-    assert db.query(Profile.id == result.id)
+    assert result.success
+    assert result.data is not None
+    session = db.get_session()
+    assert session.query(Profile).filter(Profile.id == result.data.id).count() == 1
+    session.close()
 
 
 def test_create_profile_emails_temp_password(db, valid_register_request, mocker):
@@ -70,11 +76,11 @@ def test_create_profile_emails_temp_password(db, valid_register_request, mocker)
 
 def test_create_profile_returns_profile(db, valid_register_request):
     result = create_profile(db, valid_register_request)
-    assert result is not None
-    assert result.id is not None
-    assert result.email == valid_register_request.email
+    assert result.success
+    assert result.data.id is not None
+    assert result.data.email == valid_register_request.email
 
 
 def test_create_profile_fails_with_invalid_data(db, invalid_register_request):
-    with pytest.raises(Exception):
-        create_profile(db, invalid_register_request)
+    result = create_profile(db, invalid_register_request)
+    assert not result.success

@@ -90,9 +90,8 @@ def register(db, request: RegisterProfileRequest) -> ActionResponse:
     # first, check if the request email is already taken
     existing_profile = get_profile_by_email(db, request.email)
     if existing_profile is not None:
-        raise Exception("That email is not available")
-    new_user = create_profile(db, request)
-    return ActionResponse(
-        success=new_user is not None,
-        data=new_user
-    )
+        return ActionResponse(
+            success=False,
+            message="That email is unavailable for registration"
+        )
+    return create_profile(db, request)
