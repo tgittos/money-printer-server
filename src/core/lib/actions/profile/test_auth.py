@@ -7,9 +7,9 @@ from tests.factories import create_user_profile
 def test_get_unauthenticated_user_returns_user(db):
     result = get_unauthenticated_user(db)
 
-    assert result is not None
-    assert result.profile is not None
-    assert result.token is not None
+    assert result.success
+    assert result.data.profile is not None
+    assert result.data.token is not None
 
 
 def test_login_accepts_valid_login_request(db):
@@ -21,9 +21,10 @@ def test_login_accepts_valid_login_request(db):
         password="Password1!"
     ))
 
-    assert result is not None
-    assert result.profile == user.to_dict()
-    assert result.token is not None
+    assert result.success
+    assert result.data.profile['id'] == user.id
+    assert result.data.profile['email'] == user.email
+    assert result.data.token is not None
     s.close()
 
 
@@ -36,7 +37,7 @@ def test_login_rejects_missing_username(db):
         password="Password1!"
     ))
 
-    assert result is None
+    assert not result.success
     s.close()
 
 
@@ -49,5 +50,5 @@ def test_login_rejects_wrong_password(db):
         password="WrongPassword"
     ))
 
-    assert result is None
+    assert not result.success
     s.close()

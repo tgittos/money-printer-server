@@ -8,13 +8,14 @@ from core.lib.jwt import encode_jwt, hash_password, check_password, generate_tem
 from core.lib.notifications import PasswordResetNotification, notify_password_reset
 from core.lib.types import RepositoryResponse
 from config import mailgun_config
+from core.lib.actions.action_response import ActionResponse
 
 from .requests import ResetProfilePasswordRequest, LoginRequest
 from .responses import AuthResponse
 from .crud import get_profile_by_email
 
 
-def get_unauthenticated_user(db) -> AuthResponse:
+def get_unauthenticated_user(db) -> ActionResponse:
     """
     Gets the demo profile encoded as a token so the frontend thinks it's "authed"
     """
@@ -26,40 +27,54 @@ def get_unauthenticated_user(db) -> AuthResponse:
         demo_profile.first_name = "Anonymous"
         demo_profile.last_name = "Money-Printer"
     jwt_token = encode_jwt(demo_profile)
-    return AuthResponse(
-        profile=demo_profile.to_dict(),
-        token=jwt_token
+    return ActionResponse(
+        success=True,
+        data= AuthResponse(
+            profile=demo_profile.to_dict(),
+            token=jwt_token
+        )
     )
 
 
-def login(cls, request: LoginRequest) -> Optional[AuthResponse]:
+def login(cls, request: LoginRequest) -> ActionResponse:
     """
     Performs an authentication of the given user credentials
-    Returns None of the credentials couldn't be authenticated
     """
     profile = get_profile_by_email(cls, request.email)
     if profile is not None:
         if check_password(profile.password, request.password):
             jwt_token = encode_jwt(profile)
-            return AuthResponse(
-                profile=profile.to_dict(),
-                token=jwt_token
+            return ActionResponse(
+                success=True,
+                data=AuthResponse(
+                    profile=profile.to_dict(),
+                    token=jwt_token
+                )
             )
-    return None
+    return ActionResponse(
+        success=False,
+        message=f"Login failed for ${request.email}"
+    )
 
 
-def reset_password(cls, email: str) -> bool:
+def reset_password(cls, email: str) -> ActionResponse:
     """
     Starts the reset password flow by creating a reset token for a user
     """
     profile = get_profile_by_email(cls, email)
     if profile is not None:
-        create_reset_token(cls, profile)
-        return True
-    return False
+        token = create_reset_token(cls, profile)
+        result = email_reset_token(cls, token)
+        if result.success:
+            return ActionResponse(success=True)
+        return ActionResponse(
+            success=False,
+            message='Failure response when notifying user of password reset'
+        )
+    return ActionResponse(success=False)
 
 
-def continue_reset_password(db, request: ResetProfilePasswordRequest):
+def continue_reset_password(db, request: ResetProfilePasswordRequest) -> ActionResponse:
     """
     Continues the user-initiated password reset flow
     """
@@ -73,17 +88,13 @@ def continue_reset_password(db, request: ResetProfilePasswordRequest):
         session.add(token_entry)
         db.commit_session(session)
 
-        return RepositoryResponse(
-            success=True
-        )
+        return ActionResponse(success=True)
     if token_entry is not None and token_entry.expiry < datetime.utcnow():
-        return RepositoryResponse(
+        return ActionResponse(
             success=False,
             message="Password reset token has expired"
         )
-    return RepositoryResponse(
-        success=False
-    )
+    return ActionResponse(success=False)
 
 
 def logout(db, email: str):
@@ -93,7 +104,7 @@ def logout(db, email: str):
     raise Exception("not implemented")
 
 
-def create_reset_token(db, profile: Profile):
+def create_reset_token(db, profile: Profile) -> ActionResponse:
     """
     Generates a ResetToken for the user and emails it to them
     """
@@ -109,10 +120,23 @@ def create_reset_token(db, profile: Profile):
     session.add(reset_token)
     db.commit_session(session)
 
-    notify_password_reset(mailgun_config, PasswordResetNotification(
+    return ActionResponse(
+        success=True,
+        data=reset_token
+    )
+
+
+def email_reset_token(profile, reset_token) -> ActionResponse:
+    """
+    Emails the reset password flow start notification to the user
+    """
+    result = notify_password_reset(mailgun_config, PasswordResetNotification(
         profile=profile,
         token=reset_token
     ))
+    return ActionResponse(
+        success=result.status_code == 200
+    )
 
 
 def get_reset_token(db, token_string: str) -> ResetToken:
