@@ -5,6 +5,8 @@ from core.lib.jwt import generate_temp_password, hash_password
 from core.lib.notifications import ProfileCreatedNotification, notify_profile_created
 from core.lib.types import AccountList, RepositoryResponse
 from config import mailgun_config
+from core.lib.utilities import is_valid_email
+from core.lib.actions.action_response import ActionResponse
 
 from .requests import RegisterProfileRequest
 
@@ -39,10 +41,16 @@ def get_all_profiles(db) -> AccountList:
     return r
 
 
-def create_profile(db, request: RegisterProfileRequest) -> Profile:
+def create_profile(db, request: RegisterProfileRequest) -> ActionResponse:
     """
     Registers a new profile and emails the temporary password to the user
     """
+    if not is_valid_email(request.email):
+        return ActionResponse(
+            success=False,
+            message='Invalid shaped email given to create_profile'
+        )
+
     new_pw = generate_temp_password()
 
     new_profile = Profile()
@@ -54,17 +62,27 @@ def create_profile(db, request: RegisterProfileRequest) -> Profile:
 
     session = db.get_session()
     session.add(new_profile)
-    db.commit_session(session)
 
-    notify_profile_created(mailgun_config, ProfileCreatedNotification(
+    notify_result = notify_profile_created(mailgun_config, ProfileCreatedNotification(
         profile=new_profile,
         password=new_pw
     ))
 
-    return new_profile
+    if not notify_result:
+        return ActionResponse(
+            success=False,
+            message=f"Unsuccessful response attempting to email temp password to ${new_profile.email}"
+        )
+
+    db.commit_session(session)
+
+    return ActionResponse(
+        success=True,
+        data=new_profile
+    )
 
 
-def register(db, request: RegisterProfileRequest) -> RepositoryResponse:
+def register(db, request: RegisterProfileRequest) -> ActionResponse:
     """
     Registers a user with MoneyPrinter if a user with that email doesnt
     already exist
@@ -72,12 +90,9 @@ def register(db, request: RegisterProfileRequest) -> RepositoryResponse:
     # first, check if the request email is already taken
     existing_profile = get_profile_by_email(db, request.email)
     if existing_profile is not None:
-        return RepositoryResponse(
-            success=False,
-            message="That email is not available"
-        )
+        raise Exception("That email is not available")
     new_user = create_profile(db, request)
-    return RepositoryResponse(
+    return ActionResponse(
         success=new_user is not None,
         data=new_user
     )

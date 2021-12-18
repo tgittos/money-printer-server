@@ -2,11 +2,15 @@ import random
 import string
 from datetime import date, datetime, timezone
 from typing import Optional
-
 import numpy as np
+import re
 
+email_validation_re = re.compile(
+    r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
 
 # https://www.python-course.eu/currying_in_python.php
+
+
 def curry(func):
     # to keep the name of the curried function:
     curry.__curried_func_name__ = func.__name__
@@ -89,3 +93,8 @@ def is_bus_day(d: date) -> bool:
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
+
+# https://stackabuse.com/python-validate-email-address-with-regular-expressions-regex/
+def is_valid_email(email):
+    return re.fullmatch(email_validation_re, email)

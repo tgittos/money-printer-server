@@ -1,11 +1,9 @@
+from config import mysql_config
+from core.stores.mysql import MySql
+from api.apps.api import ApiApplication
+import pytest
 import os
 os.environ["MP_ENVIRONMENT"] = "test"
-
-import pytest
-
-from api.apps.api import ApiApplication
-from core.stores.mysql import MySql
-from config import mysql_config
 
 
 @pytest.fixture
