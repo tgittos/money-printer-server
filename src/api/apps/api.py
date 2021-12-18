@@ -19,6 +19,8 @@ from api.routes.symbols import symbol_bp
 from api.routes.webhooks import webhooks_bp
 from api.routes.health import health_bp
 from api.routes.profile import profile_bp
+from api.routes.scheduler import scheduler_bp
+
 from api.lib.client_bus import ClientBus
 
 
@@ -29,6 +31,7 @@ class ApiApplication:
     socket_app = None
     client_bus = None
     store = None
+    configured = False
 
     def __init__(self, store):
         init_logger(self.log_path)
@@ -41,6 +44,7 @@ class ApiApplication:
             redis_config.host,
             redis_config.port
         )
+        self.configured = True
 
     def run(self):
         print(" * Starting money-printer api/ws application", flush=True)
@@ -56,6 +60,7 @@ class ApiApplication:
         return result
 
     def _configure_flask(self):
+        if self.configured: return
         self.logger.debug("configuring base Flask application")
         self.flask_app.config['CORS_HEADERS'] = 'Content-Type'
         self.flask_app.config['SECRET_KEY'] = config.secret
@@ -66,6 +71,7 @@ class ApiApplication:
         self._configure_routes()
 
     def _configure_routes(self):
+        if self.configured: return
         self.logger.info("registering rq blueprint")
         self.flask_app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
         self.logger.info("registering health blueprint")
@@ -82,8 +88,11 @@ class ApiApplication:
         self.flask_app.register_blueprint(symbol_bp)
         self.logger.info("registering webhook blueprint")
         self.flask_app.register_blueprint(webhooks_bp)
+        self.logger.info("registering scheduler blueprint")
+        self.flask_app.register_blueprint(scheduler_bp)
 
     def _configure_ws(self):
+        if self.configured: return
         self.logger.debug("configuring SocketIO ws")
         self.socket_app = SocketIO(self.flask_app,
                                    cors_allowed_origins='*',
@@ -104,6 +113,7 @@ class ApiApplication:
         abort(500, error_json)
 
     def _configure_signals(self):
+        if self.configured: return
         self.logger.debug("intercepting sigints for graceful shutdown")
         signal.signal(signal.SIGINT, self._curry_sigint_handler({
             "client_bus": self.client_bus

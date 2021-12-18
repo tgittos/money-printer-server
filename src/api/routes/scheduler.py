@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, Response
 
 from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateScheduledJobRequest
 from .decorators import authed, admin, get_identity
@@ -15,7 +15,7 @@ def list_schedules():
     if scheduled:
         return {
             'success': True,
-            'data': [s.to_dict for s in scheduled]
+            'data': [s.to_dict() for s in scheduled]
         }
     return {
         'success': False
@@ -52,15 +52,24 @@ def create_schedule():
 @authed
 @admin
 def update_schedule(schedule_id):
-    cron = request.json['cron']
-    args = request.json['args']
+    if not request.json:
+        return Response({
+            "success": False
+        }, status=400, mimetype='application/json')
+
+    job_name = request.json.get('job_name')
+    cron = request.json.get('cron')
+    json_args = request.json.get('json_args')
+    active = request.json.get('active')
 
     repo = ScheduledJobRepository()
     job = repo.get_scheduled_job_by_id(schedule_id)
 
     if job:
-        job.cron = cron
-        job.args = args
+        job.job_name = job_name or job.job_name
+        job.cron = cron or job.cron
+        job.json_args = json_args or job.json_args
+        job.active = active or job.active
 
         repo.update_scheduled_job(job)
 

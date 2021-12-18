@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from core.models.base import Base
 
 
+
 class ScheduledJob(Base):
     __tablename__ = 'scheduled_jobs'
 

@@ -72,10 +72,9 @@ class ScheduledJobRepository:
     def update_scheduled_job(self, job):
         self.unschedule_job(job.queue, job)
 
-        def save_job(session):
-            session.add(job)
-            session.commit()
-        self.db.with_session(save_job)
+        session = self.db.get_session()
+        session.add(job)
+        self.db.commit_session(session)
 
         self.ensure_scheduled(job.queue, job)
 

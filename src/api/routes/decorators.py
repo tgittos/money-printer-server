@@ -50,7 +50,7 @@ def admin(func):
     def decorated(*args, **kwargs):
         # this needs to be invoked after `authed` to get g.profile
         try:
-            if not g.profile.is_admin:
+            if not g.profile['is_admin']:
                 return Response({
                     "success": False
                 }, status=401, mimetype='application/json')
