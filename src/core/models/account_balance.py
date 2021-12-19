@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
+from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -14,12 +15,10 @@ class AccountBalance(Base):
     iso_currency_code = Column(String(8))
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'account_id': self.account_id,
-            'available': self.available,
-            'current': self.current,
-            'iso_currency_code': self.iso_currency_code,
-            'timestamp': self.timestamp.isoformat(),
-        }
+class AccountBalanceSchema(Schema):
+    id = fields.Int()
+    account_id = fields.Int()
+    available = fields.Float()
+    current = fields.Float()
+    iso_currency_code = fields.Str()
+    timestamp = fields.DateTime()

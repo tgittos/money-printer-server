@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 from sqlalchemy.orm import relationship
+from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -15,14 +16,12 @@ class Holding(Base):
     iso_currency_code = Column(String(8))
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'account_id': self.account_id,
-            'security_id': self.security_id,
-            'cost_basis': self.cost_basis,
-            'quantity': self.quantity,
-            'iso_currency_code': self.iso_currency_code,
-            'timestamp': self.timestamp.isoformat()
-        }
 
+class HoldingSchema(Schema):
+    id = fields.Int()
+    account_id = fields.Int()
+    security_id = fields.Int()
+    cost_basis = fields.Float()
+    quantity = fields.Float()
+    iso_currency_code = fields.Str()
+    timestamp = fields.DateTime()
