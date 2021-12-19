@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from marshmallow import Schema, fields
+
 from core.models.base import Base
 
 
@@ -26,3 +28,13 @@ class ScheduledJob(Base):
             'active': self.active,
             'timestamp': self.timestamp
         }
+
+
+class ScheduledJobSchema(Schema):
+    id = fields.Int()
+    cron = fields.Str()
+    job_name = fields.Str()
+    last_run = fields.DateTime()
+    queue = fields.Str()
+    active = fields.Bool()
+    timestamp = fields.DateTime()
