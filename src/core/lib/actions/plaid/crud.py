@@ -12,7 +12,8 @@ def get_plaid_item_by_id(db, id: int) -> PlaidItem:
     Gets a PlaidItem from the DB by the primary key
     This object represents a Plaid Link object
     """
-    r = db.with_session(lambda session: session.query(PlaidItem).filter(PlaidItem.id == id).first())
+    with db.get_session() as session:
+        r = session.query(PlaidItem).filter(PlaidItem.id == id).first()
     return r
 
 
@@ -21,7 +22,8 @@ def get_plaid_item_by_plaid_item_id(db, id: str) -> PlaidItem:
     Gets a PlaidItem from the DB by the remote Plaid ID
     This object represents a Plaid Link object
     """
-    r = db.with_session(lambda session: session.query(PlaidItem).filter(PlaidItem.item_id == id).first())
+    with db.get_session() as session:
+        r = session.query(PlaidItem).filter(PlaidItem.item_id == id).first()
     return r
 
 
@@ -29,7 +31,9 @@ def get_plaid_items_by_profile(db, profile: Profile) -> PlaidItemList:
     """
     Returns all the PlaidItems associated with the given profile
     """
-    r = db.with_session(lambda session: session.query(PlaidItem).where(PlaidItem.profile_id == profile.id).all())
+    with db.get_session() as session:
+        r = session.query(PlaidItem).where(
+            PlaidItem.profile_id == profile.id).all()
     return r
 
 
@@ -45,11 +49,9 @@ def create_plaid_item(db, request: CreatePlaidItem) -> PlaidItem:
     r.request_id = request.request_id
     r.timestamp = datetime.utcnow()
 
-    def create(session):
+    with db.get_session() as session:
         session.add(r)
         session.commit()
-
-    db.with_session(create)
 
     return r
 
@@ -59,5 +61,7 @@ def update_plaid_item(db, plaid_item: PlaidItem) -> PlaidItem:
     Updates a PlaidItem in the DB and touches the timestamp for it
     """
     plaid_item.timestamp = datetime.utcnow()
-    db.with_session(lambda session: session.commit())
+    with db.get_session() as session:
+        session.attach(plaid_item)
+        session.commit()
     return plaid_item

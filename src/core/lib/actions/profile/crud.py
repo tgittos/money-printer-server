@@ -15,9 +15,8 @@ def get_profile_by_id(db, profile_id: int) -> Profile:
     """
     Gets a profile from the DB by its primary key
     """
-    session = db.get_session()
-    r = session.query(Profile).where(Profile.id == profile_id).first()
-    session.close()
+    with db.get_session() as session:
+        r = session.query(Profile).where(Profile.id == profile_id).first()
     return r
 
 
@@ -25,9 +24,8 @@ def get_profile_by_email(db, email: str) -> Profile:
     """
     Gets a profile from the DB by the user's email address
     """
-    session = db.get_session()
-    r = session.query(Profile).filter(Profile.email == email).first()
-    session.close()
+    with db.get_session() as session:
+        r = session.query(Profile).filter(Profile.email == email).first()
     return r
 
 
@@ -35,9 +33,8 @@ def get_all_profiles(db) -> AccountList:
     """
     Returns all the profiles in the DB
     """
-    session = db.get_session()
-    r = session.query(Profile).all()
-    session.close()
+    with db.get_session() as session:
+        r = session.query(Profile).all()
     return r
 
 
@@ -60,21 +57,22 @@ def create_profile(db, request: RegisterProfileRequest) -> ActionResponse:
     new_profile.last_name = request.last_name
     new_profile.timestamp = datetime.utcnow()
 
-    session = db.get_session()
-    session.add(new_profile)
+    with db.get_session() as session:
+        session.add(new_profile)
 
-    notify_result = notify_profile_created(mailgun_config, ProfileCreatedNotification(
-        profile=new_profile,
-        password=new_pw
-    ))
+        notify_result = notify_profile_created(mailgun_config, ProfileCreatedNotification(
+            profile=new_profile,
+            password=new_pw
+        ))
 
-    if not notify_result:
-        return ActionResponse(
-            success=False,
-            message=f"Unsuccessful response attempting to email temp password to ${new_profile.email}"
-        )
+        if not notify_result:
+            session.rollback()
+            return ActionResponse(
+                success=False,
+                message=f"Unsuccessful response attempting to email temp password to ${new_profile.email}"
+            )
 
-    db.commit_session(session)
+        session.commit()
 
     return ActionResponse(
         success=True,

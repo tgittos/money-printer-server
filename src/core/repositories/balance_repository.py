@@ -25,9 +25,9 @@ class BalanceRepository:
         self._init_facets()
 
     def _init_facets(self):
-        self.get_balances_by_account = wrap(get_balances_by_account, self)
-        self.get_latest_balance_by_account = wrap(get_latest_balance_by_account, self)
-        self.create_account_balance = wrap(create_account_balance, self)
+        self.get_balances_by_account = wrap(get_balances_by_account, self.db)
+        self.get_latest_balance_by_account = wrap(get_latest_balance_by_account, self.db)
+        self.create_account_balance = wrap(create_account_balance, self.db)
 
     def schedule_update_all_balances(self, plaid_item: PlaidItem):
         """
@@ -67,9 +67,8 @@ class BalanceRepository:
             self.logger.warning("requested all balance sync with no PlaidItem")
             return None
         self.logger.info("syncing account balance/s for plaid item: {0}".format(plaid_item.id))
-        accounts = self.db.with_session(
-            lambda session: session.query(Account).where(Account.plaid_item_id == plaid_item.id).all()
-        )
+        with self.db.get_session() as session:
+            accounts = session.query(Account).where(Account.plaid_item_id == plaid_item.id).all()
         if accounts and len(accounts) > 0:
             self.logger.info("found {0} accounts to update".format(len(accounts)))
             for account in accounts:
@@ -87,9 +86,8 @@ class BalanceRepository:
             self.logger.warning("requested balance sync for account with no Account")
             return
         self.logger.info("syncing account balance for account id: {0}".format(account.id))
-        plaid_item = self.db.with_session(
-            lambda session: session.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
-        )
+        with self.db.get_session() as session:
+            plaid_item = session.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
         if plaid_item is None:
             self.logger.warning("could not find PlaidItem attached to account {0}".format(account.id))
             return None

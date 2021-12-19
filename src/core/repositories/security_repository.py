@@ -24,18 +24,18 @@ class SecurityRepository:
         self._init_facets()
 
     def _init_facets(self):
-        self.create_security = wrap(create_security, self)
-        self.create_holding = wrap(create_holding, self)
-        self.create_investment_transaction = wrap(create_investment_transaction, self)
-        self.get_security_by_security_id = wrap(get_security_by_security_id, self)
-        self.get_security_by_symbol = wrap(get_security_by_symbol, self)
-        self.get_securities_by_account = wrap(get_securities_by_account, self)
-        self.get_securities = wrap(get_securities, self)
-        self.get_holdings_by_profile_and_account = wrap(get_holdings_by_profile_and_account, self)
+        self.create_security = wrap(create_security, self.db)
+        self.create_holding = wrap(create_holding, self.db)
+        self.create_investment_transaction = wrap(create_investment_transaction, self.db)
+        self.get_security_by_security_id = wrap(get_security_by_security_id, self.db)
+        self.get_security_by_symbol = wrap(get_security_by_symbol, self.db)
+        self.get_securities_by_account = wrap(get_securities_by_account, self.db)
+        self.get_securities = wrap(get_securities, self.db)
+        self.get_holdings_by_profile_and_account = wrap(get_holdings_by_profile_and_account, self.db)
         self.get_holding_by_plaid_account_id_and_plaid_security_id =\
-            wrap(get_holding_by_plaid_account_id_and_plaid_security_id, self)
-        self.update_holding_balance = wrap(update_holding_balance, self)
-        self.update_holding_balance = wrap(update_holding_balance, self)
+            wrap(get_holding_by_plaid_account_id_and_plaid_security_id, self.db)
+        self.update_holding_balance = wrap(update_holding_balance, self.db)
+        self.update_holding_balance = wrap(update_holding_balance, self.db)
 
     def sync_holdings(self, profile: Profile, account: Account):
         if profile is None:
@@ -103,9 +103,9 @@ class SecurityRepository:
             self.logger.error("requested holdings sync on account that couldn't be found: {0}".format(account_id))
             return
 
-        plaid_item = self.db.with_session(lambda session: session.query(PlaidItem)
-                                          .where(PlaidItem.id == account.plaid_item_id).first()
-                                          )
+        with self.db.get_session() as session:
+            plaid_item = session.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
+
         if plaid_item is None:
             self.logger.error(
                 "requested holdings sync on account but couldn't find plaid_item: {0}".format(account.to_dict()))
@@ -160,13 +160,14 @@ class SecurityRepository:
         return transactions
 
     def _has_transactions(self, account: Account) -> bool:
-        r = self.db.with_session(lambda session: session.query(InvestmentTransaction)
-                                 .filter(InvestmentTransaction.account_id == account.id).count() > 0
-                                 )
+        with self.db.get_session() as session:
+            r = session.query(InvestmentTransaction).filter(
+                InvestmentTransaction.account_id == account.id).count() > 0
+
         return r
 
     def _get_investment_transaction_by_investment_transaction_id(self, investment_transaction_id):
-        return self.db.with_session(lambda session: session.query(InvestmentTransaction)
-                                    .filter(InvestmentTransaction.investment_transaction_id ==
-                                            investment_transaction_id).first()
-                                    )
+        with self.db.get_session() as session:
+            return session.query(InvestmentTransaction).filter(
+                InvestmentTransaction.investment_transaction_id == investment_transaction_id
+            ).first()

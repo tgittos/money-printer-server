@@ -28,15 +28,16 @@ class ScheduledJobRepository:
         """
         Gets all ScheduledJobs
         """
-        r = self.db.with_session(lambda session: session.query(ScheduledJob).all())
+        with self.db.get_session() as session:
+            r = session.query(ScheduledJob).all()
         return r
 
     def get_scheduled_job_by_id(self, id: int):
         """
         Gets a ScheduledJob by it's primary key
         """
-        r = self.db.with_session(lambda session: session.query(ScheduledJob)
-                                 .where(ScheduledJob.id == id)).first()
+        with self.db.get_session() as session:
+            r = session.query(ScheduledJob).where(ScheduledJob.id == id).first()
         return r
 
     def create_instant_job(self, request: CreateInstantJobRequest):
@@ -59,11 +60,9 @@ class ScheduledJobRepository:
         job.queue = WORKER_QUEUE
         job.timestamp = datetime.utcnow()
 
-        def save_job(session):
+        with self.db.get_session() as session:
             session.add(job)
             session.commit()
-
-        self.db.with_session(save_job)
 
         self.ensure_scheduled(WORKER_QUEUE, job)
 
@@ -72,20 +71,18 @@ class ScheduledJobRepository:
     def update_scheduled_job(self, job):
         self.unschedule_job(job.queue, job)
 
-        session = self.db.get_session()
-        session.add(job)
-        self.db.commit_session(session)
+        with self.db.get_session() as session:
+            session.add(job)
+            session.commit()
 
         self.ensure_scheduled(job.queue, job)
 
     def delete_scheduled_job(self, job):
         self.unschedule_job(job.queue, job)
 
-        def delete_job(session):
+        with self.db.get_session() as session:
             session.remove(job)
             session.commit()
-
-        self.db.with_session(delete_job)
 
     def enqueue_scheduled_job(self, job):
         q = self.get_or_create_queue(job.queue)
@@ -103,11 +100,9 @@ class ScheduledJobRepository:
         job.last_run = datetime.utcnow()
         job.timestamp = datetime.utcnow()
 
-        def save_job(session):
+        with self.db.get_session() as session:
             session.add(job)
             session.commit()
-
-        self.db.with_session(save_job)
 
         return job
 
@@ -150,11 +145,9 @@ class ScheduledJobRepository:
         result.queue = job.queue
         result.timestamp = datetime.utcnow()
 
-        def save_job_result(session):
+        with self.db.get_session() as session:
             session.add(result)
             session.commit()
-
-        self.db.with_session(save_job_result)
 
     def store_failure(self, job, connection, type, value, traceback):
         result = JobResult()
@@ -164,10 +157,7 @@ class ScheduledJobRepository:
         result.queue = job.queue
         result.timestamp = datetime.utcnow()
 
-        def save_job_result(session):
+        with self.db.get_session() as session:
             session.add(result)
             session.commit()
-
-        self.db.with_session(save_job_result)
-
 
