@@ -22,18 +22,20 @@ class AccountRepository:
         self._init_facets()
 
     def _init_facets(self):
-        self.create_account = wrap(create_account, self)
-        self.update_account = wrap(update_account, self)
-        self.get_account_by_id = wrap(get_account_by_id, self)
-        self.get_account_by_account_id = wrap(get_account_by_account_id, self)
-        self.get_accounts_by_profile = wrap(get_accounts_by_profile, self)
+        self.create_account = wrap(create_account, self.db)
+        self.update_account = wrap(update_account, self.db)
+        self.get_account_by_id = wrap(get_account_by_id, self.db)
+        self.get_account_by_account_id = wrap(
+            get_account_by_account_id, self.db)
+        self.get_accounts_by_profile = wrap(get_accounts_by_profile, self.db)
 
     def get_accounts_by_profile_with_balances(self, profile: Profile) -> Optional[AccountWithBalanceList]:
         """
         Returns a list of accounts augmented with their latest synced balances for a given profile
         """
         if profile is None:
-            self.logger.error("requested accounts by profile without a valid Profile")
+            self.logger.error(
+                "requested accounts by profile without a valid Profile")
             return None
         account_records = self.get_accounts_by_profile(profile)
         return self.presenter.with_balances(account_records)
@@ -44,10 +46,12 @@ class AccountRepository:
         Returns the requested Account with it's latest synced balance for a given profile
         """
         if profile is None:
-            self.logger.error("requested account by profile without a valid Profile")
+            self.logger.error(
+                "requested account by profile without a valid Profile")
             return None
         if account_id is None:
-            self.logger.error("requested account by profile without a valid account_id")
+            self.logger.error(
+                "requested account by profile without a valid account_id")
             return None
         account = self.get_account_by_account_id(profile, account_id)
         return self.presenter.with_balances([account])
@@ -59,11 +63,14 @@ class AccountRepository:
         if account is None:
             self.logger.error("cannot schedule account sync without account")
             return
-        plaid_item = self.db.with_session(
-            lambda session: session.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
-        )
+
+        with self.db.get_session() as session:
+            plaid_item = session.query(PlaidItem).where(
+                PlaidItem.id == account.plaid_item_id).first()
+
         if plaid_item is None:
-            self.logger.error("scheduled account sync for plaid item, but no PlaidItem found")
+            self.logger.error(
+                "scheduled account sync for plaid item, but no PlaidItem found")
             return
 
         scheduled_job_repo = ScheduledJobRepository()
