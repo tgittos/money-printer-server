@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
+from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -21,13 +22,19 @@ class Security(Base):
     sedol = Column(String(16))
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'account_id': self.account_id,
-            'name': self.name,
-            'ticker_symbol': self.ticker_symbol,
-            'iso_currency_code': self.iso_currency_code,
-            'timestamp': self.timestamp.isoformat()
-        }
 
+class SecuritySchema(Schema):
+    id = fields.Int()
+    profile_id = fields.Int()
+    account_id = fields.Int()
+    name = fields.Str()
+    ticker_symbol = fields.Str()
+    iso_currency_code = fields.Str()
+    institution_id = fields.Str()
+    institution_security_id = fields.Str()
+    security_id = fields.Str()
+    proxy_security_id = fields.Str()
+    cuisp = fields.Str()
+    isin = fields.Str()
+    sedol = fields.Str()
+    timestamp = fields.DateTime()

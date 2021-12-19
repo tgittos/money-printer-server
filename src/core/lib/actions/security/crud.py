@@ -4,10 +4,9 @@ from sqlalchemy import and_
 from core.models.profile import Profile
 from core.models.account import Account
 from core.models.security import Security
-from core.models.holding import Holding
+from core.models.holding import Holding, HoldingSchema
 from core.models.holding_balance import HoldingBalance
 from core.models.investment_transaction import InvestmentTransaction
-from core.presentation.holding_presenters import HoldingWithSecurity, HoldingWithSecurityList, HoldingPresenter
 from core.lib.types import SecurityList
 from core.lib.utilities import sanitize_float
 
@@ -42,7 +41,7 @@ def get_security_by_security_id(db, plaid_security_id: str) -> Security:
     return r
 
 
-def get_holdings_by_profile_and_account(db, profile: Profile, account: Account) -> HoldingWithSecurityList:
+def get_holdings_by_profile_and_account(db, profile: Profile, account: Account):
     with db.get_session() as session:
         account = session.query(Account).where(and_(
             Account.profile_id == profile.id,
@@ -54,16 +53,15 @@ def get_holdings_by_profile_and_account(db, profile: Profile, account: Account) 
         securities = session.query(Security).filter(
             Security.id.in_(security_ids)).all()
     presentations = []
-    presenter = HoldingPresenter(db)
     for holding in holdings:
         security = list(
             filter(lambda s: s.id == holding.security_id, securities))[0]
         if security is None:
-            presentations.append(HoldingWithSecurity(
-                holding=holding, ticker='', price=0))
-        else:
-            presentations += presenter.with_balances(
-                security=security, holdings=[holding])
+            presentations.append(HoldingSchema().dumps(holding))
+        #else:
+            # TODO - reimplement this
+            #presentations += presenter.with_balances(
+            #    security=security, holdings=[holding])
     return presentations
 
 

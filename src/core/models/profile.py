@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
+from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -17,14 +18,14 @@ class Profile(Base):
     is_admin = Column(Boolean, nullable=False, default=False)
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'email': self.email,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'timestamp': self.timestamp.isoformat(),
-            'is_demo': self.is_demo_profile,
-            'is_admin': self.is_admin
-        }
 
+class ProfileSchema(Schema):
+    id = fields.Int()
+    email = fields.Email()
+    password = fields.Str()
+    first_name = fields.Str()
+    last_name = fields.Str()
+    force_password_reset = fields.Bool()
+    is_demo_profile = fields.Bool()
+    is_admin = fields.Bool()
+    timestamp = fields.DateTime()

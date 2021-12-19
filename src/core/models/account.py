@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -17,15 +18,15 @@ class Account(Base):
     subtype = Column(String(32))
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'profile_id': self.profile_id,
-            'name': self.name,
-            'official_name': self.official_name,
-            'type': self.type,
-            'subtype': self.subtype,
-            'timestamp': self.timestamp.isoformat(),
-        }
 
+class AccountSchema(Schema):
+    id = fields.Int()
+    plaid_item_id = fields.Int()
+    profile_id = fields.Int()
+    account_id = fields.Int()
+    name = fields.Str()
+    official_name = fields.Str()
+    type = fields.Str()
+    subtype = fields.Str()
+    timestamp = fields.DateTime()
 

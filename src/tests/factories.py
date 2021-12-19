@@ -9,11 +9,15 @@ from core.lib.constants import WORKER_QUEUE
 
 
 def create_user_profile(session,
+                        first_name="Joe",
+                        last_name="Example",
                         email="user@example.org",
                         is_admin=False,
                         password="Password1!",
                         timestamp=datetime.now(tz=timezone.utc)):
     profile = Profile()
+    profile.first_name = first_name
+    profile.last_name = last_name
     profile.email = email
     profile.is_admin = is_admin
     profile.password = hash_password(password)

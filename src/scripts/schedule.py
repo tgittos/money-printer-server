@@ -1,4 +1,4 @@
-import json
+from core.models.scheduler.scheduled_job import ScheduledJobSchema
 
 
 if __name__ == '__main__':
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     ))
 
     if result is not None and result.id is not None:
-        print("Successfully scheduled job: {0}".format(result.to_dict()))
+        print("Successfully scheduled job: {0}".format(ScheduledJobSchema().dumps(result)))
     else:
         print("Something went wrong!")
 

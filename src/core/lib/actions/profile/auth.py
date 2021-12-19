@@ -6,7 +6,6 @@ from core.models.profile import Profile
 from core.models.reset_token import ResetToken
 from core.lib.jwt import encode_jwt, hash_password, check_password, generate_temp_password
 from core.lib.notifications import PasswordResetNotification, notify_password_reset
-from core.lib.types import RepositoryResponse
 from config import mailgun_config
 from core.lib.actions.action_response import ActionResponse
 
@@ -31,7 +30,7 @@ def get_unauthenticated_user(db) -> ActionResponse:
         return ActionResponse(
             success = True,
             data = AuthResponse(
-                profile=demo_profile.to_dict(),
+                profile=demo_profile,
                 token=jwt_token
             )
         )
@@ -48,7 +47,7 @@ def login(db, request: LoginRequest) -> ActionResponse:
             return ActionResponse(
                 success = True,
                 data = AuthResponse(
-                    profile=profile.to_dict(),
+                    profile=profile,
                     token=jwt_token
                 )
             )

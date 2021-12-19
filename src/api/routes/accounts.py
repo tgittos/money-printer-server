@@ -1,9 +1,9 @@
 from flask import Blueprint, request, abort
-from datetime import datetime
 
+from core.models.account import AccountSchema
+from core.models.holding import HoldingSchema
 from core.repositories.profile_repository import ProfileRepository
 from core.repositories.account_repository import AccountRepository
-from core.repositories.balance_repository import BalanceRepository, GetAccountBalanceRequest
 from core.repositories.security_repository import SecurityRepository
 from config import env
 from .decorators import authed, get_identity
@@ -24,7 +24,7 @@ def list_accounts():
     if accounts is not None:
         return {
             'success': True,
-            'data': [a.to_dict() for a in accounts]
+            'data': [AccountSchema().dumps(a) for a in accounts]
         }
     else:
         abort(404)
@@ -61,7 +61,7 @@ def request_account_balances(account_id):
         abort(404)
     return {
         'success': True,
-        'data': [a.to_dict() for a in accounts]
+        'data': [AccountSchema().dumps(a) for a in accounts]
     }
 
 
@@ -81,5 +81,5 @@ def list_holdings(account_id):
         abort(404)
     return {
         'success': True,
-        'data': [h.to_dict() for h in holdings]
+        'data': [HoldingSchema().dumps(h) for h in holdings]
     }

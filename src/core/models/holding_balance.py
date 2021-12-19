@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
+from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -13,11 +14,10 @@ class HoldingBalance(Base):
     quantity = Column(Float)
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'holding_id': self.holding_id,
-            'cost_basis': self.cost_basis,
-            'quantity': self.quantity,
-            'timestamp': self.timestamp.isoformat(),
-        }
+
+class HoldingBalanceSchema(Schema):
+    id = fields.Int()
+    holding_id = fields.Int()
+    cost_basis = fields.Float()
+    quantity = fields.Float()
+    timestamp = fields.DateTime()

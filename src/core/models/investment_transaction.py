@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
+from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -21,18 +22,18 @@ class InvestmentTransaction(Base):
     subtype = Column(String(32))
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'account_id': self.account_id,
-            'name': self.name,
-            'amount': self.amount,
-            'fees': self.fees,
-            'price': self.price,
-            'quantity': self.quantity,
-            'date': self.date.isoformat(),
-            'iso_currency_code': self.iso_currency_code,
-            'type': self.type,
-            'subtype': self.subtype,
-            'timestamp': self.timestamp.isoformat(),
-        }
+
+class InvestmentTransactionSchema(Schema):
+    id = fields.Int()
+    account_id = fields.Int()
+    name = fields.Str()
+    amount = fields.Float()
+    fees = fields.Float()
+    price = fields.Float()
+    quantity = fields.Float()
+    date = fields.DateTime()
+    investment_transaction_id = fields.Str()
+    iso_currency_code = fields.Str()
+    type = fields.Str()
+    subtype = fields.Str()
+    timestamp = fields.DateTime()

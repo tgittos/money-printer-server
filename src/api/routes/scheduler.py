@@ -1,5 +1,6 @@
 from flask import Blueprint, request, Response
 
+from core.models.scheduler.scheduled_job import ScheduledJobSchema
 from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateScheduledJobRequest
 from .decorators import authed, admin, get_identity
 
@@ -15,7 +16,7 @@ def list_schedules():
     if scheduled:
         return {
             'success': True,
-            'data': [s.to_dict() for s in scheduled]
+            'data': ScheduledJobSchema(many=True).dump(scheduled)
         }
     return {
         'success': False
@@ -26,9 +27,9 @@ def list_schedules():
 @authed
 @admin
 def create_schedule():
-    job_name = request.json['jobName']
-    cron = request.json['cron']
-    args = request.json['args']
+    job_name = request.json.get('jobName')
+    cron = request.json.get('cron')
+    args = request.json.get('args')
 
     repo = ScheduledJobRepository()
     job = repo.create_scheduled_job(CreateScheduledJobRequest(
@@ -40,7 +41,7 @@ def create_schedule():
     if job:
         return {
             'success': True,
-            'data': job.to_dict()
+            'data': ScheduledJobSchema().dump(job)
         }
 
     return {
@@ -75,7 +76,7 @@ def update_schedule(schedule_id):
 
         return {
             'success': True,
-            'data': job.to_dict()
+            'data': ScheduledJobSchema().dump(job)
         }
 
     return {

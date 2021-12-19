@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from marshmallow import Schema, fields
+
 from core.models.base import Base
 
 
@@ -12,12 +14,11 @@ class JobResult(Base):
     queue = Column(String(128), nullable=False)
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'job_id': self.job_id,
-            'success': self.success,
-            'log': self.log,
-            'queue': self.queue,
-            'timestamp': self.timestamp
-        }
+
+class JobResultSchema(Schema):
+    id = fields.Int()
+    job_id = fields.Str()
+    success = fields.Bool()
+    log = fields.Str()
+    queue = fields.Str()
+    timestamp = fields.DateTime()
