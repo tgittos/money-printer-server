@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from core.stores.mysql import MySql
 from core.apis.plaid.investments import Investments, InvestmentsConfig
 from core.models.plaid_item import PlaidItem
+from core.models.account import AccountSchema
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 
@@ -49,7 +50,7 @@ class SecurityRepository:
         plaid_item = get_plaid_item_by_id(self, account.plaid_item_id)
         if plaid_item is None:
             self.logger.error("requested holdings sync on account but couldn't find plaid_item: {0}"
-                              .format(account.to_dict()))
+                              .format(AccountSchema().dumps(account)))
             return
 
         api = Investments(InvestmentsConfig(self.plaid_config))
@@ -108,7 +109,7 @@ class SecurityRepository:
 
         if plaid_item is None:
             self.logger.error(
-                "requested holdings sync on account but couldn't find plaid_item: {0}".format(account.to_dict()))
+                "requested holdings sync on account but couldn't find plaid_item: {0}".format(AccountSchema().dumps(account)))
             return
 
         api = Investments(InvestmentsConfig(self.plaid_config))

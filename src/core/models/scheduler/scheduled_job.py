@@ -17,18 +17,6 @@ class ScheduledJob(Base):
     active = Column(Boolean, nullable=False, default=True)
     timestamp = Column(DateTime)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'cron': self.cron,
-            'job_name': self.job_name,
-            'json_args': self.json_args,
-            'last_run': self.last_run,
-            'queue': self.queue,
-            'active': self.active,
-            'timestamp': self.timestamp
-        }
-
 
 class ScheduledJobSchema(Schema):
     id = fields.Int()

@@ -1,6 +1,5 @@
 from functools import wraps
 
-import pkg_resources
 from flask import request, Response, g
 from jwt import DecodeError
 

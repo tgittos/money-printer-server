@@ -22,8 +22,8 @@ def test_login_accepts_valid_login_request(db):
     ))
 
     assert result.success
-    assert result.data.profile['id'] == user.id
-    assert result.data.profile['email'] == user.email
+    assert result.data.profile.id == user.id
+    assert result.data.profile.email == user.email
     assert result.data.token is not None
     s.close()
 

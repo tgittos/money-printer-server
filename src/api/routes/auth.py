@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask import request
 import json
 
+from core.models.profile import ProfileSchema
 from core.repositories.profile_repository import ProfileRepository, RegisterProfileRequest, LoginRequest
 from .decorators import authed
 from config import mysql_config, mailgun_config
@@ -24,7 +25,7 @@ def register():
         email=username
     ))
 
-    return result.to_dict
+    return ProfileSchema().dumps(result)
 
 
 @auth_bp.route('/v1/api/auth/unauthenticated', methods=['GET'])

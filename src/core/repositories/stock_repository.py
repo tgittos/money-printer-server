@@ -7,6 +7,7 @@ from core.stores.mysql import MySql
 from core.lib.logger import get_logger
 from core.lib.types import StringList
 from config import iex_config, mysql_config
+from core.models.security_price import SecurityPriceSchema
 
 # import all the actions so that consumers of the repo can access everything
 from core.lib.utilities import wrap
@@ -145,6 +146,4 @@ class StockRepository:
         """
         Converts a given SecurityPrice or list of SecurityPrices into a Pandas DataFrame
         """
-        if type(data) == list:
-            return pd.DataFrame.from_records([d.to_dict() for d in data])
-        return pd.DataFrame.from_records([data.to_dict()])
+        return pd.DataFrame.from_records([SecurityPriceSchema(many=type(data) == list).dumps(data)])
