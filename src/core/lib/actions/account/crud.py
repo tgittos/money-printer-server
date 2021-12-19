@@ -2,15 +2,13 @@ from datetime import datetime
 
 from sqlalchemy import and_
 
-from core.models.account import Account
+from core.models.account import Account, AccountSchema
 from core.models.profile import Profile
 from core.models.plaid_item import PlaidItem
 from core.lib.types import AccountList
 
-from .requests import CreateAccountRequest
 
-
-def create_account(db, request: CreateAccountRequest) -> Account:
+def create_account(db, request: AccountSchema) -> Account:
     """
     Creates an account object in the given database, and returns it
     """
@@ -53,15 +51,16 @@ def create_or_update_account(db, profile: Profile, plaid_link: PlaidItem, accoun
     account = get_account_by_account_id(
         db, profile=profile, account_id=account_id)
     if account is None:
-        account = create_account(db, CreateAccountRequest(
-            account_id=account_dict['account_id'],
-            name=account_dict['name'],
-            official_name=account_dict['official_name'],
-            type=account_dict['type'],
-            subtype=account_dict['subtype'],
-            plaid_item_id=plaid_link.id,
-            profile_id=profile.id
-        ))
+        schema = AccountSchema().load({
+            'account_id':account_dict['account_id'],
+            'name':account_dict['name'],
+            'official_name':account_dict['official_name'],
+            'type':account_dict['type'],
+            'subtype':account_dict['subtype'],
+            'plaid_item_id':plaid_link.id,
+            'profile_id':profile.id
+        })
+        account = create_account(db, schema)
     else:
         account.name = account_dict['name']
         account.official_name = account_dict['official_name']

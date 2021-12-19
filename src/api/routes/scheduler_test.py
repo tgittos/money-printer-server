@@ -7,7 +7,6 @@ from tests.helpers import client, db
 from tests.factories import create_scheduled_job, create_user_profile
 
 from core.models.scheduler.scheduled_job import ScheduledJob
-from core.lib.actions.scheduled_job.requests import CreateScheduledJobRequest, CreateInstantJobRequest
 from core.lib.jwt import encode_jwt
 from api.routes.scheduler import ScheduledJobRepository
 

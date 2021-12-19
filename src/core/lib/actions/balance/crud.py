@@ -2,14 +2,14 @@ from datetime import datetime
 
 from sqlalchemy import and_, desc
 
-from core.models.account_balance import AccountBalance
+from core.models.account_balance import AccountBalance, AccountBalanceSchema
 from core.models.account import Account
 from core.lib.types import AccountBalanceList
 
-from .requests import GetAccountBalanceRequest, CreateAccountBalanceRequest
+from .requests import GetAccountBalanceRequest
 
 
-def create_account_balance(db, request: CreateAccountBalanceRequest) -> AccountBalance:
+def create_account_balance(db, request: AccountBalanceSchema) -> AccountBalance:
     """
     Creates an AccountBalance record in the DB, to snapshot the account value at a point in time
     """

@@ -3,15 +3,14 @@ from sqlalchemy import and_
 
 from core.models.profile import Profile
 from core.models.account import Account
-from core.models.security import Security
+from core.models.security import Security, SecuritySchema
 from core.models.holding import Holding, HoldingSchema
-from core.models.holding_balance import HoldingBalance
-from core.models.investment_transaction import InvestmentTransaction
+from core.models.holding_balance import HoldingBalance, HoldingBalanceSchema
+from core.models.investment_transaction import InvestmentTransaction, InvestmentTransactionSchema
 from core.lib.types import SecurityList
 from core.lib.utilities import sanitize_float
 
-from .requests import CreateSecurityRequest, CreateHoldingRequest, CreateInvestmentTransactionRequest, \
-    UpdateHoldingRequest
+from .requests import UpdateHoldingRequest
 
 
 def get_securities(db) -> SecurityList:
@@ -95,7 +94,7 @@ def get_holding_by_account_and_security(db, account: Account, security: Security
     return r
 
 
-def create_security(db, request: CreateSecurityRequest) -> Security:
+def create_security(db, request: SecuritySchema) -> Security:
     security = Security()
 
     security.profile_id = request.profile.id
@@ -118,7 +117,7 @@ def create_security(db, request: CreateSecurityRequest) -> Security:
     return security
 
 
-def create_holding(db, request: CreateHoldingRequest) -> Holding:
+def create_holding(db, request: HoldingSchema) -> Holding:
     holding = Holding()
 
     holding.account_id = request.account.id
@@ -150,7 +149,7 @@ def update_holding_balance(db, request: UpdateHoldingRequest) -> HoldingBalance:
     return holding_balance
 
 
-def create_investment_transaction(db, request: CreateInvestmentTransactionRequest) -> InvestmentTransaction:
+def create_investment_transaction(db, request: InvestmentTransactionSchema) -> InvestmentTransaction:
     investment_transaction = InvestmentTransaction()
 
     investment_transaction.account_id = request.account.id

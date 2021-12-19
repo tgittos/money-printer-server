@@ -5,7 +5,7 @@ if __name__ == '__main__':
     from script_base import *
     from server.config import config as server_config
     from core.apis.mailgun import MailGunConfig
-    from core.repositories.scheduled_job_repository import ScheduledJobRepository, ScheduledJobRepositoryConfig, CreateScheduledJobRequest
+    from core.repositories.scheduled_job_repository import ScheduledJobRepository, ScheduledJobRepositoryConfig
 
     repo = ScheduledJobRepository(ScheduledJobRepositoryConfig(
         mailgun_config=MailGunConfig(api_key=server_config['mailgun']['api_key'],
@@ -18,12 +18,13 @@ if __name__ == '__main__':
     frequency_value = input("Value for frequency (number of hours/days/weeks or scheduled time every day: ")
     args = input("Any args? Give as JSON object: ")
 
-    result = repo.create_scheduled_job(CreateScheduledJobRequest(
-        job_name=job_name,
-        frequency_type=frequency_type,
-        frequency_value=frequency_value,
-        json_args=args
-    ))
+    schema = ScheduledJobSchema().load({
+        'job_name':job_name,
+        'frequency_type':frequency_type,
+        'frequency_value':frequency_value,
+        'json_args':args
+    })
+    result = repo.create_scheduled_job(schema)
 
     if result is not None and result.id is not None:
         print("Successfully scheduled job: {0}".format(ScheduledJobSchema().dumps(result)))

@@ -7,14 +7,13 @@ from rq_scheduler import Scheduler
 
 from core.apis.mailgun import MailGun
 from core.stores.mysql import MySql
-from core.models.scheduler.scheduled_job import ScheduledJob
+from core.models.scheduler.scheduled_job import ScheduledJob, ScheduledJobSchema
 from core.models.scheduler.job_result import JobResult
 from core.lib.types import ScheduledJobList
 from core.lib.constants import WORKER_QUEUE
 from config import redis_config, mailgun_config, mysql_config
 
-# import all the actions so that consumers of the repo can access everything
-from core.lib.actions.scheduled_job.requests import *
+from core.lib.actions.scheduled_job.requests import CreateInstantJobRequest
 
 
 class ScheduledJobRepository:
@@ -48,7 +47,7 @@ class ScheduledJobRepository:
         job = q.enqueue(request.job_name, request.args)
         return job
 
-    def create_scheduled_job(self, request: CreateScheduledJobRequest):
+    def create_scheduled_job(self, request: ScheduledJobSchema):
         """
         Creates a record in the DB to schedule a job in the worker
         """

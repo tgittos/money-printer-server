@@ -1,7 +1,7 @@
 from flask import Blueprint, request, Response
 
 from core.models.scheduler.scheduled_job import ScheduledJobSchema
-from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateScheduledJobRequest
+from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from .decorators import authed, admin, get_identity
 
 scheduler_bp = Blueprint('scheduler', __name__)
@@ -32,11 +32,12 @@ def create_schedule():
     args = request.json.get('args')
 
     repo = ScheduledJobRepository()
-    job = repo.create_scheduled_job(CreateScheduledJobRequest(
-        job_name=job_name,
-        cron=cron,
-        args=args
-    ))
+    schema = ScheduledJobSchema().load({
+        'job_name':job_name,
+        'cron':cron,
+        'args':args
+    })
+    job = repo.create_scheduled_job(schema)
 
     if job:
         return {

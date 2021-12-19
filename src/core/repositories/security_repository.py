@@ -4,6 +4,9 @@ from core.stores.mysql import MySql
 from core.apis.plaid.investments import Investments, InvestmentsConfig
 from core.models.plaid_item import PlaidItem
 from core.models.account import AccountSchema
+from core.models.security import SecuritySchema
+from core.models.holding import HoldingSchema
+from core.models.investment_transaction import InvestmentTransactionSchema
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 
@@ -63,20 +66,21 @@ class SecurityRepository:
         for security_dict in investment_dict["securities"]:
             security = self.get_security_by_security_id(plaid_security_id=security_dict['security_id'])
             if security is None:
-                security = self.create_security(CreateSecurityRequest(
-                    profile=profile,
-                    account=account,
-                    name=security_dict['name'],
-                    ticker_symbol=security_dict['ticker_symbol'],
-                    iso_currency_code=security_dict['iso_currency_code'],
-                    institution_id=security_dict['institution_id'],
-                    institution_security_id=security_dict['institution_security_id'],
-                    security_id=security_dict['security_id'],
-                    proxy_security_id=security_dict['proxy_security_id'],
-                    cusip=security_dict['cusip'],
-                    isin=security_dict['isin'],
-                    sedol=security_dict['sedol']
-                ))
+                schema = SecuritySchema().load({
+                    'profile':profile,
+                    'account':account,
+                    'name':security_dict['name'],
+                    'ticker_symbol':security_dict['ticker_symbol'],
+                    'iso_currency_code':security_dict['iso_currency_code'],
+                    'institution_id':security_dict['institution_id'],
+                    'institution_security_id':security_dict['institution_security_id'],
+                    'security_id':security_dict['security_id'],
+                    'proxy_security_id':security_dict['proxy_security_id'],
+                    'cusip':security_dict['cusip'],
+                    'isin':security_dict['isin'],
+                    'sedol':security_dict['sedol']
+                })
+                security = self.create_security(schema)
 
         # update the holdings
         for holding_dict in investment_dict["holdings"]:
@@ -85,13 +89,14 @@ class SecurityRepository:
                 holding_dict["account_id"],
                 holding_dict["security_id"])
             if holding is None:
-                holding = self.create_holding(CreateHoldingRequest(
-                    account=account,
-                    security=security,
-                    cost_basis=holding_dict['cost_basis'],
-                    quantity=holding_dict['quantity'],
-                    iso_currency_code=holding_dict['iso_currency_code']
-                ))
+                schema = HoldingSchema().load({
+                    'account':account,
+                    'security':security,
+                    'cost_basis':holding_dict['cost_basis'],
+                    'quantity':holding_dict['quantity'],
+                    'iso_currency_code':holding_dict['iso_currency_code']
+                })
+                holding = self.create_holding(schema)
             else:
                 self.update_holding_balance(UpdateHoldingRequest(
                     holding=holding,
@@ -142,19 +147,20 @@ class SecurityRepository:
                 transaction_dict['investment_transaction_id'])
 
             if investment_transaction is None:
-                investment_transaction = self.create_investment_transaction(CreateInvestmentTransactionRequest(
-                    account=account,
-                    amount=transaction_dict['amount'],
-                    date=transaction_dict['date'],
-                    fees=transaction_dict['fees'],
-                    investment_transaction_id=transaction_dict['investment_transaction_id'],
-                    iso_currency_code=transaction_dict['iso_currency_code'],
-                    name=transaction_dict['name'],
-                    price=transaction_dict['price'],
-                    quantity=transaction_dict['quantity'],
-                    subtype=transaction_dict['subtype'],
-                    type=transaction_dict['type']
-                ))
+                schema = InvestmentTransactionSchema().load({
+                    'account':account,
+                    'amount':transaction_dict['amount'],
+                    'date':transaction_dict['date'],
+                    'fees':transaction_dict['fees'],
+                    'investment_transaction_id':transaction_dict['investment_transaction_id'],
+                    'iso_currency_code':transaction_dict['iso_currency_code'],
+                    'name':transaction_dict['name'],
+                    'price':transaction_dict['price'],
+                    'quantity':transaction_dict['quantity'],
+                    'subtype':transaction_dict['subtype'],
+                    'type':transaction_dict['type']
+                })
+                investment_transaction = self.create_investment_transaction(schema)
 
             transactions.append(transactions)
 
