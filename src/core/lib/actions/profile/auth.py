@@ -20,7 +20,7 @@ def get_unauthenticated_user(db) -> ActionResponse:
     Gets the demo profile encoded as a token so the frontend thinks it's "authed"
     """
     with db.get_session() as session:
-        demo_profile = session.query(Profile).where(Profile.is_demo_profile).first())
+        demo_profile = session.query(Profile).where(Profile.is_demo_profile).first()
         # TODO - maybe delete this
         if demo_profile is None:
             demo_profile=Profile()

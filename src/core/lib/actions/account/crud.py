@@ -89,8 +89,7 @@ def get_account_by_account_id(db, profile: Profile, account_id: str) -> Account:
     Gets an account from the database from a given profile by the remote account ID
     """
     with db.get_session() as session:
-        r = session.query(Account)
-        .filter(and_(
+        r = session.query(Account).filter(and_(
             Account.profile_id == profile.id,
             Account.account_id == account_id
         )).first()

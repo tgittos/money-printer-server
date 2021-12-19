@@ -60,9 +60,8 @@ class HoldingRepository:
         if plaid_item is None:
             self.logger.warning("requested update holding but no PlaidItem given")
             return None
-        accounts = self.db.with_session(
-            lambda session: session.query(Account).filter(Account.plaid_item_id == plaid_item.id).all()
-        )
+        with self.db.get_session() as session:
+            accounts = session.query(Account).filter(Account.plaid_item_id == plaid_item.id).all()
         profile = None
         if accounts is None or len(accounts) == 0:
             self.logger.error("received request to update holdings with no corresponding accounts: {0}"

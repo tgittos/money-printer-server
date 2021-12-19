@@ -28,17 +28,17 @@ class StockRepository:
         self._init_facets()
 
     def _init_facets(self):
-        self.on_iex_blacklist = wrap(on_iex_blacklist, self)
+        self.on_iex_blacklist = wrap(on_iex_blacklist, self.db)
         self.get_historical_daily_security_prices = wrap(
-            get_historical_daily_security_prices, self)
+            get_historical_daily_security_prices, self.db)
         self.get_historical_intraday_security_prices = wrap(
-            get_historical_intraday_security_prices, self)
-        self.fetch_historical_daily = wrap(fetch_historical_daily, self)
-        self.fetch_historical_intraday = wrap(fetch_historical_intraday, self)
+            get_historical_intraday_security_prices, self.db)
+        self.fetch_historical_daily = wrap(fetch_historical_daily, self.db)
+        self.fetch_historical_intraday = wrap(fetch_historical_intraday, self.db)
         self.create_historical_daily_security_price = wrap(
-            create_historical_daily_security_price, self)
+            create_historical_daily_security_price, self.db)
         self.create_historical_intraday_security_price = wrap(
-            create_historical_intraday_security_price, self)
+            create_historical_intraday_security_price, self.db)
 
     def historical_daily(self, symbol: str, start: datetime = None, end: datetime = None, close_only: bool = False)\
             -> Optional[pd.DataFrame]:
@@ -138,9 +138,8 @@ class StockRepository:
         """
         Does this symbol have any price data?
         """
-        return self.db.with_session(lambda session: session.query(SecurityPrice)
-                                    .filter(SecurityPrice.symbol == symbol).count() > 0
-                                    )
+        with self.db.get_session() as session:
+            return session.query(SecurityPrice).filter(SecurityPrice.symbol == symbol).count() > 0
 
     def _to_dataframe(self, data: Union[SecurityPrice, SecurityPriceList]) -> pd.DataFrame:
         """
