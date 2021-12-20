@@ -3,7 +3,6 @@ from core.lib.logger import get_logger
 # import all the actions so that consumers of the repo can access everything
 from core.lib.utilities import wrap
 from core.lib.actions.plaid.crud import *
-from core.lib.actions.plaid.requests import *
 
 
 class PlaidRepository:

@@ -9,7 +9,6 @@ from config import mysql_config
 # import all the actions so that consumers of the repo can access everything
 from core.lib.utilities import wrap
 from core.lib.actions.account.crud import *
-from core.lib.actions.account.requests import *
 
 
 class AccountRepository:

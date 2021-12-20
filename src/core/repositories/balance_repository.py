@@ -2,6 +2,7 @@ from typing import Optional
 
 from core.apis.plaid.accounts import Accounts, AccountsConfig
 from core.models.plaid_item import PlaidItem
+from core.models.account_balance import AccountBalanceSchema
 from core.repositories.scheduled_job_repository import ScheduledJobRepository, CreateInstantJobRequest
 from core.repositories.plaid_repository import PlaidRepository
 from core.stores.mysql import MySql
@@ -104,12 +105,13 @@ class BalanceRepository:
         for account_dict in response_dict['accounts']:
             balance_dict = account_dict['balances']
 
-            new_balance = self.create_account_balance(CreateAccountBalanceRequest(
-                account=account,
-                current=balance_dict['current'],
-                available=balance_dict['available'],
-                iso_currency_code=balance_dict['iso_currency_code']
-            ))
+            schema = AccountBalanceSchema().load({
+                'account':account,
+                'current':balance_dict['current'],
+                'available':balance_dict['available'],
+                'iso_currency_code':balance_dict['iso_currency_code']
+            })
+            new_balance = create_account_balance(self.db, schema)
 
             balances.append(new_balance)
 

@@ -1,10 +1,8 @@
 from datetime import datetime
 
 from core.models.profile import Profile
-from core.models.plaid_item import PlaidItem
+from core.models.plaid_item import PlaidItem, PlaidItemSchema
 from core.lib.types import PlaidItemList
-
-from .requests import CreatePlaidItem
 
 
 def get_plaid_item_by_id(db, id: int) -> PlaidItem:
@@ -37,10 +35,10 @@ def get_plaid_items_by_profile(db, profile: Profile) -> PlaidItemList:
     return r
 
 
-def create_plaid_item(db, request: CreatePlaidItem) -> PlaidItem:
+def create_plaid_item(db, request: PlaidItemSchema) -> PlaidItem:
     """
     Creates a PlaidItem in the DB with the data in the given request
-    Accepts a CreatePlaidItem object
+    Accepts a PlaidItemSchema object
     """
     r = PlaidItem()
     r.profile_id = request.profile_id
