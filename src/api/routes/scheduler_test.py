@@ -50,7 +50,7 @@ def valid_scheduled_job_request():
     return {
         'job_name':"My New Job",
         'cron':"0 * * * *",
-        'args':{}
+        'json_args':"{}"
     }
 
 @pytest.fixture()
@@ -58,51 +58,51 @@ def invalid_scheduled_job_request():
     return {
         'job_name':"",
         'cron':None,
-        'args':""
+        'json_args':""
     }
 
 @pytest.fixture()
 def valid_instant_job_request():
     return {
         'job_name': "Once off job",
-        'args':{}
+        'json_args':{}
     }
 
 @pytest.fixture()
 def invalid_instant_job_request():
     return {
         'job_name':"",
-        'args':None
+        'json_args':None
     }
 
 
 # /v1/api/admin/schedules
-def test_create_schedule_accepts_valid_input_for_admin(client, admin_token, valid_scheduled_job_request):
+def test_create_schedule_accepts_valid_input_for_admin_token(client, admin_token, valid_scheduled_job_request):
     response = client.post('/v1/api/admin/schedules',
                            headers={'Authorization': f"Bearer {admin_token}"},
                            json=valid_scheduled_job_request)
     assert response.status_code == 201
     response_json = response.get_json()
-    assert len(response_json['data'] == 1)
-    assert response_json[0]['id'] is not None
-    assert response_json[0]['job_name'] == valid_scheduled_job_request.job_name
+    assert response_json['success']
+    assert response_json['data']['id'] is not None
+    assert response_json['data']['job_name'] == valid_scheduled_job_request['job_name']
 
 
 # /v1/api/admin/schedules
-def test_create_schedule_rejects_invalid_input(client, admin_token, invalid_scheduled_job_request):
+def test_create_schedule_rejects_invalid_input_for_admin_token(client, admin_token, invalid_scheduled_job_request):
     response = client.post('/v1/api/admin/schedules',
                            headers={'Authorization': f"Bearer {admin_token}"},
                            json=invalid_scheduled_job_request)
     assert response.status_code == 400
 
-def test_create_schedule_rejects_valid_input_for_non_admin(client, user_token, valid_scheduled_job_request):
+def test_create_schedule_rejects_valid_input_for_non_admin_token(client, user_token, valid_scheduled_job_request):
     response = client.post('/v1/api/admin/schedules',
                            headers={'Authorization': f"Bearer {user_token}"},
                            json=valid_scheduled_job_request)
     assert response.status_code == 401
 
 # /v1/api/admin/schedules/1
-def test_list_schedules_returns_all_schedules_for_admin(db, client, admin_token):
+def test_list_schedules_returns_all_schedules_for_admin_token(db, client, admin_token):
     with db.get_session() as session:
         job_1 = create_scheduled_job(session)
         job_2 = create_scheduled_job(session)
@@ -138,10 +138,9 @@ def test_update_schedule_accepts_valid_input_for_admin_token(db, client, admin_t
     assert job.job_name != 'Updated Job Name'
     response = client.put('/v1/api/admin/schedules/' + str(job.id),
                         headers={'Authorization': f"Bearer {admin_token}"},
-                        data=json.dumps({
+                        json={
                             'job_name':'Updated Job Name'
-                        }),
-                        content_type='application/json',
+                        },
                         follow_redirects=True)
     assert response.status_code == 200
     with db.get_session() as session:

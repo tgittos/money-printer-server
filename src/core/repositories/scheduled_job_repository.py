@@ -7,7 +7,7 @@ from rq_scheduler import Scheduler
 
 from core.apis.mailgun import MailGun
 from core.stores.mysql import MySql
-from core.models.scheduler.scheduled_job import ScheduledJob, ScheduledJobSchema
+from core.models.scheduler.scheduled_job import ScheduledJob, CreateScheduledJobSchema
 from core.models.scheduler.job_result import JobResult
 from core.lib.types import ScheduledJobList
 from core.lib.constants import WORKER_QUEUE
@@ -47,14 +47,14 @@ class ScheduledJobRepository:
         job = q.enqueue(request.job_name, request.args)
         return job
 
-    def create_scheduled_job(self, request: ScheduledJobSchema):
+    def create_scheduled_job(self, request: CreateScheduledJobSchema):
         """
         Creates a record in the DB to schedule a job in the worker
         """
         job = ScheduledJob()
-        job.job_name = request.job_name
-        job.cron = request.cron
-        job.json_args = request.json_args
+        job.job_name = request['job_name']
+        job.cron = request['cron']
+        job.json_args = request['json_args']
         job.last_run = None
         job.queue = WORKER_QUEUE
         job.timestamp = datetime.utcnow()

@@ -1,6 +1,7 @@
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, abort
+from marshmallow import ValidationError
 
-from core.models.scheduler.scheduled_job import ScheduledJobSchema
+from core.models.scheduler.scheduled_job import ScheduledJobSchema, CreateScheduledJobSchema
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from .decorators import authed, admin, get_identity
 
@@ -27,62 +28,56 @@ def list_schedules():
 @authed
 @admin
 def create_schedule():
-    job_name = request.json.get('jobName')
-    cron = request.json.get('cron')
-    args = request.json.get('args')
+    try:
+        repo = ScheduledJobRepository()
+        schema = CreateScheduledJobSchema().load(request.json)
+        job = repo.create_scheduled_job(schema)
 
-    repo = ScheduledJobRepository()
-    schema = ScheduledJobSchema().load({
-        'job_name':job_name,
-        'cron':cron,
-        'args':args
-    })
-    job = repo.create_scheduled_job(schema)
+        if job:
+            return {
+                'success': True,
+                'data': ScheduledJobSchema().dump(job)
+            }, 201
 
-    if job:
         return {
-            'success': True,
-            'data': ScheduledJobSchema().dump(job)
+            'success': False
         }
-
-    return {
-        'success': False
-    }
+    except ValidationError as error:
+        return error.messages, 400
+    except Exception:
+        abort(500)
 
 
 @scheduler_bp.route('/v1/api/admin/schedules/<schedule_id>', methods=['PUT'])
 @authed
 @admin
 def update_schedule(schedule_id):
-    if not request.json:
-        return Response({
-            "success": False
-        }, status=400, mimetype='application/json')
+    try:
+        schema = ScheduledJobSchema().load(request.json)
 
-    job_name = request.json.get('job_name')
-    cron = request.json.get('cron')
-    json_args = request.json.get('json_args')
-    active = request.json.get('active')
+        repo = ScheduledJobRepository()
+        job = repo.get_scheduled_job_by_id(schedule_id)
 
-    repo = ScheduledJobRepository()
-    job = repo.get_scheduled_job_by_id(schedule_id)
+        if job:
+            job.job_name = schema.get('job_name') or job.job_name
+            job.cron = schema.get('cron') or job.cron
+            job.json_args = schema.get('json_args') or job.json_args
+            job.active = schema.get('active') or job.active
 
-    if job:
-        job.job_name = job_name or job.job_name
-        job.cron = cron or job.cron
-        job.json_args = json_args or job.json_args
-        job.active = active or job.active
+            repo.update_scheduled_job(job)
 
-        repo.update_scheduled_job(job)
+            return {
+                'success': True,
+                'data': ScheduledJobSchema().dump(job)
+            }
 
         return {
-            'success': True,
-            'data': ScheduledJobSchema().dump(job)
+            'success': False
         }
-
-    return {
-        'success': False
-    }
+    except ValidationError as error:
+        return error.messages, 400
+    except Exception:
+        abort(500)
 
 
 @scheduler_bp.route('/v1/api/admin/schedules/<schedule_id>', methods=['DELETE'])
