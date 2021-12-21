@@ -53,6 +53,21 @@ def get_all_profiles(db) -> ActionResponse:
     )
 
 
+def register(db, request: RequestRegistrationSchema) -> ActionResponse:
+    """
+    Registers a user with MoneyPrinter if a user with that email doesnt
+    already exist
+    """
+    # first, check if the request email is already taken
+    profile_response = get_profile_by_email(db, request['email'])
+    if profile_response.data is not None:
+        return ActionResponse(
+            success=False,
+            message="That email is unavailable for registration"
+        )
+    return create_profile(db, request)
+
+
 def create_profile(db, request: CreateProfileSchema) -> ActionResponse:
     """
     Registers a new profile and emails the temporary password to the user
@@ -96,16 +111,54 @@ def create_profile(db, request: CreateProfileSchema) -> ActionResponse:
     )
 
 
-def register(db, request: RequestRegistrationSchema) -> ActionResponse:
+def update_profile(db, request: UpdateProfileSchema) -> ActionResponse:
     """
-    Registers a user with MoneyPrinter if a user with that email doesnt
-    already exist
+    Updates an existing profile with new information.
+    Does not allow the setting of the username or email
     """
-    # first, check if the request email is already taken
-    existing_profile = get_profile_by_email(db, request['email'])
-    if existing_profile is not None:
+    profile_response = get_profile_by_id(db, request['id'])
+    profile = profile_response.data
+
+    if profile is None:
         return ActionResponse(
             success=False,
-            message="That email is unavailable for registration"
+            message=f"Could not find profile with ID {request['id']}"
         )
-    return create_profile(db, request)
+    
+    with db.get_session() as session:
+        session.add(profile)
+
+        profile.first_name = request['first_name']
+        profile.last_name = request['last_name']
+        profile.timestamp = datetime.utcnow()
+
+        session.commit()
+
+    return ActionResponse(
+        success=True,
+        data=profile
+    )
+
+
+def delete_profile(db, profile_id: int) -> ActionResponse:
+    """
+    Deletes an existing user profile from the database.
+    This will cascade and delete all attached data.
+    This delete is GPDR permanent
+    """
+    profile_response = get_profile_by_id(db, profile_id)
+    profile = profile_response.data
+
+    if profile is None:
+        return ActionResponse(
+            success=False,
+            message=f"Could not find profile with ID {profile_id}"
+        )
+    
+    with db.get_session() as session:
+        session.delete(profile)
+        session.commit()
+    
+    return ActionResponse(
+        success=True
+    )

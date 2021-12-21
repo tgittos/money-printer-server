@@ -37,7 +37,7 @@ class ReadAccountSchema(Schema):
 
 
 class ReadInvestmentTransactionSchema(Schema):
-    account = fields.Nested('ReadAccountSchema', exclue=('transactions',))
+    account = fields.Nested('ReadAccountSchema', exclude=('transactions',))
 
     class Meta:
         additional = ("id", "account_id", "name", "amount", "feeds", "price", "quantity", "date",\

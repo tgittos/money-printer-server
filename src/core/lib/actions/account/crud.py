@@ -50,15 +50,16 @@ def update_account(db, request: UpdateAccountSchema) -> ActionResponse:
             message=f"Account with ID {request['id']} not found"
         )
 
-    account.account_id = request['account_id']
-    account.name = request['name']
-    account.official_name = request['official_name']
-    account.type = request['type']
-    account.subtype = request['subtype']
-    account.timestamp = datetime.utcnow()
-
     with db.get_session() as session:
-        session.attach(account)
+        session.add(account)
+
+        account.account_id = request['account_id']
+        account.name = request['name']
+        account.official_name = request['official_name']
+        account.type = request['type']
+        account.subtype = request['subtype']
+        account.timestamp = datetime.utcnow()
+
         session.commit()
 
     return ActionResponse(

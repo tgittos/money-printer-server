@@ -86,13 +86,14 @@ def update_plaid_item(db, request: UpdatePlaidItemSchema) -> ActionResponse:
             message=f"No plaid item found with ID {request['id']}"
         )
 
-    plaid_item.item_id = request['item_id']
-    plaid_item.access_token = request['access_token']
-    plaid_item.request_id = request['request_id']
-    plaid_item.timestamp = datetime.utcnow()
-
     with db.get_session() as session:
-        session.attach(plaid_item)
+        session.add(plaid_item)
+
+        plaid_item.item_id = request['item_id']
+        plaid_item.access_token = request['access_token']
+        plaid_item.request_id = request['request_id']
+        plaid_item.timestamp = datetime.utcnow()
+
         session.commit()
 
     return ActionResponse(
