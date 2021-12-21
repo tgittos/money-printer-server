@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
-from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -18,14 +17,5 @@ class Profile(Base):
     is_admin = Column(Boolean, nullable=False, default=False)
     timestamp = Column(DateTime)
 
-
-class ProfileSchema(Schema):
-    id = fields.Int()
-    email = fields.Email()
-    password = fields.Str()
-    first_name = fields.Str()
-    last_name = fields.Str()
-    force_password_reset = fields.Bool()
-    is_demo_profile = fields.Bool()
-    is_admin = fields.Bool()
-    timestamp = fields.DateTime()
+    plaid_items = relationship("PlaidItem", back_populates="profile")
+    accounts = relationship("Account", back_populates="profile")

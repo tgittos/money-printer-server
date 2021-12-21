@@ -11,61 +11,57 @@ from core.lib.logger import get_logger
 logger = get_logger(__name__)
 
 
+def decode_token():
+    # apparently I should be using a different header for the jwt token?
+    # maybe look into the jwt spec, and jwt-extended
+    try:
+        if 'Authorization' in request.headers:
+            token = request.headers.get('Authorization')
+            if token is not None:
+                parts = token.split(' ')
+                token = parts[len(parts) - 1]
+            if is_token_valid(token):
+                return decode_jwt(token)
+    except DecodeError:
+        logger.exception("auth decorator received bad token from request: {0}", token)
+        return Response({
+            "success": False
+        }, status=400, mimetype='application/json')
+
+
+def get_identity():
+    token = decode_token()
+    if token is not None:
+        return decode_token()['profile']
+    return None
+
+
 def authed(func):
     @wraps(func)
     def decorated(*args, **kwargs):
-        # apparently I should be using a different header for the jwt token?
-        # maybe look into the jwt spec, and jwt-extended
+        token = decode_token()
 
-        token = request.headers.get('Authorization')
-
-        try:
-            # token = request.authorization
-            if token is not None:
-                parts = token.split(' ')
-                token = parts[len(parts)-1]
-            else:
-                return Response({
-                    "success": False
-                }, status=401, mimetype='application/json')
-
-            if token is not None:
-                if is_token_valid(token):
-                    g.profile = decode_jwt(token)['profile']
-                    return func(*args, **kwargs)
+        # if we were unable to get a token from the decode,
+        # and we hit this point, then we're not authed
+        profile = token['profile']
+        if profile is None:
             return Response({
                 "success": False
             }, status=401, mimetype='application/json')
-        except DecodeError:
-            logger.exception("auth decorator received bad token from request: {0}", token)
-            return Response({
-                "success": False
-            }, status=401, mimetype='application/json')
+
+        return func(*args, **kwargs)
     return decorated
 
 
 def admin(func):
     @wraps(func)
     def decorated(*args, **kwargs):
-        # this needs to be invoked after `authed` to get g.profile
-        try:
-            if not g.profile['is_admin']:
-                return Response({
-                    "success": False
-                }, status=401, mimetype='application/json')
-            return func(*args, **kwargs)
-        except Exception as ex:
-            logger.exception("admin decorator received some kind of exception: {0}", ex)
+        token = decode_token()
+        print("admin, token:", token)
+        if not token or not token['is_admin']:
             return Response({
                 "success": False
             }, status=401, mimetype='application/json')
+        return func(*args, **kwargs)
+
     return decorated
-
-
-def get_identity():
-    token = request.headers.get('Authorization')
-    if token is not None:
-        parts = token.split(' ')
-        token = parts[len(parts) - 1]
-    profile_dict = decode_jwt(token)['profile']
-    return profile_dict

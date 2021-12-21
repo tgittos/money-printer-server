@@ -9,7 +9,8 @@ from flask_socketio import SocketIO
 import rq_dashboard
 
 from config import config, redis_config, env
-from core.repositories.profile_repository import ProfileRepository, RegisterProfileRequest
+from core.repositories.profile_repository import ProfileRepository
+from core.schemas.request_schemas import RequestRegistrationSchema
 from core.lib.logger import init_logger, get_logger
 
 from api.routes.plaid import oauth_bp as plaid_bp
@@ -54,7 +55,7 @@ class ApiApplication:
 
     def init(self, first_name, last_name, email):
         repo = ProfileRepository(self.store)
-        result = repo.register(RegisterProfileRequest(
+        result = repo.register(RequestRegistrationSchema(
             email=email, first_name=first_name, last_name=last_name
         ))
         return result

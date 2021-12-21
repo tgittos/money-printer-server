@@ -5,7 +5,8 @@ import bcrypt
 import string
 import secrets
 
-from core.models.profile import Profile, ProfileSchema
+from core.models.profile import Profile
+from core.schemas.read_schemas import ReadProfileSchema
 from config import config
 
 
@@ -51,8 +52,10 @@ def encode_jwt(profile: Profile) -> str:
     """
     Encodes a Profile into a valid and secure JWT token
     """
+    print('encoding, profile', profile)
     token = jwt.encode({
-        "profile": ProfileSchema().dumps(profile),
+        "profile": ReadProfileSchema().dumps(profile),
+        "is_admin": profile.is_admin,
         "authenticated": True,
         "exp": (datetime.utcnow() + relativedelta(months=1)).timestamp(),
         "algorithm": "HS256"
@@ -65,5 +68,7 @@ def decode_jwt(token: str) -> dict:
     Decodes a JWT token into a dict
     """
     raw = jwt.decode(token, config.secret, algorithms=["HS256"])
-    raw['profile'] = ProfileSchema().loads(raw['profile'])
+    print('loading raw:', raw)
+    raw['profile'] = ReadProfileSchema().loads(raw['profile'])
+    print('new raw:', raw)
     return raw

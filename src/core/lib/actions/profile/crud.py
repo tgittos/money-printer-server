@@ -1,48 +1,63 @@
 from datetime import datetime
 
 from core.models.profile import Profile
+from core.schemas.create_schemas import CreateProfileSchema
+from core.schemas.update_schemas import UpdateProfileSchema
+from core.schemas.request_schemas import RequestRegistrationSchema
 from core.lib.jwt import generate_temp_password, hash_password
 from core.lib.notifications import ProfileCreatedNotification, notify_profile_created
-from core.lib.types import AccountList, RepositoryResponse
-from config import mailgun_config
 from core.lib.utilities import is_valid_email
 from core.lib.actions.action_response import ActionResponse
+from config import mailgun_config
 
-from .requests import RegisterProfileRequest
 
-
-def get_profile_by_id(db, profile_id: int) -> Profile:
+def get_profile_by_id(db, profile_id: int) -> ActionResponse:
     """
     Gets a profile from the DB by its primary key
     """
     with db.get_session() as session:
-        r = session.query(Profile).where(Profile.id == profile_id).first()
-    return r
+        profile = session.query(Profile).where(Profile.id == profile_id).first()
+    
+    return ActionResponse(
+        success=profile is not None,
+        data=profile,
+        message=f"No profile found with ID {profile_id}" if profile is None else None
+    )
 
 
-def get_profile_by_email(db, email: str) -> Profile:
+def get_profile_by_email(db, email: str) -> ActionResponse:
     """
     Gets a profile from the DB by the user's email address
     """
     with db.get_session() as session:
-        r = session.query(Profile).filter(Profile.email == email).first()
-    return r
+        profile = session.query(Profile).filter(Profile.email == email).first()
+
+    return ActionResponse(
+        success=profile is not None,
+        data=profile,
+        message=f"No profile found with email {email}" if profile is None else None
+    )
 
 
-def get_all_profiles(db) -> AccountList:
+def get_all_profiles(db) -> ActionResponse:
     """
     Returns all the profiles in the DB
     """
     with db.get_session() as session:
-        r = session.query(Profile).all()
-    return r
+        profiles = session.query(Profile).all()
+
+    return ActionResponse(
+        success=profiles is not None,
+        data=profiles,
+        message=f"No profiles found" if profiles is None else None
+    )
 
 
-def create_profile(db, request: RegisterProfileRequest) -> ActionResponse:
+def create_profile(db, request: CreateProfileSchema) -> ActionResponse:
     """
     Registers a new profile and emails the temporary password to the user
     """
-    if not is_valid_email(request.email):
+    if not is_valid_email(request['email']):
         return ActionResponse(
             success=False,
             message='Invalid shaped email given to create_profile'
@@ -51,10 +66,11 @@ def create_profile(db, request: RegisterProfileRequest) -> ActionResponse:
     new_pw = generate_temp_password()
 
     new_profile = Profile()
-    new_profile.email = request.email
+
+    new_profile.email = request['email']
+    new_profile.first_name = request['first_name']
+    new_profile.last_name = request['last_name']
     new_profile.password = hash_password(new_pw)
-    new_profile.first_name = request.first_name
-    new_profile.last_name = request.last_name
     new_profile.timestamp = datetime.utcnow()
 
     with db.get_session() as session:
@@ -71,8 +87,8 @@ def create_profile(db, request: RegisterProfileRequest) -> ActionResponse:
                 success=False,
                 message=f"Unsuccessful response attempting to email temp password to ${new_profile.email}"
             )
-
-        session.commit()
+        else:
+            session.commit()
 
     return ActionResponse(
         success=True,
@@ -80,13 +96,13 @@ def create_profile(db, request: RegisterProfileRequest) -> ActionResponse:
     )
 
 
-def register(db, request: RegisterProfileRequest) -> ActionResponse:
+def register(db, request: RequestRegistrationSchema) -> ActionResponse:
     """
     Registers a user with MoneyPrinter if a user with that email doesnt
     already exist
     """
     # first, check if the request email is already taken
-    existing_profile = get_profile_by_email(db, request.email)
+    existing_profile = get_profile_by_email(db, request['email'])
     if existing_profile is not None:
         return ActionResponse(
             success=False,

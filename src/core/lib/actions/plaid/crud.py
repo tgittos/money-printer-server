@@ -1,65 +1,101 @@
 from datetime import datetime
 
 from core.models.profile import Profile
-from core.models.plaid_item import PlaidItem, PlaidItemSchema
-from core.lib.types import PlaidItemList
+from core.models.plaid_item import PlaidItem
+from core.schemas.create_schemas import CreatePlaidItemSchema
+from core.schemas.update_schemas import UpdatePlaidItemSchema
+from core.lib.actions.action_response import ActionResponse
 
 
-def get_plaid_item_by_id(db, id: int) -> PlaidItem:
+def get_plaid_item_by_id(db, id: int) -> ActionResponse:
     """
     Gets a PlaidItem from the DB by the primary key
     This object represents a Plaid Link object
     """
     with db.get_session() as session:
-        r = session.query(PlaidItem).filter(PlaidItem.id == id).first()
-    return r
+        plaid_item = session.query(PlaidItem).filter(PlaidItem.id == id).first()
+
+    return ActionResponse(
+        success=plaid_item is not None,
+        data=plaid_item,
+        message=f"No plaid item found with ID {id}" if plaid_item is None else None
+    )
 
 
-def get_plaid_item_by_plaid_item_id(db, id: str) -> PlaidItem:
+def get_plaid_item_by_plaid_item_id(db, id: str) -> ActionResponse:
     """
     Gets a PlaidItem from the DB by the remote Plaid ID
     This object represents a Plaid Link object
     """
     with db.get_session() as session:
-        r = session.query(PlaidItem).filter(PlaidItem.item_id == id).first()
-    return r
+        plaid_item = session.query(PlaidItem).filter(PlaidItem.item_id == id).first()
+
+    return ActionResponse(
+        success=plaid_item is not None,
+        data=plaid_item,
+        message=f"No plaid item found with plaid item ID {id}" if plaid_item is None else None
+    )
 
 
-def get_plaid_items_by_profile(db, profile: Profile) -> PlaidItemList:
+def get_plaid_items_by_profile(db, profile: Profile) -> ActionResponse:
     """
     Returns all the PlaidItems associated with the given profile
     """
     with db.get_session() as session:
-        r = session.query(PlaidItem).where(
+        plaid_items = session.query(PlaidItem).where(
             PlaidItem.profile_id == profile.id).all()
-    return r
+
+    return ActionResponse(
+        success=plaid_items is not None,
+        data=plaid_items,
+        message=f"No plaid item found with profile ID {id}" if plaid_items is None else None
+    )
 
 
-def create_plaid_item(db, request: PlaidItemSchema) -> PlaidItem:
+def create_plaid_item(db, request: CreatePlaidItemSchema) -> ActionResponse:
     """
     Creates a PlaidItem in the DB with the data in the given request
     Accepts a PlaidItemSchema object
     """
-    r = PlaidItem()
-    r.profile_id = request.profile_id
-    r.item_id = request.item_id
-    r.access_token = request.access_token
-    r.request_id = request.request_id
-    r.timestamp = datetime.utcnow()
+    plaid_item = PlaidItem()
+
+    plaid_item.profile_id = request['profile_id']
+    plaid_item.item_id = request['item_id']
+    plaid_item.access_token = request['access_token']
+    plaid_item.request_id = request['request_id']
+    plaid_item.timestamp = datetime.utcnow()
 
     with db.get_session() as session:
-        session.add(r)
+        session.add(plaid_item)
         session.commit()
 
-    return r
+    return ActionResponse(
+        success=True,
+        data=plaid_item
+    )
 
 
-def update_plaid_item(db, plaid_item: PlaidItem) -> PlaidItem:
+def update_plaid_item(db, request: UpdatePlaidItemSchema) -> ActionResponse:
     """
     Updates a PlaidItem in the DB and touches the timestamp for it
     """
+    plaid_item = get_plaid_item_by_id(request['id'])
+    if plaid_item is None:
+        return ActionResponse(
+            success=False,
+            message=f"No plaid item found with ID {request['id']}"
+        )
+
+    plaid_item.item_id = request['item_id']
+    plaid_item.access_token = request['access_token']
+    plaid_item.request_id = request['request_id']
     plaid_item.timestamp = datetime.utcnow()
+
     with db.get_session() as session:
         session.attach(plaid_item)
         session.commit()
-    return plaid_item
+
+    return ActionResponse(
+        success=True,
+        data=plaid_item
+    )

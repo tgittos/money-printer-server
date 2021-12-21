@@ -4,16 +4,17 @@ from tests.helpers import db
 
 
 def test_get_plaid_item_by_id_returns_plaid_item(db):
-    repo = PlaidRepository(db)
-    s = db.get_session()
-    item = create_plaid_item(s)
-    item_id = item.id
-    s.close()
-    result = repo.get_plaid_item_by_id(item_id)
-    assert item_id == result.id
+    repo = PlaidRepository()
+    with db.get_session() as session:
+        item = create_plaid_item(session)
+    result = repo.get_plaid_item_by_id(item.id)
+    assert result.success
+    assert result.data is not None
+    assert item.id == result.data.id
 
 
 def test_get_plaid_item_by_id_returns_none_with_missing_id(db):
-    repo = PlaidRepository(db)
+    repo = PlaidRepository()
     result = repo.get_plaid_item_by_id(23421)
-    assert result is None
+    assert not result.success
+    assert result.data is None

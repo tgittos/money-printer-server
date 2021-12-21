@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -16,11 +15,5 @@ class PlaidItem(Base):
     status = Column(String(128))
     timestamp = Column(DateTime)
 
-class PlaidItemSchema(Schema):
-    id = fields.Int()
-    profile_id = fields.Int()
-    item_id = fields.Str()
-    access_token = fields.Str()
-    request_id = fields.Str()
-    status = fields.Str()
-    timestamp = fields.DateTime()
+    profile = relationship("Profile", back_populates="plaid_items")
+    accounts = relationship("Account", back_populates="plaid_item")

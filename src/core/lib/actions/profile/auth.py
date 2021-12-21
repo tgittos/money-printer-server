@@ -8,9 +8,9 @@ from core.lib.jwt import encode_jwt, hash_password, check_password, generate_tem
 from core.lib.notifications import PasswordResetNotification, notify_password_reset
 from config import mailgun_config
 from core.lib.actions.action_response import ActionResponse
+from core.schemas.read_schemas import ReadAuthSchema, ReadProfileSchema
+from core.schemas.request_schemas import RequestAuthSchema, RequestPasswordResetSchema
 
-from .requests import ResetProfilePasswordRequest, LoginRequest
-from .responses import AuthResponse
 from .crud import get_profile_by_email
 
 
@@ -29,31 +29,34 @@ def get_unauthenticated_user(db) -> ActionResponse:
         jwt_token=encode_jwt(demo_profile)
         return ActionResponse(
             success = True,
-            data = AuthResponse(
-                profile=demo_profile,
-                token=jwt_token
-            )
+            data = [demo_profile, jwt_token]
         )
 
 
-def login(db, request: LoginRequest) -> ActionResponse:
+def login(db, request: RequestAuthSchema) -> ActionResponse:
     """
     Performs an authentication of the given user credentials
     """
-    profile=get_profile_by_email(db, request.email)
-    if profile is not None:
-        if check_password(profile.password, request.password):
-            jwt_token=encode_jwt(profile)
-            return ActionResponse(
-                success = True,
-                data = AuthResponse(
-                    profile=profile,
-                    token=jwt_token
-                )
-            )
+    profile_result = get_profile_by_email(db, request['email'])
+    profile = profile_result.data
+
+    if not profile_result.success:
+        return ActionResponse(
+            success=False,
+            message=f"Login failed for ${request['email']}"
+        )
+
+    if check_password(profile.password, request['password']):
+        jwt_token=encode_jwt(profile)
+
+        return ActionResponse(
+            success = True,
+            data = [profile, jwt_token]
+        )
+
     return ActionResponse(
         success=False,
-        message=f"Login failed for ${request.email}"
+        message=f"Login failed for ${request['email']}"
     )
 
 
@@ -74,30 +77,34 @@ def reset_password(db, email: str) -> ActionResponse:
     return ActionResponse(success=False)
 
 
-def continue_reset_password(db, request: ResetProfilePasswordRequest) -> ActionResponse:
+def continue_reset_password(db, request: RequestPasswordResetSchema) -> ActionResponse:
     """
     Continues the user-initiated password reset flow
     """
-    profile = request.profile
-    token = request.token
+    profile = request['profile']
+    token = request['token']
+
     token_entry = get_reset_token(db, token)
+
     if token_entry is not None and token_entry.expiry > datetime.utcnow():
-        profile.password = hash_password(request.password)
+        profile.password = hash_password(request['password'])
 
         with db.get_session() as session:
             session.add(token_entry)
             session.commit()
 
         return ActionResponse(success=True)
+
     if token_entry is not None and token_entry.expiry < datetime.utcnow():
         return ActionResponse(
             success=False,
             message="Password reset token has expired"
         )
+
     return ActionResponse(success=False)
 
 
-def logout(db, email: str):
+def logout(db, email: str) -> ActionResponse:
     """
     Logs a user out and expires their token (& all open tokens)
     """
@@ -139,7 +146,7 @@ def email_reset_token(profile, reset_token) -> ActionResponse:
     )
 
 
-def get_reset_token(db, token_string: str) -> ResetToken:
+def get_reset_token(db, token_string: str) -> ActionResponse:
     """
     Gets a ResetToken from the DB by the unique code sent to the user
     """

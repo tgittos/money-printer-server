@@ -30,7 +30,7 @@ def mock_scheduler_methods(mocker):
 def admin_token(db):
     # seed a profile and gen up a token for that profile
     session = db.get_session()
-    profile = create_user_profile(session, is_admin=True)
+    profile = create_user_profile(session, email="admin@example.org", is_admin=True)
     token = encode_jwt(profile=profile)
     session.close()
     return token
@@ -40,7 +40,7 @@ def admin_token(db):
 def user_token(db):
     # seed a profile and gen up a token for that profile
     session = db.get_session()
-    profile = create_user_profile(session)
+    profile = create_user_profile(session, email="user@example.org", is_admin=False)
     token = encode_jwt(profile=profile)
     session.close()
     return token
