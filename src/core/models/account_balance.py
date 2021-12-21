@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -15,10 +14,4 @@ class AccountBalance(Base):
     iso_currency_code = Column(String(8))
     timestamp = Column(DateTime)
 
-class AccountBalanceSchema(Schema):
-    id = fields.Int()
-    account_id = fields.Int()
-    available = fields.Float()
-    current = fields.Float()
-    iso_currency_code = fields.Str()
-    timestamp = fields.DateTime()
+    account = relationship("Account", back_populates="balances")

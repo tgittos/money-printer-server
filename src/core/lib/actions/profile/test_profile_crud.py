@@ -1,8 +1,9 @@
 import pytest
+from marshmallow import ValidationError
 
 from core.models.profile import Profile
 from core.lib.actions.profile.crud import register, create_profile
-from core.lib.actions.profile.requests import RegisterProfileRequest
+from core.schemas.request_schemas import RequestRegistrationSchema
 # following import is required for spying and ensuring methods were called
 import core.lib.actions.profile.crud as crud
 
@@ -17,20 +18,20 @@ def mock_notifier(mocker):
 
 @pytest.fixture()
 def valid_register_request():
-    return RegisterProfileRequest(
-        email="tgittos@moneyprintergoesbrr.io",
-        first_name="Tim",
-        last_name="Gittos"
-    )
+    return RequestRegistrationSchema().load({
+        'email':"tgittos@moneyprintergoesbrr.io",
+        'first_name':"Tim",
+        'last_name':"Gittos"
+    })
 
 
-@pytest.fixture()
-def invalid_register_request():
-    return RegisterProfileRequest(
-        email="foooooooo.com",
-        first_name=None,
-        last_name=""
-    )
+def test_cannot_construct_invalid_registraction_schema():
+    with pytest.raises(ValidationError):
+        register(db, RequestRegistrationSchema().load({
+            'email':"foooooooo.com",
+            'first_name':None,
+            'last_name':""
+        }))
 
 
 def test_register_fails_on_used_email(db, valid_register_request):
@@ -53,11 +54,6 @@ def test_register_creates_a_new_profile_with_valid_data(db, valid_register_reque
     assert result.data.email == valid_register_request.email
 
 
-def test_register_fails_with_invalid_data(db, invalid_register_request):
-    result = create_profile(db, invalid_register_request)
-    assert not result.success
-
-
 def test_create_profile_creates_profile_record(db, valid_register_request):
     result = create_profile(db, valid_register_request)
     assert result.success
@@ -78,9 +74,28 @@ def test_create_profile_returns_profile(db, valid_register_request):
     result = create_profile(db, valid_register_request)
     assert result.success
     assert result.data.id is not None
-    assert result.data.email == valid_register_request.email
+    assert result.data.email == valid_register_request['email']
 
 
-def test_create_profile_fails_with_invalid_data(db, invalid_register_request):
-    result = create_profile(db, invalid_register_request)
-    assert not result.success
+def test_get_profile_by_id_returns_profile():
+    assert False
+
+
+def test_get_profile_by_id_fails_with_missing_profile():
+    assert False
+
+
+def test_get_profile_by_email_returns_profile():
+    assert False
+
+
+def test_get_profile_by_email_fails_with_missing_profile():
+    assert False
+
+
+def test_get_all_profiles_returns_all_profiles():
+    assert False
+
+
+def test_get_all_profiles_fails_with_no_profiles():
+    assert False

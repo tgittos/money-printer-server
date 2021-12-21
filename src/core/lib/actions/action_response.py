@@ -1,4 +1,4 @@
-class ActionResponse:
+class ActionResponse(object):
 
     def __init__(self, success, data=None, message=''):
         self.success = success

@@ -4,7 +4,7 @@ from plaid.model.link_token_create_request import LinkTokenCreateRequest
 from plaid.model.link_token_create_request_user import LinkTokenCreateRequestUser
 from plaid.model.item_public_token_exchange_request import ItemPublicTokenExchangeRequest
 
-from core.models.plaid_item import PlaidItemSchema
+from core.schemas.create_schemas import CreatePlaidItemSchema
 from core.apis.plaid.common import get_plaid_api_client, PlaidApiConfig, PLAID_PRODUCTS_STRINGS, PLAID_PRODUCTS
 from core.repositories.plaid_repository import PlaidRepository 
 
@@ -60,7 +60,7 @@ class Oauth:
         return plaid_item
 
     def __store_link(self, profile, request_id, item_id, access_token):
-        schema = PlaidItemSchema().load({
+        schema = CreatePlaidItemSchema().load({
             'profile':profile,
             'item_id':item_id,
             'access_token':access_token,

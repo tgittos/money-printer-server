@@ -2,11 +2,10 @@ from flask import Blueprint
 from flask import request, abort
 from marshmallow import ValidationError
 
-from core.models.profile import ProfileSchema
-from core.repositories.profile_repository import ProfileRepository, RegisterProfileRequest, LoginRequest
+from core.repositories.profile_repository import ProfileRepository
 from .decorators import authed, get_identity
-from config import mysql_config, mailgun_config
 from api.schemas.auth_schemas import RegisterProfileSchema, AuthSchema
+from core.schemas.read_schemas import ReadProfileSchema
 
 # define the blueprint for plaid oauth
 auth_bp = Blueprint('auth', __name__)
@@ -20,7 +19,7 @@ def register():
         schema = RegisterProfileSchema().load(request.json)
         repo = ProfileRepository()
         result = repo.register(schema)
-        return ProfileSchema().dumps(result)
+        return ReadProfileSchema().dumps(result)
 
     except ValidationError as error:
         return error.messages, 400

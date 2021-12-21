@@ -7,13 +7,13 @@ from rq_scheduler import Scheduler
 
 from core.apis.mailgun import MailGun
 from core.stores.mysql import MySql
-from core.models.scheduler.scheduled_job import ScheduledJob, CreateScheduledJobSchema
+from core.models.scheduler.scheduled_job import ScheduledJob 
+from core.schemas.create_schemas import CreateScheduledJobSchema, CreateInstantJobSchema
 from core.models.scheduler.job_result import JobResult
 from core.lib.types import ScheduledJobList
 from core.lib.constants import WORKER_QUEUE
 from config import redis_config, mailgun_config, mysql_config
-
-from core.lib.actions.scheduled_job.requests import CreateInstantJobRequest
+from core.repositories.repository_response import RepositoryResponse
 
 
 class ScheduledJobRepository:
@@ -23,31 +23,46 @@ class ScheduledJobRepository:
     mailgun_client = MailGun(mailgun_config)
     queues = []
 
-    def get_scheduled_jobs(self) -> ScheduledJobList:
+    def get_scheduled_jobs(self) -> RepositoryResponse:
         """
         Gets all ScheduledJobs
         """
         with self.db.get_session() as session:
-            r = session.query(ScheduledJob).all()
-        return r
+            jobs = session.query(ScheduledJob).all()
 
-    def get_scheduled_job_by_id(self, id: int):
+        return RepositoryResponse(
+            success=jobs is not None,
+            data = jobs,
+            message=f"No scheduled jobs found" if jobs is None else None
+        )
+
+    def get_scheduled_job_by_id(self, id: int) -> RepositoryResponse:
         """
         Gets a ScheduledJob by it's primary key
         """
         with self.db.get_session() as session:
-            r = session.query(ScheduledJob).where(ScheduledJob.id == id).first()
-        return r
+            job = session.query(ScheduledJob).where(ScheduledJob.id == id).first()
 
-    def create_instant_job(self, request: CreateInstantJobRequest):
+        return RepositoryResponse(
+            success=job is not None,
+            data = job,
+            message=f"No ScheduledJob found with ID {id}" if job is None else None
+        )
+
+    def create_instant_job(self, request: CreateInstantJobSchema) -> RepositoryResponse:
         """
         Pushes a message into Redis to perform the requested job ASAP
         """
         q = self.get_or_create_queue(WORKER_QUEUE)
-        job = q.enqueue(request.job_name, request.args)
-        return job
+        job = q.enqueue(request['job_name'], request['json_args'])
 
-    def create_scheduled_job(self, request: CreateScheduledJobSchema):
+        return RepositoryResponse(
+            success=job is not None,
+            data=job,
+            message=f"Error enqueuing job" if job is None else None
+        )
+
+    def create_scheduled_job(self, request: CreateScheduledJobSchema) -> RepositoryResponse:
         """
         Creates a record in the DB to schedule a job in the worker
         """
@@ -65,34 +80,50 @@ class ScheduledJobRepository:
 
         self.ensure_scheduled(WORKER_QUEUE, job)
 
-        return job
+        return RepositoryResponse(
+            success=job is not None,
+            data=job,
+            message=f"Error creating job" if job is None else None
+        )
 
-    def update_scheduled_job(self, job):
+    def update_scheduled_job(self, job) -> RepositoryResponse:
         self.unschedule_job(job.queue, job)
 
         with self.db.get_session() as session:
             session.add(job)
             session.commit()
 
-        self.ensure_scheduled(job.queue, job)
+        return self.ensure_scheduled(job.queue, job)
 
-    def delete_scheduled_job(self, job):
+    def delete_scheduled_job(self, job) -> RepositoryResponse:
         self.unschedule_job(job.queue, job)
 
         with self.db.get_session() as session:
             session.remove(job)
             session.commit()
+        
+        return RepositoryResponse(
+            success=True
+        )
 
-    def enqueue_scheduled_job(self, job):
+    def enqueue_scheduled_job(self, job) -> RepositoryResponse:
         q = self.get_or_create_queue(job.queue)
         q.enqueue(job.job_name, job.json_args)
 
-    def schedule_persistent_jobs(self):
+        return RepositoryResponse(
+            success=True
+        )
+
+    def schedule_persistent_jobs(self) -> RepositoryResponse:
         jobs = self.get_scheduled_jobs()
         for job in jobs:
             self.ensure_scheduled(job.queue, job)
 
-    def update_last_run(self, job: ScheduledJob) -> ScheduledJob:
+        return RepositoryResponse(
+            success=True
+        )
+
+    def update_last_run(self, job: ScheduledJob) -> RepositoryResponse:
         """
         Update the last run time of a ScheduledJob
         """
@@ -103,22 +134,34 @@ class ScheduledJobRepository:
             session.add(job)
             session.commit()
 
-        return job
+        return RepositoryResponse(
+            success=job is not None,
+            data=job,
+            message=f"Error creating scheduled job" if job is None else None
+        )
 
-    def ensure_scheduled(self, queue: str, job):
+    def ensure_scheduled(self, queue: str, job) -> RepositoryResponse:
         scheduler = self.get_scheduler(queue)
         jobs = scheduler.get_jobs()
         if queue not in [j.meta['id'] for j in jobs]:
             scheduler.cron(job.cron, job.job_name, args=job.json_args, meta={
                 'id': job.id
             })
+        
+        return RepositoryResponse(
+            success=True
+        )
 
-    def unschedule_job(self, queue: str, job):
+    def unschedule_job(self, queue: str, job) -> RepositoryResponse:
         scheduler = self.get_scheduler(queue)
         jobs = scheduler.get_jobs()
         scheduler_job = [j for j in jobs if j.func == job.job_name][0]
         if scheduler_job:
             scheduler.cancel(job)
+        
+        return RepositoryResponse(
+            success=True
+        )
 
     def get_or_create_queue(self, name: str):
         queue_names = [q.name for q in self.queues]

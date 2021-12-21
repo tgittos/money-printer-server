@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -22,18 +21,4 @@ class InvestmentTransaction(Base):
     subtype = Column(String(32))
     timestamp = Column(DateTime)
 
-
-class InvestmentTransactionSchema(Schema):
-    id = fields.Int()
-    account_id = fields.Int()
-    name = fields.Str()
-    amount = fields.Float()
-    fees = fields.Float()
-    price = fields.Float()
-    quantity = fields.Float()
-    date = fields.DateTime()
-    investment_transaction_id = fields.Str()
-    iso_currency_code = fields.Str()
-    type = fields.Str()
-    subtype = fields.Str()
-    timestamp = fields.DateTime()
+    account = relationship("Account", back_populates="transactions")

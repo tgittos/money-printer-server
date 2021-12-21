@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from marshmallow import Schema, fields
 
 from core.models.base import Base
 
@@ -18,15 +17,8 @@ class Account(Base):
     subtype = Column(String(32))
     timestamp = Column(DateTime)
 
-
-class AccountSchema(Schema):
-    id = fields.Int()
-    plaid_item_id = fields.Int()
-    profile_id = fields.Int()
-    account_id = fields.Int()
-    name = fields.Str()
-    official_name = fields.Str()
-    type = fields.Str()
-    subtype = fields.Str()
-    timestamp = fields.DateTime()
-
+    profile = relationship("Profile", back_populates="accounts")
+    plaid_item = relationship("PlaidItem", back_populates="accounts")
+    balances = relationship("AccountBalance", back_populates="account")
+    holdings = relationship("Holding", back_populates="account")
+    transactions = relationship("InvestmentTransaction", back_populates="account")

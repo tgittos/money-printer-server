@@ -2,18 +2,19 @@ from datetime import datetime
 
 from sqlalchemy import and_, desc
 
-from core.models.account_balance import AccountBalance, AccountBalanceSchema
+from core.models.account_balance import AccountBalance
+from core.schemas.request_schemas import RequestAccountBalanceSchema
+from core.schemas.create_schemas import CreateAccountBalanceSchema
 from core.models.account import Account
-from core.lib.types import AccountBalanceList
-
-from .requests import GetAccountBalanceRequest
+from core.lib.actions.action_response import ActionResponse
 
 
-def create_account_balance(db, request: AccountBalanceSchema) -> AccountBalance:
+def create_account_balance(db, request: CreateAccountBalanceSchema) -> ActionResponse:
     """
     Creates an AccountBalance record in the DB, to snapshot the account value at a point in time
     """
     balance = AccountBalance()
+
     balance.account_id = request.account.id
     balance.available = request.available
     balance.current = request.current
@@ -24,10 +25,13 @@ def create_account_balance(db, request: AccountBalanceSchema) -> AccountBalance:
         session.add(balance)
         session.commit()
 
-    return balance
+    return ActionResponse(
+        success=balance is not None,
+        data=balance
+    )
 
 
-def get_balances_by_account(db, request: GetAccountBalanceRequest) -> AccountBalanceList:
+def get_balances_by_account(db, request: RequestAccountBalanceSchema) -> ActionResponse:
     """
     Returns all the balances for the requested account
     Accepts an object of GetAccountBalanceRequest type
@@ -50,16 +54,23 @@ def get_balances_by_account(db, request: GetAccountBalanceRequest) -> AccountBal
                 records = session.query(AccountBalance).filter(
                     AccountBalance.account_id == request.account.id).all()
 
-    return records
+    return ActionResponse(
+        success=True,
+        data=records
+    )
 
 
-def get_latest_balance_by_account(db, account: Account) -> AccountBalance:
+def get_latest_balance_by_account(db, account: Account) -> ActionResponse:
     """
     Returns the last synced balance for the given account
     """
     with db.get_session() as session:
-        r = session.query(AccountBalance).filter(
+        balance = session.query(AccountBalance).filter(
             AccountBalance.accountId == account.id).order_by(
                 desc(AccountBalance.timestamp)).first()
 
-    return r
+    return ActionResponse(
+        success=balance is not None,
+        data=balance,
+        message=f"No balances found for account ID {account.id}" if balance is None else None
+    )

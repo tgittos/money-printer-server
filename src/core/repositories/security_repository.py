@@ -1,21 +1,20 @@
+from marshmallow import EXCLUDE
 from datetime import date, timedelta
 
 from core.stores.mysql import MySql
 from core.apis.plaid.investments import Investments, InvestmentsConfig
-from core.models.plaid_item import PlaidItem
-from core.models.account import AccountSchema
-from core.models.security import SecuritySchema
-from core.models.holding import HoldingSchema
-from core.models.investment_transaction import InvestmentTransactionSchema
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
-
 from core.lib.actions.plaid.crud import get_plaid_item_by_id
+from core.schemas.create_schemas import CreateHoldingSchema, CreateSecuritySchema
+from core.repositories.repository_response import RepositoryResponse
+from core.models.plaid_item import PlaidItem
 
 # import all the facets so that consumers of the repo can access everything
 from core.lib.utilities import wrap
 from core.lib.actions.security.crud import *
-from core.lib.actions.security.requests import *
+from core.lib.actions.profile.crud import get_profile_by_id
+from core.lib.actions.account.crud import get_account_by_id
 
 
 class SecurityRepository:
@@ -30,92 +29,106 @@ class SecurityRepository:
     def _init_facets(self):
         self.create_security = wrap(create_security, self.db)
         self.create_holding = wrap(create_holding, self.db)
-        self.create_investment_transaction = wrap(create_investment_transaction, self.db)
-        self.get_security_by_security_id = wrap(get_security_by_security_id, self.db)
+        self.create_investment_transaction = wrap(
+            create_investment_transaction, self.db)
+        self.get_security_by_security_id = wrap(
+            get_security_by_security_id, self.db)
         self.get_security_by_symbol = wrap(get_security_by_symbol, self.db)
-        self.get_securities_by_account = wrap(get_securities_by_account, self.db)
         self.get_securities = wrap(get_securities, self.db)
-        self.get_holdings_by_profile_and_account = wrap(get_holdings_by_profile_and_account, self.db)
         self.get_holding_by_plaid_account_id_and_plaid_security_id =\
             wrap(get_holding_by_plaid_account_id_and_plaid_security_id, self.db)
         self.update_holding_balance = wrap(update_holding_balance, self.db)
         self.update_holding_balance = wrap(update_holding_balance, self.db)
 
-    def sync_holdings(self, profile: Profile, account: Account):
-        if profile is None:
-            self.logger.error("requested holdings sync on account with no Profile given")
-            return
+    def sync_holdings(self, profile_id: int, account_id: int) -> RepositoryResponse:
+        profile_result = get_profile_by_id(self.db, profile_id)
+        if not profile_result.success:
+            self.logger.error(
+                "requested holdings sync on account with no Profile given")
+            return RepositoryResponse(
+                success=False,
+                message=profile_result.message
+            )
 
-        if account is None:
-            self.logger.error("requested holdings sync on account with no Account given")
-            return
+        account_result = get_account_by_id(self.db, account_id)
+        if not account_result.success:
+            self.logger.error(
+                "requested holdings sync on account with no Account given")
+            return RepositoryResponse(
+                success=False,
+                message=account_result.message
+            )
 
-        plaid_item = get_plaid_item_by_id(self, account.plaid_item_id)
-        if plaid_item is None:
+        plaid_result = get_plaid_item_by_id(
+            self, account_result.data.plaid_item_id)
+        if not plaid_result.success:
             self.logger.error("requested holdings sync on account but couldn't find plaid_item: {0}"
-                              .format(AccountSchema().dumps(account)))
-            return
+                              .format(account_id))
+            return RepositoryResponse(
+                success=False,
+                message=plaid_result.message
+            )
 
         api = Investments(InvestmentsConfig(self.plaid_config))
-        investment_dict = api.get_investments(plaid_item.access_token)
+        investment_dict = api.get_investments(plaid_result.data.access_token)
 
         # update securities from this account
         # these might not be account specific, but institution specific
         # so there's a chance I can detach it from the profile/account and just
         # link it in from the holdings
         for security_dict in investment_dict["securities"]:
-            security = self.get_security_by_security_id(plaid_security_id=security_dict['security_id'])
-            if security is None:
-                schema = SecuritySchema().load({
-                    'profile':profile,
-                    'account':account,
-                    'name':security_dict['name'],
-                    'ticker_symbol':security_dict['ticker_symbol'],
-                    'iso_currency_code':security_dict['iso_currency_code'],
-                    'institution_id':security_dict['institution_id'],
-                    'institution_security_id':security_dict['institution_security_id'],
-                    'security_id':security_dict['security_id'],
-                    'proxy_security_id':security_dict['proxy_security_id'],
-                    'cusip':security_dict['cusip'],
-                    'isin':security_dict['isin'],
-                    'sedol':security_dict['sedol']
+            security_result = self.get_security_by_security_id(
+                plaid_security_id=security_dict['security_id'])
+            if not security_result.success:
+                schema = CreateSecuritySchema(unknown=EXCLUDE).load({
+                    **{'profile': plaid_result.data, 'account': account_result.data},
+                    **security_dict
                 })
                 security = self.create_security(schema)
 
         # update the holdings
         for holding_dict in investment_dict["holdings"]:
-            security = self.get_security_by_security_id(holding_dict['security_id'])
-            holding = self.get_holding_by_plaid_account_id_and_plaid_security_id(
+            security_result = self.get_security_by_security_id(
+                holding_dict['security_id'])
+            holding_result = self.get_holding_by_plaid_account_id_and_plaid_security_id(
                 holding_dict["account_id"],
                 holding_dict["security_id"])
-            if holding is None:
-                schema = HoldingSchema().load({
-                    'account':account,
-                    'security':security,
-                    'cost_basis':holding_dict['cost_basis'],
-                    'quantity':holding_dict['quantity'],
-                    'iso_currency_code':holding_dict['iso_currency_code']
-                })
-                holding = self.create_holding(schema)
+            if not holding_result.success:
+                self.create_holding(CreateHoldingSchema(unknown=EXCLUDE).load({
+                    **{'account': account_result.data, 'security': security_result.data},
+                    **holding_dict
+                }))
             else:
-                self.update_holding_balance(UpdateHoldingRequest(
-                    holding=holding,
-                    cost_basis=holding_dict['cost_basis'],
-                    quantity=holding_dict['quantity']
-                ))
+                self.update_holding_balance(UpdateHoldingSchema(unknown=EXCLUDE).load({
+                    ** {'holding': holding_result.data},
+                    **holding_dict
+                }))
 
-    def sync_transactions(self, profile: Profile, account: Account):
-        if account is None:
-            self.logger.error("requested holdings sync on account that couldn't be found: {0}".format(account_id))
-            return
+        return RepositoryResponse(
+            success=True
+        )
+
+    def sync_transactions(self, profile_id: int, account_id: int) -> RepositoryResponse:
+        account_result = get_account_by_id(self.db, account_id)
+        if not account_result.success:
+            self.logger.error(
+                "requested holdings sync on account that couldn't be found: {0}".format(account_id))
+            return RepositoryResponse(
+                success=False,
+                message=account_result.message
+            )
 
         with self.db.get_session() as session:
-            plaid_item = session.query(PlaidItem).where(PlaidItem.id == account.plaid_item_id).first()
+            plaid_item = session.query(PlaidItem).where(
+                PlaidItem.id == account_result.data.plaid_item_id).first()
 
         if plaid_item is None:
             self.logger.error(
-                "requested holdings sync on account but couldn't find plaid_item: {0}".format(AccountSchema().dumps(account)))
-            return
+                "requested holdings sync on account but couldn't find plaid_item: {0}".format(account_result.data.plaid_item_id))
+            return RepositoryResponse(
+                success=False,
+                message=f"No PlaidItem found with ID {account_result.data.plaid_item_id}"
+            )
 
         api = Investments(InvestmentsConfig(self.plaid_config))
 
@@ -125,10 +138,11 @@ class SecurityRepository:
         start = date.today()
         end = start - timedelta(days=365)
 
-        if self._has_transactions(account):
+        if self._has_transactions(account_result.data):
             end = start - timedelta(days=7)
 
-        transactions_dict = api.get_transactions(plaid_item.access_token, start=start, end=end)
+        transactions_dict = api.get_transactions(
+            plaid_item.access_token, start=start, end=end)
 
         if 'transactions' not in transactions_dict:
             self.logger.info("upstream provider returned 0 transactions for date period {0} - {1}"
@@ -147,24 +161,18 @@ class SecurityRepository:
                 transaction_dict['investment_transaction_id'])
 
             if investment_transaction is None:
-                schema = InvestmentTransactionSchema().load({
-                    'account':account,
-                    'amount':transaction_dict['amount'],
-                    'date':transaction_dict['date'],
-                    'fees':transaction_dict['fees'],
-                    'investment_transaction_id':transaction_dict['investment_transaction_id'],
-                    'iso_currency_code':transaction_dict['iso_currency_code'],
-                    'name':transaction_dict['name'],
-                    'price':transaction_dict['price'],
-                    'quantity':transaction_dict['quantity'],
-                    'subtype':transaction_dict['subtype'],
-                    'type':transaction_dict['type']
-                })
-                investment_transaction = self.create_investment_transaction(schema)
+                investment_transaction = self.create_investment_transaction(
+                    CreateInvestmentTransactionSchema(unknown=EXCLUDE).load({
+                        **{'account': account_result.data},
+                        **transaction_dict
+                    }))
 
             transactions.append(transactions)
 
-        return transactions
+        return RepositoryResponse(
+            success=True,
+            data=transactions
+        )
 
     def _has_transactions(self, account: Account) -> bool:
         with self.db.get_session() as session:

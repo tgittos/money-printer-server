@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
-from marshmallow import Schema, fields
+from sqlalchemy.orm import relationship
 
 from core.models.base import Base
-
 
 
 class ScheduledJob(Base):
@@ -17,18 +16,4 @@ class ScheduledJob(Base):
     active = Column(Boolean, nullable=False, default=True)
     timestamp = Column(DateTime)
 
-class CreateScheduledJobSchema(Schema):
-    cron = fields.Str(required=True)
-    job_name = fields.Str(required=True)
-    json_args = fields.Str()
-
-
-class ScheduledJobSchema(Schema):
-    id = fields.Int()
-    cron = fields.Str()
-    job_name = fields.Str()
-    json_args = fields.Str()
-    last_run = fields.DateTime()
-    queue = fields.Str()
-    active = fields.Bool()
-    timestamp = fields.DateTime()
+    results = relationship("JobResult", back_populates="scheduled_job")

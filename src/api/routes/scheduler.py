@@ -1,7 +1,8 @@
 from flask import Blueprint, request, Response, abort
 from marshmallow import ValidationError
 
-from core.models.scheduler.scheduled_job import ScheduledJobSchema, CreateScheduledJobSchema
+from core.schemas.read_schemas import ReadScheduledJobSchema
+from core.schemas.create_schemas import CreateScheduledJobSchema
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from .decorators import authed, admin, get_identity
 
@@ -12,12 +13,13 @@ scheduler_bp = Blueprint('scheduler', __name__)
 @authed
 @admin
 def list_schedules():
+    print("here")
     repo = ScheduledJobRepository()
-    scheduled = repo.get_scheduled_jobs()
-    if scheduled:
+    response = repo.get_scheduled_jobs()
+    if response.success:
         return {
             'success': True,
-            'data': ScheduledJobSchema(many=True).dump(scheduled)
+            'data': ReadScheduledJobSchema(many=True).dump(response.data)
         }
     return {
         'success': False
@@ -31,12 +33,12 @@ def create_schedule():
     try:
         repo = ScheduledJobRepository()
         schema = CreateScheduledJobSchema().load(request.json)
-        job = repo.create_scheduled_job(schema)
+        response = repo.create_scheduled_job(schema)
 
-        if job:
+        if response.success:
             return {
                 'success': True,
-                'data': ScheduledJobSchema().dump(job)
+                'data': ReadScheduledJobSchema().dump(response.data)
             }, 201
 
         return {
@@ -53,12 +55,14 @@ def create_schedule():
 @admin
 def update_schedule(schedule_id):
     try:
-        schema = ScheduledJobSchema().load(request.json)
+        schema = ReadScheduledJobSchema().load(request.json)
 
         repo = ScheduledJobRepository()
-        job = repo.get_scheduled_job_by_id(schedule_id)
+        response = repo.get_scheduled_job_by_id(schedule_id)
 
-        if job:
+        if response.success:
+            job = response.data
+
             job.job_name = schema.get('job_name') or job.job_name
             job.cron = schema.get('cron') or job.cron
             job.json_args = schema.get('json_args') or job.json_args
@@ -68,7 +72,7 @@ def update_schedule(schedule_id):
 
             return {
                 'success': True,
-                'data': ScheduledJobSchema().dump(job)
+                'data': ReadScheduledJobSchema().dump(job)
             }
 
         return {
@@ -85,10 +89,14 @@ def update_schedule(schedule_id):
 @admin
 def delete_schedule(schedule_id):
     repo = ScheduledJobRepository()
-    job = ScheduledJobRepository.get_scheduled_job_by_id(schedule_id)
-    repo.delete_scheduled_job(job)
+    result = ScheduledJobRepository.get_scheduled_job_by_id(schedule_id)
+    if result.success:
+        repo.delete_scheduled_job(result.data)
+        return {
+            'success': True
+        }
     return {
-        'success': True
+        'success': False
     }
 
 
