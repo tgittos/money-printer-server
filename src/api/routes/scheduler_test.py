@@ -15,10 +15,11 @@ from api.routes.scheduler import ScheduledJobRepository
 #        password=password
 #    ), follow_redirects=True)
 
-#rv = c.post('/api/auth', json={
+# rv = c.post('/api/auth', json={
 #        'email': 'flask@example.com', 'password': 'secret'
 #    })
 #    json_data = rv.get_json()
+
 
 @pytest.fixture(autouse=True)
 def mock_scheduler_methods(mocker):
@@ -30,7 +31,8 @@ def mock_scheduler_methods(mocker):
 def admin_token(db):
     # seed a profile and gen up a token for that profile
     session = db.get_session()
-    profile = create_user_profile(session, email="admin@example.org", is_admin=True)
+    profile = create_user_profile(
+        session, email="admin@example.org", is_admin=True)
     token = encode_jwt(profile=profile)
     session.close()
     return token
@@ -40,39 +42,44 @@ def admin_token(db):
 def user_token(db):
     # seed a profile and gen up a token for that profile
     session = db.get_session()
-    profile = create_user_profile(session, email="user@example.org", is_admin=False)
+    profile = create_user_profile(
+        session, email="user@example.org", is_admin=False)
     token = encode_jwt(profile=profile)
     session.close()
     return token
 
+
 @pytest.fixture()
 def valid_scheduled_job_request():
     return {
-        'job_name':"My New Job",
-        'cron':"0 * * * *",
-        'json_args':"{}"
+        'job_name': "My New Job",
+        'cron': "0 * * * *",
+        'json_args': "{}"
     }
+
 
 @pytest.fixture()
 def invalid_scheduled_job_request():
     return {
-        'job_name':"",
-        'cron':None,
-        'json_args':""
+        'job_name': "",
+        'cron': None,
+        'json_args': ""
     }
+
 
 @pytest.fixture()
 def valid_instant_job_request():
     return {
         'job_name': "Once off job",
-        'json_args':{}
+        'json_args': {}
     }
+
 
 @pytest.fixture()
 def invalid_instant_job_request():
     return {
-        'job_name':"",
-        'json_args':None
+        'job_name': "",
+        'json_args': None
     }
 
 
@@ -95,6 +102,7 @@ def test_create_schedule_rejects_invalid_input_for_admin_token(client, admin_tok
                            json=invalid_scheduled_job_request)
     assert response.status_code == 400
 
+
 def test_create_schedule_rejects_valid_input_for_non_admin_token(client, user_token, valid_scheduled_job_request):
     response = client.post('/v1/api/admin/schedules',
                            headers={'Authorization': f"Bearer {user_token}"},
@@ -102,6 +110,8 @@ def test_create_schedule_rejects_valid_input_for_non_admin_token(client, user_to
     assert response.status_code == 401
 
 # /v1/api/admin/schedules/1
+
+
 def test_list_schedules_returns_all_schedules_for_admin_token(db, client, admin_token):
     with db.get_session() as session:
         job_1 = create_scheduled_job(session)
@@ -137,17 +147,19 @@ def test_update_schedule_accepts_valid_input_for_admin_token(db, client, admin_t
 
     assert job.job_name != 'Updated Job Name'
     response = client.put('/v1/api/admin/schedules/' + str(job.id),
-                        headers={'Authorization': f"Bearer {admin_token}"},
-                        json={
-                            'job_name':'Updated Job Name'
-                        },
-                        follow_redirects=True)
+                          headers={'Authorization': f"Bearer {admin_token}"},
+                          json={
+        'job_name': 'Updated Job Name'
+    },
+        follow_redirects=True)
     assert response.status_code == 200
     with db.get_session() as session:
-        updated_job = session.query(ScheduledJob).where(ScheduledJob.id == job.id).first()
+        updated_job = session.query(ScheduledJob).where(
+            ScheduledJob.id == job.id).first()
         assert updated_job.job_name == 'Updated Job Name'
 
 
+@pytest.mark.skip(reason="need to go back and implement this")
 def updating_a_schedule_reschedules_job():
     assert False
 
@@ -160,25 +172,31 @@ def test_update_schedule_returns_401_for_user_token(db, client, user_token):
     response = client.put('/v1/api/admin/schedules/' + str(job.id),
                           headers={'Authorization': f"Bearer {user_token}"},
                           data=json.dumps({
-                              'job_name':'Updated Job Name'
+                              'job_name': 'Updated Job Name'
                           }),
                           content_type='application/json',
                           follow_redirects=True)
     assert response.status_code == 401
     with db.get_session() as session:
-        updated_job = session.query(ScheduledJob).where(ScheduledJob.id == job.id).first()
+        updated_job = session.query(ScheduledJob).where(
+            ScheduledJob.id == job.id).first()
     assert updated_job.job_name == job.job_name
 
 # /v1/api/admin/schedules/1
+
+
+@pytest.mark.skip(reason="need to go back and implement this")
 def test_update_schedule_rejects_invalid_input(client):
     assert False
 
 
 # /v1/api/admin/schedules/1
+@pytest.mark.skip(reason="need to go back and implement this")
 def test_delete_schedule_accepts_valid_input(client):
     assert False
 
 
 # /v1/api/admin/schedules/1
+@pytest.mark.skip(reason="need to go back and implement this")
 def test_delete_schedule_rejects_invalid_input(client):
     assert False
