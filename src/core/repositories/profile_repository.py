@@ -22,6 +22,7 @@ class ProfileRepository:
 
     db = MySql(mysql_config)
     logger = get_logger(__name__)
+    scheduled_job_repo = ScheduledJobRepository()
 
     def __init__(self):
         self._init_facets()
@@ -59,13 +60,12 @@ class ProfileRepository:
             )
 
         for plaid_item in plaid_result.data:
-            scheduled_job_repo = ScheduledJobRepository()
-            scheduled_job_repo.create_instant_job(CreateInstantJobSchema(
-                job_name='sync_accounts',
-                args={
+            self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema().load({
+                'job_name':'sync_accounts',
+                'json_args':{
                     'plaid_item_id': plaid_item.id
                 }
-            ))
+            }))
 
         return RepositoryResponse(success=True)
 

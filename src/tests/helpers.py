@@ -7,7 +7,7 @@ os.environ["MP_ENVIRONMENT"] = "test"
 
 
 @pytest.fixture
-def db():
+def db(scope="file", autouse=True):
     db = MySql(mysql_config)
     db.create_all()
     yield db
@@ -15,7 +15,7 @@ def db():
 
 
 @pytest.fixture(scope='session')
-def client():
+def client(scope="function"):
     db = MySql(mysql_config)
     app = ApiApplication(db)
 
