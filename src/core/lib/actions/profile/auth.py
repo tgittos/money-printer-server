@@ -19,17 +19,18 @@ def get_unauthenticated_user(db) -> ActionResponse:
     Gets the demo profile encoded as a token so the frontend thinks it's "authed"
     """
     with db.get_session() as session:
-        demo_profile = session.query(Profile).where(Profile.is_demo_profile).first()
+        demo_profile = session.query(Profile).where(
+            Profile.is_demo_profile).first()
         # TODO - maybe delete this
         if demo_profile is None:
-            demo_profile=Profile()
-            demo_profile.timestamp=datetime.utcnow()
-            demo_profile.first_name="Anonymous"
-            demo_profile.last_name="Money-Printer"
-        jwt_token=encode_jwt(demo_profile)
+            demo_profile = Profile()
+            demo_profile.timestamp = datetime.utcnow()
+            demo_profile.first_name = "Anonymous"
+            demo_profile.last_name = "Money-Printer"
+        jwt_token = encode_jwt(demo_profile)
         return ActionResponse(
-            success = True,
-            data = [demo_profile, jwt_token]
+            success=True,
+            data=[demo_profile, jwt_token]
         )
 
 
@@ -47,11 +48,11 @@ def login(db, request: RequestAuthSchema) -> ActionResponse:
         )
 
     if check_password(profile.password, request['password']):
-        jwt_token=encode_jwt(profile)
+        jwt_token = encode_jwt(profile)
 
         return ActionResponse(
-            success = True,
-            data = [profile, jwt_token]
+            success=True,
+            data=[profile, jwt_token]
         )
 
     return ActionResponse(
@@ -64,11 +65,12 @@ def reset_password(db, email: str) -> ActionResponse:
     """
     Starts the reset password flow by creating a reset token for a user
     """
-    profile = get_profile_by_email(db, email)
-    if profile is not None:
-        token = create_reset_token(db, profile)
-        result = email_reset_token(db, token)
-        if result.success:
+    response = get_profile_by_email(db, email)
+    if response.success:
+        token_result = create_reset_token(db, response.data)
+        if token_result.success:
+            email_result = email_reset_token(db, token_result.data)
+        if email_result and email_result.success:
             return ActionResponse(success=True)
         return ActionResponse(
             success=False,
@@ -151,5 +153,6 @@ def get_reset_token(db, token_string: str) -> ActionResponse:
     Gets a ResetToken from the DB by the unique code sent to the user
     """
     with db.get_session() as session:
-        r = session.query(ResetToken).filter(ResetToken.token == token_string).first()
+        r = session.query(ResetToken).filter(
+            ResetToken.token == token_string).first()
     return r
