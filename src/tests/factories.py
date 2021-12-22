@@ -1,9 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone, tzinfo
 
 from core.lib.jwt import encode_jwt, hash_password, check_password, generate_temp_password
 from core.models.profile import Profile
 from core.models.plaid_item import PlaidItem
 from core.models.scheduler.scheduled_job import ScheduledJob
+from core.models.reset_token import ResetToken
 from core.lib.utilities import id_generator
 from core.lib.constants import WORKER_QUEUE
 
@@ -62,3 +63,19 @@ def create_scheduled_job(session,
     session.add(job)
     session.commit()
     return job
+
+
+def create_reset_token(session, profile_id,
+                       token='random token',
+                       expiry=None):
+    t = ResetToken()
+
+    t.token = token
+    t.profile_id = profile_id
+    t.expiry = expiry or datetime.now(tz=timezone.utc) + timedelta(days=30)
+    t.timestamp = datetime.now(tz=timezone.utc)
+
+    session.add(t)
+    session.commit()
+
+    return t

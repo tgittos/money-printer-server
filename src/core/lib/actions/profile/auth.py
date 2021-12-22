@@ -11,7 +11,7 @@ from core.lib.actions.action_response import ActionResponse
 from core.schemas.read_schemas import ReadAuthSchema, ReadProfileSchema
 from core.schemas.request_schemas import RequestAuthSchema, RequestPasswordResetSchema
 
-from .crud import get_profile_by_email
+from .crud import get_profile_by_email, get_profile_by_id
 
 
 def get_unauthenticated_user(db) -> ActionResponse:
@@ -83,19 +83,20 @@ def continue_reset_password(db, request: RequestPasswordResetSchema) -> ActionRe
     """
     Continues the user-initiated password reset flow
     """
-    profile = request['profile']
+    profile_id = request['profile']['id']
     token = request['token']
 
-    token_entry = get_reset_token(db, token)
+    profile_result = get_profile_by_id(db, profile_id)
+    token_result = get_reset_token(db, token)
 
-    if token_entry is not None and token_entry.expiry > datetime.utcnow():
-        profile.password = hash_password(request['password'])
+    if not profile_result.success or not token_result.success:
+        return ActionResponse(
+            success=False,
+            message=f"Could not find profile or reset token specified in request"
+        )
 
-        with db.get_session() as session:
-            session.add(token_entry)
-            session.commit()
-
-        return ActionResponse(success=True)
+    token_entry = token_result.data
+    profile = profile_result.data
 
     if token_entry is not None and token_entry.expiry < datetime.utcnow():
         return ActionResponse(
@@ -103,7 +104,13 @@ def continue_reset_password(db, request: RequestPasswordResetSchema) -> ActionRe
             message="Password reset token has expired"
         )
 
-    return ActionResponse(success=False)
+    with db.get_session() as session:
+        session.add(profile)
+        profile.password = hash_password(request['password'])
+        session.delete(token_entry)
+        session.commit()
+
+    return ActionResponse(success=True)
 
 
 def logout(db, email: str) -> ActionResponse:
@@ -155,4 +162,8 @@ def get_reset_token(db, token_string: str) -> ActionResponse:
     with db.get_session() as session:
         r = session.query(ResetToken).filter(
             ResetToken.token == token_string).first()
-    return r
+    return ActionResponse(
+        success=r is not None,
+        data=r,
+        message=f"Could not find reset token with given string" if r is None else None
+    )
