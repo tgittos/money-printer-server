@@ -1,3 +1,4 @@
+from copy import Error
 from flask import Blueprint, abort
 
 from core.repositories.account_repository import AccountRepository
@@ -6,6 +7,18 @@ from .decorators import authed, get_identity
 
 
 profile_bp = Blueprint('profile', __name__)
+
+
+@profile_bp.route('/v1/api/profile', methods=['GET'])
+@authed
+def get_profile():
+    raise Error("oops, not done")
+
+
+@profile_bp.route('/v1/api/profile', methods=['PUT'])
+@authed
+def update_profile():
+    raise Error("oops, not done")
 
 
 @profile_bp.route('/v1/api/profile/sync', methods=['POST'])
