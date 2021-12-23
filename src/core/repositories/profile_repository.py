@@ -22,7 +22,12 @@ class ProfileRepository:
 
     db = MySql(mysql_config)
     logger = get_logger(__name__)
+    balance_repo = BalanceRepository()
+    holdings_repo = HoldingRepository()
     scheduled_job_repo = ScheduledJobRepository()
+    plaid_accounts_api = Accounts(AccountsConfig(
+        plaid_config=plaid_config
+    ))
 
     def __init__(self):
         self._init_facets()
@@ -51,7 +56,7 @@ class ProfileRepository:
             )
 
         plaid_result = get_plaid_items_by_profile(self.db, profile_result.data)
-        if not plaid_result.success:
+        if not plaid_result.success or len(plaid_result.data) == 0:
             self.logger.error(
                 "scheduled account sync for Profile, but no PlaidItems found")
             return RepositoryResponse(
@@ -61,8 +66,8 @@ class ProfileRepository:
 
         for plaid_item in plaid_result.data:
             self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema().load({
-                'job_name':'sync_accounts',
-                'json_args':{
+                'job_name': 'sync_accounts',
+                'json_args': {
                     'plaid_item_id': plaid_item.id
                 }
             }))
@@ -89,17 +94,10 @@ class ProfileRepository:
         self.logger.info(
             "updating account state for PlaidItem {0}".format(plaid_item_id))
 
-        balance_repo = BalanceRepository()
-        holdings_repo = HoldingRepository()
-
-        plaid_accounts_api = Accounts(AccountsConfig(
-            plaid_config=plaid_config
-        ))
-
         profile_result = get_profile_by_id(
             self.db, plaid_result.data.profile_id)
 
-        if not profile_result.success:
+        if not profile_result.success or profile_result.data is None:
             self.logger.warning(
                 "couldn't find Profile attached to fetched PlaidItem: {0}".format(plaid_item_id))
             return RepositoryResponse(
@@ -107,7 +105,7 @@ class ProfileRepository:
                 message=profile_result.message
             )
 
-        plaid_accounts_dict = plaid_accounts_api.get_accounts(
+        plaid_accounts_dict = self.plaid_accounts_api.get_accounts(
             plaid_result.data.access_token)
 
         self.logger.info("updating {0} accounts".format(
@@ -125,14 +123,14 @@ class ProfileRepository:
                 accounts.append(account_result.data)
                 self.logger.info("updating account balance for account {0}".format(
                     account_result.data.id))
-                balance_repo.sync_account_balance(account_result.data)
+                self.balance_repo.sync_account_balance(account_result.data)
             else:
                 self.logger.warning(
                     "upstream returned account response missing an id: {0}".format(account_dict))
 
         self.logger.info(
             "fetching investment holdings for PlaidItem {0}".format(plaid_result.data.id))
-        holdings_repo.update_holdings(plaid_result.data)
+        self.holdings_repo.update_holdings(plaid_result.data.id)
 
         self.logger.info("done updating accounts for profile {0}".format(
             profile_result.data.id))
