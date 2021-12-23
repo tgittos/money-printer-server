@@ -51,7 +51,7 @@ def valid_reset_password_request(db):
         profile = create_user_profile(session)
         token = create_reset_token(session, profile_id=profile.id)
     return RequestPasswordResetSchema().load({
-        'profile': ReadProfileSchema().dump(profile),
+        'email': profile.email,
         'token': token.token,
         'password': 'my new password1!'
     })
@@ -66,7 +66,7 @@ def expired_reset_password_request(db):
                                    expiry=datetime.now(
                                        tz=timezone.utc) - timedelta(days=45))
     return RequestPasswordResetSchema().load({
-        'profile': ReadProfileSchema().dump(profile),
+        'email': profile.email,
         'token': token.token,
         'password': 'my new password1!'
     })
@@ -157,7 +157,7 @@ def test_continue_reset_token_accepts_valid_request(db, valid_reset_password_req
 
     with db.get_session() as session:
         profile = session.query(Profile).where(
-            Profile.id == valid_reset_password_request['profile']['id']).first()
+            Profile.email == valid_reset_password_request['email']).first()
 
     assert check_password(
         profile.password, valid_reset_password_request['password'])
@@ -173,7 +173,7 @@ def test_continue_reset_token_rejects_missing_token(db):
         profile = create_user_profile(session)
 
     result = continue_reset_password(db, RequestPasswordResetSchema().load({
-        'profile': ReadProfileSchema().dump(profile),
+        'email': profile.email,
         'token': 'foobarfaketoken',
         'password': 'my new password1!'
     }))

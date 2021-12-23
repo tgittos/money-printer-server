@@ -86,10 +86,10 @@ def continue_reset_password(db, request: RequestPasswordResetSchema) -> ActionRe
     """
     Continues the user-initiated password reset flow
     """
-    profile_id = request['profile']['id']
+    email = request['email']
     token = request['token']
 
-    profile_result = get_profile_by_id(db, profile_id)
+    profile_result = get_profile_by_email(db, email)
     token_result = get_reset_token(db, token)
 
     if not profile_result.success or not token_result.success:

@@ -7,6 +7,7 @@ from core.repositories.profile_repository import ProfileRepository
 from .decorators import authed, get_identity
 from api.schemas.auth_schemas import RegisterProfileSchema, AuthSchema
 from core.schemas.read_schemas import ReadProfileSchema, ReadAuthSchema
+from core.schemas.request_schemas import RequestPasswordResetSchema
 
 # define the blueprint for plaid oauth
 auth_bp = Blueprint('auth', __name__)
@@ -28,10 +29,6 @@ def register():
 
     except ValidationError as error:
         return error.messages, 400
-    except Exception as ex:
-        if os.environ['MP_ENVIRONMENT'] == 'production':
-            abort(500)
-        raise ex
 
 
 @auth_bp.route('/v1/api/auth/unauthenticated', methods=['GET'])
@@ -65,26 +62,25 @@ def login():
 
     except ValidationError as error:
         return error.messages, 400
-    except Exception as ex:
-        if os.environ['MP_ENVIRONMENT'] == 'production':
-            abort(500)
-        raise ex
 
 
 @auth_bp.route('/v1/api/auth/reset', methods=['POST'])
 def reset_password():
-    user = get_identity()
+    email = request.json['email']
     repo = ProfileRepository()
-    result_json = repo.reset_password(username=user['username'])
-    return result_json
+    result = repo.reset_password(email=email)
+    if not result.success:
+        return result.message, 400
+    return '', 204
 
 
 @auth_bp.route('/v1/api/auth/reset/continue', methods=['POST'])
 def continue_reset_password():
-    user = get_identity()
+    email = request.json['email']
     token = request.json['token']
     new_password = request.json['password']
     repo = ProfileRepository()
-    result = repo.continue_reset_password(
-        username=user['username'], token=token, password=new_password)
-    return result
+    result = repo.continue_reset_password(RequestPasswordResetSchema().load(request.json))
+    if not result.success:
+        return result.message, 400
+    return '', 204

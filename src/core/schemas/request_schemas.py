@@ -14,12 +14,11 @@ class RequestRegistrationSchema(Schema):
 
 
 class RequestPasswordResetSchema(Schema):
-    profile = fields.Nested('ReadProfileSchema')
-
-    class Meta:
-        additional=("token", "password")
+    email = fields.Str()
+    token = fields.Str()
+    password = fields.Str()
 
 
 class RequestAuthSchema(Schema):
-    class Meta:
-        fields=("email", "password")
+    email = fields.Str()
+    password = fields.Str()
