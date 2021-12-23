@@ -1,3 +1,4 @@
+import os
 from flask import Blueprint
 from flask import request, abort
 from marshmallow import ValidationError
@@ -5,7 +6,7 @@ from marshmallow import ValidationError
 from core.repositories.profile_repository import ProfileRepository
 from .decorators import authed, get_identity
 from api.schemas.auth_schemas import RegisterProfileSchema, AuthSchema
-from core.schemas.read_schemas import ReadProfileSchema
+from core.schemas.read_schemas import ReadProfileSchema, ReadAuthSchema
 
 # define the blueprint for plaid oauth
 auth_bp = Blueprint('auth', __name__)
@@ -17,12 +18,20 @@ def register():
         schema = RegisterProfileSchema().load(request.json)
         repo = ProfileRepository()
         result = repo.register(schema)
-        return ReadProfileSchema().dumps(result)
+        if result.success:
+            return ReadProfileSchema().dump(result.data)
+        else:
+            return {
+                'success': False,
+                'message': result.message
+            }, 400
 
     except ValidationError as error:
         return error.messages, 400
-    except Exception:
-        abort(500)
+    except Exception as ex:
+        if os.environ['MP_ENVIRONMENT'] == 'production':
+            abort(500)
+        raise ex
 
 
 @auth_bp.route('/v1/api/auth/unauthenticated', methods=['GET'])
@@ -46,20 +55,20 @@ def login():
         repo = ProfileRepository()
         result = repo.login(schema)
 
-        if result is None:
+        if not result.success:
             return {
                 'success': False,
                 'message': 'Username/password combination not found'
             }, 404
+        
+        return ReadAuthSchema().dump(result.data)
 
-        return {
-            'success': True,
-            'data': result
-        }
     except ValidationError as error:
         return error.messages, 400
-    except Exception:
-        abort(500)
+    except Exception as ex:
+        if os.environ['MP_ENVIRONMENT'] == 'production':
+            abort(500)
+        raise ex
 
 
 @auth_bp.route('/v1/api/auth/reset', methods=['POST'])

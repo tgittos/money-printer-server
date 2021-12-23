@@ -96,7 +96,7 @@ def create_profile(db, request: CreateProfileSchema) -> ActionResponse:
             password=new_pw
         ))
 
-        if not notify_result:
+        if not notify_result and notify_result.status_code != 200:
             session.rollback()
             return ActionResponse(
                 success=False,

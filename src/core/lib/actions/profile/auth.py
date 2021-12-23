@@ -52,7 +52,10 @@ def login(db, request: RequestAuthSchema) -> ActionResponse:
 
         return ActionResponse(
             success=True,
-            data=[profile, jwt_token]
+            data={
+                'token': jwt_token,
+                'profile': profile
+            }
         )
 
     return ActionResponse(

@@ -97,6 +97,4 @@ class ReadHoldingBalanceSchema(Schema):
 
 class ReadAuthSchema(Schema):
     profile = fields.Nested('ReadProfileSchema',)
-
-    class Meta:
-        additional = ("token",)
+    token = fields.Str()

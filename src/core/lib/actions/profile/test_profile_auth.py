@@ -89,7 +89,9 @@ def test_login_accepts_valid_login_request(db, valid_auth_request):
     result = login(db, valid_auth_request)
 
     assert result.success
-    profile, token = result.data
+    result = result.data
+    profile = result['profile']
+    token = result['token']
     assert profile.id == user.id
     assert profile.email == user.email
     assert token is not None
