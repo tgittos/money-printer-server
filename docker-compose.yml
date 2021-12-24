@@ -1,6 +1,20 @@
 services:
   redis:
     image: "redis:alpine"
+  matomo:
+    image: "mp-matomo"
+    ports:
+      - 8080:8080
+    volumes:
+      - matomo-config:/var/www/matomo/config
+    env_file:
+      - .env.dev
+    depends_on: [ "db" ]
+  prometheus:
+    image: "mp-prometheus"
+    ports:
+      - 9090:9090
+    entrypoint: [ "/bin/sh", "prometheus.sh" ]
   db:
     image: "mysql/mysql-server:5.7"
     volumes:
@@ -23,7 +37,7 @@ services:
       MP_DB__HOST: db
     env_file:
       - .env.dev
-    depends_on: [ "redis", "db" ]
+    depends_on: [ "redis", "db", "matomo", "prometheus" ]
     image: api
     entrypoint:
       [
@@ -78,11 +92,7 @@ services:
         "--db",
         "0"
       ]
-  platform:
-    build:
-      dockerfile: Dockerfile.platform
-      context: .
-    profiles: [ "platform" ]
 
 volumes:
   db-data: null
+  matomo-config: null
