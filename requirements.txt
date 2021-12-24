@@ -32,3 +32,4 @@ pytest-mock==3.6.1
 pytest-cov==3.0.0
 marshmallow==3.14.1
 pytest-parallel==0.1.1
+prometheus-client==0.12.0

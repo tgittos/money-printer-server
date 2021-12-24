@@ -1,0 +1,19 @@
+{
+  "name": "money-printer-server",
+  "version": "1.0.0",
+  "description": "Command runner for the Money Printer server project",
+  "scripts": {
+    "clean": "find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete",
+    "test": "docker exec --tty $(docker compose ps -q api) /bin/bash -c \"MP_ENVIRONMENT=test PYTHONPATH=src pytest --workers 1 --tests-per-worker 1 --cov-config=.coveragerc --cov=src --cov-report term:skip-covered src/\"",
+    "test:focus": "docker exec --tty $(docker compose ps -q api) /bin/bash -c \"MP_ENVIRONMENT=test PYTHONPATH=src pytest -m focus --cov-config=.coveragerc --cov=src --cov-report term:skip-covered src/\"",
+    "db:init": "./bin/dev/init-db.sh",
+    "db:migrate": "docker exec --tty $(docker compose ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=development alembic revision --autogenerate -m \"$npm_config_name\"",
+    "db:update": "docker exec --tty $(docker compose ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=development alembic upgrade head\""
+  },
+  "author": "Tim Gittos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/money-printer/money-printer-server/issues"
+  },
+  "homepage": "https://gitlab.com/money-printer/money-printer-server#readme"
+}
