@@ -163,7 +163,7 @@ def test_auth_tokens_are_valid_for_30_days(client, valid_auth_request):
     assert json is not None
     assert json['token'] is not None
     token = decode_jwt(json['token'])
-    assert datetime.from_timestamp(token['exp']) > datetime.now(
+    assert datetime.fromtimestamp(token['exp'], tz=timezone.utc) > datetime.now(
         tz=timezone.utc) + timedelta(days=27)
 
 
@@ -189,7 +189,7 @@ def test_reset_password_accepts_bad_email_but_doesnt_send_token(client, db, mock
     })
 
     assert response.status_code == 204
-    spy.assert_called_never()
+    spy.assert_not_called()
 
 
 def test_continue_reset_accepts_valid_token(client, db, valid_reset_token):
@@ -203,8 +203,10 @@ def test_continue_reset_accepts_valid_token(client, db, valid_reset_token):
 
 
 def test_continue_reset_rejects_invalid_token(client, db, invalid_reset_token):
-    p = get_profile_by_email(db, invalid_reset_token['email'])
-    assert not check_password(p.data.password, invalid_reset_token['password'])
+    with db.get_session() as session:
+        p = create_user_profile(session, email=invalid_reset_token['email'])
+    with pytest.raises(Exception):
+        check_password(str(p.password), invalid_reset_token['password'])
     response = client.post('/v1/api/auth/reset/continue',
                            json=invalid_reset_token)
     assert response.status_code == 400

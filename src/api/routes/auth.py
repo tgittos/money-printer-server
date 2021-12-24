@@ -57,7 +57,7 @@ def login():
                 'success': False,
                 'message': 'Username/password combination not found'
             }, 404
-        
+
         return ReadAuthSchema().dump(result.data)
 
     except ValidationError as error:
@@ -69,8 +69,7 @@ def reset_password():
     email = request.json['email']
     repo = ProfileRepository()
     result = repo.reset_password(email=email)
-    if not result.success:
-        return result.message, 400
+    # return a 204 regardless of success for security reasons
     return '', 204
 
 
@@ -80,7 +79,8 @@ def continue_reset_password():
     token = request.json['token']
     new_password = request.json['password']
     repo = ProfileRepository()
-    result = repo.continue_reset_password(RequestPasswordResetSchema().load(request.json))
+    result = repo.continue_reset_password(
+        RequestPasswordResetSchema().load(request.json))
     if not result.success:
         return result.message, 400
     return '', 204
