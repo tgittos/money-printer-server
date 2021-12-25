@@ -14,6 +14,7 @@ from config import config, redis_config, env
 from core.repositories.profile_repository import ProfileRepository
 from core.schemas.request_schemas import RequestRegistrationSchema
 from core.lib.logger import init_logger, get_logger
+from core.graphql.schema import schema
 
 from api.routes.plaid import oauth_bp as plaid_bp
 from api.routes.auth import auth_bp
@@ -26,7 +27,6 @@ from api.routes.scheduler import scheduler_bp
 from api.routes.swagger import swagger_bp
 
 from api.lib.client_bus import ClientBus
-
 
 class ApiApplication:
 
@@ -67,17 +67,16 @@ class ApiApplication:
         if self.configured:
             return
         self.logger.debug("configuring base Flask application")
-        self.flask_app.wsgi_app = DispatcherMiddleware(self.flask_app.wsgi_app, {
-            '/metrics': make_wsgi_app()
-        })
+        # HURR
         self.flask_app.config['CORS_HEADERS'] = 'Content-Type'
         self.flask_app.config['SECRET_KEY'] = config.secret
         self.flask_app.url_map.strict_slashes = False
         CORS(self.flask_app)
         self.flask_app.handle_exception = self._rescue_exceptions
         self.flask_app.config.from_object(rq_dashboard.default_settings)
-
         self._configure_routes()
+        self._configure_prometheus()
+        self._configure_graphql()
 
     def _configure_routes(self):
         if self.configured:
@@ -112,6 +111,27 @@ class ApiApplication:
                                    cors_allowed_origins='*',
                                    message_queue="redis://")
         self.client_bus = ClientBus(self.socket_app)
+    
+    def _configure_prometheus(self):
+        if self.configured:
+            return
+        self.logger.debug("configuring Prometheus metrics endpoint")
+        self.flask_app.wsgi_app = DispatcherMiddleware(self.flask_app.wsgi_app, {
+            '/metrics': make_wsgi_app()
+        })
+    
+    def _configure_graphql(self):
+        if self.configured:
+            return
+        self.logger.debug("configuring GraphQL endpoint")
+        #self.flask_app.add_url_rule(
+        #    '/v1/api/graphql',
+        #    view_func=GraphQLView.as_view(
+        #        'mp_graphql',
+        #        schema=schema,
+        #        graphiql=True
+        #    )
+        #)
 
     def _rescue_exceptions(self, ex: Exception):
         error_json = {
