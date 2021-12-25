@@ -11,3 +11,4 @@ src/platform/ssh/mp-devops
 .terraform
 .terraform.lock.hcl
 logs
+**/swagger.json
