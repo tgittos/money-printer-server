@@ -68,7 +68,7 @@ class Query(graphene.ObjectType):
     # holdings = SQLAlchemyConnectionField(Holding.connection)
     holdings = graphene.List(Holding)
     # securities = SQLAlchemyConnectionField(Security.connection)
-    securities = graphene.List(Holding)
+    securities = graphene.List(Security)
 
     security_prices = SQLAlchemyConnectionField(SecurityPrice.connection)
 
