@@ -37,6 +37,7 @@ class ProfileRepository:
         self.get_all_profiles = wrap(get_all_profiles, self.db)
         self.get_unauthenticated_user = wrap(get_unauthenticated_user, self.db)
         self.create_profile = wrap(create_profile, self.db)
+        self.update_profile = wrap(update_profile, self.db)
         self.register = wrap(register, self.db)
         self.login = wrap(login, self.db)
         self.reset_password = wrap(reset_password, self.db)

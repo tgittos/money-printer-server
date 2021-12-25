@@ -23,7 +23,8 @@ def decode_token():
             if is_token_valid(token):
                 return decode_jwt(token)
     except DecodeError:
-        logger.exception("auth decorator received bad token from request: {0}", token)
+        logger.exception(
+            "auth decorator received bad token from request: {0}", token)
         return Response({
             "success": False
         }, status=400, mimetype='application/json')
@@ -40,6 +41,10 @@ def authed(func):
     @wraps(func)
     def decorated(*args, **kwargs):
         token = decode_token()
+        if token is None:
+            return Response({
+                "success": False
+            }, status=401, mimetype='application/json')
 
         # if we were unable to get a token from the decode,
         # and we hit this point, then we're not authed
