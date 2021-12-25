@@ -6,6 +6,7 @@ import traceback
 from flask import Flask, abort
 from flask_cors import CORS
 from flask_socketio import SocketIO
+from flask_graphql import GraphQLView
 import rq_dashboard
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from prometheus_client import make_wsgi_app
