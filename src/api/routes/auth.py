@@ -9,15 +9,18 @@ from api.schemas.auth_schemas import RegisterProfileSchema, AuthSchema
 from core.schemas.read_schemas import ReadProfileSchema, ReadAuthSchema
 from core.schemas.request_schemas import RequestPasswordResetSchema
 
+from api.metrics.auth_metrics import *
+
 # define the blueprint for plaid oauth
 auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/v1/api/auth/register', methods=['POST'])
 def register():
-    """Create a new user in the database and email a temporary password to them.
+    """
     ---
     post:
+      summary: Create a new user in the database and email a temporary password to them.
       parameters:
       - in: request
         schema: RegisterProfileSchema
@@ -26,6 +29,8 @@ def register():
           content:
             application/json:
               schema: ReadAuthSchema
+      tags:
+        - Auth
     """
     try:
         schema = RegisterProfileSchema().load(request.json)
@@ -59,9 +64,10 @@ def get_unauthenticated_user():
 
 @auth_bp.route('/v1/api/auth/login', methods=['POST'])
 def login():
-    """Authenticate user credentials in exchange for a JWT token
+    """
     ---
     post:
+      summary: Authenticate user credentials in exchange for a JWT token.
       parameters:
       - in: request
         schema: RequestAuthSchema
@@ -70,6 +76,8 @@ def login():
           content:
             application/json:
               schema: ReadAuthSchema
+      tags:
+        - Auth
     """
     try:
         schema = AuthSchema().load(request.json)
@@ -90,9 +98,10 @@ def login():
 
 @auth_bp.route('/v1/api/auth/reset', methods=['POST'])
 def reset_password():
-    """Initiate the user password reset process by emailing a reset link to the user.
+    """
     ---
     post:
+      summary: Initiate the user password reset process by emailing a reset link to the user.
       parameters:
       - in: email
         name: email
@@ -101,6 +110,8 @@ def reset_password():
       responses:
         204:
           description: Accepted
+      tags:
+        - Auth
     """
     email = request.json['email']
     repo = ProfileRepository()
@@ -111,23 +122,25 @@ def reset_password():
 
 @auth_bp.route('/v1/api/auth/reset/continue', methods=['POST'])
 def continue_reset_password():
-    """Initiate the user password reset process by emailing a reset link to the user.
+    """
     ---
     post:
+      summary: Continue the user reset process by providing a private reset token and a new password.
       parameters:
       - in: request
         schema: RequestPasswordResetSchema
       responses:
         204:
           description: Accepted
+      tags:
+        - Auth
     """
-
-    email = request.json['email']
-    token = request.json['token']
-    new_password = request.json['password']
-    repo = ProfileRepository()
-    result = repo.continue_reset_password(
-        RequestPasswordResetSchema().load(request.json))
-    if not result.success:
-        return result.message, 400
-    return '', 204
+    try:
+        repo = ProfileRepository()
+        result = repo.continue_reset_password(
+            RequestPasswordResetSchema().load(request.json))
+        if not result.success:
+            return result.message, 400
+        return '', 204
+    except ValidationError as error:
+        return error.messages, 400

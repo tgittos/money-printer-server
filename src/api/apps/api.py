@@ -7,6 +7,8 @@ from flask import Flask, abort
 from flask_cors import CORS
 from flask_socketio import SocketIO
 import rq_dashboard
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from prometheus_client import make_wsgi_app
 
 from config import config, redis_config, env
 from core.repositories.profile_repository import ProfileRepository
@@ -65,12 +67,16 @@ class ApiApplication:
         if self.configured:
             return
         self.logger.debug("configuring base Flask application")
+        self.flask_app.wsgi_app = DispatcherMiddleware(self.flask_app.wsgi_app, {
+            '/metrics': make_wsgi_app()
+        })
         self.flask_app.config['CORS_HEADERS'] = 'Content-Type'
         self.flask_app.config['SECRET_KEY'] = config.secret
         self.flask_app.url_map.strict_slashes = False
         CORS(self.flask_app)
         self.flask_app.handle_exception = self._rescue_exceptions
         self.flask_app.config.from_object(rq_dashboard.default_settings)
+
         self._configure_routes()
 
     def _configure_routes(self):
