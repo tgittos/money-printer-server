@@ -28,7 +28,8 @@ services:
       dockerfile: Dockerfile
       context: .
     volumes:
-      - .:/app
+      - ./docs:/app/docs
+      - ./src:/app/src
     ports:
       - 80:80
       - 443:443
