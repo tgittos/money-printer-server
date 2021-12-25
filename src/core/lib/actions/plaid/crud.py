@@ -13,7 +13,8 @@ def get_plaid_item_by_id(db, id: int) -> ActionResponse:
     This object represents a Plaid Link object
     """
     with db.get_session() as session:
-        plaid_item = session.query(PlaidItem).filter(PlaidItem.id == id).first()
+        plaid_item = session.query(PlaidItem).filter(
+            PlaidItem.id == id).first()
 
     return ActionResponse(
         success=plaid_item is not None,
@@ -28,7 +29,8 @@ def get_plaid_item_by_plaid_item_id(db, id: str) -> ActionResponse:
     This object represents a Plaid Link object
     """
     with db.get_session() as session:
-        plaid_item = session.query(PlaidItem).filter(PlaidItem.item_id == id).first()
+        plaid_item = session.query(PlaidItem).filter(
+            PlaidItem.item_id == id).first()
 
     return ActionResponse(
         success=plaid_item is not None,
@@ -100,3 +102,7 @@ def update_plaid_item(db, request: UpdatePlaidItemSchema) -> ActionResponse:
         success=True,
         data=plaid_item
     )
+
+
+def delete_plaid_item(db, plaid_item_id: int):
+    raise Exception("not implemented yet")
