@@ -1,6 +1,12 @@
 import graphene
 from graphene import relay
-from graphene_sqlalchemy import SQLAlchemyObjectType
+from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
+
+from api.routes.decorators import decode_token
+
+from core.repositories.account_repository import AccountRepository
+from core.repositories.holding_repository import HoldingRepository
+from core.repositories.security_repository import SecurityRepository
 
 from core.models.profile import Profile as ProfileModel
 from core.models.account import Account as AccountModel
@@ -9,6 +15,7 @@ from core.models.holding import Holding as HoldingModel
 from core.models.holding_balance import HoldingBalance as HoldingBalanceModel
 from core.models.security import Security as SecurityModel
 from core.models.security_price import SecurityPrice as SecurityPriceModel
+from core.schemas.read_schemas import ReadProfileSchema
 
 class Profile(SQLAlchemyObjectType):
     class Meta:
@@ -54,8 +61,34 @@ class SecurityPrice(SQLAlchemyObjectType):
         interfaces = (relay.Node,)
 
 
+# built in queries the user can call?
 class Query(graphene.ObjectType):
+    # accounts = SQLAlchemyConnectionField(Account.connection)
+    accounts = graphene.List(Account)
+    # holdings = SQLAlchemyConnectionField(Holding.connection)
+    holdings = graphene.List(Holding)
+    # securities = SQLAlchemyConnectionField(Security.connection)
+    securities = graphene.List(Holding)
+
+    security_prices = SQLAlchemyConnectionField(SecurityPrice.connection)
+
+    profile = graphene.Field(Profile)
     node = relay.Node.Field()
+
+    def resolve_profile(self, info):
+        return ReadProfileSchema().load(decode_token())
+    
+    def resolve_accounts(self, info):
+        profile = self.resolve_profile(info)
+        return AccountRepository().get_accounts_by_profile_id(profile.id).data
+
+    def resolve_holdings(self, info):
+        profile = self.resolve_profile(info)
+        return HoldingRepository().get_holdings_by_profile_id(profile.id).data
+
+    def resolve_securities(self, info):
+        profile = self.resolve_profile(info)
+        return SecurityRepository().get_securities_by_profile_id(profile.id).data
 
 
 schema = graphene.Schema(query=Query)

@@ -12,10 +12,10 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from prometheus_client import make_wsgi_app
 
 from config import config, redis_config, env
+
 from core.repositories.profile_repository import ProfileRepository
 from core.schemas.request_schemas import RequestRegistrationSchema
 from core.lib.logger import init_logger, get_logger
-from core.graphql.schema import schema
 
 from api.routes.plaid import oauth_bp as plaid_bp
 from api.routes.auth import auth_bp
@@ -27,12 +27,13 @@ from api.routes.profile import profile_bp
 from api.routes.scheduler import scheduler_bp
 from api.routes.swagger import swagger_bp
 
+from api.graphql.schema import schema
 from api.lib.client_bus import ClientBus
 
 class ApiApplication:
 
     log_path = os.path.dirname(__file__) + "/../../../logs/"
-    flask_app = Flask(__name__)
+    flask_app = None
     socket_app = None
     client_bus = None
     store = None
@@ -42,6 +43,7 @@ class ApiApplication:
         init_logger(self.log_path)
         self.logger = get_logger("server.services.api")
         self.store = store
+        self.flask_app = Flask(__name__)
         self._configure_flask()
         self._configure_ws()
         # override RQ redis url
@@ -68,16 +70,14 @@ class ApiApplication:
         if self.configured:
             return
         self.logger.debug("configuring base Flask application")
-        # HURR
         self.flask_app.config['CORS_HEADERS'] = 'Content-Type'
         self.flask_app.config['SECRET_KEY'] = config.secret
-        self.flask_app.url_map.strict_slashes = False
         CORS(self.flask_app)
         self.flask_app.handle_exception = self._rescue_exceptions
         self.flask_app.config.from_object(rq_dashboard.default_settings)
-        self._configure_routes()
-        self._configure_prometheus()
         self._configure_graphql()
+        self._configure_prometheus()
+        self._configure_routes()
 
     def _configure_routes(self):
         if self.configured:
@@ -125,14 +125,16 @@ class ApiApplication:
         if self.configured:
             return
         self.logger.debug("configuring GraphQL endpoint")
-        #self.flask_app.add_url_rule(
-        #    '/v1/api/graphql',
-        #    view_func=GraphQLView.as_view(
-        #        'mp_graphql',
-        #        schema=schema,
-        #        graphiql=True
-        #    )
-        #)
+        self.flask_app.add_url_rule(
+           '/v1/api/graphql',
+            view_func=GraphQLView.as_view(
+                'graphql_view',
+                schema=schema,
+                graphiql=True,
+                header_editor_enabled=True,
+                should_persist_headers=True
+            )
+        )
 
     def _rescue_exceptions(self, ex: Exception):
         error_json = {

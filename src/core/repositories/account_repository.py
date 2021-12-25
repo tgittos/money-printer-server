@@ -32,6 +32,16 @@ class AccountRepository:
         self.get_account_by_id = wrap(get_account_by_id, self.db)
         self.get_account_by_account_id = wrap(
             get_account_by_account_id, self.db)
+    
+    def get_accounts_by_profile_id(self, profile_id: int) -> RepositoryResponse:
+        """
+        Returns a list of accounts for a given profile ID
+        """
+        profile_result = get_profile_by_id(self.db, profile_id)
+        if not profile_result.success: return profile_result
+        action_result = self.get_accounts_by_profile(profile_result.data)
+        return RepositoryResponse(success=action_result.success, data=action_result.data, message=action_result.message)
+
 
     def get_accounts_by_profile_with_balances(self, request: GetAccountSchema) -> RepositoryResponse:
         """

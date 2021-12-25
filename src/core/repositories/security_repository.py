@@ -39,6 +39,18 @@ class SecurityRepository:
             wrap(get_holding_by_plaid_account_id_and_plaid_security_id, self.db)
         self.update_holding_balance = wrap(update_holding_balance, self.db)
         self.update_holding_balance = wrap(update_holding_balance, self.db)
+    
+    def get_securities_by_profile_id(self, profile_id: int) -> RepositoryResponse:
+        """
+        Returns a list of securites that belong to holdings for the given profile ID
+        """
+        raise Exception("not implemented")
+
+        # profile_result = get_profile_by_id(profile_id)
+        # if not profile_result.success: return profile_result
+        # profile = profile_result.data
+        # with self.db.get_session() as session:
+        #     data = session.query(Security).join_from()
 
     def sync_holdings(self, profile_id: int, account_id: int) -> RepositoryResponse:
         profile_result = get_profile_by_id(self.db, profile_id)

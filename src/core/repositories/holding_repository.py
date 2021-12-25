@@ -25,6 +25,17 @@ class HoldingRepository:
     def __init__(self):
         self.scheduled_job_repo = ScheduledJobRepository()
         self.security_repo = SecurityRepository()
+    
+    def get_holdings_by_profile_id(self, profile_id: int) -> RepositoryResponse:
+        """
+        Returns the holdings for a given profile ID
+        """
+        with self.db.get_session() as session:
+            data = session.query(Holding).where(Holding.account.profile_id == profile_id).all()
+        return RepositoryResponse(
+            success=data is not None,
+            data = data
+        )
 
     def schedule_update_holdings(self, plaid_item_id: int) -> RepositoryResponse:
         """

@@ -62,7 +62,6 @@ def admin(func):
     @wraps(func)
     def decorated(*args, **kwargs):
         token = decode_token()
-        print("admin, token:", token)
         if not token or not token['is_admin']:
             return Response({
                 "success": False
