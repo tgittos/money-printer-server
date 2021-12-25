@@ -21,6 +21,7 @@ from api.routes.webhooks import webhooks_bp
 from api.routes.health import health_bp
 from api.routes.profile import profile_bp
 from api.routes.scheduler import scheduler_bp
+from api.routes.swagger import swagger_bp
 
 from api.lib.client_bus import ClientBus
 
@@ -61,7 +62,8 @@ class ApiApplication:
         return result
 
     def _configure_flask(self):
-        if self.configured: return
+        if self.configured:
+            return
         self.logger.debug("configuring base Flask application")
         self.flask_app.config['CORS_HEADERS'] = 'Content-Type'
         self.flask_app.config['SECRET_KEY'] = config.secret
@@ -72,9 +74,11 @@ class ApiApplication:
         self._configure_routes()
 
     def _configure_routes(self):
-        if self.configured: return
+        if self.configured:
+            return
         self.logger.info("registering rq blueprint")
-        self.flask_app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
+        self.flask_app.register_blueprint(
+            rq_dashboard.blueprint, url_prefix="/rq")
         self.logger.info("registering health blueprint")
         self.flask_app.register_blueprint(health_bp)
         self.logger.info("registering auth blueprint")
@@ -91,9 +95,12 @@ class ApiApplication:
         self.flask_app.register_blueprint(webhooks_bp)
         self.logger.info("registering scheduler blueprint")
         self.flask_app.register_blueprint(scheduler_bp)
+        self.logger.info("registering swagger docs blueprint")
+        self.flask_app.register_blueprint(swagger_bp)
 
     def _configure_ws(self):
-        if self.configured: return
+        if self.configured:
+            return
         self.logger.debug("configuring SocketIO ws")
         self.socket_app = SocketIO(self.flask_app,
                                    cors_allowed_origins='*',
@@ -110,11 +117,13 @@ class ApiApplication:
                 error_json['traceback'] = traceback.format_exc(ex)
             except Exception as ex:
                 error_json['traceback'] = ex
-        self.logger.exception("uncaught exception from Flask app: {0}".format(error_json))
+        self.logger.exception(
+            "uncaught exception from Flask app: {0}".format(error_json))
         abort(500, error_json)
 
     def _configure_signals(self):
-        if self.configured: return
+        if self.configured:
+            return
         self.logger.debug("intercepting sigints for graceful shutdown")
         signal.signal(signal.SIGINT, self._curry_sigint_handler({
             "client_bus": self.client_bus
