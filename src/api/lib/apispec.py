@@ -20,6 +20,13 @@ spec = APISpec(
     plugins=[FlaskPlugin(), MarshmallowPlugin()],
 )
 
+# security
+# api_key_scheme = {"type": "apiKey", "in": "header", "name": "X-API-Key"}
+jwt_scheme = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+
+# spec.components.security_scheme("api_key", api_key_scheme)
+spec.components.security_scheme("jwt", jwt_scheme)
+
 # schemas
 spec.components.schema("RequestRegistration", schema=RequestRegistrationSchema)
 spec.components.schema("RequestPasswordReset",
@@ -33,7 +40,7 @@ spec.components.schema("UpdateProfile", schema=UpdateProfileSchema)
 # paths
 with ApiApplication(None).flask_app.test_request_context():
     # auth
-    spec.path(view=register)
+    spec.path(view=register, tag="Auth")
     spec.path(view=login)
     spec.path(view=reset_password)
     spec.path(view=continue_reset_password)

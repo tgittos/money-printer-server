@@ -15,6 +15,18 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/v1/api/auth/register', methods=['POST'])
 def register():
+    """Create a new user in the database and email a temporary password to them.
+    ---
+    post:
+      parameters:
+      - in: request
+        schema: RegisterProfileSchema
+      responses:
+        200:
+          content:
+            application/json:
+              schema: ReadAuthSchema
+    """
     try:
         schema = RegisterProfileSchema().load(request.json)
         repo = ProfileRepository()
@@ -47,6 +59,18 @@ def get_unauthenticated_user():
 
 @auth_bp.route('/v1/api/auth/login', methods=['POST'])
 def login():
+    """Authenticate user credentials in exchange for a JWT token
+    ---
+    post:
+      parameters:
+      - in: request
+        schema: RequestAuthSchema
+      responses:
+        200:
+          content:
+            application/json:
+              schema: ReadAuthSchema
+    """
     try:
         schema = AuthSchema().load(request.json)
         repo = ProfileRepository()
@@ -66,6 +90,18 @@ def login():
 
 @auth_bp.route('/v1/api/auth/reset', methods=['POST'])
 def reset_password():
+    """Initiate the user password reset process by emailing a reset link to the user.
+    ---
+    post:
+      parameters:
+      - in: email
+        name: email
+        schema:
+            type: string
+      responses:
+        204:
+          description: Accepted
+    """
     email = request.json['email']
     repo = ProfileRepository()
     result = repo.reset_password(email=email)
@@ -75,6 +111,17 @@ def reset_password():
 
 @auth_bp.route('/v1/api/auth/reset/continue', methods=['POST'])
 def continue_reset_password():
+    """Initiate the user password reset process by emailing a reset link to the user.
+    ---
+    post:
+      parameters:
+      - in: request
+        schema: RequestPasswordResetSchema
+      responses:
+        204:
+          description: Accepted
+    """
+
     email = request.json['email']
     token = request.json['token']
     new_password = request.json['password']
