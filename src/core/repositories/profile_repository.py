@@ -8,14 +8,12 @@ from core.lib.logger import get_logger
 from core.stores.mysql import MySql
 from core.repositories.repository_response import RepositoryResponse
 from config import mysql_config, plaid_config
-from core.schemas.create_schemas import CreateInstantJobSchema
+from core.schemas.scheduler_schemas import CreateInstantJobSchema
 
-from core.lib.actions.account.crud import create_or_update_account
-from core.lib.actions.plaid.crud import get_plaid_items_by_profile, get_plaid_item_by_id
-
-# import all the actions so that consumers of the repo can access everything
-from core.lib.actions.profile.crud import *
-from core.lib.actions.profile.auth import *
+from core.actions.account.crud import create_or_update_account
+from core.actions.plaid.crud import get_plaid_items_by_profile, get_plaid_item_by_id
+from core.actions.profile.crud import *
+from core.actions.profile.auth import *
 
 
 class ProfileRepository:

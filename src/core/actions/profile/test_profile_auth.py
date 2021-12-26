@@ -2,17 +2,18 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy.sql.type_api import Emulated
 import pytest
 
-import core.lib.actions.profile.auth as auth
-from core.lib.actions.profile.auth import login, get_unauthenticated_user, reset_password, continue_reset_password, get_reset_token
-from core.schemas.read_schemas import ReadProfileSchema
-from core.schemas.request_schemas import RequestAuthSchema, RequestPasswordResetSchema
 from core.models.profile import Profile
 from core.models.reset_token import ResetToken
+from core.schemas.auth_schemas import LoginSchema, ResetPasswordSchema
+import core.actions.profile.auth as auth
+from core.actions.profile.auth import login, get_unauthenticated_user, reset_password,\
+    continue_reset_password, get_reset_token
 from core.lib.jwt import check_password
-from core.lib.actions.action_response import ActionResponse
 
-from tests.helpers import db
 from tests.factories import create_user_profile, create_reset_token
+from tests.fixtures.core import db
+from tests.fixtures.auth_fixtures import invalid_auth_request, valid_auth_request, valid_reset_password_request,\
+    expired_reset_password_request
 
 
 class MockResponse(object):
@@ -24,52 +25,9 @@ class MockResponse(object):
 
 @pytest.fixture(autouse=True)
 def mock_notifier(mocker):
-    mocker.patch('core.lib.actions.profile.auth.notify_password_reset', return_value=MockResponse(
+    mocker.patch('core.actions.profile.auth.notify_password_reset', return_value=MockResponse(
         status_code=200
     ))
-
-
-@pytest.fixture()
-def valid_auth_request():
-    return RequestAuthSchema().load({
-        'email': "user@example.org",
-        'password': "Password1!"
-    })
-
-
-@pytest.fixture()
-def invalid_auth_request():
-    return RequestAuthSchema().load({
-        'email': "fooo.com",
-        'password': ""
-    })
-
-
-@pytest.fixture()
-def valid_reset_password_request(db):
-    with db.get_session() as session:
-        profile = create_user_profile(session)
-        token = create_reset_token(session, profile_id=profile.id)
-    return RequestPasswordResetSchema().load({
-        'email': profile.email,
-        'token': token.token,
-        'password': 'my new password1!'
-    })
-
-
-@pytest.fixture()
-def expired_reset_password_request(db):
-    with db.get_session() as session:
-        profile = create_user_profile(session)
-        token = create_reset_token(session,
-                                   profile_id=profile.id,
-                                   expiry=datetime.now(
-                                       tz=timezone.utc) - timedelta(days=45))
-    return RequestPasswordResetSchema().load({
-        'email': profile.email,
-        'token': token.token,
-        'password': 'my new password1!'
-    })
 
 
 def test_get_unauthenticated_user_returns_user(db):
@@ -112,7 +70,7 @@ def test_login_rejects_wrong_password(db):
     s = db.get_session()
     create_user_profile(s, email="user@example.org", password="Password1!")
 
-    result = login(db, RequestAuthSchema().load({
+    result = login(db, LoginSchema().load({
         'email': "user@example.org",
         'password': "WrongPassword"
     }))
@@ -172,7 +130,7 @@ def test_continue_reset_token_rejects_missing_token(db):
     with db.get_session() as session:
         profile = create_user_profile(session)
 
-    result = continue_reset_password(db, RequestPasswordResetSchema().load({
+    result = continue_reset_password(db, ResetPasswordSchema().load({
         'email': profile.email,
         'token': 'foobarfaketoken',
         'password': 'my new password1!'

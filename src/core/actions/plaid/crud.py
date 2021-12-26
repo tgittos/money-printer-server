@@ -2,9 +2,8 @@ from datetime import datetime
 
 from core.models.profile import Profile
 from core.models.plaid_item import PlaidItem
-from core.schemas.create_schemas import CreatePlaidItemSchema
-from core.schemas.update_schemas import UpdatePlaidItemSchema
-from core.lib.actions.action_response import ActionResponse
+from core.schemas.plaid_item_schemas import CreatePlaidItemSchema, UpdatePlaidItemSchema
+from core.actions.action_response import ActionResponse
 
 
 def get_plaid_item_by_id(db, id: int) -> ActionResponse:

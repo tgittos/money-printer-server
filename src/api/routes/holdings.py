@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 
-from server.services.api.routes.decorators import authed
+from api.routes.decorators import authed
 
 holdings_bp = Blueprint('holding', __name__)
 
@@ -15,4 +15,3 @@ def holding_performance():
 @authed
 def holding_forecast():
     return {}, 404
-

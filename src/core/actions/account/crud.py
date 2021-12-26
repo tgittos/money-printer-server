@@ -6,11 +6,8 @@ from sqlalchemy import and_
 from core.models.account import Account
 from core.models.profile import Profile
 from core.models.plaid_item import PlaidItem
-from core.schemas.create_schemas import CreateAccountSchema
-from core.schemas.read_schemas import ReadAccountSchema
-from core.schemas.update_schemas import UpdateAccountSchema
-from core.lib.types import AccountList
-from core.lib.actions.action_response import ActionResponse
+from core.schemas.account_schemas import CreateAccountSchema, ReadAccountSchema, UpdateAccountSchema
+from core.actions.action_response import ActionResponse
 
 
 def create_account(db, request: CreateAccountSchema) -> ActionResponse:
@@ -78,11 +75,12 @@ def create_or_update_account(db, profile: Profile, plaid_link: PlaidItem, accoun
         db, profile=profile, account_id=account_id)
     if account is None:
         schema = CreateAccountSchema().load(
-            { **{ 'plaid_item_id': plaid_link.id, 'profile_id': profile.id}, **account_dict }
+            {**{'plaid_item_id': plaid_link.id, 'profile_id': profile.id}, **account_dict}
         )
         account = create_account(db, schema)
     else:
-        schema = UpdateAccountSchema(unknown=EXCLUDE).load({ **{'id': account_id}, **account_dict })
+        schema = UpdateAccountSchema(unknown=EXCLUDE).load(
+            {**{'id': account_id}, **account_dict})
         update_account(db, schema)
 
     return ActionResponse(

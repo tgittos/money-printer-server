@@ -1,17 +1,17 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from typing import Optional
 
 from core.models.profile import Profile
 from core.models.reset_token import ResetToken
+from core.schemas.auth_schemas import ReadAuthSchema, LoginSchema, ResetPasswordSchema
+from core.schemas.profile_schemas import ReadProfileSchema
+from core.actions.action_response import ActionResponse
 from core.lib.jwt import encode_jwt, hash_password, check_password, generate_temp_password
 from core.lib.notifications import PasswordResetNotification, notify_password_reset
-from config import mailgun_config
-from core.lib.actions.action_response import ActionResponse
-from core.schemas.read_schemas import ReadAuthSchema, ReadProfileSchema
-from core.schemas.request_schemas import RequestAuthSchema, RequestPasswordResetSchema
 
 from .crud import get_profile_by_email, get_profile_by_id
+
+from config import mailgun_config
 
 
 def get_unauthenticated_user(db) -> ActionResponse:
@@ -34,7 +34,7 @@ def get_unauthenticated_user(db) -> ActionResponse:
         )
 
 
-def login(db, request: RequestAuthSchema) -> ActionResponse:
+def login(db, request: LoginSchema) -> ActionResponse:
     """
     Performs an authentication of the given user credentials
     """
@@ -82,7 +82,7 @@ def reset_password(db, email: str) -> ActionResponse:
     return ActionResponse(success=False)
 
 
-def continue_reset_password(db, request: RequestPasswordResetSchema) -> ActionResponse:
+def continue_reset_password(db, request: ResetPasswordSchema) -> ActionResponse:
     """
     Continues the user-initiated password reset flow
     """

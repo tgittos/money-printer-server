@@ -8,14 +8,16 @@ from core.models.holding import Holding
 from core.models.holding_balance import HoldingBalance
 from core.models.investment_transaction import InvestmentTransaction
 from core.lib.utilities import sanitize_float
-from core.lib.actions.action_response import ActionResponse
-from core.schemas.create_schemas import CreateSecuritySchema, CreateHoldingSchema, CreateInvestmentTransactionSchema
-from core.schemas.update_schemas import UpdateHoldingSchema
+from core.actions.action_response import ActionResponse
+from core.schemas.security_schemas import CreateSecuritySchema
+from core.schemas.holding_schemas import CreateHoldingSchema, UpdateHoldingSchema
+from core.schemas.investment_schemas import CreateInvestmentTransactionSchema
 
 
 def get_securities(db) -> ActionResponse:
     with db.get_session() as session:
-        securities = session.query(Security).distinct(Security.ticker_symbol).all()
+        securities = session.query(Security).distinct(
+            Security.ticker_symbol).all()
 
     return ActionResponse(
         success=securities is not None,
@@ -95,8 +97,8 @@ def get_holding_by_plaid_account_id_and_plaid_security_id(db, plaid_account_id: 
     return ActionResponse(
         success=record is not None,
         data=record,
-        message=f"No holding found for plaid_account_id {plaid_account_id} and plaid_security_id {plaid_security_id}" \
-            if record is None else None
+        message=f"No holding found for plaid_account_id {plaid_account_id} and plaid_security_id {plaid_security_id}"
+        if record is None else None
     )
 
 
@@ -113,8 +115,8 @@ def get_holding_by_account_and_security(db, account: Account, security: Security
     return ActionResponse(
         success=holding is not None,
         data=holding,
-        message=f"No holding found for account with ID {account.id} and security with ID {security.id}"\
-            if holding is None else None
+        message=f"No holding found for account with ID {account.id} and security with ID {security.id}"
+        if holding is None else None
     )
 
 

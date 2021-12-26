@@ -1,6 +1,6 @@
 import os
 
-from api.apps.api import ApiApplication
+from apps.api import ApiApplication
 from api.lib.apispec import write_apispec
 from core.stores.mysql import MySql
 from config import mysql_config

@@ -2,11 +2,10 @@ from datetime import datetime
 
 from sqlalchemy import and_, desc
 
-from core.models.account_balance import AccountBalance
-from core.schemas.request_schemas import RequestAccountBalanceSchema
-from core.schemas.create_schemas import CreateAccountBalanceSchema
 from core.models.account import Account
-from core.lib.actions.action_response import ActionResponse
+from core.models.account_balance import AccountBalance
+from core.schemas.account_schemas import CreateAccountBalanceSchema, UpdateAccountBalanceSchema
+from core.actions.action_response import ActionResponse
 
 
 def create_account_balance(db, request: CreateAccountBalanceSchema) -> ActionResponse:
@@ -31,28 +30,28 @@ def create_account_balance(db, request: CreateAccountBalanceSchema) -> ActionRes
     )
 
 
-def get_balances_by_account(db, request: RequestAccountBalanceSchema) -> ActionResponse:
+def get_balances_by_account(db, account, start=None, end=None) -> ActionResponse:
     """
     Returns all the balances for the requested account
     Accepts an object of GetAccountBalanceRequest type
     """
     records = []
-    if request.account is not None:
+    if account is not None:
         with db.get_session() as session:
-            if request.start is not None:
-                if request.end is not None:
+            if start is not None:
+                if end is not None:
                     records = session.query.filter(and_(
-                        AccountBalance.account_id == request.account.id,
-                        request.start <= AccountBalance.timestamp <= request.end
+                        AccountBalance.account_id == account.id,
+                        start <= AccountBalance.timestamp <= request.end
                     )).all()
                 else:
                     records = session.query.filter(and_(
-                        AccountBalance.account_id == request.account.id,
-                        request.start <= AccountBalance.timestamp)
+                        AccountBalance.account_id == account.id,
+                        start <= AccountBalance.timestamp)
                     ).all()
             else:
                 records = session.query(AccountBalance).filter(
-                    AccountBalance.account_id == request.account.id).all()
+                    AccountBalance.account_id == account.id).all()
 
     return ActionResponse(
         success=True,

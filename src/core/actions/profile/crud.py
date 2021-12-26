@@ -1,13 +1,13 @@
 from datetime import datetime
 
 from core.models.profile import Profile
-from core.schemas.create_schemas import CreateProfileSchema
-from core.schemas.update_schemas import UpdateProfileSchema
-from core.schemas.request_schemas import RequestRegistrationSchema
+from core.schemas.auth_schemas import RegisterProfileSchema
+from core.schemas.profile_schemas import CreateProfileSchema, UpdateProfileSchema
+from core.actions.action_response import ActionResponse
 from core.lib.jwt import generate_temp_password, hash_password
 from core.lib.notifications import ProfileCreatedNotification, notify_profile_created
 from core.lib.utilities import is_valid_email
-from core.lib.actions.action_response import ActionResponse
+
 from config import mailgun_config
 
 
@@ -16,8 +16,9 @@ def get_profile_by_id(db, profile_id: int) -> ActionResponse:
     Gets a profile from the DB by its primary key
     """
     with db.get_session() as session:
-        profile = session.query(Profile).where(Profile.id == profile_id).first()
-    
+        profile = session.query(Profile).where(
+            Profile.id == profile_id).first()
+
     return ActionResponse(
         success=profile is not None,
         data=profile,
@@ -53,7 +54,7 @@ def get_all_profiles(db) -> ActionResponse:
     )
 
 
-def register(db, request: RequestRegistrationSchema) -> ActionResponse:
+def register(db, request: RegisterProfileSchema) -> ActionResponse:
     """
     Registers a user with MoneyPrinter if a user with that email doesnt
     already exist
@@ -124,7 +125,7 @@ def update_profile(db, request: UpdateProfileSchema) -> ActionResponse:
             success=False,
             message=f"Could not find profile with ID {request['id']}"
         )
-    
+
     with db.get_session() as session:
         session.add(profile)
 
@@ -154,11 +155,11 @@ def delete_profile(db, profile_id: int) -> ActionResponse:
             success=False,
             message=f"Could not find profile with ID {profile_id}"
         )
-    
+
     with db.get_session() as session:
         session.delete(profile)
         session.commit()
-    
+
     return ActionResponse(
         success=True
     )

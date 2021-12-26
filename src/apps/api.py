@@ -14,7 +14,7 @@ from prometheus_client import make_wsgi_app
 from config import config, redis_config, env
 
 from core.repositories.profile_repository import ProfileRepository
-from core.schemas.request_schemas import RequestRegistrationSchema
+from core.schemas.auth_schemas import RegisterProfileSchema
 from core.lib.logger import init_logger, get_logger
 
 from api.routes.plaid import oauth_bp as plaid_bp
@@ -30,9 +30,10 @@ from api.routes.swagger import swagger_bp
 from api.graphql.schema import schema
 from api.lib.client_bus import ClientBus
 
+
 class ApiApplication:
 
-    log_path = os.path.dirname(__file__) + "/../../../logs/"
+    log_path = os.path.dirname(__file__) + "/../../logs/"
     flask_app = None
     socket_app = None
     client_bus = None
@@ -112,7 +113,7 @@ class ApiApplication:
                                    cors_allowed_origins='*',
                                    message_queue="redis://")
         self.client_bus = ClientBus(self.socket_app)
-    
+
     def _configure_prometheus(self):
         if self.configured:
             return
@@ -120,13 +121,13 @@ class ApiApplication:
         self.flask_app.wsgi_app = DispatcherMiddleware(self.flask_app.wsgi_app, {
             '/metrics': make_wsgi_app()
         })
-    
+
     def _configure_graphql(self):
         if self.configured:
             return
         self.logger.debug("configuring GraphQL endpoint")
         self.flask_app.add_url_rule(
-           '/v1/api/graphql',
+            '/v1/api/graphql',
             view_func=GraphQLView.as_view(
                 'graphql_view',
                 schema=schema,

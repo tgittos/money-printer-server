@@ -2,48 +2,29 @@ import pytest
 from marshmallow import ValidationError
 
 from core.models.profile import Profile
-from core.lib.actions.profile.crud import register, create_profile, update_profile, delete_profile
-from core.schemas.request_schemas import RequestRegistrationSchema
-from core.schemas.update_schemas import UpdateProfileSchema
-# following import is required for spying and ensuring methods were called
-import core.lib.actions.profile.crud as crud
-from core.lib.actions.profile.crud import get_profile_by_id, get_profile_by_email, get_all_profiles
+from core.schemas.profile_schemas import UpdateProfileSchema
+from core.schemas.auth_schemas import RegisterProfileSchema
+import core.actions.profile.crud as crud
+from core.actions.profile.crud import get_profile_by_id, get_profile_by_email, get_all_profiles
+from core.actions.profile.crud import register, create_profile, update_profile, delete_profile
 
-from tests.helpers import db
+from tests.fixtures.core import db
+from tests.fixtures.auth_fixtures import valid_register_request
+from tests.fixtures.profile_fixtures import valid_update_request
 from tests.factories import create_user_profile
 
 
 @pytest.fixture(autouse=True)
 def mock_notifier(mocker):
-    mocker.patch('core.lib.actions.profile.crud.notify_profile_created')
-
-
-@pytest.fixture()
-def valid_register_request():
-    return RequestRegistrationSchema().load({
-        'email':"tgittos@moneyprintergoesbrr.io",
-        'first_name':"Tim",
-        'last_name':"Gittos"
-    })
-
-
-@pytest.fixture()
-def valid_update_request(db):
-    with db.get_session() as session:
-        profile = create_user_profile(session)
-    return UpdateProfileSchema().load({
-        'id': profile.id,
-        'first_name': 'New Firstname',
-        'last_name': 'New Lastname'
-    })
+    mocker.patch('core.actions.profile.crud.notify_profile_created')
 
 
 def test_cannot_construct_invalid_registraction_schema():
     with pytest.raises(ValidationError):
-        register(db, RequestRegistrationSchema().load({
-            'email':"foooooooo.com",
-            'first_name':None,
-            'last_name':""
+        register(db, RegisterProfileSchema().load({
+            'email': "foooooooo.com",
+            'first_name': None,
+            'last_name': ""
         }))
 
 
@@ -69,12 +50,12 @@ def test_create_profile_creates_profile_record(db, valid_register_request):
     assert result.success
     assert result.data is not None
     with db.get_session() as session:
-        assert session.query(Profile).filter(Profile.id == result.data.id).count() == 1
+        assert session.query(Profile).filter(
+            Profile.id == result.data.id).count() == 1
 
 
 def test_create_profile_emails_temp_password(db, valid_register_request, mocker):
     spy = mocker.spy(crud, 'notify_profile_created')
-    # mocker.patch('core.lib.actions.profile.crud.notify_profile_created')
     create_profile(db, valid_register_request)
     spy.assert_called_once()
 
@@ -85,24 +66,29 @@ def test_create_profile_returns_profile(db, valid_register_request):
     assert result.data.id is not None
     assert result.data.email == valid_register_request['email']
 
+
 def test_update_profile_accepts_valid_request(db, valid_update_request):
-    result = update_profile (db, valid_update_request)
+    result = update_profile(db, valid_update_request)
     assert result.success
     assert result.data is not None
     assert result.data.first_name == valid_update_request['first_name']
     assert result.data.last_name == valid_update_request['last_name']
 
+
 def test_delete_profile_removes_db_entries(db):
     with db.get_session() as session:
         profile = create_user_profile(session)
-        profile_count = session.query(Profile).where(Profile.id == profile.id).count()
+        profile_count = session.query(Profile).where(
+            Profile.id == profile.id).count()
     assert profile_count == 1
     result = delete_profile(db, profile.id)
     assert result.success
     assert result.data is None
     with db.get_session() as session:
-        profile_count = session.query(Profile).where(Profile.id == profile.id).count()
+        profile_count = session.query(Profile).where(
+            Profile.id == profile.id).count()
     assert profile_count == 0
+
 
 def test_get_profile_by_id_returns_profile(db):
     with db.get_session() as session:
@@ -140,7 +126,7 @@ def test_get_all_profiles_returns_all_profiles(db):
     with db.get_session() as session:
         for i in range(1, 6):
             create_user_profile(session, email=f"user{i}@example.com")
-    all_result = get_all_profiles(db) 
+    all_result = get_all_profiles(db)
     assert all_result.success
     assert all_result.data is not None
     assert len(all_result.data) == 5

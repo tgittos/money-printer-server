@@ -6,7 +6,7 @@ from sqlalchemy import and_
 from core.models.security_price import SecurityPrice
 from core.models.iex_blacklist import IexBlacklist
 from core.lib.utilities import sanitize_float, local_to_utc
-from core.lib.actions.action_response import ActionResponse
+from core.actions.action_response import ActionResponse
 
 
 def create_stock_price(db, symbol: str, resolution: str, dfs: DataFrame) -> ActionResponse:

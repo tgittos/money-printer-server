@@ -13,13 +13,14 @@ from config import redis_config
 
 class TaskRunnerApplication:
 
-    log_path = os.path.dirname(__file__) + "/../../../logs/"
+    log_path = os.path.dirname(__file__) + "/../../logs/"
     worker = None
 
     def __init__(self):
         init_logger(self.log_path)
         self.logger = get_logger("server.services.task_runner")
-        self.r = redis.Redis(host=redis_config.host, port=redis_config.port, db=0)
+        self.r = redis.Redis(host=redis_config.host,
+                             port=redis_config.port, db=0)
 
     def run(self):
         print(" * Starting money-printer task runner application", flush=True)
@@ -33,4 +34,5 @@ class TaskRunnerApplication:
             self.worker.work()
 
     def _handle_thread_error(self):
-        self.logger.exception("exception in thread: {0}".format(traceback.format_exc()))
+        self.logger.exception(
+            "exception in thread: {0}".format(traceback.format_exc()))

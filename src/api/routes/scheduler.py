@@ -1,8 +1,7 @@
 from flask import Blueprint, request, Response, abort
 from marshmallow import ValidationError
 
-from core.schemas.read_schemas import ReadScheduledJobSchema
-from core.schemas.create_schemas import CreateScheduledJobSchema
+from core.schemas.scheduler_schemas import CreateScheduledJobSchema, ReadScheduledJobSchema
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from .decorators import authed, admin, get_identity
 
@@ -117,4 +116,3 @@ def list_historical_instants():
     return {
         'success': False
     }
-

@@ -52,7 +52,7 @@ def fetch_historical_intraday(db, symbol: str, start: datetime = None) -> DataFr
             total_df = total_df.append(df)
         except IEXQueryError as ex:
             if ex.status == 404:
-                add_to_iex_blacklist(cls, symbol)
+                add_to_iex_blacklist(db, symbol)
                 return total_df
             else:
                 continue

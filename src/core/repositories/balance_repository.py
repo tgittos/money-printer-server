@@ -8,13 +8,13 @@ from core.stores.mysql import MySql
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config, mailgun_config
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas.create_schemas import CreateInstantJobSchema
+from core.schemas.scheduler_schemas import CreateInstantJobSchema
 
 # import all the actions so that consumers of the repo can access everything
 from core.lib.utilities import wrap
-from core.lib.actions.balance.crud import *
-from core.lib.actions.plaid.crud import get_plaid_item_by_id
-from core.lib.actions.account.crud import get_account_by_id
+from core.actions.balance.crud import *
+from core.actions.plaid.crud import get_plaid_item_by_id
+from core.actions.account.crud import get_account_by_id
 
 
 class BalanceRepository:
@@ -36,7 +36,8 @@ class BalanceRepository:
         """
         plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
         if not plaid_result.success:
-            self.logger.warning("requested schedule update all balances without PlaidItem")
+            self.logger.warning(
+                "requested schedule update all balances without PlaidItem")
             return RepositoryResponse(
                 success=False,
                 message=plaid_result.message
@@ -55,13 +56,15 @@ class BalanceRepository:
         """
         account_result = get_account_by_id(self.db, account_id)
         if not account_result.success:
-            self.logger.warning("requested schedule update balance without Account")
+            self.logger.warning(
+                "requested schedule update balance without Account")
             return RepositoryResponse(
                 success=False,
                 message=account_result.message
             )
 
-        plaid_result = self.plaid_repo.get_plaid_item_by_id(account_result.data.plaid_item_id)
+        plaid_result = self.plaid_repo.get_plaid_item_by_id(
+            account_result.data.plaid_item_id)
         if not plaid_result.success:
             return RepositoryResponse(
                 success=False,
@@ -88,19 +91,23 @@ class BalanceRepository:
                 message=plaid_result.message
             )
 
-        self.logger.info("syncing account balance/s for plaid item: {0}".format(plaid_result.data.id))
+        self.logger.info(
+            "syncing account balance/s for plaid item: {0}".format(plaid_result.data.id))
 
         with self.db.get_session() as session:
-            accounts = session.query(Account).where(Account.plaid_item_id == plaid_result.data.id).all()
+            accounts = session.query(Account).where(
+                Account.plaid_item_id == plaid_result.data.id).all()
 
         if accounts and len(accounts) > 0:
-            self.logger.info("found {0} accounts to update".format(len(accounts)))
+            self.logger.info(
+                "found {0} accounts to update".format(len(accounts)))
             for account in accounts:
                 self.sync_account_balance(account.id)
             self.logger.info("done updating balances for plaid item")
         else:
-            self.logger.warning("requested account sync of plaid item {0} but no accounts found".format(plaid_result.data.id))
-        
+            self.logger.warning(
+                "requested account sync of plaid item {0} but no accounts found".format(plaid_result.data.id))
+
         return RepositoryResponse(
             success=True
         )
@@ -112,29 +119,35 @@ class BalanceRepository:
         """
         account_result = get_account_by_id(self.db, account_id)
         if not account_result.success:
-            self.logger.warning("requested balance sync for account with no Account")
+            self.logger.warning(
+                "requested balance sync for account with no Account")
             return RepositoryResponse(
                 success=False,
                 message=account_result.message
             )
 
-        self.logger.info("syncing account balance for account id: {0}".format(account_result.data.id))
+        self.logger.info("syncing account balance for account id: {0}".format(
+            account_result.data.id))
 
         with self.db.get_session() as session:
-            plaid_item = session.query(PlaidItem).where(PlaidItem.id == account_result.data.plaid_item_id).first()
+            plaid_item = session.query(PlaidItem).where(
+                PlaidItem.id == account_result.data.plaid_item_id).first()
 
         if plaid_item is None:
-            self.logger.warning("could not find PlaidItem attached to account {0}".format(account_result.data.id))
+            self.logger.warning("could not find PlaidItem attached to account {0}".format(
+                account_result.data.id))
             return RepositoryResponse(
                 success=False,
                 message=f"Could not find PlaidItem for Account with ID {account_id}"
             )
 
         api = Accounts(AccountsConfig(self.plaid_config))
-        response_dict = api.get_account_balance(plaid_item.access_token, account_result.data.account_id)
+        response_dict = api.get_account_balance(
+            plaid_item.access_token, account_result.data.account_id)
 
         if response_dict is None or 'accounts' not in response_dict:
-            self.logger.error("unusual response from upstream: {0}".format(response_dict))
+            self.logger.error(
+                "unusual response from upstream: {0}".format(response_dict))
             return RepositoryResponse(
                 success=False,
                 message=f"Could not find 'accounts' key on response from upstream"
@@ -146,7 +159,7 @@ class BalanceRepository:
             balance_dict = account_dict['balances']
 
             schema = CreateAccountBalanceSchema(unknown=EXCLUDE).load({
-                **{ 'account':account_result.data },
+                **{'account': account_result.data},
                 **balance_dict
             })
             balance_result = create_account_balance(self.db, schema)
@@ -154,10 +167,11 @@ class BalanceRepository:
             if balance_result.success:
                 balances.append(balance_result.data)
             else:
-                self.logger.warning(f"account_balance creation failed with message {balance_result.message}")
+                self.logger.warning(
+                    f"account_balance creation failed with message {balance_result.message}")
 
         return RepositoryResponse(
             success=balances[0] is not None,
             data=balances[0],
-            message= "Unknown error fetching balances" if balances[0] is None else None
+            message="Unknown error fetching balances" if balances[0] is None else None
         )

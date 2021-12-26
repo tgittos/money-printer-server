@@ -5,16 +5,17 @@ from core.stores.mysql import MySql
 from core.apis.plaid.investments import Investments, InvestmentsConfig
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
-from core.lib.actions.plaid.crud import get_plaid_item_by_id
-from core.schemas.create_schemas import CreateHoldingSchema, CreateSecuritySchema
+from core.actions.plaid.crud import get_plaid_item_by_id
+from core.schemas.holding_schemas import CreateHoldingSchema
+from core.schemas.security_schemas import CreateSecuritySchema
 from core.repositories.repository_response import RepositoryResponse
 from core.models.plaid_item import PlaidItem
 
 # import all the facets so that consumers of the repo can access everything
 from core.lib.utilities import wrap
-from core.lib.actions.security.crud import *
-from core.lib.actions.profile.crud import get_profile_by_id
-from core.lib.actions.account.crud import get_account_by_id
+from core.actions.security.crud import *
+from core.actions.profile.crud import get_profile_by_id
+from core.actions.account.crud import get_account_by_id
 
 
 class SecurityRepository:
@@ -39,7 +40,7 @@ class SecurityRepository:
             wrap(get_holding_by_plaid_account_id_and_plaid_security_id, self.db)
         self.update_holding_balance = wrap(update_holding_balance, self.db)
         self.update_holding_balance = wrap(update_holding_balance, self.db)
-    
+
     def get_securities_by_profile_id(self, profile_id: int) -> RepositoryResponse:
         """
         Returns a list of securites that belong to holdings for the given profile ID

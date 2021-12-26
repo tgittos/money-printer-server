@@ -15,7 +15,9 @@ from core.models.holding import Holding as HoldingModel
 from core.models.holding_balance import HoldingBalance as HoldingBalanceModel
 from core.models.security import Security as SecurityModel
 from core.models.security_price import SecurityPrice as SecurityPriceModel
-from core.schemas.read_schemas import ReadProfileSchema
+
+from core.schemas.profile_schemas import ReadProfileSchema
+
 
 class Profile(SQLAlchemyObjectType):
     class Meta:
@@ -41,7 +43,7 @@ class Holding(SQLAlchemyObjectType):
     class Meta:
         model = HoldingModel
         interfaces = (relay.Node,)
-        
+
 
 class HoldingBalance(SQLAlchemyObjectType):
     class Meta:
@@ -53,7 +55,7 @@ class Security(SQLAlchemyObjectType):
     class Meta:
         model = SecurityModel
         interfaces = (relay.Node,)
-    
+
 
 class SecurityPrice(SQLAlchemyObjectType):
     class Meta:
@@ -77,7 +79,7 @@ class Query(graphene.ObjectType):
 
     def resolve_profile(self, info):
         return ReadProfileSchema().load(decode_token())
-    
+
     def resolve_accounts(self, info):
         profile = self.resolve_profile(info)
         return AccountRepository().get_accounts_by_profile_id(profile.id).data

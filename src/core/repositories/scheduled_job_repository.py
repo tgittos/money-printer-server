@@ -7,8 +7,8 @@ from rq_scheduler import Scheduler
 
 from core.apis.mailgun import MailGun
 from core.stores.mysql import MySql
-from core.models.scheduler.scheduled_job import ScheduledJob 
-from core.schemas.create_schemas import CreateScheduledJobSchema, CreateInstantJobSchema
+from core.models.scheduler.scheduled_job import ScheduledJob
+from core.schemas.scheduler_schemas import CreateScheduledJobSchema, CreateInstantJobSchema
 from core.models.scheduler.job_result import JobResult
 from core.lib.types import ScheduledJobList
 from core.lib.constants import WORKER_QUEUE
@@ -19,7 +19,8 @@ from core.repositories.repository_response import RepositoryResponse
 class ScheduledJobRepository:
 
     db = MySql(mysql_config)
-    redis = redis.Redis(host=redis_config['host'], port=redis_config['port'], db=0)
+    redis = redis.Redis(
+        host=redis_config['host'], port=redis_config['port'], db=0)
     mailgun_client = MailGun(mailgun_config)
     queues = []
 
@@ -32,7 +33,7 @@ class ScheduledJobRepository:
 
         return RepositoryResponse(
             success=jobs is not None,
-            data = jobs,
+            data=jobs,
             message=f"No scheduled jobs found" if jobs is None else None
         )
 
@@ -41,11 +42,12 @@ class ScheduledJobRepository:
         Gets a ScheduledJob by it's primary key
         """
         with self.db.get_session() as session:
-            job = session.query(ScheduledJob).where(ScheduledJob.id == id).first()
+            job = session.query(ScheduledJob).where(
+                ScheduledJob.id == id).first()
 
         return RepositoryResponse(
             success=job is not None,
-            data = job,
+            data=job,
             message=f"No ScheduledJob found with ID {id}" if job is None else None
         )
 
@@ -101,7 +103,7 @@ class ScheduledJobRepository:
         with self.db.get_session() as session:
             session.remove(job)
             session.commit()
-        
+
         return RepositoryResponse(
             success=True
         )
@@ -147,7 +149,7 @@ class ScheduledJobRepository:
             scheduler.cron(job.cron, job.job_name, args=job.json_args, meta={
                 'id': job.id
             })
-        
+
         return RepositoryResponse(
             success=True
         )
@@ -158,7 +160,7 @@ class ScheduledJobRepository:
         scheduler_job = [j for j in jobs if j.func == job.job_name][0]
         if scheduler_job:
             scheduler.cancel(job)
-        
+
         return RepositoryResponse(
             success=True
         )
@@ -168,7 +170,8 @@ class ScheduledJobRepository:
         if name in queue_names:
             return [q for q in self.queues if q.name == name][0]
         else:
-            q = Queue(name, connection=self.redis, on_success=self.store_success, on_failure=self.store_failure)
+            q = Queue(name, connection=self.redis,
+                      on_success=self.store_success, on_failure=self.store_failure)
             self.queues.append({
                 'name': name,
                 'queue': q
@@ -202,4 +205,3 @@ class ScheduledJobRepository:
         with self.db.get_session() as session:
             session.add(result)
             session.commit()
-

@@ -1,49 +1,16 @@
 import pytest
 from marshmallow import ValidationError
 
-from core.schemas.create_schemas import CreatePlaidItemSchema
-from core.schemas.update_schemas import UpdatePlaidItemSchema
-from core.lib.actions.plaid.crud import *
+from core.schemas.plaid_item_schemas import CreatePlaidItemSchema, UpdatePlaidItemSchema
+from core.actions.plaid.crud import *
 
-from tests.helpers import db
+from tests.fixtures.core import db
+from tests.fixtures.profile_fixtures import existing_profile
+from tests.fixtures.plaid_item_fixtures import existing_plaid_item
 from tests.factories import create_user_profile, create_plaid_item
 
 
-@pytest.fixture
-def existing_profile(db):
-    with db.get_session() as session:
-        return create_user_profile(session)
-
-
-@pytest.fixture
-def existing_plaid_item(db, existing_profile):
-    with db.get_session() as session:
-        return create_plaid_item(
-            session,
-            profile_id=existing_profile.id
-        )
-
-
-@pytest.fixture
-def valid_create_request(existing_profile):
-    return CreatePlaidItemSchema().load({
-        'profile_id': existing_profile.id,
-        'item_id': 'thisisanitemid',
-        'access_token': 'thisistheaccesstoken',
-        'request_id': 'therequestid',
-        'status': ''
-    })
-
-
-@pytest.fixture
-def valid_update_request(existing_plaid_item):
-    return UpdatePlaidItemSchema().load({
-        'id': existing_plaid_item.id,
-        'status': 'updated'
-    })
-
-
-def cannot_construct_invalid_create_request():
+def cannot_construct_invalid_create_request(existing_profile):
     with pytest.raises(ValidationError):
         return CreatePlaidItemSchema().load({
             'profile_id': existing_profile.id,
@@ -53,7 +20,7 @@ def cannot_construct_invalid_create_request():
         })
 
 
-def cannot_construct_invalid_update_request():
+def cannot_construct_invalid_update_request(existing_plaid_item):
     with pytest.raises(ValidationError):
         return UpdatePlaidItemSchema().load({
             'id': existing_plaid_item.id,

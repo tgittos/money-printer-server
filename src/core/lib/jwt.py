@@ -6,7 +6,7 @@ import string
 import secrets
 
 from core.models.profile import Profile
-from core.schemas.read_schemas import ReadProfileSchema
+from core.schemas.profile_schemas import ReadProfileSchema
 from config import config
 
 

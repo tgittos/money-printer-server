@@ -6,8 +6,8 @@ from marshmallow import ValidationError
 from core.repositories.profile_repository import ProfileRepository
 from .decorators import authed, get_identity
 from api.schemas.auth_schemas import RegisterProfileSchema, AuthSchema
-from core.schemas.read_schemas import ReadProfileSchema, ReadAuthSchema
-from core.schemas.request_schemas import RequestPasswordResetSchema
+from core.schemas.auth_schemas import ReadAuthSchema, ResetPasswordSchema
+from core.schemas.profile_schemas import ReadProfileSchema
 
 from api.metrics.auth_metrics import *
 
@@ -138,7 +138,7 @@ def continue_reset_password():
     try:
         repo = ProfileRepository()
         result = repo.continue_reset_password(
-            RequestPasswordResetSchema().load(request.json))
+            ResetPasswordSchema().load(request.json))
         if not result.success:
             return result.message, 400
         return '', 204

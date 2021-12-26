@@ -4,8 +4,7 @@ from marshmallow import ValidationError
 
 from core.repositories.account_repository import AccountRepository
 from core.repositories.profile_repository import ProfileRepository
-from core.schemas.read_schemas import ReadProfileSchema
-from core.schemas.update_schemas import UpdateProfileSchema
+from core.schemas.profile_schemas import ReadProfileSchema, UpdateProfileSchema
 
 from .decorators import authed, get_identity
 

@@ -3,84 +3,21 @@ from werkzeug.datastructures import Authorization
 import pytest
 import json
 
-from tests.helpers import client, db
-from tests.factories import create_scheduled_job, create_user_profile
-
 from core.models.scheduler.scheduled_job import ScheduledJob
 from core.lib.jwt import encode_jwt
 from api.routes.scheduler import ScheduledJobRepository
 
-# return client.post('/login', data=dict(
-#        username=username,
-#        password=password
-#    ), follow_redirects=True)
-
-# rv = c.post('/api/auth', json={
-#        'email': 'flask@example.com', 'password': 'secret'
-#    })
-#    json_data = rv.get_json()
+from tests.factories import create_scheduled_job, create_user_profile
+from tests.fixtures.core import client, db
+from tests.fixtures.auth_fixtures import admin_token, user_token
+from tests.fixtures.scheduler_fixtures import valid_instant_job_request, valid_scheduled_job_request,\
+    invalid_instant_job_request, invalid_scheduled_job_request
 
 
 @pytest.fixture(autouse=True)
 def mock_scheduler_methods(mocker):
     mocker.patch.object(ScheduledJobRepository, 'ensure_scheduled')
     mocker.patch.object(ScheduledJobRepository, 'unschedule_job')
-
-
-@pytest.fixture()
-def admin_token(db):
-    # seed a profile and gen up a token for that profile
-    session = db.get_session()
-    profile = create_user_profile(
-        session, email="admin@example.org", is_admin=True)
-    token = encode_jwt(profile=profile)
-    session.close()
-    return token
-
-
-@pytest.fixture()
-def user_token(db):
-    # seed a profile and gen up a token for that profile
-    session = db.get_session()
-    profile = create_user_profile(
-        session, email="user@example.org", is_admin=False)
-    token = encode_jwt(profile=profile)
-    session.close()
-    return token
-
-
-@pytest.fixture()
-def valid_scheduled_job_request():
-    return {
-        'job_name': "My New Job",
-        'cron': "0 * * * *",
-        'json_args': "{}"
-    }
-
-
-@pytest.fixture()
-def invalid_scheduled_job_request():
-    return {
-        'job_name': "",
-        'cron': None,
-        'json_args': ""
-    }
-
-
-@pytest.fixture()
-def valid_instant_job_request():
-    return {
-        'job_name': "Once off job",
-        'json_args': {}
-    }
-
-
-@pytest.fixture()
-def invalid_instant_job_request():
-    return {
-        'job_name': "",
-        'json_args': None
-    }
 
 
 # /v1/api/admin/schedules

@@ -2,21 +2,22 @@ from marshmallow import Schema, fields
 
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas.read_schemas import ReadAccountSchema
-from core.schemas.create_schemas import CreateInstantJobSchema
+from core.schemas.account_schemas import ReadAccountSchema
+from core.schemas.scheduler_schemas import CreateInstantJobSchema
 from core.stores.mysql import MySql
 from core.lib.logger import get_logger
 from config import mysql_config
 
 # import all the actions so that consumers of the repo can access everything
 from core.lib.utilities import wrap
-from core.lib.actions.account.crud import *
-from core.lib.actions.profile.crud import get_profile_by_id
+from core.actions.account.crud import *
+from core.actions.profile.crud import get_profile_by_id
 
 
 class GetAccountSchema(Schema):
     class Meta:
-        fields=("profile_id", "account_id")
+        fields = ("profile_id", "account_id")
+
 
 class AccountRepository:
 
@@ -32,23 +33,24 @@ class AccountRepository:
         self.get_account_by_id = wrap(get_account_by_id, self.db)
         self.get_account_by_account_id = wrap(
             get_account_by_account_id, self.db)
-    
+
     def get_accounts_by_profile_id(self, profile_id: int) -> RepositoryResponse:
         """
         Returns a list of accounts for a given profile ID
         """
         profile_result = get_profile_by_id(self.db, profile_id)
-        if not profile_result.success: return profile_result
+        if not profile_result.success:
+            return profile_result
         action_result = self.get_accounts_by_profile(profile_result.data)
         return RepositoryResponse(success=action_result.success, data=action_result.data, message=action_result.message)
-
 
     def get_accounts_by_profile_with_balances(self, request: GetAccountSchema) -> RepositoryResponse:
         """
         Returns a list of accounts augmented with their latest synced balances for a given profile
         """
         profile_result = get_profile_by_id(self.db, request['profile_id'])
-        if not profile_result.success: return profile_result
+        if not profile_result.success:
+            return profile_result
         action_result = self.get_accounts_by_profile(profile_result.data)
         return RepositoryResponse(success=action_result.success, data=action_result.data, message=action_result.message)
 
@@ -57,8 +59,10 @@ class AccountRepository:
         Returns the requested Account with it's latest synced balance for a given profile
         """
         profile_result = get_profile_by_id(self.db, request['profile_id'])
-        if not profile_result.success: return profile_result
-        action_result = self.get_account_by_account_id(profile_result.data, request['account_id'])
+        if not profile_result.success:
+            return profile_result
+        action_result = self.get_account_by_account_id(
+            profile_result.data, request['account_id'])
         return RepositoryResponse(success=action_result.success, data=action_result.data, message=action_result.message)
 
     def schedule_account_sync(self, account_id: int) -> RepositoryResponse:

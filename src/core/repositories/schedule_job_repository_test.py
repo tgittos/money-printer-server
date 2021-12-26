@@ -1,9 +1,10 @@
 import pytest
 
-from tests.helpers import db
+from tests.fixtures.core import db
 from tests.factories import create_scheduled_job
 
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
+
 
 def get_scheduled_jobs_returns_list_of_jobs(db):
     session = db.get_session()

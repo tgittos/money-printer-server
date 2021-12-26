@@ -9,17 +9,18 @@ from core.lib.logger import get_logger
 from core.lib.types import StringList
 from config import iex_config, mysql_config
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas.read_schemas import ReadSecurityPriceSchema
+from core.schemas.security_schemas import ReadSecurityPriceSchema
 
 # import all the actions so that consumers of the repo can access everything
 from core.lib.utilities import wrap
-from core.lib.actions.stock.crud import *
-from core.lib.actions.stock.fetch import *
+from core.actions.stock.crud import *
+from core.actions.stock.fetch import *
 
 
 class RequestStockPriceSchema(Schema):
     class Meta:
         fields = ("symbol", "start", "end", "close_only")
+
 
 class RequestStockPriceListSchema(Schema):
     class Meta:
@@ -96,7 +97,7 @@ class StockRepository:
         for symbol in request['symbols']:
             symbol_data = symbol_data.append(
                 self.historical_daily(RequestStockPriceSchema(unknown=EXCLUDE).load({
-                    **{'symbol':symbol}, **request
+                    **{'symbol': symbol}, **request
                 }))
             )
 
@@ -128,10 +129,12 @@ class StockRepository:
             )
 
         self.logger.debug("local db miss, fetching time period from upstream")
-        data = self.fetch_historical_intraday(request['symbol'], start=request['start'])
+        data = self.fetch_historical_intraday(
+            request['symbol'], start=request['start'])
 
         if data is not None and len(data) > 0:
-            self.create_historical_intraday_security_price(request['symbol'], data)
+            self.create_historical_intraday_security_price(
+                request['symbol'], data)
         else:
             self.logger.warning("upstream didn't return an error, but it did return an empty dataset, "
                                 "symbol: {0} start: {1}" .format(request['symbol'], request['start']))

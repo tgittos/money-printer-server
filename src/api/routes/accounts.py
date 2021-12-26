@@ -3,7 +3,8 @@ from flask import Blueprint, request, abort
 from core.repositories.profile_repository import ProfileRepository
 from core.repositories.account_repository import AccountRepository
 from core.repositories.security_repository import SecurityRepository
-from core.schemas.read_schemas import ReadAccountSchema, ReadHoldingSchema
+from core.schemas.account_schemas import ReadAccountSchema
+from core.schemas.holding_schemas import ReadHoldingSchema
 from config import env
 from .decorators import authed, get_identity
 
@@ -19,7 +20,8 @@ def list_accounts():
     profile_repo = ProfileRepository()
     profile = profile_repo.get_profile_by_id(user['id'])
     account_repo = AccountRepository()
-    accounts = account_repo.get_accounts_by_profile_with_balances(profile=profile)
+    accounts = account_repo.get_accounts_by_profile_with_balances(
+        profile=profile)
     if accounts is not None:
         return {
             'success': True,
@@ -37,7 +39,8 @@ def request_account_sync(account_id: int):
     profile = profile_repo.get_profile_by_id(user['id'])
     if profile is not None:
         account_repo = AccountRepository()
-        account = account_repo.get_account_by_id(profile=profile, account_id=account_id)
+        account = account_repo.get_account_by_id(
+            profile=profile, account_id=account_id)
         if account is None:
             abort(404)
         account_repo.schedule_account_sync(account)
@@ -55,7 +58,8 @@ def request_account_balances(account_id):
     profile_repo = ProfileRepository()
     profile = profile_repo.get_profile_by_id(user['id'])
     account_repo = AccountRepository()
-    accounts = account_repo.get_account_by_profile_with_balance(profile, account_id)
+    accounts = account_repo.get_account_by_profile_with_balance(
+        profile, account_id)
     if accounts is None:
         abort(404)
     return {
@@ -71,11 +75,13 @@ def list_holdings(account_id):
     profile_repo = ProfileRepository()
     account_repo = AccountRepository()
     profile = profile_repo.get_profile_by_id(user['id'])
-    account = account_repo.get_account_by_id(profile=profile, account_id=account_id)
+    account = account_repo.get_account_by_id(
+        profile=profile, account_id=account_id)
     if account is None:
         abort(404)
     security_repo = SecurityRepository()
-    holdings = security_repo.get_holdings_by_profile_and_account(profile=profile, account=account)
+    holdings = security_repo.get_holdings_by_profile_and_account(
+        profile=profile, account=account)
     if holdings is None:
         abort(404)
     return {

@@ -1,4 +1,4 @@
-from api.apps.task_runner import TaskRunnerApplication
+from apps.task_runner import TaskRunnerApplication
 
 if __name__ == '__main__':
     app = TaskRunnerApplication()

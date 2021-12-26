@@ -1,6 +1,6 @@
 from core.repositories.plaid_repository import PlaidRepository
 from tests.factories import create_plaid_item
-from tests.helpers import db
+from tests.fixtures.core import db
 
 
 def test_get_plaid_item_by_id_returns_plaid_item(db):

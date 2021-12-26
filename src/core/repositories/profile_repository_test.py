@@ -5,23 +5,13 @@ from core.repositories.profile_repository import ProfileRepository
 from core.repositories.repository_response import RepositoryResponse
 
 from tests.factories import create_user_profile, create_plaid_item
-from tests.helpers import db
+from tests.fixtures.core import db
+from tests.fixtures.profile_fixtures import existing_profile, profile_with_no_plaids
+from tests.fixtures.plaid_item_fixtures import existing_plaid_item
 
 
 @pytest.fixture(autouse=True)
-def profile(db):
-    with db.get_session() as session:
-        return create_user_profile(session)
-
-
-@pytest.fixture(autouse=True)
-def plaid_item(db, profile):
-    with db.get_session() as session:
-        return create_plaid_item(session, profile_id=profile.id)
-
-
-@pytest.fixture(autouse=True)
-def repository(mocker):
+def repository(db, mocker):
     repo = ProfileRepository()
     fake_job_repo = mocker.patch.object(
         repo, 'scheduled_job_repo', autospec=True)
@@ -41,14 +31,8 @@ def instant_job_spy(mocker, repository):
     return instant_job_spy
 
 
-@pytest.fixture()
-def profile_with_no_plaids(db):
-    with db.get_session() as session:
-        return create_user_profile(session)
-
-
-def test_schedule_profile_sync_creates_instant_job(repository, profile, instant_job_spy):
-    result = repository.schedule_profile_sync(profile.id)
+def test_schedule_profile_sync_creates_instant_job(repository, existing_profile, instant_job_spy):
+    result = repository.schedule_profile_sync(existing_profile.id)
     assert result.success
     assert instant_job_spy.assert_called_once()
 
@@ -65,18 +49,18 @@ def test_schedule_profile_sync_fails_with_no_plaid_items_for_profile(repository,
     assert result.data is None
 
 
-def test_sync_all_accounts_requests_accounts_from_plaid(mocker, repository, plaid_item):
+def test_sync_all_accounts_requests_accounts_from_plaid(mocker, repository, existing_plaid_item):
     # mock dependencies not under test
     mocker.patch.object(repository.balance_repo, 'sync_account_balance')
     mocker.patch.object(repository.holdings_repo, 'update_holdings')
     # ensure we request from plaid
     spy = mocker.patch.object(repository.plaid_accounts_api, 'get_accounts')
-    result = repository.sync_all_accounts(plaid_item.id)
+    result = repository.sync_all_accounts(existing_plaid_item.id)
     assert result.success
     spy.assert_called_once()
 
 
-def test_sync_all_accounts_calls_create_or_update_account(db, mocker, plaid_item, repository):
+def test_sync_all_accounts_calls_create_or_update_account(db, mocker, existing_plaid_item, repository):
     # mock dependencies not under test
     mocker.patch.object(repository.balance_repo, 'sync_account_balance')
     mocker.patch.object(repository.holdings_repo, 'update_holdings')
@@ -90,12 +74,12 @@ def test_sync_all_accounts_calls_create_or_update_account(db, mocker, plaid_item
     spy = mocker.patch(
         'core.repositories.profile_repository.create_or_update_account')
     # do the test
-    result = repository.sync_all_accounts(plaid_item.id)
+    result = repository.sync_all_accounts(existing_plaid_item.id)
     assert result.success
     spy.assert_called_once()
 
 
-def test_sync_all_accounts_syncs_balances_for_accounts(mocker, repository, plaid_item):
+def test_sync_all_accounts_syncs_balances_for_accounts(mocker, repository, existing_plaid_item):
     # mock dependencies not under test
     mocker.patch.object(repository.holdings_repo, 'update_holdings')
     mocker.patch.object(repository.plaid_accounts_api, 'get_accounts', return_value={
@@ -109,12 +93,12 @@ def test_sync_all_accounts_syncs_balances_for_accounts(mocker, repository, plaid
     # this method is tested in the actions test
     spy = mocker.patch.object(repository.balance_repo, 'sync_account_balance')
     # do the test
-    result = repository.sync_all_accounts(plaid_item.id)
+    result = repository.sync_all_accounts(existing_plaid_item.id)
     assert result.success
     spy.assert_called_once()
 
 
-def test_sync_all_accounts_updates_holdings(mocker, repository, plaid_item):
+def test_sync_all_accounts_updates_holdings(mocker, repository, existing_plaid_item):
     # mock dependencies not under test
     mocker.patch.object(repository.balance_repo, 'sync_account_balance')
     mocker.patch.object(repository.plaid_accounts_api, 'get_accounts')
@@ -124,7 +108,7 @@ def test_sync_all_accounts_updates_holdings(mocker, repository, plaid_item):
     # this method is tested in the actions test
     spy = mocker.patch.object(repository.holdings_repo, 'update_holdings')
     # do the test
-    result = repository.sync_all_accounts(plaid_item.id)
+    result = repository.sync_all_accounts(existing_plaid_item.id)
     assert result.success
     spy.assert_called_once()
 

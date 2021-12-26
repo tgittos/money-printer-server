@@ -4,11 +4,16 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
 
-from core.schemas.create_schemas import *
-from core.schemas.update_schemas import *
-from core.schemas.request_schemas import *
+from core.schemas.auth_schemas import *
+from core.schemas.account_schemas import *
+from core.schemas.holding_schemas import *
+from core.schemas.investment_schemas import *
+from core.schemas.plaid_item_schemas import *
+from core.schemas.profile_schemas import *
+from core.schemas.scheduler_schemas import *
+from core.schemas.security_schemas import *
 
-from api.apps.api import ApiApplication
+from apps.api import ApiApplication
 from api.routes.profile import *
 from api.routes.auth import *
 
@@ -28,10 +33,10 @@ jwt_scheme = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
 spec.components.security_scheme("jwt", jwt_scheme)
 
 # schemas
-spec.components.schema("RequestRegistration", schema=RequestRegistrationSchema)
+spec.components.schema("RequestRegistration", schema=RegisterProfileSchema)
 spec.components.schema("RequestPasswordReset",
-                       schema=RequestPasswordResetSchema)
-spec.components.schema("RequestAuth", schema=RequestAuthSchema)
+                       schema=ResetPasswordSchema)
+spec.components.schema("RequestAuth", schema=LoginSchema)
 
 spec.components.schema("ReadProfile", schema=ReadProfileSchema)
 
