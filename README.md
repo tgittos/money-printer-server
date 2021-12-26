@@ -24,8 +24,25 @@ messages onto the task runner queue.
 
 ### API
 
+Money Printer provides both a full REST-full API service, and a more limited GraphQL API service.
+
+The REST-full service is intended to fulfill all internal application and external integrating partner needs.
+
+The GraphQL service provides read-only access to the authed user's app specific data.
+
+#### REST
+
 The main RESTful HTTP API server implemented in Flask that services the bulk of client requests. Supports RESTful
 and web socket requests. All private resources secured by  JWT based authentication.
+
+Documentation for the api can be found at `http://localhost/api/v1/` via SwaggerUI when the application is running in a
+non `production` mode.
+
+#### GraphQL
+
+GraphQL is integrated through `graphene`, and the GraphQL endpoint can be found at `http://localhost/api/v1/graphql`.
+
+When the application is running in a non `production` mode, the GraphQL serves a GraphQLi web query interface.
 
 ## Development setup
 
@@ -51,38 +68,69 @@ initialization failing to deliver your password, but that can be worked around w
 Plaid is used to sync account holdings and balances for the more wealth planning feature set. This can be optionally
 written out if you're willing to keep your own accounts in sync, though no UI exists for that yet. Nor API endpoints.
 
+## Development
+
+Money Printer is a containerized application, most of the dev tasks should be easily accomplishable with Docker.
+
+This server project also includes a `package.json` file that defines tasks that enable you to easily work with Docker.
+
+Regardless of how you choose to interact with Docker, this project has a separate definition for development vs. production.
+By running the `docker-compose.dev.yml` file, you'll receive:
+
+- a local, persistant MySQL database server
+- a local redis server
+- local `/src` directory mounted to enable hot code reloading
+- an automatic `ngrok` tunnel to ensure webhook integration with Plaid works properly in local development
+- a full production style, auto-configured stack for `Prometheus` and `Matomo` to test metrics and stats tracking
+
+### ngrok
+
+`Plaid` uses webhooks to keep integration consumers up to date with their client's token statuses, such as when the user has
+changed their auth passwords or closed accounts.
+
+The nature of working on a local development machine presents challenges when working with webhooks, hence ngrok.
+
+ngrok will open a tunnel to the public internet to the API running on your local machine, and the API code looks for the
+`MP_WEBHOOK_HOST` environment variable to determine how to link the webhooks up for Plaid. This will enable Plaid to send webhooks
+from their test environment into your local development environment.
+
+ngrok also offers a UI from which you can observe a log of incoming requests.
+
+This is a development specific service, so will not run when the application is launched in `production` mode.
+
+The ngrok UI is available at `http://localhost:4040/` when running.
+
+### Prometheus
+
+Prometheus is integrated as a way of tracking internal app performance metrics.
+
+Money Printer has been instrumented with Prometheus to track the performance of all public API endpoints and most internal
+discrete `repository` level commands. A subset of `actions` has also been instrumented.
+
+Instrumentation is not free, and while we should ensure we have a good idea of how the various parts of the application
+are performing, we shouldn't instrument it so much that the instrumentation affects performance.
+
+Prometheus is available at `http://localhost:9090/` when running.
+
+### Matomo
+
+Matomo provides Google Analytics style tracking through our application, but it's all local and much more respective of the
+user's privacy.
+
+We use Matomo to track performance of various UX elements and flows through out the application. The goal of the Matomo analytics
+is to improve the functionality and UX of the application, not to mine data about the users to sell.
+
+As part of tracking for marketing purposes, we do collect some demographic information about our user base, but that information is private.
+
+Matomo is available at `http://localhost:8080/` when running.
+
 ### Environment setup
 
-#### The Easy Way
-
 - install Docker Desktop
-- run `docker-compose -f docker-compose.microservices.yml up` to run in microservice mode (recommended),
-or `docker-compose -f docker-compose.monolith.yml up` to run as a monolith (matches AWS deployment)
-
-#### The Hard Way
-
-- install Python 3, redis, MySQL
-- create a .venv with `python3 -m venv .venv`
-- activate with `source .venv/bin/activate`
-- `pip install -r requirements`
-- fill `config.json` with values that make sense for your project
-- decrypt the secrets using `git-secret` if working on this project, else create your own `.secrets.json` file with
-the following format: TODO
-- create the schema you wish to use in MySQL, add config to appropriate places
-- initialize the DB by running `alembic update head`
-- run `bin/money-printer` to run the app as a monolith, or run each individual service in its own terminal window/
-sub-process for microservices mode
+- install any recent-ish version of Node for task management (optional)
+- ensure you've build the docker images in `money-printer-infrastructure`
+- either run `npm run start` or `docker compose -f docker-compose.dev.yml up -d`
 
 ## Deploying
 
-Money Printer uses AWS ElasticBeanstalk to deploy itself into the development environment.
-The Money Printer application is set up as a Docker application, with a custom base docker image.
-
-If you add additional `pip` dependencies, depending on how long they take to install, you may need to move them into
-the `platform/Dockerfile` and rebuild, tag and deploy a new base Money Printer docker image.
-
-Otherwise, you can functionally ignore the `platform/Dockerfile` unless you're doing work on the application infrastructure.
-
-### Deploy Command
-
-`eb deploy` - this will deploy the environment into development
+TBD
