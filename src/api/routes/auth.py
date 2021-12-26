@@ -5,8 +5,7 @@ from marshmallow import ValidationError
 
 from core.repositories.profile_repository import ProfileRepository
 from .decorators import authed, get_identity
-from api.schemas.auth_schemas import RegisterProfileSchema, AuthSchema
-from core.schemas.auth_schemas import ReadAuthSchema, ResetPasswordSchema
+from core.schemas.auth_schemas import ReadAuthSchema, ResetPasswordSchema, RegisterProfileSchema, LoginSchema
 from core.schemas.profile_schemas import ReadProfileSchema
 
 from api.metrics.auth_metrics import *
@@ -70,7 +69,7 @@ def login():
       summary: Authenticate user credentials in exchange for a JWT token.
       parameters:
       - in: request
-        schema: RequestAuthSchema
+        schema: LoginSchema
       responses:
         200:
           content:
@@ -80,7 +79,7 @@ def login():
         - Auth
     """
     try:
-        schema = AuthSchema().load(request.json)
+        schema = LoginSchema().load(request.json)
         repo = ProfileRepository()
         result = repo.login(schema)
 
@@ -128,7 +127,7 @@ def continue_reset_password():
       summary: Continue the user reset process by providing a private reset token and a new password.
       parameters:
       - in: request
-        schema: RequestPasswordResetSchema
+        schema: ResetPasswordSchema
       responses:
         204:
           description: Accepted

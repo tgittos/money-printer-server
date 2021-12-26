@@ -33,10 +33,10 @@ jwt_scheme = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
 spec.components.security_scheme("jwt", jwt_scheme)
 
 # schemas
-spec.components.schema("RequestRegistration", schema=RegisterProfileSchema)
-spec.components.schema("RequestPasswordReset",
+spec.components.schema("RegisterProfile", schema=RegisterProfileSchema)
+spec.components.schema("ResetPassword",
                        schema=ResetPasswordSchema)
-spec.components.schema("RequestAuth", schema=LoginSchema)
+spec.components.schema("Login", schema=LoginSchema)
 
 spec.components.schema("ReadProfile", schema=ReadProfileSchema)
 
