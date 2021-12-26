@@ -31,7 +31,7 @@ def instant_job_spy(mocker, repository):
     return instant_job_spy
 
 
-def test_schedule_profile_sync_creates_instant_job(repository, existing_profile, instant_job_spy):
+def test_schedule_profile_sync_creates_instant_job(repository, existing_plaid_item, existing_profile, instant_job_spy):
     result = repository.schedule_profile_sync(existing_profile.id)
     assert result.success
     assert instant_job_spy.assert_called_once()

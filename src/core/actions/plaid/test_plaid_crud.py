@@ -75,8 +75,14 @@ def test_create_plaid_item_accepts_valid_intput(db, valid_create_request):
     assert result.data.id is not None
 
 
-def test_update_plaid_item_accepts_valid_input():
-    assert False
+def test_update_plaid_item_accepts_valid_input(db, existing_plaid_item, valid_update_request):
+    assert existing_plaid_item.id == valid_update_request['id']
+    assert existing_plaid_item.status != valid_update_request['status']
+    result = update_plaid_item(db, valid_update_request)
+    assert result.success
+    assert result.data is not None
+    assert result.data.id == existing_plaid_item.id
+    assert result.data.status == valid_update_request['status']
 
 
 def test_update_plaid_item_fails_if_item_not_found(db, valid_update_request):
