@@ -1,6 +1,8 @@
 from core.repositories.plaid_repository import PlaidRepository
 from core.repositories.balance_repository import BalanceRepository
 from core.lib.logger import get_logger
+from api.metrics.job_metrics import PERF_JOB_SYNC_BALANCES
+
 
 class SyncBalances:
 
@@ -15,11 +17,15 @@ class SyncBalances:
         self.balance_repo = BalanceRepository()
         self.plaid_item_id = redis_message['args']['plaid_item_id']
 
+    @PERF_JOB_SYNC_BALANCES.time()
     def run(self):
         if self.plaid_item_id:
-            self.logger.info("syncing balances for plaid_item_id {0}".format(self.plaid_item_id))
-            plaid_item = self.plaid_repo.get_plaid_item_by_id(self.plaid_item_id)
+            self.logger.info(
+                "syncing balances for plaid_item_id {0}".format(self.plaid_item_id))
+            plaid_item = self.plaid_repo.get_plaid_item_by_id(
+                self.plaid_item_id)
             self.balance_repo.sync_all_balances(plaid_item)
             self.logger.info("done syncing balances")
         else:
-            self.logger.error("not running balance sync, no PlaidItem id found: {0}".format(self.plaid_item_id))
+            self.logger.error(
+                "not running balance sync, no PlaidItem id found: {0}".format(self.plaid_item_id))

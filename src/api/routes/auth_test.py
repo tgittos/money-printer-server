@@ -34,7 +34,7 @@ def stub_emails(mocker):
 
 
 def test_register_accepts_valid_input(client, valid_register_api_request):
-    result = client.post('v1/api/auth/register',
+    result = client.post('/v1/api/auth/register',
                          json=valid_register_api_request)
     assert result.status_code == 200
     json = result.get_json()
@@ -44,7 +44,7 @@ def test_register_accepts_valid_input(client, valid_register_api_request):
 
 
 def test_register_rejects_invalid_input(client, invalid_register_api_request):
-    result = client.post('v1/api/auth/register',
+    result = client.post('/v1/api/auth/register',
                          json=invalid_register_api_request)
     assert result.status_code == 400
     json = result.get_json()
@@ -55,14 +55,14 @@ def test_register_rejects_duplicate_email(client, db, valid_register_api_request
     with db.get_session() as session:
         profile = create_user_profile(
             session, email=valid_register_api_request['email'])
-    result = client.post('v1/api/auth/register',
+    result = client.post('/v1/api/auth/register',
                          json=valid_register_api_request)
     assert result.status_code == 400
     json = result.get_json()
 
 
 def test_login_accepts_valid_credentials(client, valid_auth_api_request):
-    result = client.post('v1/api/auth/login', json=valid_auth_api_request)
+    result = client.post('/v1/api/auth/login', json=valid_auth_api_request)
     assert result.status_code == 200
     json = result.get_json()
     assert json is not None
@@ -72,17 +72,17 @@ def test_login_accepts_valid_credentials(client, valid_auth_api_request):
 
 
 def test_login_rejects_bad_username(client, bad_email_api_request):
-    result = client.post('v1/api/auth/login', json=bad_email_api_request)
+    result = client.post('/v1/api/auth/login', json=bad_email_api_request)
     assert result.status_code == 404
 
 
 def test_login_rejects_bad_password(client, bad_password_api_request):
-    result = client.post('v1/api/auth/login', json=bad_password_api_request)
+    result = client.post('/v1/api/auth/login', json=bad_password_api_request)
     assert result.status_code == 404
 
 
 def test_auth_tokens_are_valid_for_30_days(client, valid_auth_api_request):
-    result = client.post('v1/api/auth/login', json=valid_auth_api_request)
+    result = client.post('/v1/api/auth/login', json=valid_auth_api_request)
     assert result.status_code == 200
     json = result.get_json()
     assert json is not None

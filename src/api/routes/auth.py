@@ -15,6 +15,7 @@ auth_bp = Blueprint('auth', __name__)
 
 
 @auth_bp.route('/v1/api/auth/register', methods=['POST'])
+@PERF_AUTH_REGISTER.time()
 def register():
     """
     ---
@@ -62,6 +63,7 @@ def get_unauthenticated_user():
 
 
 @auth_bp.route('/v1/api/auth/login', methods=['POST'])
+@PERF_AUTH_LOGIN.time()
 def login():
     """
     ---
@@ -96,6 +98,7 @@ def login():
 
 
 @auth_bp.route('/v1/api/auth/reset', methods=['POST'])
+@PERF_AUTH_RESET.time()
 def reset_password():
     """
     ---
@@ -120,6 +123,7 @@ def reset_password():
 
 
 @auth_bp.route('/v1/api/auth/reset/continue', methods=['POST'])
+@PERF_AUTH_RESET_CONTINUE.time()
 def continue_reset_password():
     """
     ---

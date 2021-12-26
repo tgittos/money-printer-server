@@ -1,6 +1,7 @@
 from core.repositories.stock_repository import StockRepository
 from core.repositories.security_repository import SecurityRepository
 from core.lib.logger import get_logger
+from api.metrics.job_metrics import PERF_JOB_SYNC_SECURITIES
 
 
 class SyncSecurities:
@@ -14,6 +15,7 @@ class SyncSecurities:
         self.stock_repo = StockRepository()
         self.security_repo = SecurityRepository()
 
+    @PERF_JOB_SYNC_SECURITIES.time()
     def run(self):
         if self.symbol is not None:
             security = self.security_repo.get_security_by_symbol(self.symbol)
@@ -31,10 +33,12 @@ class SyncSecurities:
             self.sync_security(security)
 
     def sync_security(self, security):
-        self.logger.info("syncing security with ticker {0}".format(security.ticker_symbol))
+        self.logger.info("syncing security with ticker {0}".format(
+            security.ticker_symbol))
         has_data = self.stock_repo.has_data(security.ticker_symbol)
         if not has_data:
-            self.logger.info("no historical data found for security, fetching default window of back data")
+            self.logger.info(
+                "no historical data found for security, fetching default window of back data")
             # fetch the default window's worth of historical daily closings
             self.stock_repo.historical_daily(security.ticker_symbol)
         else:
@@ -45,4 +49,3 @@ class SyncSecurities:
     def __sync_eod_symbol(self, security_id, symbol):
         # the repo method will automatically persist the data for us
         self.stock_repo.previous(symbol)
-

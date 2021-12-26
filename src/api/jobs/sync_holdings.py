@@ -1,6 +1,7 @@
 from core.repositories.holding_repository import HoldingRepository
 from core.repositories.plaid_repository import PlaidRepository
 from core.lib.logger import get_logger
+from api.metrics.job_metrics import PERF_JOB_SYNC_HOLDINGS
 
 
 class SyncHoldings:
@@ -16,10 +17,14 @@ class SyncHoldings:
         self.holding_repo = HoldingRepository()
         self.plaid_item_id = redis_message['args']['plaid_item_id']
 
+    @PERF_JOB_SYNC_HOLDINGS.time()
     def run(self):
         if self.plaid_item_id:
-            self.logger.info("updating holdings for plaid item id: {0}".format(self.plaid_item_id))
-            plaid_item = self.plaid_repo.get_plaid_item_by_id(self.plaid_item_id)
+            self.logger.info(
+                "updating holdings for plaid item id: {0}".format(self.plaid_item_id))
+            plaid_item = self.plaid_repo.get_plaid_item_by_id(
+                self.plaid_item_id)
             self.holding_repo.update_holdings(plaid_item)
         else:
-            self.logger.error("not running holding sync, no PlaidItem id found: {0}".format(self.plaid_item_id))
+            self.logger.error(
+                "not running holding sync, no PlaidItem id found: {0}".format(self.plaid_item_id))

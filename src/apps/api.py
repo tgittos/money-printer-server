@@ -62,7 +62,7 @@ class ApiApplication:
 
     def init(self, first_name, last_name, email):
         repo = ProfileRepository(self.store)
-        result = repo.register(RequestRegistrationSchema(
+        result = repo.register(RegisterProfileSchema(
             email=email, first_name=first_name, last_name=last_name
         ))
         return result
@@ -119,7 +119,7 @@ class ApiApplication:
             return
         self.logger.debug("configuring Prometheus metrics endpoint")
         self.flask_app.wsgi_app = DispatcherMiddleware(self.flask_app.wsgi_app, {
-            '/metrics': make_wsgi_app()
+            '/v1/api/metrics': make_wsgi_app()
         })
 
     def _configure_graphql(self):

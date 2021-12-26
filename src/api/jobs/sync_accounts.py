@@ -1,8 +1,11 @@
 from core.repositories.plaid_repository import PlaidRepository
 from core.repositories.profile_repository import ProfileRepository
 from core.stores.mysql import MySql
-from config import mysql_config
 from core.lib.logger import get_logger
+
+from api.metrics.job_metrics import PERF_JOB_SYNC_ACCOUNTS
+
+from config import mysql_config
 
 
 class SyncAccounts:
@@ -19,13 +22,16 @@ class SyncAccounts:
         self.profile_repo = ProfileRepository()
         self.plaid_item_id = redis_message['args']['plaid_item_id']
 
+    @PERF_JOB_SYNC_ACCOUNTS.time()
     def run(self):
         if self.plaid_item_id:
-            plaid_item = self.plaid_repo.get_plaid_item_by_id(self.plaid_item_id)
+            plaid_item = self.plaid_repo.get_plaid_item_by_id(
+                self.plaid_item_id)
             if not plaid_item:
                 self.logger.error("not running account sync, couldnt find PlaidItem with id: {0}"
                                   .format(self.plaid_item_id))
                 return
             self.profile_repo.sync_all_accounts(plaid_item)
         else:
-            self.logger.error("not running account sync, no PlaidItem id found: {0}".format(self.plaid_item_id))
+            self.logger.error(
+                "not running account sync, no PlaidItem id found: {0}".format(self.plaid_item_id))
