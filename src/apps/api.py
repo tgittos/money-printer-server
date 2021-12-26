@@ -29,6 +29,7 @@ from api.routes.swagger import swagger_bp
 
 from api.graphql.schema import schema
 from api.lib.client_bus import ClientBus
+from api.lib.constants import API_PREFIX
 
 
 class ApiApplication:
@@ -126,14 +127,15 @@ class ApiApplication:
         if self.configured:
             return
         self.logger.debug("configuring GraphQL endpoint")
+        in_prod = 'MP_ENVIRONMENT' in os.environ and os.environ['MP_ENVIRONMENT'] == "production"
         self.flask_app.add_url_rule(
-            '/v1/api/graphql',
+            f"/{API_PREFIX}/graphql",
             view_func=GraphQLView.as_view(
                 'graphql_view',
                 schema=schema,
-                graphiql=True,
-                header_editor_enabled=True,
-                should_persist_headers=True
+                graphiql=not in_prod,
+                header_editor_enabled=not in_prod,
+                should_persist_headers=not in_prod
             )
         )
 
