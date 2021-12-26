@@ -1,4 +1,5 @@
 import time
+from os import environ
 
 from plaid.model.link_token_create_request import LinkTokenCreateRequest
 from plaid.model.link_token_create_request_user import LinkTokenCreateRequestUser
@@ -32,8 +33,13 @@ class PlaidOauth:
             'products': PLAID_PRODUCTS_STRINGS
         }
 
-    def create_link_token(self, webhook_url):
+    def create_link_token(self, current_host):
         plaid_config = self.config.plaid_config
+        if 'MP_WEBHOOK_HOST' in environ:
+            webhook_host = environ['MP_WEBHOOK_HOST']
+        else:
+            webhook_host =  current_host
+        webhook_url = f"{webhook_host}/v1/webhooks/plaid"
         request = LinkTokenCreateRequest(
             products=PLAID_PRODUCTS,
             client_name=plaid_config.product_name,
@@ -61,6 +67,7 @@ class PlaidOauth:
             profile_id, request_id, item_id, access_token)
         return plaid_item
 
+    # TODO - move this to the plaid actions/repo or something
     def __store_link(self, profile, request_id, item_id, access_token):
         schema = CreatePlaidItemSchema().load({
             'profile': profile,

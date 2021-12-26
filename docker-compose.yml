@@ -1,4 +1,14 @@
 services:
+  ngrok:
+    image: "wernight/ngrok"
+    ports:
+      - 4040:4040
+    env_file:
+      - .env.dev
+    environment:
+      - NGROK_HEADER="rewrite"
+      - NGROK_PORT=api
+      - NGROK_DEBUG=true
   redis:
     image: "redis:alpine"
   matomo:
@@ -36,9 +46,10 @@ services:
     environment:
       MP_REDIS__HOST: redis
       MP_DB__HOST: db
+      MP_WEBHOOK_HOST: ngrok
     env_file:
       - .env.dev
-    depends_on: [ "redis", "db", "matomo", "prometheus" ]
+    depends_on: [ "redis", "db", "ngrok", "matomo", "prometheus" ]
     image: api
     entrypoint:
       [

@@ -14,7 +14,8 @@ WORKDIR /app
 # Install dependencies
 COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+# use the cache, because we build our own base image to speed this up
+RUN pip install -r requirements.txt
 
 # Copy core app code required to run the app
 COPY src src

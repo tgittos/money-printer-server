@@ -32,11 +32,8 @@ def info():
 @authed
 def create_link_token():
     base_url = request.base_url
-    # webhook_url = base_url + "/v1/webhooks/plaid"
-    # below is testing value only
-    webhook_url = "http://6b654d2cf969.ngrok.io" + "/v1/webhooks/plaid"
     client = PlaidOauth(oauth_config)
-    result_json = client.create_link_token(webhook_url)
+    result_json = client.create_link_token(base_url)
     return {
         'success': result_json is not None,
         'data': result_json
