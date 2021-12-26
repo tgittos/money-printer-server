@@ -80,19 +80,19 @@ def update_plaid_item(db, request: UpdatePlaidItemSchema) -> ActionResponse:
     """
     Updates a PlaidItem in the DB and touches the timestamp for it
     """
-    plaid_item = get_plaid_item_by_id(request['id'])
-    if plaid_item is None:
+    result = get_plaid_item_by_id(db, request['id'])
+    if not result.success or result.data is None:
         return ActionResponse(
             success=False,
             message=f"No plaid item found with ID {request['id']}"
         )
 
+    plaid_item = result.data
+
     with db.get_session() as session:
         session.add(plaid_item)
 
-        plaid_item.item_id = request['item_id']
-        plaid_item.access_token = request['access_token']
-        plaid_item.request_id = request['request_id']
+        plaid_item.status = request['status']
         plaid_item.timestamp = datetime.utcnow()
 
         session.commit()
@@ -103,5 +103,18 @@ def update_plaid_item(db, request: UpdatePlaidItemSchema) -> ActionResponse:
     )
 
 
-def delete_plaid_item(db, plaid_item_id: int):
-    raise Exception("not implemented yet")
+def delete_plaid_item(db, plaid_item_id: int) -> ActionResponse:
+    result = get_plaid_item_by_id(db, plaid_item_id)
+    if not result.success or result.data is None:
+        return ActionResponse(
+            success=False,
+            message=f"Could not find plaid_item with ID {plaid_item_id}"
+        )
+
+    with db.get_session() as session:
+        session.delete(result.data)
+        session.commit()
+
+    return ActionResponse(
+        success=True
+    )

@@ -117,8 +117,10 @@ class ScheduledJobRepository:
         )
 
     def schedule_persistent_jobs(self) -> RepositoryResponse:
-        jobs = self.get_scheduled_jobs()
-        for job in jobs:
+        result = self.get_scheduled_jobs()
+        if not result.success:
+            return result
+        for job in result.data:
             self.ensure_scheduled(job.queue, job)
 
         return RepositoryResponse(
