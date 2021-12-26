@@ -6,6 +6,7 @@ from core.repositories.account_repository import AccountRepository
 from core.repositories.profile_repository import ProfileRepository
 from core.schemas.profile_schemas import ReadProfileSchema, UpdateProfileSchema
 
+from api.lib.constants import API_PREFIX
 from api.metrics.profile_metrics import *
 
 from .decorators import authed, get_identity
@@ -14,7 +15,7 @@ from .decorators import authed, get_identity
 profile_bp = Blueprint('profile', __name__)
 
 
-@profile_bp.route('/v1/api/profile', methods=['GET'])
+@profile_bp.route(f"/{API_PREFIX}/profile", methods=['GET'])
 @authed
 @PERF_GET_PROFILE.time()
 def get_profile():
@@ -37,7 +38,7 @@ def get_profile():
     return ReadProfileSchema().dump(user)
 
 
-@profile_bp.route('/v1/api/profile', methods=['PUT'])
+@profile_bp.route(f"/{API_PREFIX}/profile", methods=['PUT'])
 @authed
 @PERF_UPDATE_PROFILE.time()
 def update_profile():
@@ -81,7 +82,7 @@ def update_profile():
         }, 400
 
 
-@profile_bp.route('/v1/api/profile/sync', methods=['POST'])
+@profile_bp.route(f"/{API_PREFIX}/profile/sync", methods=['POST'])
 @authed
 @PERF_SYNC_PROFILE.time()
 def sync_profile():

@@ -6,6 +6,8 @@ from core.repositories.account_repository import AccountRepository
 from .decorators import authed, get_identity
 from config import mysql_config, plaid_config, mailgun_config, iex_config
 
+from api.lib.constants import API_PREFIX
+
 oauth_config = OauthConfig(
     mysql_config=mysql_config,
     plaid_config=plaid_config
@@ -15,7 +17,7 @@ oauth_config = OauthConfig(
 oauth_bp = Blueprint('plaid_oauth', __name__)
 
 
-@oauth_bp.route('/v1/api/plaid/info', methods=['POST'])
+@oauth_bp.route(f"/{API_PREFIX}/plaid/info", methods=['POST'])
 @authed
 def info():
     client = Oauth(oauth_config)
@@ -26,7 +28,7 @@ def info():
     }
 
 
-@oauth_bp.route('/v1/api/plaid/create_link_token', methods=['POST'])
+@oauth_bp.route(f"/{API_PREFIX}/plaid/create_link_token", methods=['POST'])
 @authed
 def create_link_token():
     base_url = request.base_url
@@ -41,7 +43,7 @@ def create_link_token():
     }
 
 
-@oauth_bp.route('/v1/api/plaid/set_access_token', methods=['POST'])
+@oauth_bp.route(f"/{API_PREFIX}/plaid/set_access_token", methods=['POST'])
 @authed
 def get_access_token():
     profile = get_identity()

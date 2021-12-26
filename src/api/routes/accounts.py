@@ -8,12 +8,14 @@ from core.schemas.holding_schemas import ReadHoldingSchema
 from config import env
 from .decorators import authed, get_identity
 
+from api.lib.constants import API_PREFIX
+
 
 # define the blueprint for plaid oauth
 account_bp = Blueprint('account', __name__)
 
 
-@account_bp.route('/v1/api/accounts', methods=['GET'])
+@account_bp.route(f"/{API_PREFIX}/accounts", methods=['GET'])
 @authed
 def list_accounts():
     user = get_identity()
@@ -31,7 +33,7 @@ def list_accounts():
         abort(404)
 
 
-@account_bp.route('/v1/api/accounts/<account_id>/sync', methods=['POST'])
+@account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/sync", methods=['POST'])
 @authed
 def request_account_sync(account_id: int):
     user = get_identity()
@@ -51,7 +53,7 @@ def request_account_sync(account_id: int):
         abort(404)
 
 
-@account_bp.route('/v1/api/accounts/<account_id>/balances', methods=['GET'])
+@account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/balances", methods=['GET'])
 @authed
 def request_account_balances(account_id):
     user = get_identity()
@@ -68,7 +70,7 @@ def request_account_balances(account_id):
     }
 
 
-@account_bp.route('/v1/api/accounts/<account_id>/holdings', methods=['GET'])
+@account_bp.route("/{API_PREFIX}/accounts/<account_id>/holdings", methods=['GET'])
 @authed
 def list_holdings(account_id):
     user = get_identity()

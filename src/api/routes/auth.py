@@ -8,13 +8,14 @@ from .decorators import authed, get_identity
 from core.schemas.auth_schemas import ReadAuthSchema, ResetPasswordSchema, RegisterProfileSchema, LoginSchema
 from core.schemas.profile_schemas import ReadProfileSchema
 
+from api.lib.constants import API_PREFIX
 from api.metrics.auth_metrics import *
 
 # define the blueprint for plaid oauth
 auth_bp = Blueprint('auth', __name__)
 
 
-@auth_bp.route('/v1/api/auth/register', methods=['POST'])
+@auth_bp.route(f"/{API_PREFIX}/auth/register", methods=['POST'])
 @PERF_AUTH_REGISTER.time()
 def register():
     """
@@ -48,7 +49,7 @@ def register():
         return error.messages, 400
 
 
-@auth_bp.route('/v1/api/auth/unauthenticated', methods=['GET'])
+@auth_bp.route(f"/{API_PREFIX}/auth/unauthenticated", methods=['GET'])
 def get_unauthenticated_user():
     repo = ProfileRepository()
     result = repo.get_unauthenticated_user()
@@ -62,7 +63,7 @@ def get_unauthenticated_user():
     })
 
 
-@auth_bp.route('/v1/api/auth/login', methods=['POST'])
+@auth_bp.route(f"/{API_PREFIX}/auth/login", methods=['POST'])
 @PERF_AUTH_LOGIN.time()
 def login():
     """
@@ -97,7 +98,7 @@ def login():
         return error.messages, 400
 
 
-@auth_bp.route('/v1/api/auth/reset', methods=['POST'])
+@auth_bp.route(f"/{API_PREFIX}/auth/reset", methods=['POST'])
 @PERF_AUTH_RESET.time()
 def reset_password():
     """
@@ -122,7 +123,7 @@ def reset_password():
     return '', 204
 
 
-@auth_bp.route('/v1/api/auth/reset/continue', methods=['POST'])
+@auth_bp.route(f"/{API_PREFIX}/auth/reset/continue", methods=['POST'])
 @PERF_AUTH_RESET_CONTINUE.time()
 def continue_reset_password():
     """

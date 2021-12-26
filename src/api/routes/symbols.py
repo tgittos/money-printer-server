@@ -4,14 +4,16 @@ from flask import Blueprint
 from flask import request
 
 from core.repositories.stock_repository import StockRepository
-from .decorators import authed
 from config import mysql_config, iex_config
+
+from api.lib.constants import API_PREFIX
+from .decorators import authed
 
 # define the blueprint for symbol routes
 symbol_bp = Blueprint('symbols', __name__)
 
 
-@symbol_bp.route('/v1/api/symbols/<symbol>/previous', methods=['GET'])
+@symbol_bp.route(f"/{API_PREFIX}/symbols/<symbol>/previous", methods=['GET'])
 @authed
 def symbol_previous(symbol):
     repo = StockRepository()
@@ -31,7 +33,7 @@ def symbol_previous(symbol):
     }
 
 
-@symbol_bp.route('/v1/api/symbols/<symbol>/intraday', methods=['GET'])
+@symbol_bp.route(f"/{API_PREFIX}/symbols/<symbol>/intraday", methods=['GET'])
 @authed
 def symbol_intraday(symbol):
     start = request.args.get('start')
@@ -60,7 +62,7 @@ def symbol_intraday(symbol):
     }
 
 
-@symbol_bp.route('/v1/api/symbols/<symbol>/eod', methods=['GET'])
+@symbol_bp.route(f"/{API_PREFIX}/symbols/<symbol>/eod", methods=['GET'])
 @authed
 def symbol_eod(symbol):
     start = request.args.get('start')

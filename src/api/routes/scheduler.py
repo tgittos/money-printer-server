@@ -5,14 +5,15 @@ from core.schemas.scheduler_schemas import CreateScheduledJobSchema, ReadSchedul
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from .decorators import authed, admin, get_identity
 
+from api.lib.constants import API_PREFIX
+
 scheduler_bp = Blueprint('scheduler', __name__)
 
 
-@scheduler_bp.route('/v1/api/admin/schedules', methods=['GET'])
+@scheduler_bp.route(f"/{API_PREFIX}/admin/schedules", methods=['GET'])
 @authed
 @admin
 def list_schedules():
-    print("here")
     repo = ScheduledJobRepository()
     response = repo.get_scheduled_jobs()
     if response.success:
@@ -25,7 +26,7 @@ def list_schedules():
     }
 
 
-@scheduler_bp.route('/v1/api/admin/schedules', methods=['POST'])
+@scheduler_bp.route(f"/{API_PREFIX}/admin/schedules", methods=['POST'])
 @authed
 @admin
 def create_schedule():
@@ -49,7 +50,7 @@ def create_schedule():
         abort(500)
 
 
-@scheduler_bp.route('/v1/api/admin/schedules/<schedule_id>', methods=['PUT'])
+@scheduler_bp.route(f"/{API_PREFIX}/admin/schedules/<schedule_id>", methods=['PUT'])
 @authed
 @admin
 def update_schedule(schedule_id):
@@ -83,7 +84,7 @@ def update_schedule(schedule_id):
         abort(500)
 
 
-@scheduler_bp.route('/v1/api/admin/schedules/<schedule_id>', methods=['DELETE'])
+@scheduler_bp.route(f"/{API_PREFIX}/admin/schedules/<schedule_id>", methods=['DELETE'])
 @authed
 @admin
 def delete_schedule(schedule_id):
@@ -99,7 +100,7 @@ def delete_schedule(schedule_id):
     }
 
 
-@scheduler_bp.route('/v1/api/admin/schedules/<schedule_id>/run', methods=['POST'])
+@scheduler_bp.route(f"/{API_PREFIX}/admin/schedules/<schedule_id>/run", methods=['POST'])
 @authed
 @admin
 def run_schedule():
@@ -108,7 +109,7 @@ def run_schedule():
     }
 
 
-@scheduler_bp.route('/v1/api/admin/schedules/instants', methods=['GET'])
+@scheduler_bp.route(f"/{API_PREFIX}/admin/schedules/instants", methods=['GET'])
 @authed
 @admin
 def list_historical_instants():

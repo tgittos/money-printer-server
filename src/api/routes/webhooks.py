@@ -8,10 +8,12 @@ from core.repositories.balance_repository import BalanceRepository
 from core.repositories.profile_repository import ProfileRepository
 from core.lib.logger import get_logger
 
+from api.lib.constants import API_PREFIX
+
 webhooks_bp = Blueprint('webhooks', __name__)
 
 
-@webhooks_bp.route('/v1/webhooks/plaid', methods=['POST'])
+@webhooks_bp.route(f"/{API_PREFIX}/webhooks/plaid", methods=['POST'])
 def receive_plaid_webhook():
     logger = get_logger(__name__)
 
@@ -60,4 +62,3 @@ def receive_plaid_webhook():
     return {
         'success': True
     }
-

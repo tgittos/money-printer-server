@@ -5,7 +5,9 @@ import json
 
 from core.models.scheduler.scheduled_job import ScheduledJob
 from core.lib.jwt import encode_jwt
+
 from api.routes.scheduler import ScheduledJobRepository
+from api.lib.constants import API_PREFIX
 
 from tests.factories import create_scheduled_job, create_user_profile
 from tests.fixtures.core import client, db
@@ -22,7 +24,7 @@ def mock_scheduler_methods(mocker):
 
 # /v1/api/admin/schedules
 def test_create_schedule_accepts_valid_input_for_admin_token(client, admin_token, valid_scheduled_job_request):
-    response = client.post('/v1/api/admin/schedules',
+    response = client.post(f"/{API_PREFIX}/admin/schedules",
                            headers={'Authorization': f"Bearer {admin_token}"},
                            json=valid_scheduled_job_request)
     assert response.status_code == 201
@@ -34,14 +36,14 @@ def test_create_schedule_accepts_valid_input_for_admin_token(client, admin_token
 
 # /v1/api/admin/schedules
 def test_create_schedule_rejects_invalid_input_for_admin_token(client, admin_token, invalid_scheduled_job_request):
-    response = client.post('/v1/api/admin/schedules',
+    response = client.post(f"/{API_PREFIX}/admin/schedules",
                            headers={'Authorization': f"Bearer {admin_token}"},
                            json=invalid_scheduled_job_request)
     assert response.status_code == 400
 
 
 def test_create_schedule_rejects_valid_input_for_non_admin_token(client, user_token, valid_scheduled_job_request):
-    response = client.post('/v1/api/admin/schedules',
+    response = client.post(f"/{API_PREFIX}/admin/schedules",
                            headers={'Authorization': f"Bearer {user_token}"},
                            json=valid_scheduled_job_request)
     assert response.status_code == 401
@@ -53,7 +55,7 @@ def test_list_schedules_returns_all_schedules_for_admin_token(db, client, admin_
     with db.get_session() as session:
         job_1 = create_scheduled_job(session)
         job_2 = create_scheduled_job(session)
-    response = client.get('/v1/api/admin/schedules',
+    response = client.get(f"/{API_PREFIX}/admin/schedules",
                           headers={'Authorization': f"Bearer {admin_token}"},
                           follow_redirects=True)
     assert response.status_code == 200
@@ -71,7 +73,7 @@ def test_list_schedules_returns_401_for_non_admin(db, client, user_token):
     with db.get_session() as session:
         job_1 = create_scheduled_job(session)
         job_2 = create_scheduled_job(session)
-    response = client.get('/v1/api/admin/schedules',
+    response = client.get(f"/{API_PREFIX}/admin/schedules",
                           headers={'Authorization': f"Bearer {user_token}"},
                           follow_redirects=True)
     assert response.status_code == 401
@@ -83,7 +85,7 @@ def test_update_schedule_accepts_valid_input_for_admin_token(db, client, admin_t
         job = create_scheduled_job(session)
 
     assert job.job_name != 'Updated Job Name'
-    response = client.put('/v1/api/admin/schedules/' + str(job.id),
+    response = client.put(f"/{API_PREFIX}/admin/schedules/" + str(job.id),
                           headers={'Authorization': f"Bearer {admin_token}"},
                           json={
         'job_name': 'Updated Job Name'
@@ -106,7 +108,7 @@ def test_update_schedule_returns_401_for_user_token(db, client, user_token):
     with db.get_session() as session:
         job = create_scheduled_job(session)
     assert job.job_name != 'Updated Job Name'
-    response = client.put('/v1/api/admin/schedules/' + str(job.id),
+    response = client.put(f"/{API_PREFIX}/admin/schedules/" + str(job.id),
                           headers={'Authorization': f"Bearer {user_token}"},
                           data=json.dumps({
                               'job_name': 'Updated Job Name'
@@ -119,9 +121,8 @@ def test_update_schedule_returns_401_for_user_token(db, client, user_token):
             ScheduledJob.id == job.id).first()
     assert updated_job.job_name == job.job_name
 
+
 # /v1/api/admin/schedules/1
-
-
 @pytest.mark.skip(reason="need to go back and implement this")
 def test_update_schedule_rejects_invalid_input(client):
     assert False
