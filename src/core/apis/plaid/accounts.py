@@ -9,14 +9,14 @@ from core.apis.plaid.common import get_plaid_api_client
 from core.lib.logger import get_logger
 
 
-class AccountsConfig(object):
+class PlaidAccountsConfig(object):
     plaid_config = None
 
     def __init__(self, plaid_config):
         self.plaid_config = plaid_config
 
 
-class Accounts:
+class PlaidAccounts:
 
     logger = get_logger(__name__)
 
@@ -36,7 +36,8 @@ class Accounts:
 
     def get_account_balance(self, access_token: str, plaid_account_id: str):
         try:
-            self.logger.debug("sending account balance get request for account id: {0}".format(plaid_account_id))
+            self.logger.debug(
+                "sending account balance get request for account id: {0}".format(plaid_account_id))
             request = AccountsBalanceGetRequest(
                 access_token=access_token,
                 options=AccountsBalanceGetRequestOptions(

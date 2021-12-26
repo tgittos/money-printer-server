@@ -2,7 +2,7 @@ from marshmallow import EXCLUDE
 from datetime import date, timedelta
 
 from core.stores.mysql import MySql
-from core.apis.plaid.investments import Investments, InvestmentsConfig
+from core.apis.plaid.investments import PlaidInvestments, PlaidInvestmentsConfig
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 from core.actions.plaid.crud import get_plaid_item_by_id
@@ -82,7 +82,7 @@ class SecurityRepository:
                 message=plaid_result.message
             )
 
-        api = Investments(InvestmentsConfig(self.plaid_config))
+        api = PlaidInvestments(PlaidInvestmentsConfig(self.plaid_config))
         investment_dict = api.get_investments(plaid_result.data.access_token)
 
         # update securities from this account
@@ -143,7 +143,7 @@ class SecurityRepository:
                 message=f"No PlaidItem found with ID {account_result.data.plaid_item_id}"
             )
 
-        api = Investments(InvestmentsConfig(self.plaid_config))
+        api = PlaidInvestments(PlaidInvestmentsConfig(self.plaid_config))
 
         # if we have no transactions for this account, try and pull the last years
         # otherwise, we probably got a notification from a webhook to update, so just

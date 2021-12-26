@@ -10,17 +10,17 @@ from core.lib.logger import get_logger
 from core.apis.plaid.common import get_plaid_api_client
 
 
-class InvestmentsConfig(object):
+class PlaidInvestmentsConfig(object):
     plaid_config = None
 
     def __init__(self, plaid_config):
         self.plaid_config = plaid_config
 
 
-class Investments:
+class PlaidInvestments:
     def __init__(self, accounts_config=None):
         self.logger = get_logger(__name__)
-        self.config = accounts_config or InvestmentsConfig()
+        self.config = accounts_config or PlaidInvestmentsConfig()
         self.client = get_plaid_api_client(self.config.plaid_config)
 
     def get_investments(self, access_token):

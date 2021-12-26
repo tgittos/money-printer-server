@@ -2,7 +2,7 @@ from core.models.plaid_item import PlaidItem
 from core.repositories.balance_repository import BalanceRepository
 from core.repositories.holding_repository import HoldingRepository
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
-from core.apis.plaid.accounts import Accounts, AccountsConfig
+from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
 from core.lib.utilities import wrap
 from core.lib.logger import get_logger
 from core.stores.mysql import MySql
@@ -23,7 +23,7 @@ class ProfileRepository:
     balance_repo = BalanceRepository()
     holdings_repo = HoldingRepository()
     scheduled_job_repo = ScheduledJobRepository()
-    plaid_accounts_api = Accounts(AccountsConfig(
+    plaid_accounts_api = PlaidAccounts(PlaidAccountsConfig(
         plaid_config=plaid_config
     ))
 

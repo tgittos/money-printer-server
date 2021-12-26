@@ -9,7 +9,7 @@ from core.apis.plaid.common import get_plaid_api_client, PlaidApiConfig, PLAID_P
 from core.repositories.plaid_repository import PlaidRepository
 
 
-class OauthConfig:
+class PlaidOauthConfig:
     def __init__(self, plaid_config, mysql_config):
         self.plaid_config = PlaidApiConfig()
         self.plaid_config.env = plaid_config['env']
@@ -18,7 +18,7 @@ class OauthConfig:
         self.mysql_config = mysql_config
 
 
-class Oauth:
+class PlaidOauth:
 
     def __init__(self, oauth_config):
         self.config = oauth_config

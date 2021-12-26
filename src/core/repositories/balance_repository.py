@@ -1,6 +1,6 @@
 from marshmallow import EXCLUDE
 
-from core.apis.plaid.accounts import Accounts, AccountsConfig
+from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
 from core.models.plaid_item import PlaidItem
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.repositories.plaid_repository import PlaidRepository
