@@ -13,7 +13,11 @@ from tests.fixtures import *
 
 @pytest.fixture(autouse=True)
 def mock_notifier(mocker):
-    mocker.patch('core.actions.profile.crud.notify_profile_created')
+    # mocker.patch('core.lib.notifications.notify_profile_created',
+    return mocker.patch.object(crud, 'notify_profile_created',
+        return_value=MockResponse(
+            status_code=200
+        ))
 
 
 def test_cannot_construct_invalid_registraction_schema():
@@ -33,7 +37,7 @@ def test_register_fails_on_used_email(db, profile_factory, valid_register_reques
     assert not result.success
 
 
-def test_register_creates_a_new_profile_with_valid_data(db, valid_register_request_factory):
+def test_register_creates_a_new_profile_with_valid_data(db, valid_register_request_factory, mock_notifier):
     request = valid_register_request_factory()
     result = register(db, request)
     assert result is not None
@@ -42,7 +46,7 @@ def test_register_creates_a_new_profile_with_valid_data(db, valid_register_reque
     assert result.data.email == request['email']
 
 
-def test_create_profile_creates_profile_record(db, valid_register_request_factory):
+def test_create_profile_creates_profile_record(db, valid_register_request_factory, mock_notifier):
     request = valid_register_request_factory()
     result = create_profile(db, request)
     assert result.success
@@ -52,14 +56,13 @@ def test_create_profile_creates_profile_record(db, valid_register_request_factor
             Profile.id == result.data.id).count() == 1
 
 
-def test_create_profile_emails_temp_password(db, valid_register_request_factory, mocker):
+def test_create_profile_emails_temp_password(db, valid_register_request_factory, mock_notifier):
     request = valid_register_request_factory()
-    spy = mocker.spy(crud, 'notify_profile_created')
     create_profile(db, request)
-    spy.assert_called_once()
+    mock_notifier.assert_called_once()
 
 
-def test_create_profile_returns_profile(db, valid_register_request_factory):
+def test_create_profile_returns_profile(db, valid_register_request_factory, mock_notifier):
     request = valid_register_request_factory()
     result = create_profile(db, request)
     assert result.success

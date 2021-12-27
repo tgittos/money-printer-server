@@ -73,12 +73,6 @@ def create_profile(db, request: CreateProfileSchema) -> ActionResponse:
     """
     Registers a new profile and emails the temporary password to the user
     """
-    if not is_valid_email(request['email']):
-        return ActionResponse(
-            success=False,
-            message='Invalid shaped email given to create_profile'
-        )
-
     new_pw = generate_temp_password()
 
     new_profile = Profile()

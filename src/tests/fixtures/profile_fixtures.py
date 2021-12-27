@@ -33,7 +33,7 @@ def profile_factory(db, factory, faker):
 
 
 @pytest.fixture()
-def valid_update_request_factory(faker, profile_factory):
+def valid_profile_update_request_factory(faker, profile_factory):
     def __request_factory(profile_id=None,
                           first_name=faker.first_name(),
                           last_name=faker.last_name()):
@@ -49,9 +49,9 @@ def valid_update_request_factory(faker, profile_factory):
 
 
 @pytest.fixture
-def valid_profile_update_api_request_factory(valid_update_request_factory):
+def valid_profile_update_api_request_factory(valid_profile_update_request_factory):
     def __valid_profile_update_api_request_factory():
-        request = valid_update_request_factory()
+        request = valid_profile_update_request_factory()
         return UpdateProfileSchema().dump(request)
     return __valid_profile_update_api_request_factory
 

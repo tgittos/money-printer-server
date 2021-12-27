@@ -12,16 +12,6 @@ from api.lib.constants import API_PREFIX
 from tests.fixtures import *
 
 
-class MockResponse:
-    def __init__(self, status_code):
-        self.status_code = status_code
-
-
-def mock_notify_profile_created(mgcfg, request):
-    # thunk this so that it doesnt try to send emails
-    return MockResponse(status_code=200)
-
-
 @pytest.fixture(autouse=True)
 def stub_emails(mocker):
     mocker.patch.object(

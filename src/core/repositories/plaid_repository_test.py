@@ -35,14 +35,14 @@ def mocked_access_return():
 
 
 @pytest.fixture
-def plaid_api_link_spy(mocker, valid_create_request_factory, mocked_link_return):
-    request = valid_create_request_factory()
+def plaid_api_link_spy(mocker, valid_plaid_item_create_request_factory, mocked_link_return):
+    request = valid_plaid_item_create_request_factory()
     return mocker.patch('core.apis.plaid.oauth.PlaidOauth.create_link_token', return_value=mocked_link_return)
 
 
 @pytest.fixture
-def plaid_api_access_spy(mocker, valid_create_request_factory, mocked_access_return):
-    request = valid_create_request_factory()
+def plaid_api_access_spy(mocker, valid_plaid_item_create_request_factory, mocked_access_return):
+    request = valid_plaid_item_create_request_factory()
     return mocker.patch('core.apis.plaid.oauth.PlaidOauth.get_access_token', return_value=mocked_access_return)
 
 

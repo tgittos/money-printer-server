@@ -73,6 +73,7 @@ class PlaidRepository:
                     'expiration': plaid_link_result['expiration'],
                     'metadata': plaid_link_result['metadata'],
                     'request_id': plaid_link_result['request_id'],
+                    'item_id': plaid_link_result['item_id']
                 }
             )
         except Exception:

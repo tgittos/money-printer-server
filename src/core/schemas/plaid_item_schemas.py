@@ -2,9 +2,11 @@ from marshmallow import Schema, fields
 
 
 class CreatePlaidItemSchema(Schema):
-    class Meta:
-        fields = ("profile_id", "item_id",
-                  "access_token", "request_id", "status")
+    profile_id = fields.Int(required=True)
+    item_id = fields.Str()
+    access_token = fields.Str(required=True)
+    request_id = fields.Str()
+    status = fields.Str()
 
 
 class ReadPlaidItemSchema(Schema):
@@ -18,5 +20,5 @@ class ReadPlaidItemSchema(Schema):
 
 
 class UpdatePlaidItemSchema(Schema):
-    class Meta:
-        fields = ("id", "status")
+    id = fields.Str()
+    status = fields.Str()

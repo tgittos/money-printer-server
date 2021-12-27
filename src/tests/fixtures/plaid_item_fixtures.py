@@ -37,7 +37,7 @@ def plaid_item_factory(db, factory, faker, profile_factory):
 
 
 @pytest.fixture
-def valid_create_request_factory(faker, profile_factory):
+def valid_plaid_item_create_request_factory(faker, profile_factory):
     def __request_factory(profile_id=None,
                           item_id=faker.md5(),
                           access_token=faker.md5(),
@@ -56,7 +56,7 @@ def valid_create_request_factory(faker, profile_factory):
 
 
 @pytest.fixture
-def valid_update_request_factory(faker, plaid_item_factory):
+def valid_plaid_item_update_request_factory(faker, plaid_item_factory):
     def __request_factory(plaid_item_id=None, status='updated'):
         if plaid_item_id is None:
             plaid_item_id = plaid_item_factory().id

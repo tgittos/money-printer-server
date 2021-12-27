@@ -52,7 +52,6 @@ def encode_jwt(profile: Profile) -> str:
     """
     Encodes a Profile into a valid and secure JWT token
     """
-    print('encoding, profile', profile)
     token = jwt.encode({
         "profile": ReadProfileSchema().dumps(profile),
         "is_admin": profile.is_admin,
@@ -68,7 +67,5 @@ def decode_jwt(token: str) -> dict:
     Decodes a JWT token into a dict
     """
     raw = jwt.decode(token, config.secret, algorithms=["HS256"])
-    print('loading raw:', raw)
     raw['profile'] = ReadProfileSchema().loads(raw['profile'])
-    print('new raw:', raw)
     return raw

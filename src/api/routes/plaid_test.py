@@ -12,14 +12,37 @@ def scheduler_spy(mocker):
         returns=RepositoryResponse(success=True))
 
 
-@pytest.fixture(autouse=True)
-def plaid_link_spy(mocker):
-    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.create_link_token')
+@pytest.fixture
+def mocked_link_return():
+    return {
+        'link_token': id_generator(8),
+        'request_id': id_generator(8),
+        'item_id': id_generator(8),
+        'created_at': datetime.now(tz=timezone.utc),
+        'expiration': datetime.now(tz=timezone.utc) + timedelta(hours=1),
+        'metadata': {}
+    }
+
+
+@pytest.fixture
+def mocked_access_return():
+    return {
+        'access_token': id_generator(8),
+        'item_id': id_generator(8),
+        'request_id': id_generator(8)
+    }
 
 
 @pytest.fixture(autouse=True)
-def plaid_access_spy(mocker):
-    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.get_access_token')
+def plaid_link_spy(mocker, mocked_link_return):
+    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.create_link_token',
+        return_value=mocked_link_return)
+
+
+@pytest.fixture(autouse=True)
+def plaid_access_spy(mocker, mocked_access_return):
+    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.get_access_token',
+        return_value=mocked_access_return)
 
 
 def test_get_plaid_info_returns_plaid_api_info(client, user_token_factory, plaid_item_factory):
@@ -29,9 +52,10 @@ def test_get_plaid_info_returns_plaid_api_info(client, user_token_factory, plaid
         headers={
             'Authorization': f"Bearer {token}"
         })
-    assert result.success
-    assert result['item_id'] == item.item_id
-    assert result['access_token'] == item.access_token
+    assert result.status_code == 200
+    json = result.get_json()
+    assert json['item_id'] == item.item_id
+    assert json['access_token'] == item.access_token
 
 
 def test_get_plaid_info_returns_empty_fields_with_no_plaid_item(client, user_token_factory):
@@ -39,16 +63,17 @@ def test_get_plaid_info_returns_empty_fields_with_no_plaid_item(client, user_tok
     result = client.get(f"/{API_PREFIX}/plaid/info", headers={
         'Authorization': f"Bearer {token}"
     })
-    assert result.success
-    assert result['item_id'] is None
-    assert result['access_token'] is None
+    assert result.status_code == 200
+    json = result.get_json()
+    assert json['item_id'] is None
+    assert json['access_token'] is None
 
 def test_create_link_token_calls_into_plaid_api(client, user_token_factory, plaid_link_spy):
     token = user_token_factory()
     result = client.post(f"/{API_PREFIX}/plaid/link", headers={
         'Authorization': f"Bearer {token}"
     })
-    assert result.success
+    assert result.status_code == 200
     plaid_link_spy.assert_called_once()
 
 
@@ -57,10 +82,11 @@ def test_create_link_token_returns_plaid_link_token(client, user_token_factory):
     result = client.post(f"/{API_PREFIX}/plaid/link", headers={
         'Authorization': f"Bearer {token}"
     })
-    assert result.success
-    assert result.data is not None
-    assert result.data['item_id'] is not None
-    assert result.data['access_token'] is not None
+    assert result.status_code == 200
+    json = result.get_json()
+    print(json)
+    assert json['item_id'] is not None
+    assert json['link_token'] is not None
 
 
 def test_set_access_token_creates_plaid_item(db, client, profile_factory, user_token_factory):
@@ -73,7 +99,7 @@ def test_set_access_token_creates_plaid_item(db, client, profile_factory, user_t
     }, json={
         'public_token': 'foobartoken'
     })
-    assert result.success
+    assert result.status_code == 200
     with db.get_session() as session:
         new_count = session.query(PlaidItem).where(PlaidItem.profile_id == profile.id).count()
     assert new_count == old_count + 1
@@ -87,7 +113,7 @@ def test_set_access_token_schedules_account_sync(client, user_token_factory, sch
     }, json={
         'public_token': 'foobartoken'
     })
-    assert result.success
+    assert result.status_code == 200
     scheduler_spy.assert_called_once()
     
 

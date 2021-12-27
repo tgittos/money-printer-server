@@ -83,8 +83,7 @@ def test_create_plaid_item_accepts_valid_input(db, valid_create_request_factory)
 
 def test_update_plaid_item_accepts_valid_input(db, plaid_item_factory, valid_update_request_factory):
     item = plaid_item_factory()
-    request = valid_update_request_factory()
-    request['id'] = item.id
+    request = valid_update_request_factory(plaid_item_id=item.id)
     assert item.status != request['status']
     result = update_plaid_item(db, request)
     assert result.success

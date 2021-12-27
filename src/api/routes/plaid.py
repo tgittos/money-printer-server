@@ -47,8 +47,8 @@ def info():
     
     """
     user = get_identity()
-    repo = PlaidRepository(user['id'])
-    result = repo.info()
+    repo = PlaidRepository()
+    result = repo.info(user['id'])
     if result.success:
         return result.data
 
@@ -139,13 +139,19 @@ def get_access_token():
     repo = PlaidRepository()
     access_token_result = repo.get_access_token(profile['id'], public_token)
     if not access_token_result.success:
-        return access_token_result, 400
+        return {
+            'success': access_token_result.success,
+            'message': access_token_result.message
+        }, 400
 
     account_repo = AccountRepository()
     schedule_result = account_repo.schedule_account_sync(plaid_item=access_token_result.data)
 
     if not schedule_result.success:
-        return schedule_result, 500
+        return {
+            'success': schedule_result.success,
+            'message': schedule_result.message
+        }, 500
 
     return {
         'success': access_token_result is not None,
