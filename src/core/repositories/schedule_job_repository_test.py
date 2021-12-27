@@ -3,8 +3,7 @@ import pytest
 from core.models import ScheduledJob
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 
-from tests.fixtures.core import db, factory
-from tests.fixtures.scheduler_fixtures import scheduled_job_factory
+from tests.fixtures import *
 
 
 def get_scheduled_jobs_returns_list_of_jobs(db, scheduled_job_factory):

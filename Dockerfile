@@ -22,6 +22,10 @@ COPY src src
 COPY bin bin
 COPY config.json config.json
 
+# Testing specific config files
+COPY .coveragerc .coveragerc
+COPY pytest.ini pytest.ini
+
 # Create a logs dir
 RUN mkdir logs
 

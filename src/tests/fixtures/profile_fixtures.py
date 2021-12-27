@@ -49,13 +49,17 @@ def valid_update_request_factory(faker, profile_factory):
 
 
 @pytest.fixture
-def valid_profile_update_api_request(valid_update_request_factory):
-    request = valid_update_request_factory()
-    return UpdateProfileSchema().dump(request)
+def valid_profile_update_api_request_factory(valid_update_request_factory):
+    def __valid_profile_update_api_request_factory():
+        request = valid_update_request_factory()
+        return UpdateProfileSchema().dump(request)
+    return __valid_profile_update_api_request_factory
 
 
 @pytest.fixture
-def invalid_profile_update_api_request(faker):
-    return {
-        'email': faker.email()
-    }
+def invalid_profile_update_api_request_factory(faker):
+    def __invalid_profile_update_api_request_factory():
+        return {
+            'email': faker.email()
+        }
+    return __invalid_profile_update_api_request_factory

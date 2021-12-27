@@ -30,30 +30,40 @@ def scheduled_job_factory(db, factory, faker):
 
 
 @pytest.fixture()
-def valid_create_scheduled_job_request(faker):
-    return CreateScheduledJobSchema().load({
-        'job_name': f"{' '.join(faker.words())} Job",
-        'cron': "0 * * * *",
-        'json_args': {}
-    })
+def valid_create_scheduled_job_request_factory(faker):
+    def __valid_create_scheduled_job_request_factory():
+        return CreateScheduledJobSchema().load({
+            'job_name': f"{' '.join(faker.words())} Job",
+            'cron': "0 * * * *",
+            'json_args': {}
+        })
+    return __valid_create_scheduled_job_request_factory
 
 
 @pytest.fixture()
-def valid_create_instant_job_request(faker):
-    return CreateInstantJobSchema().load({
-        'job_name': f"{' '.join(faker.words())} Job",
-        'json_args': {}
-    })
+def valid_create_instant_job_request_factory(faker):
+    def __valid_create_instant_job_request_factory():
+        return CreateInstantJobSchema().load({
+            'job_name': f"{' '.join(faker.words())} Job",
+            'json_args': {}
+        })
+    return __valid_create_instant_job_request_factory
 
 
 @pytest.fixture
-def valid_create_scheduled_job_api_request(valid_create_scheduled_job_request):
-    return CreateScheduledJobSchema().dump(valid_create_scheduled_job_request)
+def valid_create_scheduled_job_api_request_factory(valid_create_scheduled_job_request_factory):
+    def __factory():
+        request = valid_create_scheduled_job_request_factory()
+        return CreateScheduledJobSchema().dump(request)
+    return __factory
 
 
 @pytest.fixture
-def valid_create_instant_job_api_request(valid_create_instant_job_request):
-    return CreateInstantJobSchema().dump(valid_create_instant_job_request)
+def valid_create_instant_job_api_request_factory(valid_create_instant_job_request_factory):
+    def __factory():
+        request = valid_create_instant_job_request_factory()
+        return CreateInstantJobSchema().dump(request)
+    return __factory
 
 
 @pytest.fixture()

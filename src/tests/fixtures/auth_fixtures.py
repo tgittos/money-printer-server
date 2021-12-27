@@ -53,12 +53,14 @@ def admin_token_factory(db, profile_factory):
 
 
 @pytest.fixture()
-def valid_register_request(faker):
-    return RegisterProfileSchema().load({
-        'email': faker.email(),
-        'first_name': faker.first_name(),
-        'last_name': faker.last_name()
-    })
+def valid_register_request_factory(faker):
+    def __valid_register_request_factory():
+        return RegisterProfileSchema().load({
+            'email': faker.email(),
+            'first_name': faker.first_name(),
+            'last_name': faker.last_name()
+        })
+    return __valid_register_request_factory
 
 
 @pytest.fixture()
@@ -75,11 +77,13 @@ def valid_auth_request_factory(profile_factory):
 
 
 @pytest.fixture()
-def invalid_auth_request(faker):
-    return LoginSchema().load({
-        'email': faker.email(),
-        'password': ""
-    })
+def invalid_auth_request_factory(faker):
+    def __invalid_auth_request_factory():
+        return LoginSchema().load({
+            'email': faker.email(),
+            'password': ""
+        })
+    return __invalid_auth_request_factory
 
 
 @pytest.fixture()
@@ -120,59 +124,75 @@ def expired_reset_password_request_factory(db, profile_factory, reset_token_fact
 
 
 @ pytest.fixture
-def valid_register_api_request(faker):
-    return {
-        'email': faker.email(),
-        'first_name': faker.first_name(),
-        'last_name': faker.last_name()
-    }
+def valid_register_api_request_factory(faker):
+    def __valid_register_api_request_factory():
+        return {
+            'email': faker.email(),
+            'first_name': faker.first_name(),
+            'last_name': faker.last_name()
+        }
+    return __valid_register_api_request_factory
 
 
 @pytest.fixture
-def invalid_register_api_request(faker):
-    return {
-        'email': faker.email(),
-        'first_name': faker.name()
-    }
+def invalid_register_api_request_factory(faker):
+    def __invalid_register_api_request_factory():
+        return {
+            'email': faker.email(),
+            'first_name': faker.name()
+        }
+    return __invalid_register_api_request_factory
 
 
 @pytest.fixture
-def valid_auth_api_request(valid_auth_request_factory):
-    request = valid_auth_request_factory()
-    return LoginSchema().dump(request)
+def valid_auth_api_request_factory(valid_auth_request_factory):
+    def __valid_auth_api_request_factory():
+        request = valid_auth_request_factory()
+        return LoginSchema().dump(request)
+    return __valid_auth_api_request_factory
 
 
 @pytest.fixture
-def bad_password_api_request(valid_auth_request_factory):
-    request = valid_auth_request_factory()
-    request['password'] = id_generator(size=8)
-    return LoginSchema().dump(request)
+def bad_password_api_request_factory(valid_auth_request_factory):
+    def __bad_password_api_request_factory():
+        request = valid_auth_request_factory()
+        request['password'] = id_generator(size=8)
+        return LoginSchema().dump(request)
+    return __bad_password_api_request_factory
 
 
 @pytest.fixture
-def bad_email_api_request(faker):
-    return {
-        'email': faker.email(),
-        'password': id_generator(size=8)
-    }
+def bad_email_api_request_factory(faker):
+    def __bad_email_api_request_factory():
+        return {
+            'email': faker.email(),
+            'password': id_generator(size=8)
+        }
+    return __bad_email_api_request_factory
 
 
 @pytest.fixture
-def valid_reset_api_token(valid_reset_password_request_factory):
-    request = valid_reset_password_request_factory()
-    return ResetPasswordSchema().dump(request)
+def valid_reset_api_token_factory(valid_reset_password_request_factory):
+    def __valid_reset_api_token_factory():
+        request = valid_reset_password_request_factory()
+        return ResetPasswordSchema().dump(request)
+    return __valid_reset_api_token_factory
 
 
 @pytest.fixture
-def expired_reset_api_token(expired_reset_password_request_factory):
-    request = expired_reset_password_request_factory()
-    return ResetPasswordSchema().dump(request)
+def expired_reset_api_token_factory(expired_reset_password_request_factory):
+    def __expired_reset_api_token_factory():
+        request = expired_reset_password_request_factory()
+        return ResetPasswordSchema().dump(request)
+    return __expired_reset_api_token_factory
 
 
 @pytest.fixture
-def invalid_reset_api_token(faker):
-    return {
-        'email': faker.email(),
-        'token': id_generator(size=8),
-        'password': id_generator(size=8)
-    }
+def invalid_reset_api_token_factory(faker):
+    def __invalid_reset_api_token_factory():
+        return {
+            'email': faker.email(),
+            'token': id_generator(size=8),
+            'password': id_generator(size=8)
+        }
+    return __invalid_reset_api_token_factory

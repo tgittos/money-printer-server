@@ -57,6 +57,7 @@ class PlaidRepository:
         """
         try:
             plaid_link_result = self.api.create_link_token(webhook_host)
+            print('plaid_link_result:', plaid_link_result)
             if plaid_link_result is None:
                 return RepositoryResponse(
                     success=False,

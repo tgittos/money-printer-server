@@ -4,9 +4,7 @@ import core.repositories.profile_repository as profile_repo_module
 from core.repositories.profile_repository import ProfileRepository
 from core.repositories.repository_response import RepositoryResponse
 
-from tests.fixtures.core import db, factory
-from tests.fixtures.profile_fixtures import profile_factory
-from tests.fixtures.plaid_item_fixtures import plaid_item_factory
+from tests.fixtures import *
 
 
 @pytest.fixture(autouse=True)

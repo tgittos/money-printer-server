@@ -4,17 +4,16 @@ import pytest
 
 from core.models.profile import Profile
 from core.models.reset_token import ResetToken
+from core.repositories import RepositoryResponse
 from core.schemas.auth_schemas import LoginSchema, ResetPasswordSchema
 import core.actions.profile.auth as auth
+from core.actions.action_response import ActionResponse
 from core.actions.profile.auth import login, get_unauthenticated_user, reset_password,\
     continue_reset_password, get_reset_token
 from core.lib.jwt import check_password
 from core.lib.utilities import id_generator
 
-from tests.fixtures.core import db, factory
-from tests.fixtures.profile_fixtures import profile_factory
-from tests.fixtures.auth_fixtures import valid_auth_request_factory, invalid_auth_request,\
-    valid_reset_password_request_factory, expired_reset_password_request_factory, reset_token_factory
+from tests.fixtures import *
 
 
 class MockResponse(object):
@@ -39,6 +38,7 @@ def test_get_unauthenticated_user_returns_user(db):
     assert token is not None
 
 
+@pytest.mark.focus
 def test_login_accepts_valid_login_request(db, valid_auth_request_factory):
     request = valid_auth_request_factory()
     result = login(db, request)
@@ -46,12 +46,13 @@ def test_login_accepts_valid_login_request(db, valid_auth_request_factory):
     result = result.data
     profile = result['profile']
     token = result['token']
-    assert profile.email == request.email
+    assert profile.email == request['email']
     assert token is not None
 
 
-def test_login_rejects_missing_username(db, invalid_auth_request):
-    result = login(db, invalid_auth_request)
+def test_login_rejects_missing_username(db, invalid_auth_request_factory):
+    request = invalid_auth_request_factory()
+    result = login(db, request)
     assert not result.success
 
 
@@ -62,20 +63,21 @@ def test_login_rejects_wrong_password(db, valid_auth_request_factory):
     assert not result.success
 
 
-def test_reset_password_creates_reset_token_with_valid_email(db, profile_factory):
-    with db.get_session() as session:
-        old_count = session.query(ResetToken).count()
+def test_reset_password_creates_reset_token_with_valid_email(db, mocker, profile_factory):
     profile = profile_factory()
+    with db.get_session() as session:
+        old_count = session.query(ResetToken).where(ResetToken.profile_id == profile.id).count()
+    mocker.patch.object(auth, 'email_reset_token', return_value=RepositoryResponse(success=True))
     result = reset_password(db, profile.email)
     assert result.success
     with db.get_session() as session:
-        new_count = session.query(ResetToken).count()
+        new_count = session.query(ResetToken).where(ResetToken.profile_id == profile.id).count()
     assert new_count == old_count + 1
 
 
 def test_reset_password_sends_reset_token(db, mocker, profile_factory):
     profile = profile_factory()
-    spy = mocker.patch.object(auth, 'notify_password_reset')
+    spy = mocker.patch.object(auth, 'notify_password_reset', return_value=MockResponse(status_code=200))
     result = reset_password(db, profile.email)
     assert result.success
     spy.assert_called_once()

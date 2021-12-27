@@ -1,12 +1,11 @@
 import pytest
 from faker.providers import internet
+from datetime import datetime, timezone, timedelta
 
 from core.repositories.plaid_repository import PlaidRepository
 from core.lib.utilities import id_generator
 
-from tests.fixtures.core import db, factory
-from tests.fixtures.profile_fixtures import profile_factory
-from tests.fixtures.plaid_item_fixtures import plaid_item_factory, valid_create_request_factory
+from tests.fixtures import *
 
 
 
@@ -16,15 +15,35 @@ def repo():
 
 
 @pytest.fixture
-def plaid_api_link_spy(mocker, valid_create_request_factory):
-    request = valid_create_request_factory()
-    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.create_link_token', return_value=request)
+def mocked_link_return():
+    return {
+        'link_token': id_generator(8),
+        'request_id': id_generator(8),
+        'created_at': datetime.now(tz=timezone.utc),
+        'expiration': datetime.now(tz=timezone.utc) + timedelta(hours=1),
+        'metadata': {}
+    }
 
 
 @pytest.fixture
-def plaid_api_access_spy(mocker, valid_create_request_factory):
+def mocked_access_return():
+    return {
+        'access_token': id_generator(8),
+        'item_id': id_generator(8),
+        'request_id': id_generator(8)
+    }
+
+
+@pytest.fixture
+def plaid_api_link_spy(mocker, valid_create_request_factory, mocked_link_return):
     request = valid_create_request_factory()
-    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.get_access_token', return_value=request)
+    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.create_link_token', return_value=mocked_link_return)
+
+
+@pytest.fixture
+def plaid_api_access_spy(mocker, valid_create_request_factory, mocked_access_return):
+    request = valid_create_request_factory()
+    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.get_access_token', return_value=mocked_access_return)
 
 
 def test_info_returns_plaid_item_info_for_profile_when_exists(

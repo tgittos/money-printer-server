@@ -9,9 +9,7 @@ from core.lib.jwt import check_password, decode_jwt
 
 from api.lib.constants import API_PREFIX
 
-from tests.fixtures.core import db, client, factory
-from tests.fixtures.profile_fixtures import profile_factory
-from tests.fixtures.auth_fixtures import *
+from tests.fixtures import *
 
 
 class MockResponse:
@@ -33,59 +31,66 @@ def stub_emails(mocker):
     )
 
 
-def test_register_accepts_valid_input(client, valid_register_api_request):
+def test_register_accepts_valid_input(client, valid_register_api_request_factory):
+    request = valid_register_api_request_factory()
     result = client.post(f"/{API_PREFIX}/auth/register",
-                         json=valid_register_api_request)
+                         json=request)
     assert result.status_code == 200
     json = result.get_json()
     assert json is not None
     assert json['id'] is not None
-    assert json['email'] == valid_register_api_request['email']
+    assert json['email'] == request['email']
 
 
-def test_register_rejects_invalid_input(client, invalid_register_api_request):
+def test_register_rejects_invalid_input(client, invalid_register_api_request_factory):
+    request = invalid_register_api_request_factory()
     result = client.post(f"/{API_PREFIX}/auth/register",
-                         json=invalid_register_api_request)
+                         json=request)
     assert result.status_code == 400
     json = result.get_json()
     assert json is not None
 
 
-def test_register_rejects_duplicate_email(client, db, profile_factory, valid_register_api_request):
+def test_register_rejects_duplicate_email(client, db, profile_factory, valid_register_api_request_factory):
+    request = valid_register_api_request_factory()
     profile = profile_factory()
-    valid_register_api_request['email'] = profile.email
+    request['email'] = profile.email
     result = client.post(f"/{API_PREFIX}/auth/register",
-                         json=valid_register_api_request)
+                         json=request)
     assert result.status_code == 400
     json = result.get_json()
 
 
-def test_login_accepts_valid_credentials(client, valid_auth_api_request):
+def test_login_accepts_valid_credentials(client, valid_auth_api_request_factory):
+    request = valid_auth_api_request_factory()
     result = client.post(f"/{API_PREFIX}/auth/login",
-                         json=valid_auth_api_request)
+                         json=request)
     assert result.status_code == 200
     json = result.get_json()
     assert json is not None
     assert json['profile'] is not None
     assert json['token'] is not None
-    assert json['profile']['email'] == valid_auth_api_request['email']
+    assert json['profile']['email'] == request['email']
 
 
-def test_login_rejects_bad_username(client, bad_email_api_request):
+def test_login_rejects_bad_username(client, bad_email_api_request_factory):
+    request = bad_email_api_request_factory()
     result = client.post(f"/{API_PREFIX}/auth/login",
-                         json=bad_email_api_request)
+                         json=request)
     assert result.status_code == 404
 
 
-def test_login_rejects_bad_password(client, bad_password_api_request):
+def test_login_rejects_bad_password(client, bad_password_api_request_factory):
+    request = bad_password_api_request_factory()
     result = client.post(f"/{API_PREFIX}/auth/login",
-                         json=bad_password_api_request)
+                         json=request)
     assert result.status_code == 404
 
 
-def test_auth_tokens_are_valid_for_30_days(client, valid_auth_api_request):
+def test_auth_tokens_are_valid_for_30_days(client, valid_auth_api_request_factory):
+    request = valid_auth_api_request_factory()
     result = client.post(f"/{API_PREFIX}/auth/login",
-                         json=valid_auth_api_request)
+                         json=request)
     assert result.status_code == 200
     json = result.get_json()
     assert json is not None
@@ -116,38 +121,41 @@ def test_reset_password_accepts_bad_email_but_doesnt_send_token(client, db, mock
     spy.assert_not_called()
 
 
-def test_continue_reset_accepts_valid_token(client, db, valid_reset_api_token):
-    p = get_profile_by_email(db, valid_reset_api_token['email'])
+def test_continue_reset_accepts_valid_token(client, db, valid_reset_api_token_factory):
+    request = valid_reset_api_token_factory()
+    p = get_profile_by_email(db, request['email'])
     assert not check_password(
-        p.data.password, valid_reset_api_token['password'])
+        p.data.password, request['password'])
     response = client.post(f"/{API_PREFIX}/auth/reset/continue",
-                           json=valid_reset_api_token)
+                           json=request)
     assert response.status_code == 204
-    p = get_profile_by_email(db, valid_reset_api_token['email'])
-    assert check_password(p.data.password, valid_reset_api_token['password'])
+    p = get_profile_by_email(db, request['email'])
+    assert check_password(p.data.password, request['password'])
 
 
-def test_continue_reset_rejects_invalid_token(client, db, profile_factory, invalid_reset_api_token):
+def test_continue_reset_rejects_invalid_token(client, db, profile_factory, invalid_reset_api_token_factory):
+    request = invalid_reset_api_token_factory()
     profile = profile_factory()
-    invalid_reset_api_token['email'] = profile.email
+    request['email'] = profile.email
     with pytest.raises(Exception):
         check_password(str(profile.password),
-                       invalid_reset_api_token['password'])
+                       request['password'])
     response = client.post(f"/{API_PREFIX}/auth/reset/continue",
-                           json=invalid_reset_api_token)
+                           json=request)
     assert response.status_code == 400
-    p = get_profile_by_email(db, invalid_reset_api_token['email'])
+    p = get_profile_by_email(db, request['email'])
     assert not check_password(
-        p.data.password, invalid_reset_api_token['password'])
+        p.data.password, request['password'])
 
 
-def test_continue_reset_rejects_expired_token(client, db, expired_reset_api_token):
-    p = get_profile_by_email(db, expired_reset_api_token['email'])
+def test_continue_reset_rejects_expired_token(client, db, expired_reset_api_token_factory):
+    request = expired_reset_api_token_factory()
+    p = get_profile_by_email(db, request['email'])
     assert not check_password(
-        p.data.password, expired_reset_api_token['password'])
+        p.data.password, request['password'])
     response = client.post(f"/{API_PREFIX}/auth/reset/continue",
-                           json=expired_reset_api_token)
+                           json=request)
     assert response.status_code == 400
-    p = get_profile_by_email(db, expired_reset_api_token['email'])
+    p = get_profile_by_email(db, request['email'])
     assert not check_password(
-        p.data.password, expired_reset_api_token['password'])
+        p.data.password, request['password'])

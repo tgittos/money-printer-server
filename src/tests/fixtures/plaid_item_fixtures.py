@@ -12,6 +12,9 @@ from tests.fixtures.profile_fixtures import profile_factory
 def plaid_item_factory(db, factory, faker, profile_factory):
     def __plaid_item_factory(profile_id=None,
                              item_id=faker.md5(),
+                             access_token=faker.md5(),
+                             request_id=faker.md5(),
+                             status='',
                              timestamp=datetime.now(tz=timezone.utc)):
         with db.get_session() as session:
             if profile_id is None:
@@ -21,6 +24,9 @@ def plaid_item_factory(db, factory, faker, profile_factory):
             plaid_item = PlaidItem()
             plaid_item.item_id = item_id
             plaid_item.profile_id = profile_id
+            plaid_item.access_token = access_token
+            plaid_item.item_id = item_id
+            plaid_item.status = status
             plaid_item.timestamp = timestamp
 
             session.add(plaid_item)

@@ -5,10 +5,7 @@ from core.schemas.plaid_item_schemas import CreatePlaidItemSchema, UpdatePlaidIt
 from core.actions.plaid.crud import *
 from core.lib.utilities import id_generator
 
-from tests.fixtures.core import db, factory
-from tests.fixtures.profile_fixtures import profile_factory
-from tests.fixtures.plaid_item_fixtures import plaid_item_factory, valid_create_request_factory,\
-    valid_update_request_factory
+from tests.fixtures import *
 
 
 def cannot_construct_invalid_create_request(profile_factory):

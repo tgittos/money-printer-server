@@ -8,9 +8,7 @@ import core.actions.profile.crud as crud
 from core.actions.profile.crud import get_profile_by_id, get_profile_by_email, get_all_profiles
 from core.actions.profile.crud import register, create_profile, update_profile, delete_profile
 
-from tests.fixtures.core import db, factory
-from tests.fixtures.auth_fixtures import valid_register_request
-from tests.fixtures.profile_fixtures import valid_update_request_factory, profile_factory
+from tests.fixtures import *
 
 
 @pytest.fixture(autouse=True)
@@ -27,23 +25,26 @@ def test_cannot_construct_invalid_registraction_schema():
         }))
 
 
-def test_register_fails_on_used_email(db, profile_factory, valid_register_request):
+def test_register_fails_on_used_email(db, profile_factory, valid_register_request_factory):
+    request = valid_register_request_factory()
     profile = profile_factory()
-    valid_register_request['email'] = profile.email
-    result = register(db, valid_register_request)
+    request['email'] = profile.email
+    result = register(db, request)
     assert not result.success
 
 
-def test_register_creates_a_new_profile_with_valid_data(db, valid_register_request):
-    result = register(db, valid_register_request)
+def test_register_creates_a_new_profile_with_valid_data(db, valid_register_request_factory):
+    request = valid_register_request_factory()
+    result = register(db, request)
     assert result is not None
     assert result.success
     assert result.data.id is not None
-    assert result.data.email == valid_register_request['email']
+    assert result.data.email == request['email']
 
 
-def test_create_profile_creates_profile_record(db, valid_register_request):
-    result = create_profile(db, valid_register_request)
+def test_create_profile_creates_profile_record(db, valid_register_request_factory):
+    request = valid_register_request_factory()
+    result = create_profile(db, request)
     assert result.success
     assert result.data is not None
     with db.get_session() as session:
@@ -51,17 +52,19 @@ def test_create_profile_creates_profile_record(db, valid_register_request):
             Profile.id == result.data.id).count() == 1
 
 
-def test_create_profile_emails_temp_password(db, valid_register_request, mocker):
+def test_create_profile_emails_temp_password(db, valid_register_request_factory, mocker):
+    request = valid_register_request_factory()
     spy = mocker.spy(crud, 'notify_profile_created')
-    create_profile(db, valid_register_request)
+    create_profile(db, request)
     spy.assert_called_once()
 
 
-def test_create_profile_returns_profile(db, valid_register_request):
-    result = create_profile(db, valid_register_request)
+def test_create_profile_returns_profile(db, valid_register_request_factory):
+    request = valid_register_request_factory()
+    result = create_profile(db, request)
     assert result.success
     assert result.data.id is not None
-    assert result.data.email == valid_register_request['email']
+    assert result.data.email == request['email']
 
 
 def test_update_profile_accepts_valid_request(db, profile_factory, valid_update_request_factory):

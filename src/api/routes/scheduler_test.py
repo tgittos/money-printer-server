@@ -9,10 +9,7 @@ from core.lib.jwt import encode_jwt
 from api.routes.scheduler import ScheduledJobRepository
 from api.lib.constants import API_PREFIX
 
-from tests.fixtures.core import client, db, factory
-from tests.fixtures.profile_fixtures import profile_factory
-from tests.fixtures.auth_fixtures import admin_token_factory, user_token_factory
-from tests.fixtures.scheduler_fixtures import *
+from tests.fixtures import *
 
 
 @pytest.fixture(autouse=True)
@@ -22,16 +19,17 @@ def mock_scheduler_methods(mocker):
 
 
 # /v1/api/admin/schedules
-def test_create_schedule_accepts_valid_input_for_admin_token(client, admin_token_factory, valid_create_scheduled_job_api_request):
+def test_create_schedule_accepts_valid_input_for_admin_token(client, admin_token_factory, valid_create_scheduled_job_api_request_factory):
+    request = valid_create_scheduled_job_api_request_factory()
     token = admin_token_factory()
     response = client.post(f"/{API_PREFIX}/admin/schedules",
                            headers={'Authorization': f"Bearer {token}"},
-                           json=valid_create_scheduled_job_api_request)
+                           json=request)
     assert response.status_code == 201
     response_json = response.get_json()
     assert response_json['success']
     assert response_json['data']['id'] is not None
-    assert response_json['data']['job_name'] == valid_create_scheduled_job_api_request['job_name']
+    assert response_json['data']['job_name'] == request['job_name']
 
 
 # /v1/api/admin/schedules
@@ -43,11 +41,12 @@ def test_create_schedule_rejects_invalid_input_for_admin_token(client, admin_tok
     assert response.status_code == 400
 
 
-def test_create_schedule_rejects_valid_input_for_non_admin_token(client, user_token_factory, valid_create_scheduled_job_api_request):
+def test_create_schedule_rejects_valid_input_for_non_admin_token(client, user_token_factory, valid_create_scheduled_job_api_request_factory):
+    request = valid_create_scheduled_job_api_request_factory()
     token = user_token_factory()
     response = client.post(f"/{API_PREFIX}/admin/schedules",
                            headers={'Authorization': f"Bearer {token}"},
-                           json=valid_create_scheduled_job_api_request)
+                           json=request)
     assert response.status_code == 401
 
 # /v1/api/admin/schedules/1
