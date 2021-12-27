@@ -8,10 +8,9 @@ import core.actions.profile.crud as crud
 from core.actions.profile.crud import get_profile_by_id, get_profile_by_email, get_all_profiles
 from core.actions.profile.crud import register, create_profile, update_profile, delete_profile
 
-from tests.fixtures.core import db
+from tests.fixtures.core import db, factory
 from tests.fixtures.auth_fixtures import valid_register_request
-from tests.fixtures.profile_fixtures import valid_update_request
-from tests.factories import create_user_profile
+from tests.fixtures.profile_fixtures import valid_update_request_factory, profile_factory
 
 
 @pytest.fixture(autouse=True)
@@ -28,11 +27,9 @@ def test_cannot_construct_invalid_registraction_schema():
         }))
 
 
-def test_register_fails_on_used_email(db, valid_register_request):
-    with db.get_session() as session:
-        original_profile = create_user_profile(
-            session, email="tgittos@moneyprintergoesbrr.io")
-    assert original_profile.id is not None
+def test_register_fails_on_used_email(db, profile_factory, valid_register_request):
+    profile = profile_factory()
+    valid_register_request['email'] = profile.email
     result = register(db, valid_register_request)
     assert not result.success
 
@@ -67,32 +64,32 @@ def test_create_profile_returns_profile(db, valid_register_request):
     assert result.data.email == valid_register_request['email']
 
 
-def test_update_profile_accepts_valid_request(db, valid_update_request):
-    result = update_profile(db, valid_update_request)
+def test_update_profile_accepts_valid_request(db, profile_factory, valid_update_request_factory):
+    profile = profile_factory()
+    request = valid_update_request_factory(profile_id=profile.id)
+    result = update_profile(db, request)
     assert result.success
     assert result.data is not None
-    assert result.data.first_name == valid_update_request['first_name']
-    assert result.data.last_name == valid_update_request['last_name']
+    assert result.data.first_name == request['first_name']
+    assert result.data.last_name == request['last_name']
 
 
-def test_delete_profile_removes_db_entries(db):
+def test_delete_profile_removes_db_entries(db, profile_factory):
+    profile = profile_factory()
     with db.get_session() as session:
-        profile = create_user_profile(session)
-        profile_count = session.query(Profile).where(
+        old_count = session.query(Profile).where(
             Profile.id == profile.id).count()
-    assert profile_count == 1
     result = delete_profile(db, profile.id)
     assert result.success
     assert result.data is None
     with db.get_session() as session:
-        profile_count = session.query(Profile).where(
+        new_count = session.query(Profile).where(
             Profile.id == profile.id).count()
-    assert profile_count == 0
+    assert new_count == old_count - 1
 
 
-def test_get_profile_by_id_returns_profile(db):
-    with db.get_session() as session:
-        profile = create_user_profile(session)
+def test_get_profile_by_id_returns_profile(db, profile_factory):
+    profile = profile_factory()
     profile_response = get_profile_by_id(db, profile.id)
     assert profile_response.success
     assert profile_response.data is not None
@@ -106,9 +103,8 @@ def test_get_profile_by_id_fails_with_missing_profile(db):
     assert profile_response.data is None
 
 
-def test_get_profile_by_email_returns_profile(db):
-    with db.get_session() as session:
-        profile = create_user_profile(session)
+def test_get_profile_by_email_returns_profile(db, profile_factory):
+    profile = profile_factory()
     profile_response = get_profile_by_email(db, profile.email)
     assert profile_response.success
     assert profile_response.data is not None
@@ -122,17 +118,12 @@ def test_get_profile_by_email_fails_with_missing_profile(db):
     assert profile_response.data is None
 
 
-def test_get_all_profiles_returns_all_profiles(db):
+def test_get_all_profiles_returns_all_profiles(db, profile_factory):
     with db.get_session() as session:
         for i in range(1, 6):
-            create_user_profile(session, email=f"user{i}@example.com")
+            profile_factory()
+        profile_count = session.query(Profile).count()
     all_result = get_all_profiles(db)
     assert all_result.success
     assert all_result.data is not None
-    assert len(all_result.data) == 5
-
-
-def test_get_all_profiles_returns_empty_array_with_no_profiles(db):
-    profile_response = get_all_profiles(db)
-    assert profile_response.success
-    assert len(profile_response.data) == 0
+    assert len(all_result.data) == profile_count

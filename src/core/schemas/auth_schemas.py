@@ -7,8 +7,9 @@ class ReadAuthSchema(Schema):
 
 
 class RegisterProfileSchema(Schema):
-    class Meta:
-        fields = ("email", "first_name", "last_name")
+    email = fields.Str()
+    first_name = fields.Str()
+    last_name = fields.Str()
 
 
 class ResetPasswordSchema(Schema):

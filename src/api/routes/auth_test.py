@@ -9,9 +9,10 @@ from core.lib.jwt import check_password, decode_jwt
 
 from api.lib.constants import API_PREFIX
 
-from tests.factories import create_user_profile, create_reset_token
-from tests.fixtures.core import db, client
-from tests.fixtures.auth_fixtures import valid_register_api_request, invalid_register_api_request,\
+from tests.fixtures.core import db, client, factory
+from tests.fixtures.profile_fixtures import profile_factory
+from tests.fixtures.auth_fixtures import user_token_factory, admin_token_factory,\
+    valid_register_api_request, invalid_register_api_request,\
     valid_reset_api_token, invalid_reset_api_token, valid_auth_api_request, bad_email_api_request,\
     bad_password_api_request, expired_reset_api_token
 
@@ -53,10 +54,9 @@ def test_register_rejects_invalid_input(client, invalid_register_api_request):
     assert json is not None
 
 
-def test_register_rejects_duplicate_email(client, db, valid_register_api_request):
-    with db.get_session() as session:
-        profile = create_user_profile(
-            session, email=valid_register_api_request['email'])
+def test_register_rejects_duplicate_email(client, db, profile_factory, valid_register_api_request):
+    profile = profile_factory()
+    valid_auth_api_request['email'] = profile.email
     result = client.post(f"/{API_PREFIX}/auth/register",
                          json=valid_register_api_request)
     assert result.status_code == 400
@@ -98,16 +98,12 @@ def test_auth_tokens_are_valid_for_30_days(client, valid_auth_api_request):
         tz=timezone.utc) + timedelta(days=27)
 
 
-def test_reset_password_sends_token_email(client, db, mocker):
-    with db.get_session() as session:
-        profile = create_user_profile(session)
-
+def test_reset_password_sends_token_email(client, db, mocker, profile_factory):
+    profile = profile_factory()
     spy = mocker.patch.object(profile_auth, 'email_reset_token')
-
     response = client.post(f"/{API_PREFIX}/auth/reset", json={
         'email': profile.email
     })
-
     assert response.status_code == 204
     spy.assert_called_once()
 
@@ -134,12 +130,12 @@ def test_continue_reset_accepts_valid_token(client, db, valid_reset_api_token):
     assert check_password(p.data.password, valid_reset_api_token['password'])
 
 
-def test_continue_reset_rejects_invalid_token(client, db, invalid_reset_api_token):
-    with db.get_session() as session:
-        p = create_user_profile(
-            session, email=invalid_reset_api_token['email'])
+def test_continue_reset_rejects_invalid_token(client, db, profile_factory, invalid_reset_api_token):
+    profile = profile_factory()
+    invalid_reset_api_token['email'] = profile.email
     with pytest.raises(Exception):
-        check_password(str(p.password), invalid_reset_api_token['password'])
+        check_password(str(profile.password),
+                       invalid_reset_api_token['password'])
     response = client.post(f"/{API_PREFIX}/auth/reset/continue",
                            json=invalid_reset_api_token)
     assert response.status_code == 400

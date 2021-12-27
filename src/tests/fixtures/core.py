@@ -1,22 +1,27 @@
 import pytest
-import os
-from sqlalchemy import inspect, MetaData
-from sqlalchemy.sql import text
-import contextlib
+from sqlalchemy import inspect
 
-from config import mysql_config
 from core.stores.mysql import MySql
+from core.models import Base
+
 from apps.api import ApiApplication
 
-# hardcode test env when running tests
-os.environ["MP_ENVIRONMENT"] = "test"
-
+from config import mysql_config
 
 # one DB for the whole test session so that we can parallelize it
+
+
 @pytest.fixture(scope='session')
-def db(autouse=True):
+def db():
     db = MySql(mysql_config)
+    inspector = inspect(db.engine)
+    created = False
+    if not inspector.has_table('profiles'):
+        Base.metadata.create_all(bind=db.engine)
+        created = True
     yield db
+    if created:
+        Base.metadata.drop_all(bind=db.engine)
 
 
 # one API for the the whole test session so that we can parallelize it
@@ -27,3 +32,12 @@ def client(db):
     with app.flask_app.test_client() as client:
         with app.flask_app.app_context():
             yield client
+
+
+@pytest.fixture(scope='function')
+def factory(db):
+    data = []
+    yield data
+    with db.get_session() as session:
+        [session.delete(d) for d in data]
+        session.commit()
