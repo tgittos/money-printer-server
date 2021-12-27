@@ -6,7 +6,7 @@
     "clean": "find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete",
     "build": "docker compose -f docker-compose.dev.yml build",
     "build:prod": "docker compose -f docker-compose.prod.yml build",
-    "test": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"MP_ENVIRONMENT=test PYTHONPATH=src pytest -n auto --cov-config=.coveragerc --cov=src --cov-report term:skip-covered src/\"",
+    "test": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"MP_ENVIRONMENT=test PYTHONPATH=src python bin/dev/test.py\"",
     "test:focus": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"MP_ENVIRONMENT=test PYTHONPATH=src pytest -n 1 -m focus --cov-config=.coveragerc --cov=src --cov-report term:skip-covered src/\"",
     "db:init": "./bin/dev/init-db.sh",
     "db:migrate": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=development alembic revision --autogenerate -m \"$npm_config_name\"",

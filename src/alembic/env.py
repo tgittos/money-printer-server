@@ -1,3 +1,4 @@
+import sys
 from logging.config import fileConfig
 import json
 import os
@@ -6,6 +7,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+from core.models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -36,24 +38,8 @@ fileConfig(config.config_file_name)
 # add your model's MetaData object here
 # for 'autogenerate' support
 
-import sys
 print(" * path: {0}".format(sys.path))
 
-from core.models.profile import Profile
-from core.models.account import Account
-from core.models.account_balance import AccountBalance
-from core.models.holding_balance import HoldingBalance
-from core.models.plaid_item import PlaidItem
-from core.models.reset_token import ResetToken
-from core.models.scheduler.scheduled_job import ScheduledJob
-from core.models.scheduler.job_result import JobResult
-from core.models.security import Security
-from core.models.holding import Holding
-from core.models.security_price import SecurityPrice
-from core.models.iex_blacklist import IexBlacklist
-from core.models.investment_transaction import InvestmentTransaction
-
-from core.models.base import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
