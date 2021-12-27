@@ -46,7 +46,8 @@ def info():
         - Plaid
     
     """
-    repo = PlaidRepository()
+    user = get_identity()
+    repo = PlaidRepository(user['id'])
     result = repo.info()
     if result.success:
         return result.data
