@@ -10,7 +10,7 @@ from tests.fixtures.core import db, factory
 @pytest.fixture
 def scheduled_job_factory(db, factory, faker):
     def __scheduled_job_factory(
-            job_name=f"{faker.words().join(' ')} Job",
+            job_name=f"{' '.join(faker.words())} Job",
             json_args={},
             cron='0 0 12 1/1 * ? *',
             active=True,
@@ -32,7 +32,7 @@ def scheduled_job_factory(db, factory, faker):
 @pytest.fixture()
 def valid_create_scheduled_job_request(faker):
     return CreateScheduledJobSchema().load({
-        'job_name': f"{faker.words().join(' ')} Job",
+        'job_name': f"{' '.join(faker.words())} Job",
         'cron': "0 * * * *",
         'json_args': {}
     })
@@ -41,7 +41,7 @@ def valid_create_scheduled_job_request(faker):
 @pytest.fixture()
 def valid_create_instant_job_request(faker):
     return CreateInstantJobSchema().load({
-        'job_name': f"{faker.words().join(' ')} Job",
+        'job_name': f"{' '.join(faker.words())} Job",
         'json_args': {}
     })
 

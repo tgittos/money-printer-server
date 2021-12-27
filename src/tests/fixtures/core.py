@@ -39,5 +39,13 @@ def factory(db):
     data = []
     yield data
     with db.get_session() as session:
-        [session.delete(d) for d in data]
-        session.commit()
+        for datum in data:
+            try:
+                session.delete(datum)
+                session.commit()
+            except Exception:
+                # we're probably trying to either remove something that was already
+                # removed, or remove something that has a foreign key dependency
+                # in another record. failing to do this isn't a huge deal, honestly
+                print(f"Error unwinding datum {datum}, ignoring")
+

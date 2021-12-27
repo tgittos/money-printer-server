@@ -104,7 +104,7 @@ def test_get_profile_by_id_fails_with_missing_profile(db):
 
 
 def test_get_profile_by_email_returns_profile(db, profile_factory):
-    profile = profile_factory()
+    profile = profile_factory(email='my-test-email@example.org')
     profile_response = get_profile_by_email(db, profile.email)
     assert profile_response.success
     assert profile_response.data is not None

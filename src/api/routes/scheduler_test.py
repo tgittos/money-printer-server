@@ -10,9 +10,9 @@ from api.routes.scheduler import ScheduledJobRepository
 from api.lib.constants import API_PREFIX
 
 from tests.fixtures.core import client, db, factory
+from tests.fixtures.profile_fixtures import profile_factory
 from tests.fixtures.auth_fixtures import admin_token_factory, user_token_factory
-from tests.fixtures.scheduler_fixtures import valid_create_instant_job_api_request, valid_create_scheduled_job_api_request,\
-    invalid_instant_job_api_request, invalid_scheduled_job_api_request, scheduled_job_factory
+from tests.fixtures.scheduler_fixtures import *
 
 
 @pytest.fixture(autouse=True)

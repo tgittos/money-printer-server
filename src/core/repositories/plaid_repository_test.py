@@ -1,11 +1,13 @@
 import pytest
+from faker.providers import internet
 
 from core.repositories.plaid_repository import PlaidRepository
 from core.lib.utilities import id_generator
 
 from tests.fixtures.core import db, factory
 from tests.fixtures.profile_fixtures import profile_factory
-from tests.fixtures.plaid_item_fixtures import plaid_item_factory
+from tests.fixtures.plaid_item_fixtures import plaid_item_factory, valid_create_request_factory
+
 
 
 @pytest.fixture
@@ -14,13 +16,15 @@ def repo():
 
 
 @pytest.fixture
-def plaid_api_link_spy(mocker):
-    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.create_link_token')
+def plaid_api_link_spy(mocker, valid_create_request_factory):
+    request = valid_create_request_factory()
+    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.create_link_token', return_value=request)
 
 
 @pytest.fixture
-def plaid_api_access_spy(mocker):
-    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.get_access_token')
+def plaid_api_access_spy(mocker, valid_create_request_factory):
+    request = valid_create_request_factory()
+    return mocker.patch('core.apis.plaid.oauth.PlaidOauth.get_access_token', return_value=request)
 
 
 def test_info_returns_plaid_item_info_for_profile_when_exists(
@@ -48,7 +52,8 @@ def test_info_fails_with_profile_with_no_plaid_item(repo, profile_factory):
 
 
 def test_create_link_token_calls_into_plaid_api(repo, faker, plaid_api_link_spy):
-    result = repo.create_link_token(faker.host())
+    faker.add_provider(internet)
+    result = repo.create_link_token(faker.domain_name())
     assert result.success
     plaid_api_link_spy.assert_called_once()
 

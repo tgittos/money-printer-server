@@ -11,10 +11,7 @@ from api.lib.constants import API_PREFIX
 
 from tests.fixtures.core import db, client, factory
 from tests.fixtures.profile_fixtures import profile_factory
-from tests.fixtures.auth_fixtures import user_token_factory, admin_token_factory,\
-    valid_register_api_request, invalid_register_api_request,\
-    valid_reset_api_token, invalid_reset_api_token, valid_auth_api_request, bad_email_api_request,\
-    bad_password_api_request, expired_reset_api_token
+from tests.fixtures.auth_fixtures import *
 
 
 class MockResponse:
@@ -56,7 +53,7 @@ def test_register_rejects_invalid_input(client, invalid_register_api_request):
 
 def test_register_rejects_duplicate_email(client, db, profile_factory, valid_register_api_request):
     profile = profile_factory()
-    valid_auth_api_request['email'] = profile.email
+    valid_register_api_request['email'] = profile.email
     result = client.post(f"/{API_PREFIX}/auth/register",
                          json=valid_register_api_request)
     assert result.status_code == 400

@@ -34,20 +34,20 @@ def reset_token_factory(db, factory, faker):
 
 @pytest.fixture
 def user_token_factory(db, profile_factory):
-    def __user_token_factory(profile_id=None):
-        if profile_id is None:
-            profile_id = profile_factory(is_admin=False).id
-        token = encode_jwt(profile=profile_id)
+    def __user_token_factory(profile=None):
+        if profile is None:
+            profile = profile_factory(is_admin=False)
+        token = encode_jwt(profile=profile)
         return token
     return __user_token_factory
 
 
 @pytest.fixture
 def admin_token_factory(db, profile_factory):
-    def __admin_token_factory(profile_id=None):
-        if profile_id is None:
-            profile_id = profile_factory(is_admin=True).id
-        token = encode_jwt(profile=profile_id)
+    def __admin_token_factory(profile=None):
+        if profile is None:
+            profile = profile_factory(is_admin=True)
+        token = encode_jwt(profile=profile)
         return token
     return __admin_token_factory
 

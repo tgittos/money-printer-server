@@ -30,7 +30,6 @@ def instant_job_spy(mocker, repository):
     return instant_job_spy
 
 
-@pytest.mark.focus
 def test_schedule_profile_sync_creates_instant_job(repository, profile_factory, plaid_item_factory, instant_job_spy):
     profile = profile_factory()
     item = plaid_item_factory(profile_id=profile.id)
