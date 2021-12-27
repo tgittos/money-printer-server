@@ -70,9 +70,9 @@ def test_create_profile_returns_profile(db, valid_register_request_factory, mock
     assert result.data.email == request['email']
 
 
-def test_update_profile_accepts_valid_request(db, profile_factory, valid_update_request_factory):
+def test_update_profile_accepts_valid_request(db, profile_factory, valid_profile_update_request_factory):
     profile = profile_factory()
-    request = valid_update_request_factory(profile_id=profile.id)
+    request = valid_profile_update_request_factory(profile_id=profile.id)
     result = update_profile(db, request)
     assert result.success
     assert result.data is not None

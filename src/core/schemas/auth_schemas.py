@@ -7,20 +7,20 @@ class ReadAuthSchema(Schema):
 
 
 class RegisterProfileSchema(Schema):
-    email = fields.Str()
-    first_name = fields.Str()
-    last_name = fields.Str()
+    email = fields.Str(required=True)
+    first_name = fields.Str(required=True)
+    last_name = fields.Str(required=True)
 
 
 class ResetPasswordSchema(Schema):
-    email = fields.Str()
-    token = fields.Str()
-    password = fields.Str()
+    email = fields.Str(required=True)
+    token = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class LoginSchema(Schema):
-    email = fields.Str()
-    password = fields.Str()
+    email = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class CreateResetTokenSchema(Schema):

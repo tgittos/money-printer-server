@@ -20,5 +20,5 @@ class ReadPlaidItemSchema(Schema):
 
 
 class UpdatePlaidItemSchema(Schema):
-    id = fields.Str()
+    id = fields.Int(required=True)
     status = fields.Str()

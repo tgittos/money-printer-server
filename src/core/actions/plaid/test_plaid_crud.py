@@ -74,16 +74,16 @@ def test_get_plaid_item_by_profile_fails_if_item_missing(db, profile_factory):
     assert len(result.data) == 0
 
 
-def test_create_plaid_item_accepts_valid_input(db, valid_create_request_factory):
-    request = valid_create_request_factory()
+def test_create_plaid_item_accepts_valid_input(db, valid_plaid_item_create_request_factory):
+    request = valid_plaid_item_create_request_factory()
     result = create_plaid_item(db, request)
     assert result.success
     assert result.data.id is not None
 
 
-def test_update_plaid_item_accepts_valid_input(db, plaid_item_factory, valid_update_request_factory):
+def test_update_plaid_item_accepts_valid_input(db, plaid_item_factory, valid_plaid_item_update_request_factory):
     item = plaid_item_factory()
-    request = valid_update_request_factory(plaid_item_id=item.id)
+    request = valid_plaid_item_update_request_factory(plaid_item_id=item.id)
     assert item.status != request['status']
     result = update_plaid_item(db, request)
     assert result.success
@@ -92,8 +92,8 @@ def test_update_plaid_item_accepts_valid_input(db, plaid_item_factory, valid_upd
     assert result.data.status == request['status']
 
 
-def test_update_plaid_item_fails_if_item_not_found(db, valid_update_request_factory):
-    request = valid_update_request_factory()
+def test_update_plaid_item_fails_if_item_not_found(db, valid_plaid_item_update_request_factory):
+    request = valid_plaid_item_update_request_factory()
     request['id'] = 2342342
     result = update_plaid_item(db, request)
     assert not result.success
