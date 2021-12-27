@@ -55,11 +55,12 @@ def admin_token_factory(db, profile_factory):
 @pytest.fixture()
 def valid_register_request_factory(faker):
     def __valid_register_request_factory():
-        return RegisterProfileSchema().load({
+        args = {
             'email': faker.email(),
             'first_name': faker.first_name(),
             'last_name': faker.last_name()
-        })
+        }
+        return RegisterProfileSchema().load(args)
     return __valid_register_request_factory
 
 
@@ -69,10 +70,11 @@ def valid_auth_request_factory(profile_factory):
         if profile is None:
             password = id_generator(size=8)
             profile = profile_factory(password=password)
-        return LoginSchema().load({
+        args = {
             'email': profile.email,
             'password': password
-        })
+        }
+        return LoginSchema().load(args)
     return __valid_auth_request_factory
 
 

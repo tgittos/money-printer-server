@@ -21,7 +21,9 @@ def mocked_link_return():
         'request_id': id_generator(8),
         'created_at': datetime.now(tz=timezone.utc),
         'expiration': datetime.now(tz=timezone.utc) + timedelta(hours=1),
-        'metadata': {}
+        'metadata': {},
+        'request_id': id_generator(8),
+        'item_id': id_generator(8)
     }
 
 
@@ -73,6 +75,7 @@ def test_info_fails_with_profile_with_no_plaid_item(repo, profile_factory):
 def test_create_link_token_calls_into_plaid_api(repo, faker, plaid_api_link_spy):
     faker.add_provider(internet)
     result = repo.create_link_token(faker.domain_name())
+    print('result:', result.message)
     assert result.success
     plaid_api_link_spy.assert_called_once()
 
@@ -84,5 +87,12 @@ def test_get_access_token_calls_into_plaid_api(repo, profile_factory, plaid_api_
     plaid_api_access_spy.assert_called_once()
 
 
-def test_get_access_token_stores_plaid_item(repo, plaid_item_factory):
-    assert False
+def test_get_access_token_stores_plaid_item(db, repo, profile_factory, plaid_api_access_spy):
+    profile = profile_factory()
+    with db.get_session() as session:
+        old_count = session.query(PlaidItem).where(PlaidItem.profile_id == profile.id).count()
+    result = repo.get_access_token(profile.id, id_generator())
+    with db.get_session() as session:
+        new_count = session.query(PlaidItem).where(PlaidItem.profile_id == profile.id).count()
+    assert new_count == old_count + 1
+

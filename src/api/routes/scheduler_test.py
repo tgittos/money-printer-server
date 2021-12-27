@@ -56,17 +56,17 @@ def test_list_schedules_returns_all_schedules_for_admin_token(db, client, admin_
     token = admin_token_factory()
     job_1 = scheduled_job_factory()
     job_2 = scheduled_job_factory()
+    with db.get_session() as session:
+        count = session.query(ScheduledJob).count()
     response = client.get(f"/{API_PREFIX}/admin/schedules",
                           headers={'Authorization': f"Bearer {token}"},
                           follow_redirects=True)
     assert response.status_code == 200
     response_json = response.get_json()
-    assert len(response_json['data']) == 2
-    for json in response_json['data']:
-        print(json['id'])
-        print([job_1.id, job_2.id])
-        assert json['id'] in [job_1.id, job_2.id]
-        assert json['job_name'] in [job_1.job_name, job_2.job_name]
+    assert len(response_json['data']) == count
+    returned_ids = [j['id'] for j in response_json['data']]
+    assert job_1.id in returned_ids
+    assert job_2.id in returned_ids
 
 
 # /v1/api/admin/schedules/1

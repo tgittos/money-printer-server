@@ -45,9 +45,10 @@ def plaid_access_spy(mocker, mocked_access_return):
         return_value=mocked_access_return)
 
 
-def test_get_plaid_info_returns_plaid_api_info(client, user_token_factory, plaid_item_factory):
-    item = plaid_item_factory()
-    token = user_token_factory()
+def test_get_plaid_info_returns_plaid_api_info(client, profile_factory, user_token_factory, plaid_item_factory):
+    profile = profile_factory()
+    item = plaid_item_factory(profile_id=profile.id)
+    token = user_token_factory(profile=profile)
     result = client.get(f"/{API_PREFIX}/plaid/info",
         headers={
             'Authorization': f"Bearer {token}"

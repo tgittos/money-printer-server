@@ -5,8 +5,8 @@ from core.models.profile import Profile
 from core.schemas.profile_schemas import UpdateProfileSchema
 from core.schemas.auth_schemas import RegisterProfileSchema
 import core.actions.profile.crud as crud
-from core.actions.profile.crud import get_profile_by_id, get_profile_by_email, get_all_profiles
-from core.actions.profile.crud import register, create_profile, update_profile, delete_profile
+from core.actions.profile.crud import register, create_profile, update_profile, delete_profile,\
+    get_profile_by_id, get_profile_by_email, get_all_profiles
 
 from tests.fixtures import *
 

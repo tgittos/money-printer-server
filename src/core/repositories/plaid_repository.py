@@ -57,7 +57,7 @@ class PlaidRepository:
         """
         try:
             plaid_link_result = self.api.create_link_token(webhook_host)
-            print('plaid_link_result:', plaid_link_result)
+            print('link result:', plaid_link_result)
             if plaid_link_result is None:
                 return RepositoryResponse(
                     success=False,
@@ -88,6 +88,7 @@ class PlaidRepository:
         """
         try:
             plaid_access_result = self.api.get_access_token(public_token)
+            print('plaid_access_result:', plaid_access_result)
             if plaid_access_result is None:
                 return RepositoryResponse(
                     success=False,
@@ -99,6 +100,7 @@ class PlaidRepository:
                 **{'profile_id': profile_id},
                 **plaid_access_result
             }))
+            print('create_link_result:', create_link_result)
 
             if not create_link_result.success:
                 return RepositoryResponse(
