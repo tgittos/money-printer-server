@@ -98,3 +98,12 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 # https://stackabuse.com/python-validate-email-address-with-regular-expressions-regex/
 def is_valid_email(email):
     return re.fullmatch(email_validation_re, email)
+
+
+# https://stackoverflow.com/questions/1305532/convert-nested-python-dict-to-object
+class Struct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
+    
+    def to_dict(self):
+        return self.__dict__

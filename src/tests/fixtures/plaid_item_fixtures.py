@@ -3,9 +3,32 @@ from datetime import datetime, timedelta, timezone
 
 from core.models import PlaidItem
 from core.schemas.plaid_item_schemas import CreatePlaidItemSchema, UpdatePlaidItemSchema
+from core.lib.utilities import id_generator
 
 from tests.fixtures.core import db
 from tests.fixtures.profile_fixtures import profile_factory
+
+
+@pytest.fixture
+def mocked_link_return():
+    return {
+        'link_token': id_generator(8),
+        'request_id': id_generator(8),
+        'created_at': datetime.now(tz=timezone.utc),
+        'expiration': datetime.now(tz=timezone.utc) + timedelta(hours=1),
+        'metadata': {},
+        'request_id': id_generator(8),
+        'item_id': id_generator(8)
+    }
+
+
+@pytest.fixture
+def mocked_access_return():
+    return {
+        'access_token': id_generator(8),
+        'item_id': id_generator(8),
+        'request_id': id_generator(8)
+    }
 
 
 @pytest.fixture

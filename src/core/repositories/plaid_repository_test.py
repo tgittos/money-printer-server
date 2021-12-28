@@ -15,28 +15,6 @@ def repo():
 
 
 @pytest.fixture
-def mocked_link_return():
-    return {
-        'link_token': id_generator(8),
-        'request_id': id_generator(8),
-        'created_at': datetime.now(tz=timezone.utc),
-        'expiration': datetime.now(tz=timezone.utc) + timedelta(hours=1),
-        'metadata': {},
-        'request_id': id_generator(8),
-        'item_id': id_generator(8)
-    }
-
-
-@pytest.fixture
-def mocked_access_return():
-    return {
-        'access_token': id_generator(8),
-        'item_id': id_generator(8),
-        'request_id': id_generator(8)
-    }
-
-
-@pytest.fixture
 def plaid_api_link_spy(mocker, valid_plaid_item_create_request_factory, mocked_link_return):
     request = valid_plaid_item_create_request_factory()
     return mocker.patch('core.apis.plaid.oauth.PlaidOauth.create_link_token', return_value=mocked_link_return)

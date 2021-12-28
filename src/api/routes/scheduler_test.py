@@ -97,7 +97,6 @@ def test_update_schedule_accepts_valid_input_for_admin_token(db, client, admin_t
         assert updated_job.job_name == 'Updated Job Name'
 
 
-@pytest.mark.skip(reason="need to go back and implement this")
 def updating_a_schedule_reschedules_job():
     assert False
 

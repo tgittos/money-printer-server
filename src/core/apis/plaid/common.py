@@ -4,6 +4,8 @@ from plaid.api import plaid_api
 from plaid.model.country_code import CountryCode
 from plaid.model.products import Products
 
+from config import plaid_config
+
 # TODO - make this configurable via the config.json
 PLAID_PRODUCTS_STRINGS = ["investments", "transactions"]
 PLAID_DEFAULT_COUNTRY_CODES = ["US"]
@@ -15,10 +17,11 @@ PLAID_COUNTRY_CODES = list(map(lambda x: CountryCode(x), PLAID_DEFAULT_COUNTRY_C
 class PlaidApiConfig:
     env = "sandbox"
     product_name = "Money Printer"
+    products = PLAID_PRODUCTS
     country_codes = PLAID_COUNTRY_CODES
     language = PLAID_DEFAULT_LANGUAGE
-    client_id = None
-    secret = None
+    client_id = plaid_config['client_id']
+    secret = plaid_config['secret']
     version = "2020-09-14"
 
 
