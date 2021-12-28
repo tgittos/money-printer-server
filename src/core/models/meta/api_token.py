@@ -1,8 +1,7 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, LargeBinary
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.sqltypes import LargeBinary
 
-from core.models import Base
+from core.models.base import Base
 
 
 class ApiToken(Base):
@@ -10,9 +9,9 @@ class ApiToken(Base):
 
     id = Column(Integer, primary_key=True)
     profile_id = Column(Integer, ForeignKey("profiles.id"), nullable=False)
-    api_token_policy_id = Column(Integer, ForeignKey("api_token_policies.id", nullable=False))
+    api_token_policy_id = Column(Integer, ForeignKey("api_token_policies.id"), nullable=False)
     token = Column(LargeBinary, nullable=False)
-    status = Column(String(32), nullable=False)
+    status = Column(String(32))
     timestamp = Column(DateTime)
 
     profile = relationship("Profile", back_populates="api_tokens")

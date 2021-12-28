@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, LargeBinary
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql.sqltypes import LargeBinary
 
 from core.models.base import Base
 

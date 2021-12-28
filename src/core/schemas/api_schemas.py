@@ -3,7 +3,7 @@ from marshmallow import Schema, fields
 
 class CreateApiKeySchema(Schema):
     class Meta:
-        fields = ("profile_id")
+        fields = ("profile_id",)
 
 
 class ReadApiKeySchema(Schema):
