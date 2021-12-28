@@ -9,7 +9,7 @@
     "test": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"MP_ENVIRONMENT=test PYTHONPATH=src python bin/dev/test.py\"",
     "test:focus": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"MP_ENVIRONMENT=test PYTHONPATH=src pytest -n 1 -m focus --cov-config=.coveragerc --cov=src --cov-report term:skip-covered src/\"",
     "db:init": "./bin/dev/init-db.sh",
-    "db:migrate": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=development alembic revision --autogenerate -m \"$npm_config_name\"",
+    "db:migrate": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=development alembic revision --autogenerate\"",
     "db:update": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=development alembic upgrade head\"",
     "db:test:update": "docker exec --tty $(docker compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=test alembic upgrade head\"",
     "start": "docker compose -f docker-compose.dev.yml up -d",

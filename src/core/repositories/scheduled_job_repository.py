@@ -101,7 +101,7 @@ class ScheduledJobRepository:
         self.unschedule_job(job.queue, job)
 
         with self.db.get_session() as session:
-            session.remove(job)
+            session.delete(job)
             session.commit()
 
         return RepositoryResponse(

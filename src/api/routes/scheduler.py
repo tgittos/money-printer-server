@@ -23,7 +23,7 @@ def list_schedules():
         }
     return {
         'success': False
-    }
+    }, 400
 
 
 @scheduler_bp.route(f"/{API_PREFIX}/admin/schedules", methods=['POST'])
@@ -43,11 +43,9 @@ def create_schedule():
 
         return {
             'success': False
-        }
+        }, 400
     except ValidationError as error:
         return error.messages, 400
-    except Exception:
-        abort(500)
 
 
 @scheduler_bp.route(f"/{API_PREFIX}/admin/schedules/<schedule_id>", methods=['PUT'])
@@ -77,27 +75,33 @@ def update_schedule(schedule_id):
 
         return {
             'success': False
-        }
+        }, 400
     except ValidationError as error:
         return error.messages, 400
-    except Exception:
-        abort(500)
 
 
 @scheduler_bp.route(f"/{API_PREFIX}/admin/schedules/<schedule_id>", methods=['DELETE'])
 @authed
 @admin
 def delete_schedule(schedule_id):
+    if schedule_id is None:
+        return {
+            'success': False,
+            'message': 'ID of scheduled job required'
+        }, 400
+
     repo = ScheduledJobRepository()
-    result = ScheduledJobRepository.get_scheduled_job_by_id(schedule_id)
-    if result.success:
+    result = repo.get_scheduled_job_by_id(schedule_id)
+
+    if result.success and result.data is not None:
         repo.delete_scheduled_job(result.data)
         return {
             'success': True
         }
+
     return {
         'success': False
-    }
+    }, 400
 
 
 @scheduler_bp.route(f"/{API_PREFIX}/admin/schedules/<schedule_id>/run", methods=['POST'])

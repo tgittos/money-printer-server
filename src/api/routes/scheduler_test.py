@@ -122,18 +122,33 @@ def test_update_schedule_returns_401_for_user_token(db, client, user_token_facto
 
 
 # /v1/api/admin/schedules/1
-@pytest.mark.skip(reason="need to go back and implement this")
-def test_update_schedule_rejects_invalid_input(client):
-    assert False
+def test_update_schedule_rejects_invalid_input(client, admin_token_factory, scheduled_job_factory, invalid_update_scheduled_job_api_request):
+    token = admin_token_factory()
+    job = scheduled_job_factory()
+    invalid_update_scheduled_job_api_request['id'] = job.id
+    result = client.put(f"/{API_PREFIX}/admin/schedules/{job.id}",
+        headers={
+            'Authorization': f"Bearer {token}"
+        }, json = invalid_update_scheduled_job_api_request)
+    assert result.status_code == 400
 
 
 # /v1/api/admin/schedules/1
-@pytest.mark.skip(reason="need to go back and implement this")
-def test_delete_schedule_accepts_valid_input(client):
-    assert False
+def test_delete_schedule_accepts_valid_input(client, admin_token_factory, scheduled_job_factory):
+    token = admin_token_factory()
+    job = scheduled_job_factory()
+    result = client.delete(f"/{API_PREFIX}/admin/schedules/{job.id}",
+        headers={
+            'Authorization': f"Bearer {token}"
+        })
+    assert result.status_code == 200
 
 
 # /v1/api/admin/schedules/1
-@pytest.mark.skip(reason="need to go back and implement this")
-def test_delete_schedule_rejects_invalid_input(client):
-    assert False
+def test_delete_schedule_rejects_invalid_input(client, admin_token_factory):
+    token = admin_token_factory()
+    result = client.delete(f"/{API_PREFIX}/admin/schedules/234542",
+        headers={
+            'Authorization': f"Bearer {token}"
+        })
+    assert result.status_code == 400

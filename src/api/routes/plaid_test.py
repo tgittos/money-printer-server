@@ -112,12 +112,21 @@ def test_set_access_token_schedules_account_sync(client, user_token_factory, sch
     result = client.post(f"/{API_PREFIX}/plaid/access", headers={
         'Authorization': f"Bearer {token}"
     }, json={
-        'public_token': 'foobartoken'
+        'public_token': id_generator()
     })
     assert result.status_code == 200
     scheduler_spy.assert_called_once()
     
 
 
-def test_set_access_token_rejects_invalid_token(client):
-    assert False
+def test_set_access_token_rejects_invalid_token(mocker, client, user_token_factory):
+    token = user_token_factory()
+    # stub out the oauth api so that it returns an error or an empty object
+    mocker.patch('core.apis.plaid.oauth.PlaidOauth.get_access_token',
+        return_value=None)
+    result = client.post(f"/{API_PREFIX}/plaid/access", headers={
+        'Authorization': f"Bearer {token}"
+    }, json={
+        'public_token': id_generator()
+    })
+    assert result.status_code == 400
