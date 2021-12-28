@@ -4,11 +4,11 @@ from core.models import ScheduledJob
 from core.schemas.scheduler_schemas import CreateScheduledJobSchema, CreateInstantJobSchema
 from core.lib.constants import WORKER_QUEUE
 
-from tests.fixtures.core import db, factory
+from tests.fixtures.core import db
 
 
 @pytest.fixture
-def scheduled_job_factory(db, factory, faker):
+def scheduled_job_factory(db, faker):
     def __scheduled_job_factory(
             job_name=f"{' '.join(faker.words())} Job",
             json_args={},
@@ -24,7 +24,6 @@ def scheduled_job_factory(db, factory, faker):
             job.queue = queue
             session.add(job)
             session.commit()
-            factory.append(job)
             return job
     return __scheduled_job_factory
 

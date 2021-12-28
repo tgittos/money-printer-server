@@ -38,8 +38,10 @@ def login(db, request: LoginSchema) -> ActionResponse:
     """
     Performs an authentication of the given user credentials
     """
+    print('request:', request)
     profile_result = get_profile_by_email(db, request['email'])
     profile = profile_result.data
+    print('profile:', profile)
 
     if not profile_result.success:
         return ActionResponse(
@@ -57,6 +59,7 @@ def login(db, request: LoginSchema) -> ActionResponse:
                 'profile': profile
             }
         )
+    print('password check failed')
 
     return ActionResponse(
         success=False,

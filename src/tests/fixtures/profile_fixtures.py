@@ -5,14 +5,14 @@ from core.models import Profile, PlaidItem
 from core.lib.jwt import hash_password
 from core.schemas.profile_schemas import UpdateProfileSchema
 
-from tests.fixtures.core import db, factory
+from tests.fixtures.core import db
 
 
 @pytest.fixture
-def profile_factory(db, factory, faker):
+def profile_factory(db, faker):
     def __profile_factory(first_name=faker.first_name(),
                           last_name=faker.last_name(),
-                          email=faker.email(),
+                          email=None,
                           is_admin=False,
                           password=faker.password(),
                           timestamp=datetime.now(tz=timezone.utc)):
@@ -20,16 +20,16 @@ def profile_factory(db, factory, faker):
             profile = Profile()
             profile.first_name = first_name
             profile.last_name = last_name
-            profile.email = email
+            profile.email = email or f"{first_name}.{last_name}@{faker.domain_name()}"
             profile.is_admin = is_admin
+            print('hashing password:', password)
             profile.password = hash_password(password)
             profile.timestamp = timestamp
 
             session.add(profile)
             session.commit()
-            factory.append(profile)
             return profile
-    yield __profile_factory
+    return __profile_factory
 
 
 @pytest.fixture()

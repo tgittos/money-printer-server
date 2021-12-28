@@ -6,12 +6,12 @@ from core.schemas.auth_schemas import RegisterProfileSchema, LoginSchema, ResetP
 from core.lib.jwt import encode_jwt
 from core.lib.utilities import id_generator
 
-from tests.fixtures.core import db, factory
+from tests.fixtures.core import db
 from tests.fixtures.profile_fixtures import profile_factory
 
 
 @pytest.fixture
-def reset_token_factory(db, factory, faker):
+def reset_token_factory(db, faker):
     def __reset_token_factory(profile_id=None,
                               token=faker.md5(),
                               expiry=datetime.now(
@@ -26,7 +26,6 @@ def reset_token_factory(db, factory, faker):
 
             session.add(t)
             session.commit()
-            factory.append(t)
 
             return t
     return __reset_token_factory
@@ -55,12 +54,12 @@ def admin_token_factory(db, profile_factory):
 @pytest.fixture()
 def valid_register_request_factory(faker):
     def __valid_register_request_factory(
-        email=faker.email(),
+        email=None,
         first_name=faker.first_name(),
         last_name=faker.last_name()
     ):
         args = {
-            'email': email,
+            'email': email or f"{first_name}.{last_name}@{faker.domain_name()}",
             'first_name': first_name,
             'last_name': last_name
         }
@@ -73,6 +72,7 @@ def valid_auth_request_factory(profile_factory):
     def __valid_auth_request_factory(profile=None, password=None):
         if profile is None:
             password = id_generator(size=8)
+            print('creating a profile with password:', password)
             profile = profile_factory(password=password)
         args = {
             'email': profile.email,
@@ -102,8 +102,7 @@ def valid_reset_password_request_factory(db, profile_factory, reset_token_factor
         if password is None:
             password = id_generator(size=8)
         if profile is None:
-            with db.get_session() as session:
-                profile = profile_factory(password=password)
+            profile = profile_factory(password=password)
         token = reset_token_factory(profile_id=profile.id)
         return ResetPasswordSchema().load({
             'email': profile.email,
@@ -121,8 +120,7 @@ def expired_reset_password_request_factory(db, profile_factory, reset_token_fact
         if password is None:
             password = id_generator(size=8)
         if profile is None:
-            with db.get_session() as session:
-                profile = profile_factory(password=password)
+            profile = profile_factory(password=password)
         token = reset_token_factory(profile_id=profile.id, expiry=expiry)
         return ResetPasswordSchema().load({
             'email': profile.email,
@@ -135,12 +133,12 @@ def expired_reset_password_request_factory(db, profile_factory, reset_token_fact
 @ pytest.fixture
 def valid_register_api_request_factory(faker):
     def __valid_register_api_request_factory(
-        email=faker.email(),
+        email=None,
         first_name=faker.first_name(),
         last_name=faker.last_name()
     ):
         return {
-            'email': email,
+            'email': email or f"{first_name}.{last_name}@{faker.domain_name()}",
             'first_name': first_name,
             'last_name': last_name
         }
