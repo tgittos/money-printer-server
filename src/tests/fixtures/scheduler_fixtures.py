@@ -31,21 +31,28 @@ def scheduled_job_factory(db, factory, faker):
 
 @pytest.fixture()
 def valid_create_scheduled_job_request_factory(faker):
-    def __valid_create_scheduled_job_request_factory():
+    def __valid_create_scheduled_job_request_factory(
+        job_name=f"{' '.join(faker.words())} Job",
+        cron="0 * * * *",
+        json_args={}
+    ):
         return CreateScheduledJobSchema().load({
-            'job_name': f"{' '.join(faker.words())} Job",
-            'cron': "0 * * * *",
-            'json_args': {}
+            'job_name': job_name,
+            'cron': cron,
+            'json_args': json_args
         })
     return __valid_create_scheduled_job_request_factory
 
 
 @pytest.fixture()
 def valid_create_instant_job_request_factory(faker):
-    def __valid_create_instant_job_request_factory():
+    def __valid_create_instant_job_request_factory(
+        job_name=f"{' '.join(faker.words())} Job",
+        json_args={}
+    ):
         return CreateInstantJobSchema().load({
-            'job_name': f"{' '.join(faker.words())} Job",
-            'json_args': {}
+            'job_name': job_name,
+            'json_args': json_args
         })
     return __valid_create_instant_job_request_factory
 

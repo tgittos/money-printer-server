@@ -79,6 +79,7 @@ def test_login_rejects_bad_password(client, bad_password_api_request_factory):
 
 def test_auth_tokens_are_valid_for_30_days(client, valid_auth_api_request_factory):
     request = valid_auth_api_request_factory()
+    print('request:', request)
     result = client.post(f"/{API_PREFIX}/auth/login",
                          json=request)
     assert result.status_code == 200

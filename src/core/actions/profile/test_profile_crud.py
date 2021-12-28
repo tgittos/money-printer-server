@@ -15,9 +15,9 @@ from tests.fixtures import *
 def mock_notifier(mocker):
     # mocker.patch('core.lib.notifications.notify_profile_created',
     return mocker.patch.object(crud, 'notify_profile_created',
-        return_value=MockResponse(
-            status_code=200
-        ))
+                               return_value=MockResponse(
+                                   status_code=200
+                               ))
 
 
 def test_cannot_construct_invalid_registraction_schema():
@@ -38,7 +38,8 @@ def test_register_fails_on_used_email(db, profile_factory, valid_register_reques
 
 
 def test_register_creates_a_new_profile_with_valid_data(db, valid_register_request_factory, mock_notifier):
-    request = valid_register_request_factory()
+    request = valid_register_request_factory(
+        email="this-is-custom@example.org")
     result = register(db, request)
     assert result is not None
     assert result.success
@@ -47,7 +48,8 @@ def test_register_creates_a_new_profile_with_valid_data(db, valid_register_reque
 
 
 def test_create_profile_creates_profile_record(db, valid_register_request_factory, mock_notifier):
-    request = valid_register_request_factory()
+    request = valid_register_request_factory(
+        email="this-is-another-custom@example.org")
     result = create_profile(db, request)
     assert result.success
     assert result.data is not None

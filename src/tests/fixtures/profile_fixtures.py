@@ -58,8 +58,10 @@ def valid_profile_update_api_request_factory(valid_profile_update_request_factor
 
 @pytest.fixture
 def invalid_profile_update_api_request_factory(faker):
-    def __invalid_profile_update_api_request_factory():
+    def __invalid_profile_update_api_request_factory(
+        email=faker.email()
+    ):
         return {
-            'email': faker.email()
+            'email': email
         }
     return __invalid_profile_update_api_request_factory

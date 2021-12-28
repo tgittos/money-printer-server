@@ -43,8 +43,9 @@ def test_get_plaid_item_by_id_fails_if_item_missing(db):
 
 
 def test_get_plaid_item_by_plaid_item_id_returns_plaid_item(db, plaid_item_factory):
-    item = plaid_item_factory()
-    result = get_plaid_item_by_plaid_item_id(db, item.item_id)
+    item_id = "this is my item id"
+    item = plaid_item_factory(item_id=item_id)
+    result = get_plaid_item_by_plaid_item_id(db, item_id)
     assert result.success
     assert result.data.id == item.id
 
