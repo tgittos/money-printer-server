@@ -1,7 +1,7 @@
 import pytest
 import random
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 def faker_seed():
     return random.randint(1,50000)
 

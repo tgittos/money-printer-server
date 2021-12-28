@@ -38,7 +38,6 @@ def test_get_unauthenticated_user_returns_user(db):
     assert token is not None
 
 
-@pytest.mark.focus
 def test_login_accepts_valid_login_request(db, valid_auth_request_factory):
     request = valid_auth_request_factory()
     result = login(db, request)

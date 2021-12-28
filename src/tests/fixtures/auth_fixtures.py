@@ -99,10 +99,11 @@ def invalid_auth_request_factory(faker):
 def valid_reset_password_request_factory(db, profile_factory, reset_token_factory):
     def __valid_reset_password_request(profile=None,
                                        password=None):
+        old_password = id_generator(size=8)
+        if profile is None:
+            profile = profile_factory(password=old_password)
         if password is None:
             password = id_generator(size=8)
-        if profile is None:
-            profile = profile_factory(password=password)
         token = reset_token_factory(profile_id=profile.id)
         return ResetPasswordSchema().load({
             'email': profile.email,
@@ -117,10 +118,11 @@ def expired_reset_password_request_factory(db, profile_factory, reset_token_fact
     def __expired_reset_password_request(profile=None,
                                          password=None,
                                          expiry=datetime.now(tz=timezone.utc) - timedelta(days=45)):
+        old_password = id_generator(size=8)
         if password is None:
             password = id_generator(size=8)
         if profile is None:
-            profile = profile_factory(password=password)
+            profile = profile_factory(password=old_password)
         token = reset_token_factory(profile_id=profile.id, expiry=expiry)
         return ResetPasswordSchema().load({
             'email': profile.email,
