@@ -14,6 +14,26 @@ scheduler_bp = Blueprint('scheduler', __name__)
 @authed
 @admin
 def list_schedules():
+    """
+    ---
+    get:
+      summary: List the currently active scheduled jobs. This requires an admin profile.
+      security:
+        - jwt: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                success:
+                    type: Boolean
+                data:
+                    schema: ReadScheduledJobSchema
+      tags:
+        - Scheduling
+        - Admin
+    """
+    
     repo = ScheduledJobRepository()
     response = repo.get_scheduled_jobs()
     if response.success:
@@ -30,6 +50,28 @@ def list_schedules():
 @authed
 @admin
 def create_schedule():
+    """
+    ---
+    post:
+      summary: Create a new scheduled job based on the available jobs. This requires an admin profile.
+      security:
+        - jwt: []
+      parameters:
+        - in: request
+          schema: CreateScheduledJobSchema
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                success:
+                    type: Boolean
+                data:
+                    schema: ReadScheduledJobSchema
+      tags:
+        - Scheduling
+        - Admin
+    """
     try:
         repo = ScheduledJobRepository()
         schema = CreateScheduledJobSchema().load(request.json)
@@ -52,6 +94,28 @@ def create_schedule():
 @authed
 @admin
 def update_schedule(schedule_id):
+    """
+    ---
+    put:
+      summary: Update an existing scheduled job definition. This requires an admin profile.
+      security:
+        - jwt: []
+      parameters:
+        - in: request
+          schema: UpdateScheduledJobSchema
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                success:
+                    type: Boolean
+                data:
+                    schema: ReadScheduledJobSchema
+      tags:
+        - Scheduling
+        - Admin
+    """
     try:
         schema = ReadScheduledJobSchema().load(request.json)
 
@@ -84,6 +148,28 @@ def update_schedule(schedule_id):
 @authed
 @admin
 def delete_schedule(schedule_id):
+    """
+    ---
+    delete:
+      summary: Delete an existing scheduled job definition. This requires an admin profile.
+      security:
+        - jwt: []
+      parameters:
+        - in: schedule_id
+          name: schedule_id
+          type: Integer
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                  success:
+                    name: success
+                    type: Boolean
+      tags:
+        - Scheduling
+        - Admin
+    """
     if schedule_id is None:
         return {
             'success': False,

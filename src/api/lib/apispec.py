@@ -44,11 +44,11 @@ spec.components.schema("Login", schema=LoginSchema)
 spec.components.schema("ReadProfile", schema=ReadProfileSchema)
 spec.components.schema("UpdateProfile", schema=UpdateProfileSchema)
 
-spec.components.schema("CreateInstantJobSchema", schema=CreateInstantJobSchema)
-spec.components.schema("CreateScheduledJobSchema", schema=CreateScheduledJobSchema)
-spec.components.schema("ReadScheduledJobSchema", schema=ReadScheduledJobSchema)
-spec.components.schema("UpdateScheduledJobSchema", schema=UpdateScheduledJobSchema)
-spec.components.schema("ReadJobResult", schema=ReadJobResultSchema)
+spec.components.schema("CreateInstantJob", schema=CreateInstantJobSchema)
+spec.components.schema("CreateScheduledJob", schema=CreateScheduledJobSchema)
+spec.components.schema("ReadScheduledJob", schema=ReadScheduledJobSchema)
+spec.components.schema("UpdateScheduledJob", schema=UpdateScheduledJobSchema)
+# spec.components.schema("ReadJobResult", schema=ReadJobResultSchema)
 
 # paths
 with ApiApplication(None).flask_app.test_request_context():
