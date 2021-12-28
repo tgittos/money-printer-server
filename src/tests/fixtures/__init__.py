@@ -1,3 +1,10 @@
+import pytest
+import random
+
+@pytest.fixture(scope='session', autouse=True)
+def faker_seed():
+    return random.randint(1,50000)
+
 from .core import *
 from .auth_fixtures import *
 from .plaid_item_fixtures import *

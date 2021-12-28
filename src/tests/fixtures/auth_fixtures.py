@@ -59,7 +59,7 @@ def valid_register_request_factory(faker):
         last_name=faker.last_name()
     ):
         args = {
-            'email': email or f"{first_name}.{last_name}@{faker.domain_name()}",
+            'email': email or f"{first_name}.{last_name}@{faker.unique.domain_name()}",
             'first_name': first_name,
             'last_name': last_name
         }
@@ -138,7 +138,7 @@ def valid_register_api_request_factory(faker):
         last_name=faker.last_name()
     ):
         return {
-            'email': email or f"{first_name}.{last_name}@{faker.domain_name()}",
+            'email': email or f"{first_name}.{last_name}@{faker.unique.domain_name()}",
             'first_name': first_name,
             'last_name': last_name
         }

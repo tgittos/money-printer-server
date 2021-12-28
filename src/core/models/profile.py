@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import LargeBinary
 
 from core.models.base import Base
 
@@ -9,7 +10,7 @@ class Profile(Base):
 
     id = Column(Integer, primary_key=True)
     email = Column(String(64), nullable=False)
-    password = Column(String(512), nullable=False)
+    password = Column(LargeBinary, nullable=False)
     first_name = Column(String(32))
     last_name = Column(String(32))
     force_password_reset = Column(Boolean, nullable=False, default=True)

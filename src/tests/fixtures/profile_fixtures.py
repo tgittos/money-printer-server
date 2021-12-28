@@ -20,7 +20,7 @@ def profile_factory(db, faker):
             profile = Profile()
             profile.first_name = first_name
             profile.last_name = last_name
-            profile.email = email or f"{first_name}.{last_name}@{faker.domain_name()}"
+            profile.email = email or f"{first_name}.{last_name}@{faker.unique.domain_name()}"
             profile.is_admin = is_admin
             print('hashing password:', password)
             profile.password = hash_password(password)

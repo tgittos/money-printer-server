@@ -23,14 +23,16 @@ def hash_password(pt_password: str) -> bytes:
     """
     One-way hash a password using Bcrypt
     """
-    return bcrypt.hashpw(pt_password.encode('utf8'), bcrypt.gensalt())
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(pt_password.encode(), salt)
+    return hashed
 
 
-def check_password(pw_hash: str, candidate: str) -> bool:
+def check_password(pw_hash: bytes, candidate: str) -> bool:
     """
     Validate a supplied plain-text against an encrypted password
     """
-    return bcrypt.checkpw(candidate.encode('utf8'), pw_hash.encode('utf8'))
+    return bcrypt.checkpw(candidate.encode(), pw_hash)
 
 
 def generate_temp_password(l: int = 16) -> str:

@@ -8,9 +8,8 @@ from apps.api import ApiApplication
 
 from config import mysql_config
 
+
 # one DB for the whole test session so that we can parallelize it
-
-
 @pytest.fixture(scope='session')
 def db():
     db = MySql(mysql_config)
