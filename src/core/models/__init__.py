@@ -11,5 +11,7 @@ from core.models.holding import Holding
 from core.models.security_price import SecurityPrice
 from core.models.iex_blacklist import IexBlacklist
 from core.models.investment_transaction import InvestmentTransaction
+from core.models.meta.api_token import ApiToken
+from core.models.meta.api_token_policy import ApiTokenPolicy
 
 from core.models.base import Base

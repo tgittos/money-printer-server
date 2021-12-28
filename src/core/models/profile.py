@@ -20,3 +20,4 @@ class Profile(Base):
 
     plaid_items = relationship("PlaidItem", back_populates="profile")
     accounts = relationship("Account", back_populates="profile")
+    api_tokens = relationship("ApiToken", back_populates="profile")

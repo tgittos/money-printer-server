@@ -9,6 +9,7 @@ class CreateProfileSchema(Schema):
 class ReadProfileSchema(Schema):
     account: fields.Nested('ReadAccountSchema', exclude=("profile",))
     plaid_item: fields.Nested('ReadPlaidItemSchema', exclude=("profile",))
+    api_keys: fields.Nested('ReadApiKeySchema', exclude=("profile",))
 
     class Meta:
         additional = ("id", "email", "first_name", "last_name",

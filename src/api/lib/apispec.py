@@ -12,10 +12,13 @@ from core.schemas.plaid_item_schemas import *
 from core.schemas.profile_schemas import *
 from core.schemas.scheduler_schemas import *
 from core.schemas.security_schemas import *
+from core.schemas.api_schemas import *
 
 from apps.api import ApiApplication
 from api.routes.profile import *
 from api.routes.auth import *
+from api.routes.scheduler import *
+
 
 spec = APISpec(
     title="Money Printer",
@@ -39,13 +42,18 @@ spec.components.schema("ResetPassword",
 spec.components.schema("Login", schema=LoginSchema)
 
 spec.components.schema("ReadProfile", schema=ReadProfileSchema)
-
 spec.components.schema("UpdateProfile", schema=UpdateProfileSchema)
+
+spec.components.schema("CreateInstantJobSchema", schema=CreateInstantJobSchema)
+spec.components.schema("CreateScheduledJobSchema", schema=CreateScheduledJobSchema)
+spec.components.schema("ReadScheduledJobSchema", schema=ReadScheduledJobSchema)
+spec.components.schema("UpdateScheduledJobSchema", schema=UpdateScheduledJobSchema)
+spec.components.schema("ReadJobResult", schema=ReadJobResultSchema)
 
 # paths
 with ApiApplication(None).flask_app.test_request_context():
     # auth
-    spec.path(view=register, tag="Auth")
+    spec.path(view=register)
     spec.path(view=login)
     spec.path(view=reset_password)
     spec.path(view=continue_reset_password)
@@ -54,6 +62,12 @@ with ApiApplication(None).flask_app.test_request_context():
     spec.path(view=get_profile)
     spec.path(view=update_profile)
     spec.path(view=sync_profile)
+
+    # scheduler
+    spec.path(view=list_schedules)
+    spec.path(view=create_schedule)
+    spec.path(view=update_schedule)
+    spec.path(view=delete_schedule)
 
 
 def write_apispec(path):
