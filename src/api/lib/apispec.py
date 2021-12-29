@@ -5,13 +5,9 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
 
 from core.schemas import *
+from api.routes import *
 
 from apps.api import ApiApplication
-from api.routes.profile import *
-from api.routes.auth import *
-from api.routes.scheduler import *
-from api.routes.accounts import *
-
 
 spec = APISpec(
     title="Money Printer",
@@ -42,10 +38,10 @@ with ApiApplication(None).flask_app.test_request_context():
     spec.path(view=sync_profile)
 
     # accounts
-    #spec.path(view=list_accounts)
-    #spec.path(view=request_account_sync)
-    #spec.path(view=request_account_balances)
-    #spec.path(view=list_holdings)
+    spec.path(view=list_accounts)
+    spec.path(view=request_account_sync)
+    spec.path(view=request_account_balances)
+    spec.path(view=list_holdings)
 
     # scheduler
     spec.path(view=list_schedules)

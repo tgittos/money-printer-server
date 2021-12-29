@@ -10,13 +10,12 @@ class CreatePlaidItemSchema(Schema):
 
 
 class ReadPlaidItemSchema(Schema):
-    profile = fields.Nested('ReadProfileSchema', exclude=('plaid_items',))
+    profile = fields.Nested('ReadProfileSchema')
     accounts = fields.Nested(
-        'ReadAccountSchema', many=True, exclude=("plaid_item",))
+        'ReadAccountSchema', many=True)
 
     class Meta:
-        additional = ("id", "profile_id", "item_id",
-                      "request_id", "status", "timestamp")
+        additional = ("id", "item_id", "request_id", "status", "timestamp")
 
 
 class UpdatePlaidItemSchema(Schema):

@@ -6,9 +6,10 @@ from core.schemas.api_schemas import ReadApiKeySchema
 from api.routes.decorators import authed, get_identity
 from api.lib.constants import API_PREFIX
 
-profile_bp = Blueprint('profile_api_keys', __name__)
+api_keys_bp = Blueprint('profile_api_keys', __name__)
 
-@profile_bp.route(f"/{API_PREFIX}/profile/api_keys", methods=['GET'])
+
+@api_keys_bp.route(f"/{API_PREFIX}/profile/api_keys", methods=['GET'])
 @authed
 def get_profile_api_keys():
     """
@@ -34,5 +35,5 @@ def get_profile_api_keys():
         return {
             'success': False
         }, 400
-    
+
     return ReadApiKeySchema(many=True).dump(keys_result.data)

@@ -7,17 +7,15 @@ class CreateAccountSchema(Schema):
 
 
 class ReadAccountSchema(Schema):
-    profile = fields.Nested('ReadProfileSchema', exclude=("accounts",))
-    plaid_item = fields.Nested('ReadPlaidItemSchema', exclude=("accounts",))
-    balances = fields.Nested('ReadAccountBalanceSchema',
-                             many=True, exclude=("account",))
-    holdings = fields.Nested(
-        'ReadHoldingSchema', many=True, exclude=("account",))
-    transactions = fields.Nested(
-        'ReadInvestmentTransactionSchema', many=True, exclude=("account",))
+    profile = fields.Nested('ReadProfileSchema')
+    plaid_item = fields.Nested('ReadPlaidItemSchema')
+    balances = fields.Nested('ReadAccountBalanceSchema', many=True)
+    holdings = fields.Nested('ReadHoldingSchema', many=True)
+    transactions = fields.Nested('ReadInvestmentTransactionSchema', many=True)
 
     class Meta:
-        additional = ("id", "name", "official_name", "type", "subtype", "timestamp")
+        additional = ("id", "name", "official_name",
+                      "type", "subtype", "timestamp")
 
 
 class UpdateAccountSchema(Schema):
@@ -32,7 +30,7 @@ class CreateAccountBalanceSchema(Schema):
 
 
 class ReadAccountBalanceSchema(Schema):
-    account = fields.Nested('ReadAccountSchema', exclude=('balances',))
+    account = fields.Nested('ReadAccountSchema')
 
     class Meta:
         additional = ("id", "account_id", "available", "current",

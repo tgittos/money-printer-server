@@ -17,14 +17,7 @@ from core.repositories.profile_repository import ProfileRepository
 from core.schemas.auth_schemas import RegisterProfileSchema
 from core.lib.logger import init_logger, get_logger
 
-from api.routes.plaid import oauth_bp as plaid_bp
-from api.routes.auth import auth_bp
-from api.routes.accounts import account_bp
-from api.routes.symbols import symbol_bp
-from api.routes.webhooks import webhooks_bp
-from api.routes.health import health_bp
-from api.routes.profile import profile_bp
-from api.routes.scheduler import scheduler_bp
+from api.routes import *
 from api.routes.swagger import swagger_bp
 
 from api.graphql.schema import schema
@@ -92,7 +85,7 @@ class ApiApplication:
         self.logger.info("registering auth blueprint")
         self.flask_app.register_blueprint(auth_bp)
         self.logger.info("registering plaid oauth blueprint")
-        self.flask_app.register_blueprint(plaid_bp)
+        self.flask_app.register_blueprint(oauth_bp)
         self.logger.info("registering profile blueprint")
         self.flask_app.register_blueprint(profile_bp)
         self.logger.info("registering accounts blueprint")
