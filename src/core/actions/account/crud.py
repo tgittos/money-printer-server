@@ -10,14 +10,14 @@ from core.schemas.account_schemas import CreateAccountSchema, ReadAccountSchema,
 from core.actions.action_response import ActionResponse
 
 
-def create_account(db, request: CreateAccountSchema) -> ActionResponse:
+def create_account(db, profile_id: int, plaid_item_id: int, request: CreateAccountSchema) -> ActionResponse:
     """
     Creates an account object in the given database, and returns it
     """
     account = Account()
 
-    account.profile_id = request['profile_id']
-    account.plaid_item_id = request['plaid_item_id']
+    account.profile_id = profile_id
+    account.plaid_item_id = plaid_item_id
     account.account_id = request['account_id']
     account.name = request['name']
     account.official_name = request['official_name']
@@ -35,11 +35,11 @@ def create_account(db, request: CreateAccountSchema) -> ActionResponse:
     )
 
 
-def update_account(db, request: UpdateAccountSchema) -> ActionResponse:
+def update_account(db, profile_id: int, request: UpdateAccountSchema) -> ActionResponse:
     """
     Updates an account object in the given database, and returns it
     """
-    result = get_account_by_id(db, request['profile_id'], request['id'])
+    result = get_account_by_id(db, profile_id, request['id'])
 
     if not result.success or result.data is None:
         return ActionResponse(
@@ -67,26 +67,21 @@ def update_account(db, request: UpdateAccountSchema) -> ActionResponse:
     )
 
 
-def create_or_update_account(db, profile: Profile, plaid_link: PlaidItem, account_dict: dict) -> ActionResponse:
+def create_or_update_account(db, profile_id: int, plaid_item_id: int, account_dict: dict) -> ActionResponse:
     """
     Updates the DB record with the remote record data, and creates it if it doesn't exist
     """
     # update the account
     account_id = account_dict['account_id']
     get_result = get_account_by_account_id(
-        db, profile=profile, account_id=account_id)
-    if get_result.success is not None or get_result.data is None:
-        return get_result
+        db, profile_id=profile_id, account_id=account_id)
     account = get_result.data
     if account is None:
-        schema = CreateAccountSchema().load(
-            {**{'plaid_item_id': plaid_link.id, 'profile_id': profile.id}, **account_dict}
-        )
-        return create_account(db, schema)
+        schema = CreateAccountSchema().load(account_dict)
+        return create_account(db, profile_id, plaid_item_id, schema)
     else:
-        schema = UpdateAccountSchema(unknown=EXCLUDE).load(
-            {**{'id': account_id}, **account_dict})
-        return update_account(db, schema)
+        schema = UpdateAccountSchema().load(account_dict)
+        return update_account(db, profile_id, schema)
 
 
 def get_account_by_id(db, profile_id: int, account_id: int) -> ActionResponse:
@@ -138,16 +133,16 @@ def get_accounts_by_profile_id(db, profile_id: int) -> ActionResponse:
     )
 
 
-def get_accounts_by_plaid_item(db, plaid_item: PlaidItem) -> ActionResponse:
+def get_accounts_by_plaid_item_id(db, plaid_item_id: int) -> ActionResponse:
     """
     Gets all accounts for a given PlaidItem from the DB
     """
     with db.get_session() as session:
         accounts = session.query(Account).filter(
-            Account.plaid_item_id == plaid_item.id).all()
+            Account.plaid_item_id == plaid_item_id).all()
 
     return ActionResponse(
         success=accounts is not None,
         data=accounts,
-        message=f"No accounts with plaid_item ID {plaid_item.id} found" if accounts is None else None
+        message=f"No accounts with plaid_item ID {plaid_item_id} found" if accounts is None else None
     )

@@ -9,7 +9,7 @@ from config import mysql_config
 from core.repositories.repository_response import RepositoryResponse
 from core.schemas.scheduler_schemas import CreateInstantJobSchema
 
-from core.actions.account.crud import get_accounts_by_plaid_item
+from core.actions.account.crud import get_accounts_by_plaid_item_id
 from core.actions.profile.crud import get_profile_by_id
 from core.actions.plaid.crud import get_plaid_item_by_id
 
@@ -74,7 +74,7 @@ class HoldingRepository:
         return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema(
             job_name='sync_transactions',
             args={
-                'plaid_item_id': plaid_item.id
+                'plaid_item_id': plaid_item_id
             }
         ))
 
@@ -134,7 +134,7 @@ class HoldingRepository:
             )
 
         profile_result = get_profile_by_id(self, plaid_result.data.profile_id)
-        accounts_result = get_accounts_by_plaid_item(self, plaid_result.data)
+        accounts_result = get_accounts_by_plaid_item_id(self, plaid_result.data.id)
         if not profile_result.success or not accounts_result.success:
             self.logger.error("received request to update investment transactions with no corresponding accounts: {0}"
                               .format(plaid_result.data.id))

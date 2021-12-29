@@ -3,8 +3,7 @@ from marshmallow import Schema, fields
 
 class CreateAccountSchema(Schema):
     class Meta:
-        fields = ("plaid_item_id", "profile_id", "account_id",
-                  "name", "official_name", "type", "subtype")
+        fields = ("account_id", "name", "official_name", "type", "subtype")
 
 
 class ReadAccountSchema(Schema):
@@ -24,7 +23,7 @@ class ReadAccountSchema(Schema):
 
 class UpdateAccountSchema(Schema):
     class Meta:
-        fields = ("profile_id", "id", "account_id", "name",
+        fields = ("id", "account_id", "name",
                   "official_name", "type", "subtype")
 
 

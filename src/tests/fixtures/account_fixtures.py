@@ -1,3 +1,4 @@
+import types
 import pytest
 from datetime import datetime, timezone
 
@@ -37,6 +38,7 @@ def account_factory(db, faker, profile_factory, plaid_item_factory):
 
             session.add(account)
             session.commit()
+            print('created account:', account)
 
             return account
     return __factory
@@ -56,10 +58,8 @@ def valid_create_account_request_factory(db, faker, profile_factory, plaid_item_
         if profile_id is None:
             profile_id = profile_factory().id
         if plaid_item_id is None:
-            plaid_item_id = plaid_item_factory().id
+            plaid_item_id = plaid_item_factory(profile_id=profile_id).id
         return CreateAccountSchema().load({
-            'profile_id': profile_id,
-            'plaid_item_id': plaid_item_id,
             'account_id': account_id,
             'name': name,
             'official_name': official_name,
@@ -87,7 +87,6 @@ def valid_update_account_request_factory(db, faker, profile_factory, account_fac
             account_id = account_factory(profile_id=profile_id).id
         return UpdateAccountSchema().load({
             'id': account_id,
-            'profile_id': profile_id,
             'account_id': account_account_id,
             'name': name,
             'official_name': official_name,
@@ -95,4 +94,52 @@ def valid_update_account_request_factory(db, faker, profile_factory, account_fac
             'subtype': subtype
         })
 
+    return __factory
+
+
+@pytest.fixture
+def valid_create_account_api_request_factory(faker, valid_create_account_request_factory):
+    def __factory(
+        profile_id=None,
+        plaid_item_id=None,
+        account_id=id_generator(size=8),
+        name=f"{faker.name()} Account",
+        official_name=id_generator(),
+        type='savings',
+        subtype=''
+    ):
+        request = valid_create_account_request_factory(
+            profile_id=profile_id,
+            plaid_item_id=plaid_item_id,
+            account_id=account_id,
+            name=name,
+            official_name=official_name,
+            type=type,
+            subtype=subtype
+        )
+        return CreateAccountSchema().dump(request)
+    return __factory
+
+
+@pytest.fixture
+def valid_update_account_api_request_factory(faker, valid_update_account_request_factory):
+    def __factory(
+        profile_id=None,
+        account_id=None,
+        name=f"{faker.name()} Account",
+        account_account_id=id_generator(size=8),
+        official_name=id_generator(),
+        type='checking',
+        subtype=''
+    ):
+        request = valid_update_account_request_factory(
+            profile_id=profile_id,
+            account_id=account_id,
+            account_account_id=account_account_id,
+            name=name,
+            official_name=official_name,
+            type=type,
+            subtype=subtype
+        )
+        return UpdateAccountSchema().dump(request)
     return __factory
