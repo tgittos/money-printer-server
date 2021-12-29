@@ -50,34 +50,6 @@ def test_get_accounts_fails_with_no_profile(repo):
     assert len(result.data) == 0
 
 
-def test_get_accounts_by_profile_with_balances_returns_latest_balances():
-    assert False
-
-
-def test_get_accounts_by_profile_with_balances_ignores_old_balances():
-    assert False
-
-
-def test_get_accounts_by_profile_with_balances_fails_with_no_profile(repo):
-    result = repo.get_accounts_by_profile_with_balances(2342)
-    assert not result.success
-    assert result.data is None
-
-
-def test_get_account_by_profile_with_balances_returns_latest_balances():
-    assert False
-
-
-def test_get_account_by_profile_with_balances_ignores_old_balances():
-    assert False
-
-
-def test_get_account_by_profile_with_balances_fails_with_no_profile(repo):
-    result = repo.get_account_by_profile_with_balance(23423, 234234)
-    assert not result.success
-    assert result.data is None
-
-
 def test_schedlue_account_sync_creates_instant_job(mocker, repo, profile_factory, account_factory):
     spy = mocker.patch.object(repo.scheduled_job_repo, 'create_instant_job')
     profile = profile_factory()

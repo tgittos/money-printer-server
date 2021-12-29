@@ -1,8 +1,10 @@
+from sqlalchemy.orm import joinedload
 from marshmallow import Schema, fields, EXCLUDE
 
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.repositories.plaid_repository import PlaidRepository
 from core.repositories.repository_response import RepositoryResponse
+from core.models import Account, AccountBalance
 from core.schemas import CreateInstantJobSchema, CreateAccountBalanceSchema
 from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
 from core.stores.mysql import MySql
@@ -32,27 +34,6 @@ class AccountRepository:
         """
         accounts_result = account_crud.get_accounts_by_profile_id(self.db, profile_id)
         return accounts_result
-
-    def get_accounts_by_profile_with_balances(self, profile_id: int) -> RepositoryResponse:
-        """
-        Returns a list of accounts augmented with their latest synced balances for a given profile
-        """
-        profile_result = get_profile_by_id(self.db, profile_id)
-        if not profile_result.success:
-            return profile_result
-        action_result = self.get_accounts_by_profile(profile_result.data)
-        return RepositoryResponse(success=action_result.success, data=action_result.data, message=action_result.message)
-
-    def get_account_by_profile_with_balance(self, profile_id: int, account_id: int) -> RepositoryResponse:
-        """
-        Returns the requested Account with it's latest synced balance for a given profile
-        """
-        profile_result = get_profile_by_id(self.db, profile_id)
-        if not profile_result.success:
-            return profile_result
-        action_result = self.get_account_by_account_id(
-            profile_result.data, account_id)
-        return RepositoryResponse(success=action_result.success, data=action_result.data, message=action_result.message)
 
     def schedule_account_sync(self, profile_id: int, account_id: int) -> RepositoryResponse:
         """
