@@ -135,8 +135,7 @@ class AccountRepository:
         self.logger.info(
             "syncing account balance/s for plaid item: {0}".format(plaid_result.data.id))
 
-        accounts_result = account_crud.get_accounts_by_plaid_item_id(
-            plaid_result.data.id)
+        accounts_result = account_crud.get_accounts_by_plaid_item_id(self.db, plaid_result.data.id)
         if accounts_result.success and len(accounts_result.data) > 0:
             accounts = accounts_result.data
             self.logger.info(
@@ -156,12 +155,12 @@ class AccountRepository:
             success=True
         )
 
-    def sync_account_balance(self, account_id: int) -> RepositoryResponse:
+    def sync_account_balance(self, profile_id: int, account_id: int) -> RepositoryResponse:
         """
         Fetches the latest balance for the given account from Plaid
         Returns None on any error
         """
-        account_result = account_crud.get_account_by_id(self.db, account_id)
+        account_result = account_crud.get_account_by_id(self.db, profile_id, account_id)
         if not account_result.success:
             self.logger.warning(
                 "requested balance sync for account with no Account")
