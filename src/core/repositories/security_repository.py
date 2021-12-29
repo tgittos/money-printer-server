@@ -12,7 +12,6 @@ from core.repositories.repository_response import RepositoryResponse
 from core.models.plaid_item import PlaidItem
 
 # import all the facets so that consumers of the repo can access everything
-from core.lib.utilities import wrap
 from core.actions.security.crud import *
 from core.actions.profile.crud import get_profile_by_id
 from core.actions.account.crud import get_account_by_id
@@ -25,21 +24,6 @@ class SecurityRepository:
 
     def __init__(self):
         self.plaid_config = plaid_config
-        self._init_facets()
-
-    def _init_facets(self):
-        self.create_security = wrap(create_security, self.db)
-        self.create_holding = wrap(create_holding, self.db)
-        self.create_investment_transaction = wrap(
-            create_investment_transaction, self.db)
-        self.get_security_by_security_id = wrap(
-            get_security_by_security_id, self.db)
-        self.get_security_by_symbol = wrap(get_security_by_symbol, self.db)
-        self.get_securities = wrap(get_securities, self.db)
-        self.get_holding_by_plaid_account_id_and_plaid_security_id =\
-            wrap(get_holding_by_plaid_account_id_and_plaid_security_id, self.db)
-        self.update_holding_balance = wrap(update_holding_balance, self.db)
-        self.update_holding_balance = wrap(update_holding_balance, self.db)
 
     def get_securities_by_profile_id(self, profile_id: int) -> RepositoryResponse:
         """

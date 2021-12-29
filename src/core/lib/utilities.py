@@ -30,19 +30,6 @@ def curry(func):
     return f
 
 
-def wrap(f, obj):
-
-    def h(*args, **kwargs):
-        try:
-            h.__name__ = f.__name__
-            args = (obj,) + args
-            return f(*args, **kwargs)
-        except Exception as ex:
-            raise ex
-
-    return h
-
-
 def sanitize_float(val) -> float:
     """
     Ensure that the given value is really a float
@@ -104,6 +91,6 @@ def is_valid_email(email):
 class Struct:
     def __init__(self, **entries):
         self.__dict__.update(entries)
-    
+
     def to_dict(self):
         return self.__dict__

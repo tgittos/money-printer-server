@@ -9,22 +9,11 @@ from core.lib.logger import get_logger
 from core.lib.types import StringList
 from config import iex_config, mysql_config
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas.security_schemas import ReadSecurityPriceSchema
+from core.schemas.security_schemas import ReadSecurityPriceSchema, RequestStockPriceSchema, RequestStockPriceListSchema
 
 # import all the actions so that consumers of the repo can access everything
-from core.lib.utilities import wrap
 from core.actions.stock.crud import *
 from core.actions.stock.fetch import *
-
-
-class RequestStockPriceSchema(Schema):
-    class Meta:
-        fields = ("symbol", "start", "end", "close_only")
-
-
-class RequestStockPriceListSchema(Schema):
-    class Meta:
-        fields = ("symbols", "start", "end", "close_only")
 
 
 class StockRepository:
@@ -38,21 +27,6 @@ class StockRepository:
         os.environ['IEX_TOKEN'] = secret
         if iex_config['env'] == 'sandbox':
             os.environ['IEX_API_VERSION'] = 'iexcloud-sandbox'
-        self._init_facets()
-
-    def _init_facets(self):
-        self.on_iex_blacklist = wrap(on_iex_blacklist, self.db)
-        self.get_historical_daily_security_prices = wrap(
-            get_historical_daily_security_prices, self.db)
-        self.get_historical_intraday_security_prices = wrap(
-            get_historical_intraday_security_prices, self.db)
-        self.fetch_historical_daily = wrap(fetch_historical_daily, self.db)
-        self.fetch_historical_intraday = wrap(
-            fetch_historical_intraday, self.db)
-        self.create_historical_daily_security_price = wrap(
-            create_historical_daily_security_price, self.db)
-        self.create_historical_intraday_security_price = wrap(
-            create_historical_intraday_security_price, self.db)
 
     def historical_daily(self, request: RequestStockPriceSchema) -> RepositoryResponse:
         """

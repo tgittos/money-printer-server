@@ -2,17 +2,18 @@ from core.models.plaid_item import PlaidItem
 from core.repositories import AccountRepository, HoldingRepository
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
-from core.lib.utilities import wrap
 from core.lib.logger import get_logger
 from core.stores.mysql import MySql
 from core.repositories.repository_response import RepositoryResponse
 from config import mysql_config, plaid_config
 from core.schemas.scheduler_schemas import CreateInstantJobSchema
+from core.schemas.profile_schemas import *
+from core.schemas.auth_schemas import *
 
 from core.actions.account.crud import create_or_update_account
 from core.actions.plaid.crud import get_plaid_items_by_profile, get_plaid_item_by_id
-from core.actions.profile.crud import *
-from core.actions.profile.auth import *
+import core.actions.profile.crud as crud
+import core.actions.profile.auth as auth
 
 
 class ProfileRepository:
@@ -26,26 +27,47 @@ class ProfileRepository:
         plaid_config=plaid_config
     ))
 
-    def __init__(self):
-        self._init_facets()
+    def create_profile(self, request: CreateProfileSchema) -> RepositoryResponse:
+        """
+        Creates a new profile with the requested details
+        """
+        return crud.create_profile(self.db, request)
 
-    def _init_facets(self):
-        self.get_profile_by_id = wrap(get_profile_by_id, self.db)
-        self.get_all_profiles = wrap(get_all_profiles, self.db)
-        self.get_unauthenticated_user = wrap(get_unauthenticated_user, self.db)
-        self.create_profile = wrap(create_profile, self.db)
-        self.update_profile = wrap(update_profile, self.db)
-        self.register = wrap(register, self.db)
-        self.login = wrap(login, self.db)
-        self.reset_password = wrap(reset_password, self.db)
-        self.continue_reset_password = wrap(continue_reset_password, self.db)
-        self.logout = wrap(logout, self.db)
+    def update_profile(self, request: UpdateProfileSchema) -> RepositoryResponse:
+        """
+        Updates a profile's details for the requested profile
+        """
+        return crud.update_profile(self.db, request)
+
+    def register(self, request: RegisterProfileSchema) -> RepositoryResponse:
+        """
+        Register a new profile - functionally similar to `create_profile`
+        """
+        return crud.register(self.db, request)
+
+    def login(self, request: LoginSchema) -> RepositoryResponse:
+        """
+        Authenticate profile credentials
+        """
+        return auth.login(self.db, request)
+
+    def reset_password(self, email: str) -> RepositoryResponse:
+        """
+        Start the reset password process for the given profile
+        """
+        return auth.reset_password(self.db, email)
+
+    def continue_reset_password(self, request: ResetPasswordSchema) -> RepositoryResponse:
+        """
+        Finalize the password reset with the secret token and the profile's new password
+        """
+        return auth.continue_reset_password(self.db, request)
 
     def schedule_profile_sync(self, profile_id: int) -> RepositoryResponse:
         """
         Schedules an InstantJob to perform a full sync for a given account
         """
-        profile_result = get_profile_by_id(self.db, profile_id)
+        profile_result = crud.get_profile_by_id(self.db, profile_id)
         if not profile_result.success:
             self.logger.error("cannot schedule profile sync without Profile")
             return RepositoryResponse(
@@ -92,7 +114,7 @@ class ProfileRepository:
         self.logger.info(
             "updating account state for PlaidItem {0}".format(plaid_item_id))
 
-        profile_result = get_profile_by_id(
+        profile_result = crud.get_profile_by_id(
             self.db, plaid_result.data.profile_id)
 
         if not profile_result.success or profile_result.data is None:

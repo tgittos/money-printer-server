@@ -51,3 +51,13 @@ class CreateIexBlacklistSchema(Schema):
 class ReadIexBlacklistSchema(Schema):
     class Meta:
         fields = ("id", "symbol", "timestamp")
+
+
+class RequestStockPriceSchema(Schema):
+    class Meta:
+        fields = ("symbol", "start", "end", "close_only")
+
+
+class RequestStockPriceListSchema(Schema):
+    class Meta:
+        fields = ("symbols", "start", "end", "close_only")

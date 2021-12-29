@@ -11,7 +11,6 @@ from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 
 # import all the actions so that consumers of the repo can access everything
-from core.lib.utilities import wrap
 from core.actions.account.crud import *
 from core.actions.balance.crud import *
 from core.actions.profile.crud import get_profile_by_id
@@ -27,17 +26,6 @@ class AccountRepository:
     plaid_accounts_api = PlaidAccounts(PlaidAccountsConfig(
         plaid_config=plaid_config
     ))
-
-    def __init__(self):
-        self._init_facets()
-
-    def _init_facets(self):
-        self.create_account = wrap(create_account, self.db)
-        self.update_account = wrap(update_account, self.db)
-        self.get_account_by_id = wrap(get_account_by_id, self.db)
-        self.get_account_by_account_id = wrap(
-            get_account_by_account_id, self.db)
-        self.create_account_balance = wrap(create_account_balance, self.db)
 
     def get_accounts_by_profile_id(self, profile_id: int) -> RepositoryResponse:
         """

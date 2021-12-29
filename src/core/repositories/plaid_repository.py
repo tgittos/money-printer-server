@@ -1,12 +1,14 @@
 from prometheus_client import metrics
+
 from core.lib.logger import get_logger
 from core.stores.mysql import MySql
 from core.apis.plaid.oauth import PlaidOauth
 from core.apis.plaid.common import PLAID_PRODUCTS_STRINGS
+from core.models import PlaidItem
+from core.schemas.plaid_item_schemas import *
 
 # import all the actions so that consumers of the repo can access everything
-from core.lib.utilities import wrap
-from core.actions.plaid.crud import *
+import core.actions.plaid.crud as crud
 from core.repositories.repository_response import RepositoryResponse
 
 from config import mysql_config
@@ -18,16 +20,6 @@ class PlaidRepository:
     logger = get_logger(__name__)
     api = PlaidOauth()
 
-    def __init__(self):
-        self._init_facets()
-
-    def _init_facets(self):
-        self.get_plaid_item_by_id = wrap(get_plaid_item_by_id, self.db)
-        self.get_plaid_item_by_plaid_item_id = wrap(
-            get_plaid_item_by_plaid_item_id, self.db)
-        self.create_plaid_item = wrap(create_plaid_item, self.db)
-        self.update_plaid_item = wrap(update_plaid_item, self.db)
-
     def info(self, profile_id: int) -> RepositoryResponse:
         """
         Returns the Plaid specific information for the given profile.
@@ -35,7 +27,7 @@ class PlaidRepository:
         with self.db.get_session() as session:
             plaid_item = session.query(PlaidItem).where(
                 PlaidItem.profile_id == profile_id).first()
-        
+
         if plaid_item is None:
             return RepositoryResponse(
                 success=False,
@@ -44,13 +36,13 @@ class PlaidRepository:
 
         return RepositoryResponse(
             success=True,
-            data = {
+            data={
                 'item_id': plaid_item.item_id,
                 'access_token': plaid_item.access_token,
                 'products': PLAID_PRODUCTS_STRINGS
             }
         )
-    
+
     def create_link_token(self, webhook_host: str) -> RepositoryResponse:
         """
         Calls into the Plaid API to fetch a link token for the user to auth with Plaid.
@@ -65,7 +57,7 @@ class PlaidRepository:
                 )
             return RepositoryResponse(
                 success=True,
-                data= {
+                data={
                     # manually list this out so I know the shape without
                     # looking at the code again
                     'link_token': plaid_link_result['link_token'],
@@ -81,7 +73,7 @@ class PlaidRepository:
                 success=False,
                 message=f"Unknown error from Plaid creating link token"
             )
-    
+
     def get_access_token(self, profile_id: int, public_token: str) -> RepositoryResponse:
         """
         Exchanges the public token Plaid gave the user after auth with a private access token.
@@ -95,7 +87,7 @@ class PlaidRepository:
                 )
 
             # create a plaid token if it's valid
-            create_link_result = create_plaid_item(self.db, CreatePlaidItemSchema().load({
+            create_link_result = crud.create_plaid_item(self.db, CreatePlaidItemSchema().load({
                 **{'profile_id': profile_id},
                 **plaid_access_result
             }))
@@ -119,3 +111,9 @@ class PlaidRepository:
                 success=False,
                 message=f"Unknown error from Plaid exchanging public token"
             )
+
+    def get_plaid_item_by_id(self, id: int) -> RepositoryResponse:
+        """
+        Return the Plaid Item from the DB by it's ID
+        """
+        return crud.get_plaid_item_by_id(self.db, id)
