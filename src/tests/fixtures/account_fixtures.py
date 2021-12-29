@@ -1,8 +1,8 @@
-import types
 import pytest
-from datetime import datetime, timezone
+import random
+from datetime import datetime, time, timezone
 
-from core.models import Account
+from core.models import Account, AccountBalance
 from core.schemas.account_schemas import *
 from core.lib.utilities import id_generator
 
@@ -38,10 +38,35 @@ def account_factory(db, faker, profile_factory, plaid_item_factory):
 
             session.add(account)
             session.commit()
-            print('created account:', account)
 
             return account
     return __factory
+
+
+@pytest.fixture
+def account_balance_factory(db, faker, account_factory):
+    def __account_balance_factory(
+        account_id=None,
+        available=random.random() * 1000,
+        current=random.random() * 1000,
+        iso_currency_code='usd',
+        timestamp=datetime.now(tz=timezone.utc)
+    ):
+        if account_id is None:
+            account_id = account_factory().id
+        with db.get_session() as session:
+            balance = AccountBalance()
+
+            balance.account_id = account_id
+            balance.available = available
+            balance.current = current
+            balance.iso_currency_code = iso_currency_code
+            balance.timestamp = timestamp
+
+            session.add(balance)
+            session.commit()
+            return balance
+    return __account_balance_factory
 
 
 @pytest.fixture
@@ -98,6 +123,25 @@ def valid_update_account_request_factory(db, faker, profile_factory, account_fac
 
 
 @pytest.fixture
+def valid_create_account_balance_request_factory(account_factory):
+    def __valid_create_account_balance_request_factory(
+        account_id=None,
+        available=random.random() * 1000,
+        current=random.random() * 1000,
+        iso_currency_code='usd'
+    ):
+        if account_id is None:
+            account_id = account_factory().id
+        return CreateAccountBalanceSchema().load({
+            'account_id': account_id,
+            'available': available,
+            'current': current,
+            'iso_currency_code': iso_currency_code
+        })
+    return __valid_create_account_balance_request_factory
+
+
+@pytest.fixture
 def valid_create_account_api_request_factory(faker, valid_create_account_request_factory):
     def __factory(
         profile_id=None,
@@ -143,3 +187,21 @@ def valid_update_account_api_request_factory(faker, valid_update_account_request
         )
         return UpdateAccountSchema().dump(request)
     return __factory
+
+
+@pytest.fixture
+def valid_create_account_balance_api_request_factory(valid_create_account_balance_request_factory):
+    def __valid_create_account_balance_api_request_factory(
+        account_id=None,
+        available=random.random() * 1000,
+        current=random.random() * 1000,
+        iso_currency_code='usd'
+    ):
+        request = valid_create_account_balance_request_factory(
+            account_id=account_id,
+            available=available,
+            current=current,
+            iso_currency_code=iso_currency_code
+        )
+        return CreateAccountBalanceSchema().load(request)
+    return __valid_create_account_balance_api_request_factory
