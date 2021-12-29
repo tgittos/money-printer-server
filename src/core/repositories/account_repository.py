@@ -1,18 +1,17 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, EXCLUDE
 
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.repositories.plaid_repository import PlaidRepository
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas.account_schemas import ReadAccountSchema
-from core.schemas.scheduler_schemas import CreateInstantJobSchema
+from core.schemas import CreateInstantJobSchema, CreateAccountBalanceSchema
 from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
 from core.stores.mysql import MySql
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 
 # import all the actions so that consumers of the repo can access everything
-from core.actions.account.crud import *
-from core.actions.balance.crud import *
+import core.actions.account.crud as account_crud
+import core.actions.balance.crud as balance_crud
 from core.actions.profile.crud import get_profile_by_id
 from core.actions.plaid.crud import get_plaid_item_by_id
 
@@ -32,10 +31,7 @@ class AccountRepository:
         Returns a list of accounts for a given profile ID
         """
         profile_result = get_profile_by_id(self.db, profile_id)
-        if not profile_result.success:
-            return profile_result
-        action_result = self.get_accounts_by_profile(profile_result.data)
-        return RepositoryResponse(success=action_result.success, data=action_result.data, message=action_result.message)
+        return profile_result
 
     def get_accounts_by_profile_with_balances(self, profile_id: int) -> RepositoryResponse:
         """
@@ -109,7 +105,7 @@ class AccountRepository:
         """
         Schedules an instant job to update the balance of a given Account
         """
-        account_result = get_account_by_id(self.db, account_id)
+        account_result = account_crud.get_account_by_id(self.db, account_id)
         if not account_result.success:
             self.logger.warning(
                 "requested schedule update balance without Account")
@@ -140,7 +136,8 @@ class AccountRepository:
         self.logger.info(
             "syncing account balance/s for plaid item: {0}".format(plaid_result.data.id))
 
-        accounts_result = get_accounts_by_plaid_item_id(plaid_result.data.id)
+        accounts_result = account_crud.get_accounts_by_plaid_item_id(
+            plaid_result.data.id)
         if accounts_result.success and len(accounts_result.data) > 0:
             accounts = accounts_result.data
             self.logger.info(
@@ -165,7 +162,7 @@ class AccountRepository:
         Fetches the latest balance for the given account from Plaid
         Returns None on any error
         """
-        account_result = get_account_by_id(self.db, account_id)
+        account_result = account_crud.get_account_by_id(self.db, account_id)
         if not account_result.success:
             self.logger.warning(
                 "requested balance sync for account with no Account")
@@ -204,7 +201,8 @@ class AccountRepository:
                 **{'account': account_result.data},
                 **balance_dict
             })
-            balance_result = create_account_balance(self.db, schema)
+            balance_result = balance_crud.create_account_balance(
+                self.db, schema)
 
             if balance_result.success:
                 balances.append(balance_result.data)
