@@ -66,8 +66,13 @@ def test_get_account_by_profile_with_balances_fails_with_no_profile(repo):
     assert result.data is None
 
 
-def test_schedlue_account_sync_creates_instant_job():
-    assert False
+def test_schedlue_account_sync_creates_instant_job(mocker, repo, profile_factory, account_factory):
+    spy = mocker.patch.object(repo.scheduled_job_repo, 'create_instant_job')
+    profile = profile_factory()
+    account = account_factory(profile_id=profile.id)
+    result = repo.schedule_account_sync(profile.id, account.id)
+    assert result.success
+    spy.assert_called_once()
 
 
 def test_schedule_account_sync_fails_with_no_account(repo, profile_factory):
@@ -77,12 +82,11 @@ def test_schedule_account_sync_fails_with_no_account(repo, profile_factory):
     assert result.data is None
 
 
-def test_schedule_account_sync_fails_for_account_with_no_plaid_item():
-    assert False
-
-
-def test_schedule_update_all_balances_schedules_instant_job():
-    assert False
+def test_schedule_update_all_balances_schedules_instant_job(mocker, repo, plaid_item_factory):
+    spy = mocker.patch.object(repo.scheduled_job_repo, 'create_instant_job')
+    item = plaid_item_factory()
+    result = repo.schedule_update_all_balances(item.id)
+    spy.assert_called_once()
 
 
 def test_schedule_update_all_balances_fails_with_no_plaid_item(repo):
@@ -91,8 +95,12 @@ def test_schedule_update_all_balances_fails_with_no_plaid_item(repo):
     assert result.data is None
 
 
-def test_schedule_update_balance_schedules_instant_job():
-    assert False
+def test_schedule_update_balance_schedules_instant_job(mocker, repo, account_factory):
+    spy = mocker.patch.object(repo.scheduled_job_repo, 'create_instant_job')
+    account = account_factory()
+    result = repo.schedule_update_balance(account.profile_id, account.id)
+    assert result.success
+    spy.assert_called_once()
 
 
 def test_schedule_update_balance_fails_with_no_account(repo, profile_factory):

@@ -76,12 +76,12 @@ class AccountRepository:
 
         plaid_item = plaid_item_result.data
 
-        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema(
-            job_name='sync_accounts',
-            args={
+        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema().load({
+            'job_name': 'sync_accounts',
+            'json_args': {
                 'plaid_item_id': plaid_item.id
             }
-        ))
+        }))
 
     def schedule_update_all_balances(self, plaid_item_id: int) -> RepositoryResponse:
         """
@@ -93,12 +93,12 @@ class AccountRepository:
                 "requested schedule update all balances without PlaidItem")
             return plaid_result
 
-        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema(
-            job_name='sync_balances',
-            args={
+        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema().load({
+            'job_name': 'sync_balances',
+            'json_args': {
                 'plaid_item_id': plaid_result.data.id
             }
-        ))
+        }))
 
     def schedule_update_balance(self, profile_id: int, account_id: int) -> RepositoryResponse:
         """
@@ -115,12 +115,12 @@ class AccountRepository:
         if not plaid_result.success:
             return plaid_result
 
-        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema(
-            job_name='sync_balances',
-            args={
+        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema().load({
+            'job_name': 'sync_balances',
+            'json_args': {
                 'plaid_item_id': plaid_result.data.id
             }
-        ))
+        }))
 
     def sync_all_balances(self, plaid_item_id: int) -> RepositoryResponse:
         """
