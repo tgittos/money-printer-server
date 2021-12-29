@@ -30,8 +30,8 @@ class AccountRepository:
         """
         Returns a list of accounts for a given profile ID
         """
-        profile_result = get_profile_by_id(self.db, profile_id)
-        return profile_result
+        accounts_result = account_crud.get_accounts_by_profile_id(self.db, profile_id)
+        return accounts_result
 
     def get_accounts_by_profile_with_balances(self, profile_id: int) -> RepositoryResponse:
         """
@@ -54,11 +54,11 @@ class AccountRepository:
             profile_result.data, account_id)
         return RepositoryResponse(success=action_result.success, data=action_result.data, message=action_result.message)
 
-    def schedule_account_sync(self, account_id: int) -> RepositoryResponse:
+    def schedule_account_sync(self, profile_id: int, account_id: int) -> RepositoryResponse:
         """
         Schedules an InstantJob to perform a full sync for a given account
         """
-        account_result = self.get_account_by_id(account_id)
+        account_result = account_crud.get_account_by_id(self.db, profile_id, account_id)
 
         if not account_result.success:
             self.logger.error("cannot schedule account sync without account")
@@ -67,8 +67,7 @@ class AccountRepository:
                 message=account_result.message
             )
 
-        plaid_item_result = get_plaid_item_by_id(
-            account_result.data.plaid_item_id)
+        plaid_item_result = get_plaid_item_by_id(self.db, account_result.data.plaid_item_id)
 
         if not plaid_item_result.success or plaid_item_result.data is None:
             self.logger.error(
@@ -101,11 +100,11 @@ class AccountRepository:
             }
         ))
 
-    def schedule_update_balance(self, account_id: int) -> RepositoryResponse:
+    def schedule_update_balance(self, profile_id: int, account_id: int) -> RepositoryResponse:
         """
         Schedules an instant job to update the balance of a given Account
         """
-        account_result = account_crud.get_account_by_id(self.db, account_id)
+        account_result = account_crud.get_account_by_id(self.db, profile_id, account_id)
         if not account_result.success:
             self.logger.warning(
                 "requested schedule update balance without Account")
