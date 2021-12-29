@@ -39,13 +39,15 @@ def update_account(db, request: UpdateAccountSchema) -> ActionResponse:
     """
     Updates an account object in the given database, and returns it
     """
-    account = get_account_by_id(request['id'])
+    result = get_account_by_id(db, request['profile_id'], request['id'])
 
-    if account is None:
+    if not result.success or result.data is None:
         return ActionResponse(
             success=False,
             message=f"Account with ID {request['id']} not found"
         )
+
+    account = result.data
 
     with db.get_session() as session:
         session.add(account)
@@ -71,31 +73,29 @@ def create_or_update_account(db, profile: Profile, plaid_link: PlaidItem, accoun
     """
     # update the account
     account_id = account_dict['account_id']
-    account = get_account_by_account_id(
+    get_result = get_account_by_account_id(
         db, profile=profile, account_id=account_id)
+    if get_result.success is not None or get_result.data is None:
+        return get_result
+    account = get_result.data
     if account is None:
         schema = CreateAccountSchema().load(
             {**{'plaid_item_id': plaid_link.id, 'profile_id': profile.id}, **account_dict}
         )
-        account = create_account(db, schema)
+        return create_account(db, schema)
     else:
         schema = UpdateAccountSchema(unknown=EXCLUDE).load(
             {**{'id': account_id}, **account_dict})
-        update_account(db, schema)
-
-    return ActionResponse(
-        success=account is not None,
-        data=account
-    )
+        return update_account(db, schema)
 
 
-def get_account_by_id(db, profile: Profile, account_id: int) -> ActionResponse:
+def get_account_by_id(db, profile_id: int, account_id: int) -> ActionResponse:
     """
     Gets an account from the database for a given profile by the primary key
     """
     with db.get_session() as session:
         account = session.query(Account).filter(and_(
-            Account.profile_id == profile.id,
+            Account.profile_id == profile_id,
             Account.id == account_id
         )).first()
 
@@ -106,13 +106,13 @@ def get_account_by_id(db, profile: Profile, account_id: int) -> ActionResponse:
     )
 
 
-def get_account_by_account_id(db, profile: Profile, account_id: str) -> ActionResponse:
+def get_account_by_account_id(db, profile_id: int, account_id: str) -> ActionResponse:
     """
     Gets an account from the database from a given profile by the remote account ID
     """
     with db.get_session() as session:
         account = session.query(Account).filter(and_(
-            Account.profile_id == profile.id,
+            Account.profile_id == profile_id,
             Account.account_id == account_id
         )).first()
 
@@ -123,18 +123,18 @@ def get_account_by_account_id(db, profile: Profile, account_id: str) -> ActionRe
     )
 
 
-def get_accounts_by_profile(db, profile: Profile) -> ActionResponse:
+def get_accounts_by_profile_id(db, profile_id: int) -> ActionResponse:
     """
     Gets all accounts for a given profile from the database
     """
     with db.get_session() as session:
         accounts = session.query(Account).filter(
-            Account.profile_id == profile.id).all()
+            Account.profile_id == profile_id).all()
 
     return ActionResponse(
         success=accounts is not None,
         data=accounts,
-        message=f"No accounts with profile ID {profile.id} found" if accounts is None else None
+        message=f"No accounts with profile ID {profile_id} found" if accounts is None else None
     )
 
 

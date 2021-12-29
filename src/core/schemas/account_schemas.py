@@ -24,7 +24,7 @@ class ReadAccountSchema(Schema):
 
 class UpdateAccountSchema(Schema):
     class Meta:
-        fields = ("id", "account_id", "name",
+        fields = ("profile_id", "id", "account_id", "name",
                   "official_name", "type", "subtype")
 
 
