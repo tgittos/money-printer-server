@@ -7,8 +7,8 @@ class CreateAccountSchema(Schema):
 
 
 class ReadAccountSchema(Schema):
-    profile = fields.Nested('ReadProfileSchema', exclude=("account",))
-    plaid_item = fields.Nested('ReadPlaidItemSchema', exclude=("account",))
+    profile = fields.Nested('ReadProfileSchema', exclude=("accounts",))
+    plaid_item = fields.Nested('ReadPlaidItemSchema', exclude=("accounts",))
     balances = fields.Nested('ReadAccountBalanceSchema',
                              many=True, exclude=("account",))
     holdings = fields.Nested(

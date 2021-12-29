@@ -38,15 +38,15 @@ def get_security_by_symbol(db, symbol: str) -> ActionResponse:
     )
 
 
-def get_securities_by_account(db, account: Account) -> ActionResponse:
+def get_securities_by_account_id(db, profile_id: int, account_id: int) -> ActionResponse:
     with db.get_session() as session:
         securities = session.query(Security).where(
-            Security.account_id == account.id).all()
+            Security.account_id == account_id).all()
 
     return ActionResponse(
         success=securities is not None,
         data=securities,
-        message=f"No securities found for account with ID ${account.id}" if securities is None else None
+        message=f"No securities found for account with ID ${account_id}" if securities is None else None
     )
 
 
@@ -62,14 +62,21 @@ def get_security_by_security_id(db, plaid_security_id: str) -> ActionResponse:
     )
 
 
-def get_holdings_by_profile_and_account(db, profile: Profile, account: Account) -> ActionResponse:
+def get_holdings_by_profile_id_and_account_id(db, profile_id: int, account_id: int) -> ActionResponse:
     # TODO - I need to re-write this SQL to pull in the holdings and the attached securities
     # and return that for schema dumping
+    print('profile_id:', profile_id)
+    print('account_id:', account_id)
     with db.get_session() as session:
         account = session.query(Account).where(and_(
-            Account.profile_id == profile.id,
-            Account.id == account.id,
+            Account.profile_id == profile_id,
+            Account.id == account_id,
         )).first()
+        if account is None:
+            return ActionResponse(
+                success=False,
+                message=f"Could not find account with ID {account_id}"
+            )
         holdings = session.query(Holding).where(
             Holding.account_id == account.id).all()
     return ActionResponse(
@@ -102,20 +109,20 @@ def get_holding_by_plaid_account_id_and_plaid_security_id(db, plaid_account_id: 
     )
 
 
-def get_holding_by_account_and_security(db, account: Account, security: Security) -> ActionResponse:
+def get_holding_by_account_id_and_security_id(db, account_id: int, security_id: int) -> ActionResponse:
     """
     Gets a Holding for a given Account and Security record
     """
     with db.get_session() as session:
         holding = session.query(Holding).where(and_(
-            Holding.account_id == account.id,
-            Holding.security_id == security.id
+            Holding.account_id == account_id,
+            Holding.security_id == security_id
         )).first()
 
     return ActionResponse(
         success=holding is not None,
         data=holding,
-        message=f"No holding found for account with ID {account.id} and security with ID {security.id}"
+        message=f"No holding found for account with ID {account_id} and security with ID {security.id}"
         if holding is None else None
     )
 

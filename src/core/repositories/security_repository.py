@@ -6,13 +6,12 @@ from core.apis.plaid.investments import PlaidInvestments, PlaidInvestmentsConfig
 from core.lib.logger import get_logger
 from config import mysql_config, plaid_config
 from core.actions.plaid.crud import get_plaid_item_by_id
-from core.schemas.holding_schemas import CreateHoldingSchema
-from core.schemas.security_schemas import CreateSecuritySchema
 from core.repositories.repository_response import RepositoryResponse
-from core.models.plaid_item import PlaidItem
+from core.models import PlaidItem, Account, InvestmentTransaction
+from core.schemas import CreateHoldingSchema, CreateSecuritySchema, CreateInvestmentTransactionSchema,\
+    UpdateHoldingSchema
 
-# import all the facets so that consumers of the repo can access everything
-from core.actions.security.crud import *
+import core.actions.security.crud as crud
 from core.actions.profile.crud import get_profile_by_id
 from core.actions.account.crud import get_account_by_id
 
@@ -24,6 +23,12 @@ class SecurityRepository:
 
     def __init__(self):
         self.plaid_config = plaid_config
+    
+    def get_holdings_by_profile_id_and_account_id(self, profile_id: int, account_id: int) -> RepositoryResponse:
+        """
+        Returns all the holdings that belong to the given account
+        """
+        return crud.get_holdings_by_profile_id_and_account_id(self.db, profile_id, account_id)
 
     def get_securities_by_profile_id(self, profile_id: int) -> RepositoryResponse:
         """

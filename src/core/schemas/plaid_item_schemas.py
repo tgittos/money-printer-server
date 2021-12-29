@@ -10,7 +10,7 @@ class CreatePlaidItemSchema(Schema):
 
 
 class ReadPlaidItemSchema(Schema):
-    profile = fields.Nested('ReadProfileSchema', exclude=('plaid_item',))
+    profile = fields.Nested('ReadProfileSchema', exclude=('plaid_items',))
     accounts = fields.Nested(
         'ReadAccountSchema', many=True, exclude=("plaid_item",))
 

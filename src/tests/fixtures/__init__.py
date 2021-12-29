@@ -6,6 +6,8 @@ from .scheduler_fixtures import *
 from .profile_fixtures import *
 from .plaid_item_fixtures import *
 from .auth_fixtures import *
+from .holding_fixtures import *
+from .security_fixtures import *
 import pytest
 import random
 

@@ -27,6 +27,12 @@ class ProfileRepository:
         plaid_config=plaid_config
     ))
 
+    def get_profile_by_id(self, profile_id: int) -> RepositoryResponse:
+        """
+        Retrieves a profile by it's primary key ID
+        """
+        return crud.get_profile_by_id(self.db, profile_id)
+
     def create_profile(self, request: CreateProfileSchema) -> RepositoryResponse:
         """
         Creates a new profile with the requested details

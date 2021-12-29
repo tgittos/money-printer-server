@@ -3,6 +3,7 @@ from flask import Blueprint, request, abort
 from core.repositories.profile_repository import ProfileRepository
 from core.repositories.account_repository import AccountRepository
 from core.repositories.security_repository import SecurityRepository
+from core.schemas import ReadAccountSchema, ReadAccountBalanceSchema, ReadHoldingSchema
 from core.schemas.account_schemas import ReadAccountSchema
 from core.schemas.holding_schemas import ReadHoldingSchema
 from config import env
@@ -18,16 +19,37 @@ account_bp = Blueprint('account', __name__)
 @account_bp.route(f"/{API_PREFIX}/accounts", methods=['GET'])
 @authed
 def list_accounts():
+    """
+    ---
+    get:
+        summary: Get a list of all accounts the belong to the signed in profile
+        security:
+            - jwt: []
+        responses:
+            200:
+                content:
+                    application/json:
+                        type: object
+                        properties:
+                            success:
+                                type: boolean
+                            data:
+                                type: list
+                                items:
+                                    schema: ReadAccountSchema
+        tags:
+            - Account
+    """
     user = get_identity()
-    profile_repo = ProfileRepository()
-    profile = profile_repo.get_profile_by_id(user['id'])
     account_repo = AccountRepository()
-    accounts = account_repo.get_accounts_by_profile_with_balances(
-        profile=profile)
-    if accounts is not None:
-        return {
+    accounts = account_repo.get_accounts_by_profile_id(profile_id=user['id'])
+    if accounts.success and accounts.data is not None:
+        return { 
             'success': True,
-            'data': ReadAccountSchema(many=True).dump(accounts)
+            'data': ReadAccountSchema(
+                many=True,
+                exclude=("balances","profile", "transactions", "holdings", "plaid_item")
+            ).dump(accounts.data)
         }
     else:
         abort(404)
@@ -36,57 +58,113 @@ def list_accounts():
 @account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/sync", methods=['POST'])
 @authed
 def request_account_sync(account_id: int):
+    """
+    ---
+    post:
+        summary: Schedule an immediate sync of specified account attached to the profile
+        security:
+            - jwt: []
+        responses:
+            200:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                success:
+                                    type: boolean
+        tags:
+            - Account
+    """
     user = get_identity()
-    profile_repo = ProfileRepository()
-    profile = profile_repo.get_profile_by_id(user['id'])
-    if profile is not None:
-        account_repo = AccountRepository()
-        account = account_repo.get_account_by_id(
-            profile=profile, account_id=account_id)
-        if account is None:
-            abort(404)
-        account_repo.schedule_account_sync(account)
+    account_repo = AccountRepository()
+    result = account_repo.schedule_account_sync(user['id'], account_id)
+    if result.success:
         return {
             'success': True
         }
-    else:
-        abort(404)
+    return {
+        'success': False
+    }, 400
 
 
 @account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/balances", methods=['GET'])
 @authed
 def request_account_balances(account_id):
+    """
+    ---
+    get:
+        summary: Get a historical list of account balances for a given account
+        security:
+            - jwt: []
+        responses:
+            200:
+                description: Account balance object
+                content:
+                    application/json:
+                        type: object
+                        properties:
+                            success:
+                                type: boolean
+                            data:
+                                type: array
+                                items:
+                                    schema: ReadAccountBalanceSchema
+        tags:
+            - Account
+    """
     user = get_identity()
-    profile_repo = ProfileRepository()
-    profile = profile_repo.get_profile_by_id(user['id'])
     account_repo = AccountRepository()
-    accounts = account_repo.get_account_by_profile_with_balance(
-        profile, account_id)
-    if accounts is None:
+    balance_result = account_repo.get_balances_by_account_id(account_id)
+    if not balance_result or balance_result is None:
         abort(404)
     return {
         'success': True,
-        'data': ReadAccountSchema(many=True).dump(accounts)
+        'data': ReadAccountBalanceSchema(
+            many=True,
+            exclude=("account",)
+        ).dump(balance_result.data)
     }
 
 
-@account_bp.route("/{API_PREFIX}/accounts/<account_id>/holdings", methods=['GET'])
+@account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/holdings", methods=['GET'])
 @authed
 def list_holdings(account_id):
+    """
+    ---
+    get:
+        summary: Get a list of investment holdings for a given account
+        security:
+            - jwt: []
+        responses:
+            200:
+                description: Holding object
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                success:
+                                    type: boolean
+                                data:
+                                    type: array
+                                    items:
+                                        schema: ReadHoldingSchema
+        tags:
+            - Account
+    """
+    print('account_id:', account_id)
     user = get_identity()
-    profile_repo = ProfileRepository()
-    account_repo = AccountRepository()
-    profile = profile_repo.get_profile_by_id(user['id'])
-    account = account_repo.get_account_by_id(
-        profile=profile, account_id=account_id)
-    if account is None:
-        abort(404)
     security_repo = SecurityRepository()
-    holdings = security_repo.get_holdings_by_profile_and_account(
-        profile=profile, account=account)
-    if holdings is None:
+    print('user', user)
+    holding_result = security_repo.get_holdings_by_profile_id_and_account_id(
+        profile_id=user['id'], account_id=account_id)
+    if not holding_result.success or holding_result.data is None:
         abort(404)
     return {
         'success': True,
-        'data': ReadHoldingSchema(many=True).dump(holdings)
+        'data': ReadHoldingSchema(
+            many=True,
+            exclude=("account", "balances", "security")
+        ).dump(holding_result.data)
     }

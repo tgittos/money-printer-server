@@ -3,14 +3,14 @@ from marshmallow import Schema, fields
 
 class CreateSecuritySchema(Schema):
     class Meta:
-        fields = ("id", "profile_id", "account_id", "name", "ticker_symbol", "iso_currency_code",
+        fields = ("name", "ticker_symbol", "iso_currency_code",
                   "institution_id", "institution_security_id", "security_id", "proxy_security_id", "cuisp",
                   "sedol", "timestamp")
 
 
 class ReadSecuritySchema(Schema):
     class Meta:
-        fields = ("id", "profile_id", "account_id", "name", "ticker_symbol", "iso_currency_code",
+        fields = ("id", "name", "ticker_symbol", "iso_currency_code",
                   "institution_id", "institution_security_id", "security_id", "proxy_security_id", "cuisp",
                   "sedol", "timestamp")
 

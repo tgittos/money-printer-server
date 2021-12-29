@@ -4,20 +4,13 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
 
-from core.schemas.auth_schemas import *
-from core.schemas.account_schemas import *
-from core.schemas.holding_schemas import *
-from core.schemas.investment_schemas import *
-from core.schemas.plaid_item_schemas import *
-from core.schemas.profile_schemas import *
-from core.schemas.scheduler_schemas import *
-from core.schemas.security_schemas import *
-from core.schemas.api_schemas import *
+from core.schemas import *
 
 from apps.api import ApiApplication
 from api.routes.profile import *
 from api.routes.auth import *
 from api.routes.scheduler import *
+from api.routes.accounts import *
 
 
 spec = APISpec(
@@ -48,7 +41,25 @@ spec.components.schema("CreateInstantJob", schema=CreateInstantJobSchema)
 spec.components.schema("CreateScheduledJob", schema=CreateScheduledJobSchema)
 spec.components.schema("ReadScheduledJob", schema=ReadScheduledJobSchema)
 spec.components.schema("UpdateScheduledJob", schema=UpdateScheduledJobSchema)
-# spec.components.schema("ReadJobResult", schema=ReadJobResultSchema)
+spec.components.schema("ReadJobResult", schema=ReadJobResultSchema)
+
+spec.components.schema("ReadAccount", schema=ReadAccountSchema)
+spec.components.schema("CreateAccount", schema=CreateAccountSchema)
+spec.components.schema("UpdateAccount", schema=UpdateAccountSchema)
+spec.components.schema("CreateAccountBalance", schema=CreateAccountBalanceSchema)
+
+spec.components.schema("ReadHolding", schema=ReadHoldingSchema)
+spec.components.schema("CreateHolding", schema=CreateHoldingSchema)
+spec.components.schema("UpdateHolding", schema=UpdateHoldingSchema)
+spec.components.schema("CreateHoldingBalance", schema=CreateHoldingBalanceSchema)
+spec.components.schema("UpdateHoldingBalance", schema=UpdateHoldingBalanceSchema)
+
+spec.components.schema("ReadPlaidItem", schema=ReadPlaidItemSchema)
+
+spec.components.schema("ReadInvestmentTransaction", schema=ReadInvestmentTransactionSchema)
+
+spec.components.schema("ReadSecurity", schema=ReadSecuritySchema)
+spec.components.schema("ReadSecurityPrice", schema=ReadSecurityPriceSchema)
 
 # paths
 with ApiApplication(None).flask_app.test_request_context():
@@ -62,6 +73,12 @@ with ApiApplication(None).flask_app.test_request_context():
     spec.path(view=get_profile)
     spec.path(view=update_profile)
     spec.path(view=sync_profile)
+
+    # accounts
+    # spec.path(view=list_accounts)
+    spec.path(view=request_account_sync)
+    # spec.path(view=request_account_balances)
+    # spec.path(view=list_holdings)
 
     # scheduler
     spec.path(view=list_schedules)

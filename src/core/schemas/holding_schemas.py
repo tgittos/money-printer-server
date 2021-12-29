@@ -9,9 +9,9 @@ class CreateHoldingSchema(Schema):
 
 class ReadHoldingSchema(Schema):
     account = fields.Nested('ReadAccountSchema', exclude=('holdings',))
-    security = fields.Nested('ReadSecuritySchema', exclude=('holdings',))
+    security = fields.Nested('ReadSecuritySchema')
     balances = fields.Nested('ReadHoldingBalanceSchema',
-                             many=True, exclude=("holdings",))
+                             many=True, exclude=("holding",))
 
     class Meta:
         additional = ("id", "account_id", "security_id", "cost_basis",

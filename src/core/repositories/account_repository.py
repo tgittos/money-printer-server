@@ -28,12 +28,24 @@ class AccountRepository:
         plaid_config=plaid_config
     ))
 
+    def get_account_by_id(self, profile_id: int, account_id: int) -> RepositoryResponse:
+        """
+        Returns an account record by it's primary key ID
+        """
+        return account_crud.get_account_by_id(self.db, profile_id, account_id)
+
     def get_accounts_by_profile_id(self, profile_id: int) -> RepositoryResponse:
         """
         Returns a list of accounts for a given profile ID
         """
         accounts_result = account_crud.get_accounts_by_profile_id(self.db, profile_id)
         return accounts_result
+    
+    def get_balances_by_account_id(self, account_id: int, start=None, end=None) -> RepositoryResponse:
+        """
+        Returns the balance history for the requested profile/account, optionally filtered by a time window
+        """
+        return balance_crud.get_balances_by_account(self.db, account_id, start=start, end=end)
 
     def schedule_account_sync(self, profile_id: int, account_id: int) -> RepositoryResponse:
         """
