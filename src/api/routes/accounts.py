@@ -29,14 +29,14 @@ def list_accounts():
             200:
                 content:
                     application/json:
-                        type: object
-                        properties:
-                            success:
-                                type: boolean
-                            data:
-                                type: list
-                                items:
-                                    schema: ReadAccountSchema
+                        schema:
+                            type: object
+                            properties:
+                                success:
+                                    type: boolean
+                                data:
+                                    type: array
+                                    items: ReadAccountSchema
         tags:
             - Account
     """
@@ -108,8 +108,7 @@ def request_account_balances(account_id):
                                 type: boolean
                             data:
                                 type: array
-                                items:
-                                    schema: ReadAccountBalanceSchema
+                                items: ReadAccountBalanceSchema
         tags:
             - Account
     """
@@ -148,8 +147,7 @@ def list_holdings(account_id):
                                     type: boolean
                                 data:
                                     type: array
-                                    items:
-                                        schema: ReadHoldingSchema
+                                    items: ReadHoldingSchema
         tags:
             - Account
     """

@@ -25,10 +25,13 @@ def list_schedules():
           content:
             application/json:
               schema:
-                success:
-                    type: Boolean
-                data:
-                    schema: ReadScheduledJobSchema
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items: ReadScheduledJobSchema
       tags:
         - Scheduling
         - Admin
@@ -64,10 +67,13 @@ def create_schedule():
           content:
             application/json:
               schema:
-                success:
-                    type: Boolean
-                data:
-                    schema: ReadScheduledJobSchema
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items: ReadScheduledJobSchema
       tags:
         - Scheduling
         - Admin
@@ -108,10 +114,13 @@ def update_schedule(schedule_id):
           content:
             application/json:
               schema:
-                success:
-                    type: Boolean
-                data:
-                    schema: ReadScheduledJobSchema
+                type: object
+                properties:
+                  success:
+                      type: boolean
+                  data:
+                      type: array
+                      items: ReadScheduledJobSchema
       tags:
         - Scheduling
         - Admin
@@ -163,9 +172,10 @@ def delete_schedule(schedule_id):
           content:
             application/json:
               schema:
+                type: object
+                properties:
                   success:
-                    name: success
-                    type: Boolean
+                    type: boolean
       tags:
         - Scheduling
         - Admin

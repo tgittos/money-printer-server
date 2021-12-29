@@ -17,8 +17,7 @@ class ReadAccountSchema(Schema):
         'ReadInvestmentTransactionSchema', many=True, exclude=("account",))
 
     class Meta:
-        additional = ("id", "plaid_item_id", "profile_id", "account_id",
-                      "name", "official_name", "type", "subtype", "timestamp")
+        additional = ("id", "name", "official_name", "type", "subtype", "timestamp")
 
 
 class UpdateAccountSchema(Schema):

@@ -28,39 +28,6 @@ jwt_scheme = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
 # spec.components.security_scheme("api_key", api_key_scheme)
 spec.components.security_scheme("jwt", jwt_scheme)
 
-# schemas
-spec.components.schema("RegisterProfile", schema=RegisterProfileSchema)
-spec.components.schema("ResetPassword",
-                       schema=ResetPasswordSchema)
-spec.components.schema("Login", schema=LoginSchema)
-
-spec.components.schema("ReadProfile", schema=ReadProfileSchema)
-spec.components.schema("UpdateProfile", schema=UpdateProfileSchema)
-
-spec.components.schema("CreateInstantJob", schema=CreateInstantJobSchema)
-spec.components.schema("CreateScheduledJob", schema=CreateScheduledJobSchema)
-spec.components.schema("ReadScheduledJob", schema=ReadScheduledJobSchema)
-spec.components.schema("UpdateScheduledJob", schema=UpdateScheduledJobSchema)
-spec.components.schema("ReadJobResult", schema=ReadJobResultSchema)
-
-spec.components.schema("ReadAccount", schema=ReadAccountSchema)
-spec.components.schema("CreateAccount", schema=CreateAccountSchema)
-spec.components.schema("UpdateAccount", schema=UpdateAccountSchema)
-spec.components.schema("CreateAccountBalance", schema=CreateAccountBalanceSchema)
-
-spec.components.schema("ReadHolding", schema=ReadHoldingSchema)
-spec.components.schema("CreateHolding", schema=CreateHoldingSchema)
-spec.components.schema("UpdateHolding", schema=UpdateHoldingSchema)
-spec.components.schema("CreateHoldingBalance", schema=CreateHoldingBalanceSchema)
-spec.components.schema("UpdateHoldingBalance", schema=UpdateHoldingBalanceSchema)
-
-spec.components.schema("ReadPlaidItem", schema=ReadPlaidItemSchema)
-
-spec.components.schema("ReadInvestmentTransaction", schema=ReadInvestmentTransactionSchema)
-
-spec.components.schema("ReadSecurity", schema=ReadSecuritySchema)
-spec.components.schema("ReadSecurityPrice", schema=ReadSecurityPriceSchema)
-
 # paths
 with ApiApplication(None).flask_app.test_request_context():
     # auth
@@ -75,10 +42,10 @@ with ApiApplication(None).flask_app.test_request_context():
     spec.path(view=sync_profile)
 
     # accounts
-    # spec.path(view=list_accounts)
-    spec.path(view=request_account_sync)
-    # spec.path(view=request_account_balances)
-    # spec.path(view=list_holdings)
+    #spec.path(view=list_accounts)
+    #spec.path(view=request_account_sync)
+    #spec.path(view=request_account_balances)
+    #spec.path(view=list_holdings)
 
     # scheduler
     spec.path(view=list_schedules)
