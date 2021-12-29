@@ -52,7 +52,7 @@ def test_schedule_profile_sync_fails_with_no_plaid_items_for_profile(repository,
 def test_sync_all_accounts_requests_accounts_from_plaid(mocker, repository, plaid_item_factory):
     item = plaid_item_factory()
     # mock dependencies not under test
-    mocker.patch.object(repository.balance_repo, 'sync_account_balance')
+    mocker.patch.object(repository.account_repo, 'sync_account_balance')
     mocker.patch.object(repository.holdings_repo, 'update_holdings')
     # ensure we request from plaid
     spy = mocker.patch.object(repository.plaid_accounts_api, 'get_accounts')
@@ -64,7 +64,7 @@ def test_sync_all_accounts_requests_accounts_from_plaid(mocker, repository, plai
 def test_sync_all_accounts_calls_create_or_update_account(db, mocker, plaid_item_factory, repository):
     item = plaid_item_factory()
     # mock dependencies not under test
-    mocker.patch.object(repository.balance_repo, 'sync_account_balance')
+    mocker.patch.object(repository.account_repo, 'sync_account_balance')
     mocker.patch.object(repository.holdings_repo, 'update_holdings')
     mocker.patch.object(repository.plaid_accounts_api, 'get_accounts', return_value={
         'accounts': [{
@@ -95,7 +95,7 @@ def test_sync_all_accounts_syncs_balances_for_accounts(mocker, repository, profi
         'core.repositories.profile_repository.create_or_update_account')
     # ensure we try to create_or_update_account
     # this method is tested in the actions test
-    spy = mocker.patch.object(repository.balance_repo, 'sync_account_balance')
+    spy = mocker.patch.object(repository.account_repo, 'sync_account_balance')
     # do the test
     result = repository.sync_all_accounts(item.id)
     assert result.success
@@ -105,7 +105,7 @@ def test_sync_all_accounts_syncs_balances_for_accounts(mocker, repository, profi
 def test_sync_all_accounts_updates_holdings(mocker, repository, plaid_item_factory):
     item = plaid_item_factory()
     # mock dependencies not under test
-    mocker.patch.object(repository.balance_repo, 'sync_account_balance')
+    mocker.patch.object(repository.account_repo, 'sync_account_balance')
     mocker.patch.object(repository.plaid_accounts_api, 'get_accounts')
     mocker.patch(
         'core.repositories.profile_repository.create_or_update_account')

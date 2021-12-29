@@ -1,6 +1,5 @@
 from core.models.plaid_item import PlaidItem
-from core.repositories.balance_repository import BalanceRepository
-from core.repositories.holding_repository import HoldingRepository
+from core.repositories import AccountRepository, HoldingRepository
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
 from core.lib.utilities import wrap
@@ -20,7 +19,7 @@ class ProfileRepository:
 
     db = MySql(mysql_config)
     logger = get_logger(__name__)
-    balance_repo = BalanceRepository()
+    account_repo = AccountRepository()
     holdings_repo = HoldingRepository()
     scheduled_job_repo = ScheduledJobRepository()
     plaid_accounts_api = PlaidAccounts(PlaidAccountsConfig(
@@ -122,7 +121,7 @@ class ProfileRepository:
                 accounts.append(account_result.data)
                 self.logger.info("updating account balance for account {0}".format(
                     account_result.data.id))
-                self.balance_repo.sync_account_balance(account_result.data)
+                self.account_repo.sync_account_balance(account_result.data.id)
             else:
                 self.logger.warning(
                     "upstream returned account response missing an id: {0}".format(account_dict))

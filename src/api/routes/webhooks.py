@@ -2,10 +2,7 @@ import json
 
 from flask import Blueprint, request
 
-from core.repositories.plaid_repository import PlaidRepository
-from core.repositories.holding_repository import HoldingRepository
-from core.repositories.balance_repository import BalanceRepository
-from core.repositories.profile_repository import ProfileRepository
+from core.repositories import PlaidRepository, AccountRepository, HoldingRepository, ProfileRepository
 from core.lib.logger import get_logger
 
 from api.lib.constants import API_PREFIX
@@ -26,8 +23,8 @@ def receive_plaid_webhook():
 
     plaid_repo = PlaidRepository()
     profile_repo = ProfileRepository()
+    account_repo = AccountRepository()
     holding_repo = HoldingRepository()
-    balance_repo = BalanceRepository()
 
     plaid_item = plaid_repo.get_plaid_item_by_plaid_item_id(plaid_item_id)
 
@@ -49,7 +46,7 @@ def receive_plaid_webhook():
             profile_repo.schedule_profile_sync(profile=profile)
 
         if webhook_code == "DEFAULT_UPDATE":
-            balance_repo.schedule_update_all_balances(plaid_item=plaid_item)
+            account_repo.schedule_update_all_balances(plaid_item=plaid_item)
 
     if webhook_type == "HOLDINGS":
         if webhook_code == "DEFAULT_UPDATE":
