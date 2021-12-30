@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
+from sqlalchemy.orm import relationship
 
 from core.models.base import Base
 
@@ -7,7 +8,7 @@ class SecurityPrice(Base):
     __tablename__ = 'security_prices'
 
     id = Column(Integer, primary_key=True)
-    symbol = Column(String(8), nullable=False)
+    symbol = Column(String(64), ForeignKey("securities.symbol"))
     high = Column(Float)
     low = Column(Float)
     open = Column(Float)
@@ -25,3 +26,5 @@ class SecurityPrice(Base):
     market_change_over_time = Column(Float)
     resolution = Column(String(32), nullable=False)
     timestamp = Column(DateTime)
+
+    security = relationship("Security", back_populates="prices")

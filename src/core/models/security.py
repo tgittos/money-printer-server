@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import null
 
 from core.models.base import Base
 
@@ -7,9 +8,8 @@ from core.models.base import Base
 class Security(Base):
     __tablename__ = 'securities'
 
-    id = Column(Integer, primary_key=True)
+    symbol = Column(String(64), primary_key=True, nullable=False)
     name = Column(String(512))
-    ticker_symbol = Column(String(64))
     iso_currency_code = Column(String(8))
     institution_id = Column(String(128))
     institution_security_id = Column(String(128))
@@ -19,3 +19,5 @@ class Security(Base):
     isin = Column(String(16))
     sedol = Column(String(16))
     timestamp = Column(DateTime)
+
+    prices = relationship("SecurityPrice", back_populates="security")

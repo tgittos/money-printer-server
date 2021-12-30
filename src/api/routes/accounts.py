@@ -44,11 +44,12 @@ def list_accounts():
     account_repo = AccountRepository()
     accounts = account_repo.get_accounts_by_profile_id(profile_id=user['id'])
     if accounts.success and accounts.data is not None:
-        return { 
+        return {
             'success': True,
             'data': ReadAccountSchema(
                 many=True,
-                exclude=("balances","profile", "transactions", "holdings", "plaid_item")
+                exclude=("balances", "profile", "transactions",
+                         "holdings", "plaid_item")
             ).dump(accounts.data)
         }
     else:
@@ -151,10 +152,8 @@ def list_holdings(account_id):
         tags:
             - Account
     """
-    print('account_id:', account_id)
     user = get_identity()
     security_repo = SecurityRepository()
-    print('user', user)
     holding_result = security_repo.get_holdings_by_profile_id_and_account_id(
         profile_id=user['id'], account_id=account_id)
     if not holding_result.success or holding_result.data is None:
