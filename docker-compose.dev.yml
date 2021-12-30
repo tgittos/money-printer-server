@@ -7,6 +7,7 @@ services:
       - .env.dev
     environment:
       - NGROK_HEADER="rewrite"
+      - NGROK_SUBDOMAIN=tgmp
       - NGROK_PORT=api
       - NGROK_DEBUG=true
   redis:
