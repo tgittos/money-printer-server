@@ -1,8 +1,10 @@
 import pytest
 import random
+import random
 from datetime import datetime, timezone
 
 from core.models import Holding, HoldingBalance
+from core.schemas.holding_schemas import *
 
 from tests.fixtures import *
 
@@ -36,3 +38,42 @@ def holding_factory(db, faker, account_factory, security_factory):
 
             return holding
     return __holding_factory
+
+
+@pytest.fixture
+def valid_create_holding_request_factory(account_factory):
+    def __valid_create_holding_request_factory(
+        account_id=None,
+        security_symbol=id_generator(3, chars=string.ascii_uppercase),
+        cost_basis=random.random() * 5,
+        quantity=random.randint(1, 500),
+        iso_currency_code='USD'
+    ):
+        if account_id is None:
+            account_id = account_factory().id
+
+        return CreateHoldingSchema().load({
+            'account_id': account_id,
+            'security_symbol': security_symbol,
+            'cost_basis': cost_basis,
+            'quantity': quantity,
+            'iso_currency_code': iso_currency_code,
+            'timestamp': datetime.now(tz=timezone.utc)
+        })
+    return __valid_create_holding_request_factory
+
+
+@pytest.fixture
+def valid_update_holding_request_factory():
+    def __valid_update_holding_request_factory(
+        cost_basis=random.random() * 5,
+        quantity=random.randint(1, 500),
+        iso_currency_code='USD'
+    ):
+        return UpdateHoldingSchema().load({
+            'cost_basis': cost_basis,
+            'quantity': quantity,
+            'iso_currency_code': iso_currency_code,
+            'timestamp': datetime.now(tz=timezone.utc)
+        })
+    return __valid_update_holding_request_factory

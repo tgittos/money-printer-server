@@ -1,24 +1,47 @@
 import pytest
+from pytest import ValidationException
 
 from core.models import Holding, HoldingBalance
 from core.schemas.holding_schemas import *
+
+from core.actions.holding.holding_crud import *
+
 from tests.fixtures import *
 
 
 def test_cant_create_invalid_create_request():
-    assert False
+    with pytest.raises():
+        CreateHoldingSchema(ValidationException).load({
+            'security_symbol': 'AAPL',
+            'cost_basis': 200.0,
+            'quantity': None
+        })
 
 
 def test_cant_create_invalid_update_request():
-    assert False
+    with pytest.raises(ValidationException):
+        UpdateHoldingSchema().load({
+            'security_symbol': 'AAPL',
+            'cost_basis': 200.0,
+            'quantity': None
+        })
 
 
 def test_cant_create_invalid_balance_create_request():
-    assert False
+    with pytest.raises(ValidationException):
+        CreateHoldingBalanceSchema().load({
+            'cost_basis': 200.0,
+            'quantity': None
+        })
 
 
-def test_get_holding_by_id_returns_holding():
-    assert False
+def test_get_holding_by_id_returns_holding(db, account_factory, valid_create_holding_request_factory):
+    account = account_factory()
+    request = valid_create_holding_request_factory(account_id=account.id)
+    result = create_holding(db, account.id, request)
+    assert result.success
+    assert result.data is not None
+    assert result.data.id is not None
 
 
 def test_get_holding_by_id_fails_for_missing_holding():
