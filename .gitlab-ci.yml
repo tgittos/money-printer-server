@@ -1,18 +1,14 @@
-image: docker:dind
+image: git.gittos.net:5050/tgittos/gittos.net/runner-base:latest
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 services:
-  - docker/compose
+  - docker:19.03.12-dind
 
 before_script:
-    - docker version
-    - docker-compose --version
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
 
 stages:
