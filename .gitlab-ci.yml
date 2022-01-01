@@ -30,7 +30,7 @@ build:
 test:
   stage: test
   script:
-    - docker pull -t $CONTAINER_TEST_IMAGE
+    - docker pull $CONTAINER_TEST_IMAGE
     - npm run start
     - npm run test
     - npm run down
