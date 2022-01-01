@@ -30,7 +30,7 @@ build:
 test:
   stage: test
   before_script:
-    - apk update && apk add --no-cache nodejs npm docker-cli python3 python3-dev libffi-dev openssl-dev gcc libc-dev make
+    - apk update && apk add --no-cache nodejs npm docker-cli python3 python3-dev libffi-dev openssl-dev gcc libc-dev make py3-pip py-pip
     - pip install docker-compose
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   script:
