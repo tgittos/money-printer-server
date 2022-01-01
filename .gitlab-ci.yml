@@ -2,8 +2,8 @@ image: docker:19.03.12
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
-  CONTAINER_TEST_IMAGE: git.gittos.net/money-printer/money-printer-server:$CI_COMMIT_SHORT_SHA
-  CONTAINER_RELEASE_IMAGE: git.gittos.net/money-printer/money-printer-server:latest
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 services:
   - docker:19.03.12-dind
