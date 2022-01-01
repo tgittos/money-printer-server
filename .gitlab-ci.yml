@@ -29,6 +29,9 @@ build:
   
 test:
   stage: test
+  before_script:
+    - curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
+    - apt-get install -y nodejs
   script:
     - docker pull $CONTAINER_TEST_IMAGE
     - npm run start
