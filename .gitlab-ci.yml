@@ -2,6 +2,8 @@ image: docker:19.03.12
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
+  CONTAINER_TEST_IMAGE: git.gittos.net/money-printer/money-printer-server:$CI_COMMIT_SHORT_SHA
+  CONTAINER_RELEASE_IMAGE: git.gittos.net/money-printer/money-printer-server:latest
 
 services:
   - docker:19.03.12-dind
@@ -12,12 +14,15 @@ before_script:
 stages:
   - build
   - test
+  - release
+  - deploy-staging
+  - deploy-production
 
 build:
   stage: build
   script:
-    - docker build -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
-    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+    - docker build -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
     - when: manual
@@ -25,10 +30,21 @@ build:
 test:
   stage: test
   script:
-    - docker pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
+    - docker pull -t $CONTAINER_TEST_IMAGE
     - npm run start
     - npm run test
     - npm run down
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
+    - when: manual
+
+release:
+  stage: release
+  script:
+    - docker pull -t $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+  rules:
     - when: manual
