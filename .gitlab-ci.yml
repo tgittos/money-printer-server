@@ -1,4 +1,4 @@
-image: tgittos/gittos.net/runner-base:latest
+image: git.gittos.net:5050/tgittos/gittos.net/runner-base:latest
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
