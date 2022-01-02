@@ -32,7 +32,7 @@ build:
       echo "Building api container"
       npm run build api
       echo "Tagging with: $CONTAINER_TEST_IMAGE"
-      docker tag mp-api $CONTAINER_TEST_IMAGE
+      docker tag $CONTAINER_RELEASE_IMAGE $CONTAINER_TEST_IMAGE
       echo "Pushing to repository: $CONTAINER_TEST_IMAGE"
       docker push $CONTAINER_TEST_IMAGE
   rules:
