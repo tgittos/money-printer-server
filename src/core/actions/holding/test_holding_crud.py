@@ -91,21 +91,62 @@ def test_get_holding_balances_by_holding_id_returns_empty_with_no_balances(db, h
     assert len(result.data) == 0
 
 
-def test_create_holding_accepts_valid_input():
-    assert False
+def test_create_holding_accepts_valid_input(db, account_factory, valid_create_holding_request_factory):
+    account = account_factory()
+    request = valid_create_holding_request_factory(account_id=account.id)
+    with db.get_session() as session:
+        pre_count = session.query(Holding).count()
+    result = create_holding(db, account.id, request)
+    with db.get_session() as session:
+        post_count = session.query(Holding).count()
+    assert result.success
+    assert result.data is not None
+    assert result.data.id is not None
+    assert post_count == pre_count + 1
 
 
-def test_update_holding_accepts_valid_input():
-    assert False
+def test_update_holding_accepts_valid_input(db, holding_factory, valid_update_holding_request_factory):
+    holding = holding_factory()
+    request = valid_update_holding_request_factory(id=holding.id)
+    assert holding.cost_basis != request['cost_basis']
+    result = update_holding(db, request)
+    assert result.success
+    assert result.data is not None
+    assert result.data.id == holding.id
+    with db.get_session() as session:
+        updated = session.query(Holding).where(
+            Holding.id == holding.id).first()
+    assert updated.cost_basis == round(request['cost_basis'], 5)
 
 
-def test_delete_holding_deletes_holding():
-    assert False
+def test_delete_holding_deletes_holding(db, holding_factory):
+    holding = holding_factory()
+    result = delete_holding(db, holding.id)
+    assert result.success
+    with db.get_session() as session:
+        assert session.query(Holding).where(
+            Holding.id == holding.id).first() is None
 
 
-def test_delete_holding_fails_when_holding_missing():
-    assert False
+def test_delete_holding_fails_when_holding_missing(db):
+    result = delete_holding(db, 23242342)
+    assert not result.success
 
 
-def test_create_holding_balance_accepts_valid_input():
-    assert False
+def test_create_holding_balance_accepts_valid_input(db, holding_factory,
+                                                    valid_create_holding_balance_request_factory):
+    holding = holding_factory()
+    request = valid_create_holding_balance_request_factory(
+        holding_id=holding.id)
+    with db.get_session() as session:
+        balance_count = session.query(HoldingBalance).where(
+            HoldingBalance.holding_id == holding.id).count()
+        assert balance_count == 0
+    result = create_holding_balance(db, request)
+    with db.get_session() as session:
+        new_balance_count = session.query(HoldingBalance).where(
+            HoldingBalance.holding_id == holding.id).count()
+        assert new_balance_count == 1
+    assert result.success
+    assert result.data is not None
+    assert result.data.holding_id == holding.id
