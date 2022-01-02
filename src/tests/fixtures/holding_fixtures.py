@@ -98,7 +98,7 @@ def valid_create_holding_balance_request_factory(holding_factory):
     ):
         if holding_id is None:
             holding_id = holding_factory().id
-        
+
         return CreateHoldingBalanceSchema().load({
             'holding_id': holding_id,
             'cost_basis': cost_basis,
@@ -108,16 +108,20 @@ def valid_create_holding_balance_request_factory(holding_factory):
 
 
 @pytest.fixture
-def valid_update_holding_request_factory():
+def valid_update_holding_request_factory(holding_factory):
     def __valid_update_holding_request_factory(
+        id=None,
         cost_basis=random.random() * 5,
         quantity=random.randint(1, 500),
         iso_currency_code='USD'
     ):
+        if id is None:
+            id = holding_factory().id
+
         return UpdateHoldingSchema().load({
+            'id': id,
             'cost_basis': cost_basis,
             'quantity': quantity,
             'iso_currency_code': iso_currency_code,
-            'timestamp': datetime.now(tz=timezone.utc)
         })
     return __valid_update_holding_request_factory

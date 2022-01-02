@@ -75,7 +75,7 @@ def update_holding(db, request: UpdateHoldingSchema) -> ActionResponse:
     """
     Updates an existing holding object in the database with the details
     """
-    holding_result = get_holding_by_id(db, request['holding_id'])
+    holding_result = get_holding_by_id(db, request['id'])
     if not holding_result.success or holding_result.data is None:
         return holding_result
 
@@ -128,4 +128,7 @@ def create_holding_balance(db, request: CreateHoldingBalanceSchema) -> ActionRes
         session.add(holding_balance)
         session.commit()
 
-    return session
+    return ActionResponse(
+        success=True,
+        data=holding_balance
+    )
