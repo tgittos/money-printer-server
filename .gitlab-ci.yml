@@ -43,7 +43,7 @@ test:
     - |
       npm run down
       docker pull $CONTAINER_LATEST_IMAGE
-      npm run up api
+      npm run start api
       sleep 10
       npm run db:init
       status=$(npm run test:ci)
