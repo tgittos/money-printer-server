@@ -24,7 +24,7 @@ stages:
 build:
   stage: build
   script:
-    - docker-compose build api
+    - npm run build api
     - docker tag api $CONTAINER_TEST_IMAGE
     - docker push $CONTAINER_TEST_IMAGE
   rules:
