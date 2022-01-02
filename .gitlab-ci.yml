@@ -41,13 +41,20 @@ test:
   stage: test
   script:
     - |
+      echo "Downing any containers"
       npm run down
+      echo "Fetching latest build"
       docker pull $CONTAINER_LATEST_IMAGE
+      echo "Starting containers for test run"
       npm run start api
       sleep 10
+      echo "Initializing db for test run"
       npm run db:init
+      echo "Starting test run"
       status=$(npm run test:ci)
+      echo "Downing test run containers"
       npm run down
+      echo "Exiting with status $status"
       exit $status
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
