@@ -37,7 +37,9 @@ test:
     - sleep 30
     - npm run db:init
     - npm run test
+    - status=$?
     - npm run down
+    - exit status
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
     - when: manual
