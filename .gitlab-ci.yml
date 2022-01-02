@@ -29,8 +29,8 @@ build:
   stage: build
   script:
     - |
-      npm run build mp-api
-      docker tag mp-api $CONTAINER_TEST_IMAGE
+      npm run build api
+      docker tag api $CONTAINER_TEST_IMAGE
       docker push $CONTAINER_TEST_IMAGE
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
