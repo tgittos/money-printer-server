@@ -39,7 +39,7 @@ test:
       docker pull $CONTAINER_TEST_IMAGE
       npm run start && sleep 10
       npm run db:init
-      local status;
+      status = 0;
       status=$(npm run test)
       echo status: $status
       npm run down
