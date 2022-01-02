@@ -11,7 +11,7 @@ from core.lib.utilities import id_generator
 def security_factory(db, faker):
     def __security_factory(
         name=faker.unique.company(),
-        symbol=id_generator(3, chars=string.ascii_uppercase),
+        symbol=id_generator(4, chars=string.ascii_uppercase),
         iso_currency_code='USD',
         institution_security_id=id_generator(),
         security_id=id_generator(),
@@ -21,6 +21,11 @@ def security_factory(db, faker):
         sedol=id_generator()
     ):
         with db.get_session() as session:
+
+            security = session.query(Security).where(Security.symbol == symbol).first()
+            if security is not None:
+                return security
+
             security = Security()
 
             security.name = name
