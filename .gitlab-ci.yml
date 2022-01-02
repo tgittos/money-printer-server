@@ -40,8 +40,9 @@ test:
       npm run start && sleep 10
       npm run db:init
       npm run test && status=$?
+      echo npm exit code: $?
+      echo status: $status
       npm run down
-      echo Test run status: $status
       exit $status
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'

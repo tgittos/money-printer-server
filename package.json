@@ -6,7 +6,7 @@
     "clean": "find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete",
     "build": "docker-compose -f docker-compose.dev.yml build",
     "build:prod": "docker-compose -f docker-compose.prod.yml build",
-    "test": "docker exec -e MP_ENVIRONMENT=test $(docker-compose -f docker-compose.dev.yml ps -q api) sh -c 'python bin/dev/test.py; exit $?'",
+    "test": "docker exec -e MP_ENVIRONMENT=test $(docker-compose -f docker-compose.dev.yml ps -q api) sh -c 'python bin/dev/test.py'; exit $?",
     "test:focus": "docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"MP_ENVIRONMENT=test PYTHONPATH=src pytest -n 1 -m focus --cov-config=.coveragerc --cov=src --cov-report term:skip-covered src/\" && echo $?",
     "gendoc": "docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q api) /bin/bash -c \"MP_ENVIRONMENT=development PYTHONPATH=src python bin/dev/gendoc.py\"",
     "db:init": "/bin/bash bin/dev/init-db.sh",
