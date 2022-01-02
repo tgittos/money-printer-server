@@ -52,7 +52,7 @@ test:
       npm run db:init
       echo "Starting test run"
       npm run test:ci
-      status = $?
+      set status=$?
       echo "Downing test run containers"
       npm run down
       if [ $status ]; then
