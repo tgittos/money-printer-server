@@ -51,11 +51,14 @@ test:
       echo "Initializing db for test run"
       npm run db:init
       echo "Starting test run"
-      status=$(npm run test:ci)
+      npm run test:ci
+      status = $?
       echo "Downing test run containers"
       npm run down
-      echo "Exiting with status $status"
-      exit $status
+      if [ $status ]; then
+        echo "Exiting with status $status"
+        exit $status
+      fi;
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
       when: always
