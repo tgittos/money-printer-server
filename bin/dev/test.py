@@ -13,7 +13,8 @@ if __name__ == '__main__':
     Base.metadata.create_all(bind=db.engine)
     print("Running tests...")
     test_cmd = "MP_ENVIRONMENT=test PYTHONPATH=src pytest -n auto --cov-config=.coveragerc --cov=src --cov-report term:skip-covered src/"
-    os.system(test_cmd)
+    exit_code = os.system(test_cmd)
     print("Dropping db table set...")
     Base.metadata.drop_all(bind=db.engine)
     print("Done")
+    exit(exit_code)

@@ -1,6 +1,6 @@
 #syntax=docker/dockerfile:1
 
-FROM tgittos/money-printer:latest
+FROM git.gittos.net:8080/money-printer/money-printer-infrastructure/money-printer:latest
 
 # Accept an environment arg to deploy to different environments
 ARG environment
