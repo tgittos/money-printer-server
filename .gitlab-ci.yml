@@ -60,3 +60,4 @@ release:
       when: always
     - if: '$CI_COMMIT_REF_NAME == "master"'
       when: manual
+      allow_failure: true
