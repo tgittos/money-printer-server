@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source .env.dev
+echo "Sourcing dev env from `pwd`/.env.dev"
+source "`pwd`/.env.dev"
 
 echo "Creating user $MP_DB__USERNAME in db mp_dev"
 docker compose -f docker-compose.dev.yml run --rm db mysql --user=root --password=$MYSQL_ROOT_PASSWORD --execute="CREATE USER '$MP_DB__USERNAME' IDENTIFIED BY '$MP_DB__PASSWORD'"
