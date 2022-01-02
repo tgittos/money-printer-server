@@ -39,7 +39,7 @@ test:
     - npm run test
     - status=$?
     - npm run down
-    - exit status
+    - exit $status
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
     - when: manual
