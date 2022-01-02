@@ -116,7 +116,7 @@ def test_update_holding_accepts_valid_input(db, holding_factory, valid_update_ho
     with db.get_session() as session:
         updated = session.query(Holding).where(
             Holding.id == holding.id).first()
-    assert updated.cost_basis == round(request['cost_basis'], 5)
+    assert round(updated.cost_basis, 5) == round(request['cost_basis'], 5)
 
 
 def test_delete_holding_deletes_holding(db, holding_factory):

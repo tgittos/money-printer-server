@@ -47,7 +47,6 @@ test:
       sleep 10
       npm run db:init
       status=$(npm run test:ci)
-      echo status: $status
       npm run down
       exit $status
   rules:
