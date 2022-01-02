@@ -29,6 +29,7 @@ build:
   script:
     - |
       echo "Building api container"
+      npm run down
       npm run build api
       echo "Pushing to repository: $CONTAINER_LATEST_IMAGE"
       docker push $CONTAINER_LATEST_IMAGE
@@ -40,9 +41,9 @@ test:
   stage: test
   script:
     - |
-      # TODO - figure out if I can just reuse the build from the previous step
+      npm run down
       docker pull $CONTAINER_LATEST_IMAGE
-      npm run start api
+      npm run up api
       sleep 10
       npm run db:init
       status=$(npm run test:ci)
