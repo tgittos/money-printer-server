@@ -5,9 +5,8 @@ include:
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
-  CONTAINER_TEST_IMAGE: "$CI_REGISTRY_IMAGE/mp-api:$CI_COMMIT_SHORT_SHA"
-  CONTAINER_TAGGED_IMAGE: "$CI_REGISTRY_IMAGE/mp-api:$CI_COMMIT_TAG"
-  CONTAINER_RELEASE_IMAGE: "$CI_REGISTRY_IMAGE/mp-api:latest"
+  CONTAINER_LATEST_IMAGE: "$CI_REGISTRY_IMAGE/mp-api:$CI_COMMIT_SHORT_SHA"
+  CONTAINER_RELEASE_IMAGE: "$CI_REGISTRY_IMAGE/mp-api:$CI_COMMIT_TAG"
 
 services:
   - docker:dind
@@ -31,10 +30,10 @@ build:
     - |
       echo "Building api container"
       npm run build api
-      echo "Tagging with: $CONTAINER_TEST_IMAGE"
-      docker tag $CONTAINER_RELEASE_IMAGE $CONTAINER_TEST_IMAGE
-      echo "Pushing to repository: $CONTAINER_TEST_IMAGE"
-      docker push $CONTAINER_TEST_IMAGE
+      echo "Tagging with: $CONTAINER_LATEST_IMAGE"
+      docker tag mp-api $CONTAINER_LATEST_IMAGE
+      echo "Pushing to repository: $CONTAINER_LATEST_IMAGE"
+      docker push $CONTAINER_LATEST_IMAGE
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
       when: always
@@ -44,7 +43,8 @@ test:
   script:
     - |
       # TODO - figure out if I can just reuse the build from the previous step
-      docker-compose -f docker-compose.dev.yml up -d api
+      docker pull $CONTAINER_LATEST_IMAGE
+      npm run start api
       sleep 10
       npm run db:init
       status=$(npm run test:ci)
@@ -61,18 +61,12 @@ release:
   stage: release
   script:
     - |
-      echo "Pulling test image $CONTAINER_TEST_IMAGE"
-      docker pull $CONTAINER_TEST_IMAGE
+      echo "Pulling test image $CONTAINER_LATEST_IMAGE"
+      docker pull $CONTAINER_LATEST_IMAGE
       echo "Tagging as release $CONTAINER_RELEASE_IMAGE"
-      docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+      docker tag $CONTAINER_LATEST_IMAGE $CONTAINER_RELEASE_IMAGE
       echo "Pushing to $CONTAINER_RELEASE_IMAGE"
       docker push $CONTAINER_RELEASE_IMAGE
-      if [ $CI_COMMIT_TAG ]; then
-        echo "Tagging as tagged $CONTAINER_TAGGED_IMAGE"
-        docker tag $CONTAINER_TEST_IMAGE $CONTAINER_TAGGED_IMAGE
-        echo "Pushing to $CONTAINER_TAGGED_IMAGE"
-        docker push $CONTAINER_TAGGED_IMAGE
-      fi;
   rules:
     # always release if the commit was tagged
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_NAME == "master"'
