@@ -29,8 +29,11 @@ build:
   stage: build
   script:
     - |
+      echo "Building api container"
       npm run build api
+      echo "Tagging with: $CONTAINER_TEST_IMAGE"
       docker tag api $CONTAINER_TEST_IMAGE
+      echo "Pushing to repository: $CONTAINER_TEST_IMAGE"
       docker push $CONTAINER_TEST_IMAGE
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
@@ -57,11 +60,16 @@ release:
   stage: release
   script:
     - |
+      echo "Pulling test image $CONTAINER_TEST_IMAGE"
       docker pull $CONTAINER_TEST_IMAGE
+      echo "Tagging as release $CONTAINER_RELEASE_IMAGE"
       docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+      echo "Pushing to $CONTAINER_RELEASE_IMAGE"
       docker push $CONTAINER_RELEASE_IMAGE
       if [ $CI_COMMIT_TAG ]; then
+        echo "Tagging as tagged $CONTAINER_TAGGED_IMAGE"
         docker tag $CONTAINER_TEST_IMAGE $CONTAINER_TAGGED_IMAGE
+        echo "Pushing to $CONTAINER_TAGGED_IMAGE"
         docker push $CONTAINER_TAGGED_IMAGE
       fi;
   rules:
