@@ -6,7 +6,7 @@ variables:
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 services:
-  - docker:19.03.12-dind
+  - docker:dind
 
 before_script:
     - docker version
