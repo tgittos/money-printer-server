@@ -24,7 +24,8 @@ stages:
 build:
   stage: build
   script:
-    - docker build -t $CONTAINER_TEST_IMAGE api
+    - docker-compose build api
+    - docker tag api $CONTAINER_TEST_IMAGE
     - docker push $CONTAINER_TEST_IMAGE
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
