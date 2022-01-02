@@ -19,5 +19,7 @@ if __name__ == '__main__':
     print("Dropping db table set...")
     Base.metadata.drop_all(bind=db.engine)
     print("Done")
-    print(f"Exiting with code: {completed.returncode}")
-    completed.check_returncode()
+    if 'MP_CI' in os.environ:
+        completed.check_returncode()
+    else:
+        sys.exit(completed.returncode)

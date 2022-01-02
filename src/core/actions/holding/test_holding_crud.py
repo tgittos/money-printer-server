@@ -1,5 +1,4 @@
 import pytest
-from pytest import ValidationException
 
 from core.models import Holding, HoldingBalance
 from core.schemas.holding_schemas import *
@@ -10,8 +9,8 @@ from tests.fixtures import *
 
 
 def test_cant_create_invalid_create_request():
-    with pytest.raises():
-        CreateHoldingSchema(ValidationException).load({
+    with pytest.raises(Exception):
+        CreateHoldingSchema().load({
             'security_symbol': 'AAPL',
             'cost_basis': 200.0,
             'quantity': None
@@ -19,7 +18,7 @@ def test_cant_create_invalid_create_request():
 
 
 def test_cant_create_invalid_update_request():
-    with pytest.raises(ValidationException):
+    with pytest.raises(Exception):
         UpdateHoldingSchema().load({
             'security_symbol': 'AAPL',
             'cost_basis': 200.0,
@@ -28,7 +27,7 @@ def test_cant_create_invalid_update_request():
 
 
 def test_cant_create_invalid_balance_create_request():
-    with pytest.raises(ValidationException):
+    with pytest.raises(Exception):
         CreateHoldingBalanceSchema().load({
             'cost_basis': 200.0,
             'quantity': None

@@ -131,6 +131,25 @@ Matomo is available at `http://localhost:8080/` when running.
 - ensure you've build the docker images in `money-printer-infrastructure`
 - either run `npm run start` or `docker compose -f docker-compose.dev.yml up -d`
 
+### Available npm commands
+
+- `npm run start` - start the Docker compose project
+- `npm run stop` - stop and pull down the Docker compose project
+- `npm run build` - build the Docker compose project
+- `npm run recycle` - stop, down, build, start the Docker compose project
+- `npm run db:init` - initialize the db, only useful when initially setting up the project
+- `npm run db:migrate` - create a new migration for the database against the `db` container
+- `npm run db:update` - apply all pending updates to a running `db` container
+- `npm run test` - run the entire server test suite
+- `npm run test:focus` - run tests marked with `@pytest.mark.focus`, useful for isolating troublesome tests
+- `npm run gendoc` - run the OpenAPI spec generation on a running API
+- `npm run clean` - remove all local pycache and pre-compiled Python objects
+
+The `start`, `stop`, `build`, and `recycle` tasks have `:prod` variants that can be used to stand up the application
+in production mode. This is useful for testing behavioral differences when running locally vs. prod, however the prod
+`docker-compose.prod.yml` file won't create a local DB, so ensure your `.env.dev` file is pointing to a valid and accessible
+Money Printer development database server.
+
 ## Deploying
 
 TBD
