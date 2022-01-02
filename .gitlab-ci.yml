@@ -44,7 +44,7 @@ test:
   script:
     - |
       docker pull $CONTAINER_TEST_IMAGE
-      docker-compose -f docker-compose.dev.yml up -d --no-build api
+      docker-compose -f docker-compose.dev.yml up -d --no-build $CONTAINER_TEST_IMAGE
       sleep 10
       npm run db:init
       status=$(npm run test:ci)
