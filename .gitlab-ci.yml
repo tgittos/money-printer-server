@@ -43,8 +43,8 @@ test:
   stage: test
   script:
     - |
-      docker pull $CONTAINER_TEST_IMAGE
-      docker-compose -f docker-compose.dev.yml up -d --no-build $CONTAINER_TEST_IMAGE
+      # TODO - figure out if I can just reuse the build from the previous step
+      docker-compose -f docker-compose.dev.yml up -d api
       sleep 10
       npm run db:init
       status=$(npm run test:ci)
