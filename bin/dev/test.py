@@ -1,4 +1,6 @@
 import os
+import sys
+import subprocess
 from sqlalchemy.orm import declarative_base
 
 from core.stores.mysql import MySql
@@ -12,10 +14,10 @@ if __name__ == '__main__':
     Base.metadata.drop_all(bind=db.engine)
     Base.metadata.create_all(bind=db.engine)
     print("Running tests...")
-    test_cmd = "MP_ENVIRONMENT=test PYTHONPATH=src pytest -n auto --cov-config=.coveragerc --cov=src --cov-report term:skip-covered src/"
-    exit_code = os.system(test_cmd)
+    test_cmd = ["pytest", "-n", "auto", "--cov-config=.coveragerc", "--cov=src", "--cov-report", "term:skip-covered", "src/"]
+    completed = subprocess.run(test_cmd)
     print("Dropping db table set...")
     Base.metadata.drop_all(bind=db.engine)
     print("Done")
-    print(f"Test exit code: {exit_code}")
-    exit(exit_code)
+    print(f"Exiting with code: {completed.returncode}")
+    completed.check_returncode()
