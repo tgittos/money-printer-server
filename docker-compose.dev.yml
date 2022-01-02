@@ -53,7 +53,7 @@ services:
     env_file:
       - .env.dev
     depends_on: [ "redis", "db", "ngrok", "matomo", "prometheus" ]
-    image: git.gittos.net:5050/money-printer/money-printer-server/api:latest
+    image: mp-api
     entrypoint:
       [
         "python",
