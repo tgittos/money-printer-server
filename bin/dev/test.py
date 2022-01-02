@@ -21,8 +21,8 @@ if __name__ == '__main__':
     Base.metadata.drop_all(bind=db.engine)
     print("Done")
     if 'MP_CI' in os.environ:
-        # print(completed.stdout)
-        # print(completed.stderr)
+        print(completed.stdout)
+        print(completed.stderr)
         completed.check_returncode()
     else:
         sys.exit(completed.returncode)
