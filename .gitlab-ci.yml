@@ -1,4 +1,7 @@
-image: git.gittos.net:5050/tgittos/gittos.net/runner-base
+image: git.gittos.net:5050/tgittos/gittos.net/runner-base:latest
+
+include:
+  - template: 'Workflows/MergeRequest-Pipelines.gitlab-ci.yml'
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
@@ -45,6 +48,9 @@ test:
       exit $status
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
 
 release:
   stage: release
