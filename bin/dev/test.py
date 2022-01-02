@@ -17,4 +17,5 @@ if __name__ == '__main__':
     print("Dropping db table set...")
     Base.metadata.drop_all(bind=db.engine)
     print("Done")
+    print(f"Test exit code: {exit_code}")
     exit(exit_code)
