@@ -30,8 +30,6 @@ build:
     - |
       echo "Building api container"
       npm run build api
-      echo "Tagging with: $CONTAINER_LATEST_IMAGE"
-      docker tag mp-api $CONTAINER_LATEST_IMAGE
       echo "Pushing to repository: $CONTAINER_LATEST_IMAGE"
       docker push $CONTAINER_LATEST_IMAGE
   rules:
