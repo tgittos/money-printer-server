@@ -64,7 +64,7 @@ services:
         "logs/mp.log"
       ]
   data-server:
-    image: api
+    image: mp-api
     environment:
       MP_REDIS__HOST: redis
       MP_DB__HOST: db
@@ -81,7 +81,7 @@ services:
         "logs/mp.log"
       ]
   task-runner:
-    image: api
+    image: mp-api
     environment:
       MP_REDIS__HOST: redis
       MP_DB__HOST: db
@@ -90,7 +90,7 @@ services:
     depends_on: [ "redis", "db" ]
     entrypoint: [ "python", "bin/task-runner.py" ]
   scheduler:
-    image: api
+    image: mp-api
     environment:
       MP_REDIS__HOST: "redis"
       MP_DB__HOST: db

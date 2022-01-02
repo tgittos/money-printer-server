@@ -32,7 +32,7 @@ build:
       echo "Building api container"
       npm run build api
       echo "Tagging with: $CONTAINER_TEST_IMAGE"
-      docker tag mp-api:latest $CONTAINER_TEST_IMAGE
+      docker tag mp-api $CONTAINER_TEST_IMAGE
       echo "Pushing to repository: $CONTAINER_TEST_IMAGE"
       docker push $CONTAINER_TEST_IMAGE
   rules:
@@ -44,7 +44,8 @@ test:
   script:
     - |
       docker pull $CONTAINER_TEST_IMAGE
-      npm run start && sleep 10
+      docker-compose up -d --no-build api
+      sleep 10
       npm run db:init
       status=$(npm run test:ci)
       echo status: $status
