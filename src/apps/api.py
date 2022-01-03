@@ -90,6 +90,8 @@ class ApiApplication:
         self.flask_app.register_blueprint(profile_bp)
         self.logger.info("registering accounts blueprint")
         self.flask_app.register_blueprint(account_bp)
+        self.logger.info("registering holdings blueprint")
+        self.flask_app.register_blueprint(holdings_bp)
         self.logger.info("registering symbol blueprint")
         self.flask_app.register_blueprint(symbol_bp)
         self.logger.info("registering webhook blueprint")

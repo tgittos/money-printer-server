@@ -1,6 +1,7 @@
+from sqlalchemy.orm import selectinload
 from datetime import datetime, timezone
 
-from core.models import Holding, HoldingBalance
+from core.models import Holding, HoldingBalance, Security, Account
 from core.actions.action_response import ActionResponse
 from core.schemas.holding_schemas import *
 
@@ -10,8 +11,11 @@ def get_holding_by_id(db, holding_id: int) -> ActionResponse:
     Gets a holding record from the DB by the primary key
     """
     with db.get_session() as session:
-        holding = session.query(Holding).where(
-            Holding.id == holding_id).first()
+        holding = session.query(Holding)\
+            .options(selectinload(Holding.account))\
+            .options(selectinload(Holding.balances))\
+            .options(selectinload(Holding.security))\
+            .where(Holding.id == holding_id).first()
     return ActionResponse(
         success=holding is not None,
         data=holding,
@@ -24,12 +28,34 @@ def get_holdings_by_account_id(db, account_id: int) -> ActionResponse:
     Gets all holdings that belong to an account record by it's ID
     """
     with db.get_session() as session:
-        holding = session.query(Holding).where(
-            Holding.account_id == account_id).all()
+        holding = session.query(Holding)\
+            .options(selectinload(Holding.account))\
+            .options(selectinload(Holding.balances))\
+            .options(selectinload(Holding.security))\
+            .filter(Holding.account_id == account_id)\
+            .all()
     return ActionResponse(
         success=holding is not None,
         data=holding,
         message=f"Could not find holdings with account_id ID {account_id}" if holding is None else None
+    )
+
+
+def get_holdings_by_profile_id(db, profile_id: int) -> ActionResponse:
+    """
+    Returns the holdings for a given profile ID
+    """
+    with db.get_session() as session:
+        data = session.query(Holding)\
+            .options(selectinload(Holding.account))\
+            .options(selectinload(Holding.balances))\
+            .options(selectinload(Holding.security))\
+            .filter(Account.profile_id == profile_id)\
+            .all()
+        print('data:', data)
+    return ActionResponse(
+        success=data is not None,
+        data=data
     )
 
 

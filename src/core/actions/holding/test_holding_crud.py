@@ -2,6 +2,7 @@ import pytest
 
 from core.models import Holding, HoldingBalance
 from core.schemas.holding_schemas import *
+from core.schemas import ReadProfileSchema
 
 from core.actions.holding.holding_crud import *
 
@@ -41,6 +42,17 @@ def test_get_holding_by_id_returns_holding(db, account_factory, valid_create_hol
     assert result.success
     assert result.data is not None
     assert result.data.id is not None
+
+
+def test_get_holdings_by_profile_id_returns_holdings(db, profile_factory, holding_factory, account_factory):
+    profile = profile_factory()
+    account = account_factory(profile_id=profile.id)
+    holding = holding_factory(account_id=account.id)
+    result = get_holdings_by_profile_id(db, profile.id)
+    assert result is not None
+    assert result.success
+    assert result.data is not None
+    assert holding.id in [d.id for d in result.data]
 
 
 def test_get_holding_by_id_fails_for_missing_holding(db):

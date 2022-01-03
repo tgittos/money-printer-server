@@ -1,20 +1,18 @@
-from core.models.account import Account
-from core.models.plaid_item import PlaidItem
-from core.models.holding import Holding
+from sqlalchemy import and_
+
+from core.models import Account, Holding, Security
 from core.stores.mysql import MySql
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.repositories.security_repository import SecurityRepository
-from core.lib.logger import get_logger
-from config import mysql_config
 from core.repositories.repository_response import RepositoryResponse
 from core.schemas.scheduler_schemas import CreateInstantJobSchema
+from core.lib.logger import get_logger
+from config import mysql_config
 
+import core.actions.holding.holding_crud as crud
 from core.actions.account.crud import get_accounts_by_plaid_item_id
 from core.actions.profile.crud import get_profile_by_id
 from core.actions.plaid.crud import get_plaid_item_by_id
-
-# import all the actions so that consumers of the repo can access everything
-# no actions right now!
 
 
 class HoldingRepository:
@@ -26,17 +24,14 @@ class HoldingRepository:
         self.scheduled_job_repo = ScheduledJobRepository()
         self.security_repo = SecurityRepository()
 
+    def get_holding_by_id(self, holding_id: int) -> RepositoryResponse:
+        return crud.get_holding_by_id(self.db, holding_id)
+
     def get_holdings_by_profile_id(self, profile_id: int) -> RepositoryResponse:
-        """
-        Returns the holdings for a given profile ID
-        """
-        with self.db.get_session() as session:
-            data = session.query(Holding).where(
-                Holding.account.profile_id == profile_id).all()
-        return RepositoryResponse(
-            success=data is not None,
-            data=data
-        )
+        return crud.get_holdings_by_profile_id(self.db, profile_id)
+
+    def get_holding_balances_by_holding_id(self, holding_id: int) -> RepositoryResponse:
+        return crud.get_holding_balances_by_holding_id(self.db, holding_id)
 
     def schedule_update_holdings(self, plaid_item_id: int) -> RepositoryResponse:
         """
@@ -134,7 +129,8 @@ class HoldingRepository:
             )
 
         profile_result = get_profile_by_id(self, plaid_result.data.profile_id)
-        accounts_result = get_accounts_by_plaid_item_id(self, plaid_result.data.id)
+        accounts_result = get_accounts_by_plaid_item_id(
+            self, plaid_result.data.id)
         if not profile_result.success or not accounts_result.success:
             self.logger.error("received request to update investment transactions with no corresponding accounts: {0}"
                               .format(plaid_result.data.id))
