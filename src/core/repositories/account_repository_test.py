@@ -31,8 +31,9 @@ def test_get_accounts_by_profile_id_returns_accounts_for_profile(
     assert result.success
     assert result.data is not None
     assert len(result.data) == 2
-    assert result.data[0].id == account_1.id
-    assert result.data[1].id == account_2.id
+    ids = [d.id for d in result.data]
+    assert account_1.id in ids
+    assert account_2.id in ids
 
 
 def test_get_accounts_fails_when_profile_has_no_accounts(
@@ -69,12 +70,13 @@ def test_schedule_account_sync_fails_with_no_account(repo, profile_factory):
 def test_schedule_update_all_balances_schedules_instant_job(mocker, repo, plaid_item_factory):
     spy = mocker.patch.object(repo.scheduled_job_repo, 'create_instant_job')
     item = plaid_item_factory()
-    result = repo.schedule_update_all_balances(item.id)
+    result = repo.schedule_update_all_balances(item.profile_id, item.id)
     spy.assert_called_once()
 
 
-def test_schedule_update_all_balances_fails_with_no_plaid_item(repo):
-    result = repo.schedule_update_all_balances(23423)
+def test_schedule_update_all_balances_fails_with_no_plaid_item(repo, profile_factory):
+    profile = profile_factory()
+    result = repo.schedule_update_all_balances(profile.id, 23423)
     assert not result.success
     assert result.data is None
 
@@ -102,12 +104,13 @@ def test_sync_all_balances_calls_into_plaid_api_for_each_account(mocker, repo, p
     account_factory(profile_id=item.profile_id)
     account_factory(profile_id=item.profile_id)
     account_factory(profile_id=item.profile_id)
-    result = repo.sync_all_balances(item.id)
+    result = repo.sync_all_balances(item.profile_id, item.id)
     spy.call_count == 3
 
 
-def test_sync_all_balances_fails_for_no_plaid_item(repo):
-    result = repo.sync_all_balances(2342)
+def test_sync_all_balances_fails_for_no_plaid_item(repo, profile_factory):
+    profile = profile_factory()
+    result = repo.sync_all_balances(profile.id, 2342)
     assert not result.success
     assert result.data is None
 

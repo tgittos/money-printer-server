@@ -33,8 +33,9 @@ def get_holdings_by_profile():
 @holdings_bp.route(f"/{API_PREFIX}/holdings/<holding_id>", methods=['GET'])
 @authed
 def get_holding(holding_id):
+    profile = get_identity()
     repo = HoldingRepository()
-    result = repo.get_holding_by_id(holding_id=holding_id)
+    result = repo.get_holding_by_id(profile_id=profile['id'], holding_id=holding_id)
     if result.success:
         return {
             'success': True,
@@ -49,8 +50,9 @@ def get_holding(holding_id):
 @holdings_bp.route(f"/{API_PREFIX}/holdings/<holding_id>/balances", methods=['GET'])
 @authed
 def get_holding_balances(holding_id):
+    profile = get_identity()
     repo = HoldingRepository()
-    result = repo.get_holding_balances_by_holding_id(holding_id)
+    result = repo.get_holding_balances_by_holding_id(profile['id'], holding_id)
     if result.success:
         return {
             'success': True,

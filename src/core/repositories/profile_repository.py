@@ -11,7 +11,7 @@ from core.schemas.profile_schemas import *
 from core.schemas.auth_schemas import *
 
 from core.actions.account.crud import create_or_update_account
-from core.actions.plaid.crud import get_plaid_items_by_profile, get_plaid_item_by_id
+from core.actions.plaid.crud import get_plaid_items_by_profile_id, get_plaid_item_by_id
 import core.actions.profile.crud as crud
 import core.actions.profile.auth as auth
 
@@ -81,7 +81,7 @@ class ProfileRepository:
                 message=profile_result.message
             )
 
-        plaid_result = get_plaid_items_by_profile(self.db, profile_result.data)
+        plaid_result = get_plaid_items_by_profile_id(self.db, profile_result.data.id)
         if not plaid_result.success or len(plaid_result.data) == 0:
             self.logger.error(
                 "scheduled account sync for Profile, but no PlaidItems found")
@@ -100,7 +100,7 @@ class ProfileRepository:
 
         return RepositoryResponse(success=True)
 
-    def sync_all_accounts(self, plaid_item_id: int) -> RepositoryResponse:
+    def sync_all_accounts(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """
         Syncs the account state from Plaid for all accounts attached to the given Plaid Item
         This will pull:
@@ -108,7 +108,7 @@ class ProfileRepository:
           - account balances
           - investment holdings
         """
-        plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.warning(
                 "Sync all accounts requested without PlaidItem")
@@ -120,8 +120,7 @@ class ProfileRepository:
         self.logger.info(
             "updating account state for PlaidItem {0}".format(plaid_item_id))
 
-        profile_result = crud.get_profile_by_id(
-            self.db, plaid_result.data.profile_id)
+        profile_result = crud.get_profile_by_id(self.db, plaid_result.data.profile_id)
 
         if not profile_result.success or profile_result.data is None:
             self.logger.warning(
@@ -131,8 +130,7 @@ class ProfileRepository:
                 message=profile_result.message
             )
 
-        plaid_accounts_dict = self.plaid_accounts_api.get_accounts(
-            plaid_result.data.access_token)
+        plaid_accounts_dict = self.plaid_accounts_api.get_accounts(plaid_result.data.access_token)
 
         self.logger.info("updating {0} accounts".format(
             len(plaid_accounts_dict['accounts'])))
@@ -143,20 +141,20 @@ class ProfileRepository:
                 self.logger.info("updating account details for profile {0}, account {1}"
                                  .format(profile_result.data.id, account_dict['account_id']))
                 account_result = create_or_update_account(self.db,
-                                                          profile=profile_result.data,
-                                                          plaid_link=plaid_result.data,
+                                                          profile_id=profile_result.data.id,
+                                                          plaid_link_id=plaid_result.data.id,
                                                           account_dict=account_dict)
                 accounts.append(account_result.data)
                 self.logger.info("updating account balance for account {0}".format(
                     account_result.data.id))
-                self.account_repo.sync_account_balance(account_result.data.id)
+                self.account_repo.sync_account_balance(profile_id, account_result.data.id)
             else:
                 self.logger.warning(
                     "upstream returned account response missing an id: {0}".format(account_dict))
 
         self.logger.info(
             "fetching investment holdings for PlaidItem {0}".format(plaid_result.data.id))
-        self.holdings_repo.update_holdings(plaid_result.data.id)
+        self.holdings_repo.update_holdings(profile_id, plaid_result.data.id)
 
         self.logger.info("done updating accounts for profile {0}".format(
             profile_result.data.id))

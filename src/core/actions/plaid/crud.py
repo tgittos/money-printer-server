@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from datetime import datetime
 
 from core.models.profile import Profile
@@ -6,14 +7,17 @@ from core.schemas.plaid_item_schemas import CreatePlaidItemSchema, UpdatePlaidIt
 from core.actions.action_response import ActionResponse
 
 
-def get_plaid_item_by_id(db, id: int) -> ActionResponse:
+def get_plaid_item_by_id(db, profile_id: int, id: int) -> ActionResponse:
     """
     Gets a PlaidItem from the DB by the primary key
     This object represents a Plaid Link object
     """
     with db.get_session() as session:
         plaid_item = session.query(PlaidItem).filter(
-            PlaidItem.id == id).first()
+            and_(
+                PlaidItem.profile_id == profile_id,
+                PlaidItem.id == id
+            )).first()
 
     return ActionResponse(
         success=plaid_item is not None,
@@ -22,14 +26,17 @@ def get_plaid_item_by_id(db, id: int) -> ActionResponse:
     )
 
 
-def get_plaid_item_by_plaid_item_id(db, id: str) -> ActionResponse:
+def get_plaid_item_by_plaid_item_id(db, profile_id: int, id: str) -> ActionResponse:
     """
     Gets a PlaidItem from the DB by the remote Plaid ID
     This object represents a Plaid Link object
     """
     with db.get_session() as session:
         plaid_item = session.query(PlaidItem).filter(
-            PlaidItem.item_id == id).first()
+            and_(
+                PlaidItem.profile_id == profile_id,
+                PlaidItem.item_id == id
+            )).first()
 
     return ActionResponse(
         success=plaid_item is not None,
@@ -38,13 +45,13 @@ def get_plaid_item_by_plaid_item_id(db, id: str) -> ActionResponse:
     )
 
 
-def get_plaid_items_by_profile(db, profile: Profile) -> ActionResponse:
+def get_plaid_items_by_profile_id(db, profile_id: int) -> ActionResponse:
     """
     Returns all the PlaidItems associated with the given profile
     """
     with db.get_session() as session:
         plaid_items = session.query(PlaidItem).where(
-            PlaidItem.profile_id == profile.id).all()
+            PlaidItem.profile_id == profile_id).all()
 
     return ActionResponse(
         success=plaid_items is not None,
@@ -53,14 +60,14 @@ def get_plaid_items_by_profile(db, profile: Profile) -> ActionResponse:
     )
 
 
-def create_plaid_item(db, request: CreatePlaidItemSchema) -> ActionResponse:
+def create_plaid_item(db, profile_id: int, request: CreatePlaidItemSchema) -> ActionResponse:
     """
     Creates a PlaidItem in the DB with the data in the given request
     Accepts a PlaidItemSchema object
     """
     plaid_item = PlaidItem()
 
-    plaid_item.profile_id = request['profile_id']
+    plaid_item.profile_id = profile_id
     plaid_item.item_id = request['item_id']
     plaid_item.access_token = request['access_token']
     plaid_item.request_id = request['request_id']
@@ -76,11 +83,11 @@ def create_plaid_item(db, request: CreatePlaidItemSchema) -> ActionResponse:
     )
 
 
-def update_plaid_item(db, request: UpdatePlaidItemSchema) -> ActionResponse:
+def update_plaid_item(db, profile_id: int, request: UpdatePlaidItemSchema) -> ActionResponse:
     """
     Updates a PlaidItem in the DB and touches the timestamp for it
     """
-    result = get_plaid_item_by_id(db, request['id'])
+    result = get_plaid_item_by_id(db, profile_id, request['id'])
     if not result.success or result.data is None:
         return ActionResponse(
             success=False,
@@ -103,8 +110,8 @@ def update_plaid_item(db, request: UpdatePlaidItemSchema) -> ActionResponse:
     )
 
 
-def delete_plaid_item(db, plaid_item_id: int) -> ActionResponse:
-    result = get_plaid_item_by_id(db, plaid_item_id)
+def delete_plaid_item(db, profile_id: int, plaid_item_id: int) -> ActionResponse:
+    result = get_plaid_item_by_id(db, profile_id, plaid_item_id)
     if not result.success or result.data is None:
         return ActionResponse(
             success=False,

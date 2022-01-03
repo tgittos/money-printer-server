@@ -24,20 +24,20 @@ class HoldingRepository:
         self.scheduled_job_repo = ScheduledJobRepository()
         self.security_repo = SecurityRepository()
 
-    def get_holding_by_id(self, holding_id: int) -> RepositoryResponse:
-        return crud.get_holding_by_id(self.db, holding_id)
+    def get_holding_by_id(self, profile_id: int, holding_id: int) -> RepositoryResponse:
+        return crud.get_holding_by_id(self.db, profile_id, holding_id)
 
     def get_holdings_by_profile_id(self, profile_id: int) -> RepositoryResponse:
         return crud.get_holdings_by_profile_id(self.db, profile_id)
 
-    def get_holding_balances_by_holding_id(self, holding_id: int) -> RepositoryResponse:
-        return crud.get_holding_balances_by_holding_id(self.db, holding_id)
+    def get_holding_balances_by_holding_id(self, profile_id: int, holding_id: int) -> RepositoryResponse:
+        return crud.get_holding_balances_by_holding_id(self.db, profile_id, holding_id)
 
-    def schedule_update_holdings(self, plaid_item_id: int) -> RepositoryResponse:
+    def schedule_update_holdings(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """
         Creates an InstantJob to perform a sync_holdings job for all investment accounts attached to a PlaidItem
         """
-        plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.error(
                 "cannot schedule account holding sync without plaid item")
@@ -53,11 +53,11 @@ class HoldingRepository:
             }
         ))
 
-    def schedule_update_transactions(self, plaid_item_id: int) -> RepositoryResponse:
+    def schedule_update_transactions(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """
         Creates an InstantJob to perform a sync_transactions job for all investment accounts attached to a PlaidItem
         """
-        plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.error(
                 "cannot schedule investment transaction sync without plaid item")
@@ -73,11 +73,11 @@ class HoldingRepository:
             }
         ))
 
-    def update_holdings(self, plaid_item_id: int) -> RepositoryResponse:
+    def update_holdings(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """
         Performs a sync of all security holdings for accounts associated with a PlaidItem
         """
-        plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.warning(
                 "requested update holding but no PlaidItem given")
@@ -115,11 +115,11 @@ class HoldingRepository:
             success=True
         )
 
-    def update_transactions(self, plaid_item_id: int) -> RepositoryResponse:
+    def update_transactions(self, profile_id, plaid_item_id: int) -> RepositoryResponse:
         """
         Performs a sync of all security transactions for accounts associated with a PlaidItem
         """
-        plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.error(
                 "cannot update investment transactions without a valid plaid_item_id")
@@ -129,8 +129,7 @@ class HoldingRepository:
             )
 
         profile_result = get_profile_by_id(self, plaid_result.data.profile_id)
-        accounts_result = get_accounts_by_plaid_item_id(
-            self, plaid_result.data.id)
+        accounts_result = get_accounts_by_plaid_item_id(self, profile_id, plaid_result.data.id)
         if not profile_result.success or not accounts_result.success:
             self.logger.error("received request to update investment transactions with no corresponding accounts: {0}"
                               .format(plaid_result.data.id))
@@ -153,11 +152,11 @@ class HoldingRepository:
             success=True
         )
 
-    def calculate_performance(self, holding_it: int) -> RepositoryResponse:
+    def calculate_performance(self, profile_id: int, holding_id: int) -> RepositoryResponse:
         # pull the holding
         # pull security_prices for holding
         # using cost basis of holding, at each security_price data point, calculate a rate of return
         raise Exception("Not implemented")
 
-    def calculate_forecast(self, holding_id: int) -> RepositoryResponse:
+    def calculate_forecast(self, profile_id: int, holding_id: int) -> RepositoryResponse:
         raise Exception("Not implemented")

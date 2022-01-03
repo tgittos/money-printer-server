@@ -43,7 +43,7 @@ class PlaidRepository:
             }
         )
 
-    def create_link_token(self, webhook_host: str) -> RepositoryResponse:
+    def create_link_token(self, profile_id: int, webhook_host: str) -> RepositoryResponse:
         """
         Calls into the Plaid API to fetch a link token for the user to auth with Plaid.
         """
@@ -112,8 +112,8 @@ class PlaidRepository:
                 message=f"Unknown error from Plaid exchanging public token"
             )
 
-    def get_plaid_item_by_id(self, id: int) -> RepositoryResponse:
+    def get_plaid_item_by_id(self, profile_id: int, id: int) -> RepositoryResponse:
         """
         Return the Plaid Item from the DB by it's ID
         """
-        return crud.get_plaid_item_by_id(self.db, id)
+        return crud.get_plaid_item_by_id(self.db, profile_id, id)

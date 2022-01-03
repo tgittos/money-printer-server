@@ -131,7 +131,7 @@ def get_accounts_by_profile_id(db, profile_id: int) -> ActionResponse:
     )
 
 
-def get_accounts_by_plaid_item_id(db, plaid_item_id: int) -> ActionResponse:
+def get_accounts_by_plaid_item_id(db, profile_id: int, plaid_item_id: int) -> ActionResponse:
     """
     Gets all accounts for a given PlaidItem from the DB
     """
@@ -146,7 +146,7 @@ def get_accounts_by_plaid_item_id(db, plaid_item_id: int) -> ActionResponse:
     )
 
 
-def create_account_balance(db, request: CreateAccountBalanceSchema) -> ActionResponse:
+def create_account_balance(db, profile_id: int, request: CreateAccountBalanceSchema) -> ActionResponse:
     """
     Creates an AccountBalance record in the DB, to snapshot the account value at a point in time
     """
@@ -168,7 +168,7 @@ def create_account_balance(db, request: CreateAccountBalanceSchema) -> ActionRes
     )
 
 
-def get_balances_by_account(db, account_id: int, start=None, end=None) -> ActionResponse:
+def get_balances_by_account(db, profile_id: int, account_id: int, start=None, end=None) -> ActionResponse:
     """
     Returns all the balances for the requested account
     Accepts an object of GetAccountBalanceRequest type
@@ -208,7 +208,7 @@ def get_balances_by_account(db, account_id: int, start=None, end=None) -> Action
     )
 
 
-def get_latest_balance_by_account(db, account_id: int) -> ActionResponse:
+def get_latest_balance_by_account(db, profile_id: int, account_id: int) -> ActionResponse:
     """
     Returns the last synced balance for the given account
     """

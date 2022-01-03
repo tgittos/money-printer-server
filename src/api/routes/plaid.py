@@ -89,9 +89,10 @@ def create_link_token():
       tags:
         - Plaid
     """
+    profile = get_identity()
     base_url = request.base_url
     repo = PlaidRepository()
-    result = repo.create_link_token(base_url)
+    result = repo.create_link_token(profile['id'], base_url)
     if result.success:
         return result.data
     return {
@@ -145,7 +146,7 @@ def get_access_token():
         }, 400
 
     account_repo = AccountRepository()
-    schedule_result = account_repo.schedule_account_sync(plaid_item=access_token_result.data)
+    schedule_result = account_repo.schedule_account_sync(profile_id=profile['id'], plaid_item=access_token_result.data)
 
     if not schedule_result.success:
         return {

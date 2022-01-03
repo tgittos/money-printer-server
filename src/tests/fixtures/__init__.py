@@ -11,10 +11,9 @@ from .security_fixtures import *
 import pytest
 import random
 
-# random seed
-random.seed(random.randint(1, 50000))
-
 
 @pytest.fixture(scope='function', autouse=True)
 def faker_seed():
+    seed = random.randint(1, 50000)
+    random.seed(seed)
     return random.randint(1, 50000)

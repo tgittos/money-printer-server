@@ -115,7 +115,7 @@ def request_account_balances(account_id):
     """
     user = get_identity()
     account_repo = AccountRepository()
-    balance_result = account_repo.get_balances_by_account_id(account_id)
+    balance_result = account_repo.get_balances_by_account_id(user['id'], account_id)
     if not balance_result or balance_result is None:
         abort(404)
     return {

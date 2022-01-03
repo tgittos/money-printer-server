@@ -6,7 +6,7 @@ from core.actions.action_response import ActionResponse
 from core.schemas.holding_schemas import *
 
 
-def get_holding_by_id(db, holding_id: int) -> ActionResponse:
+def get_holding_by_id(db, profile_id: int, holding_id: int) -> ActionResponse:
     """
     Gets a holding record from the DB by the primary key
     """
@@ -23,7 +23,7 @@ def get_holding_by_id(db, holding_id: int) -> ActionResponse:
     )
 
 
-def get_holdings_by_account_id(db, account_id: int) -> ActionResponse:
+def get_holdings_by_account_id(db, profile_id: int, account_id: int) -> ActionResponse:
     """
     Gets all holdings that belong to an account record by it's ID
     """
@@ -59,7 +59,7 @@ def get_holdings_by_profile_id(db, profile_id: int) -> ActionResponse:
     )
 
 
-def get_holding_balances_by_holding_id(db, holding_id: int) -> ActionResponse:
+def get_holding_balances_by_holding_id(db, profile_id: int, holding_id: int) -> ActionResponse:
     """
     Returns all balances for a given holding by it's ID
     """
@@ -74,7 +74,7 @@ def get_holding_balances_by_holding_id(db, holding_id: int) -> ActionResponse:
     )
 
 
-def create_holding(db, account_id: int, request: CreateHoldingSchema) -> ActionResponse:
+def create_holding(db, profile_id: int, account_id: int, request: CreateHoldingSchema) -> ActionResponse:
     """
     Creates a holding object in the given database and returns it
     """
@@ -97,11 +97,11 @@ def create_holding(db, account_id: int, request: CreateHoldingSchema) -> ActionR
     )
 
 
-def update_holding(db, request: UpdateHoldingSchema) -> ActionResponse:
+def update_holding(db, profile_id: int, request: UpdateHoldingSchema) -> ActionResponse:
     """
     Updates an existing holding object in the database with the details
     """
-    holding_result = get_holding_by_id(db, request['id'])
+    holding_result = get_holding_by_id(db, profile_id, request['id'])
     if not holding_result.success or holding_result.data is None:
         return holding_result
 
@@ -122,11 +122,11 @@ def update_holding(db, request: UpdateHoldingSchema) -> ActionResponse:
     )
 
 
-def delete_holding(db, holding_id: int) -> ActionResponse:
+def delete_holding(db, profile_id: int, holding_id: int) -> ActionResponse:
     """
     Deletes an existing holding from the DB
     """
-    holding_result = get_holding_by_id(db, holding_id)
+    holding_result = get_holding_by_id(db, profile_id, holding_id)
     if not holding_result.success or holding_result.data is None:
         return holding_result
 
@@ -139,7 +139,7 @@ def delete_holding(db, holding_id: int) -> ActionResponse:
     return ActionResponse(success=True)
 
 
-def create_holding_balance(db, request: CreateHoldingBalanceSchema) -> ActionResponse:
+def create_holding_balance(db, profile_id: int, request: CreateHoldingBalanceSchema) -> ActionResponse:
     """
     Creates a balance entry for a Holding record in the database
     """
