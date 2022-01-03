@@ -14,11 +14,7 @@ holdings_bp = Blueprint('holding', __name__)
 def get_holdings_by_profile():
     profile = get_identity()
     repo = HoldingRepository()
-    print(profile)
     result = repo.get_holdings_by_profile_id(profile['id'])
-    print(result.success)
-    print(result.data)
-    print(result.message)
     if result.success:
         return {
             'success': True,

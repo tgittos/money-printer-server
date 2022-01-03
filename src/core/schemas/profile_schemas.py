@@ -7,8 +7,10 @@ class CreateProfileSchema(Schema):
 
 
 class ReadProfileSchema(Schema):
-    accounts: fields.Nested('ReadAccountSchema', many=True)
-    plaid_items: fields.Nested('ReadPlaidItemSchema', many=True)
+    accounts: fields.Nested('ReadAccountSchema', many=True, exclude=
+        ("profile", "plaid_item", "balances", "holdings", "transactions"))
+    plaid_items: fields.Nested('ReadPlaidItemSchema', many=True, exclude=
+        ("profile", "accounts"))
     api_keys: fields.Nested('ReadApiKeySchema', many=True)
 
     class Meta:

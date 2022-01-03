@@ -2,7 +2,6 @@ from marshmallow import Schema, fields
 
 
 class CreatePlaidItemSchema(Schema):
-    profile_id = fields.Int(required=True)
     item_id = fields.Str()
     access_token = fields.Str(required=True)
     request_id = fields.Str()
@@ -10,9 +9,10 @@ class CreatePlaidItemSchema(Schema):
 
 
 class ReadPlaidItemSchema(Schema):
-    profile = fields.Nested('ReadProfileSchema')
-    accounts = fields.Nested(
-        'ReadAccountSchema', many=True)
+    profile = fields.Nested('ReadProfileSchema', exclude=
+        ("accounts", "plaid_items", "api_keys"))
+    accounts = fields.Nested('ReadAccountSchema', many=True, exclude=
+        ("profile", "plaid_item", "balances", "holdings", "transactions"))
 
     class Meta:
         additional = ("id", "item_id", "request_id", "status", "timestamp")

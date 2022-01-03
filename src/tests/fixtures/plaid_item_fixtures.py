@@ -63,15 +63,11 @@ def plaid_item_factory(db, faker, profile_factory):
 
 @pytest.fixture
 def valid_plaid_item_create_request_factory(faker, profile_factory):
-    def __request_factory(profile_id=None,
-                          item_id=faker.md5(),
+    def __request_factory(item_id=faker.md5(),
                           access_token=faker.md5(),
                           request_id=faker.md5(),
                           status=''):
-        if profile_id is None:
-            profile_id = profile_factory().id
         return CreatePlaidItemSchema().load({
-            'profile_id': profile_id,
             'item_id': item_id,
             'access_token': access_token,
             'request_id': request_id,

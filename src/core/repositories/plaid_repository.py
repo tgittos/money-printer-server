@@ -85,12 +85,10 @@ class PlaidRepository:
                     success=False,
                     message=f"Unknown error from Plaid exchanging public token"
                 )
-
+            
+            print(plaid_access_result)
             # create a plaid token if it's valid
-            create_link_result = crud.create_plaid_item(self.db, CreatePlaidItemSchema().load({
-                **{'profile_id': profile_id},
-                **plaid_access_result
-            }))
+            create_link_result = crud.create_plaid_item(self.db, profile_id, CreatePlaidItemSchema().load(plaid_access_result))
 
             if not create_link_result.success:
                 return RepositoryResponse(

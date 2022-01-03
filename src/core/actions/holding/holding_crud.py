@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from sqlalchemy.orm import selectinload
 from datetime import datetime, timezone
 
@@ -50,9 +51,10 @@ def get_holdings_by_profile_id(db, profile_id: int) -> ActionResponse:
             .options(selectinload(Holding.account))\
             .options(selectinload(Holding.balances))\
             .options(selectinload(Holding.security))\
-            .filter(Account.profile_id == profile_id)\
-            .all()
-        print('data:', data)
+            .filter(and_(
+                Account.profile_id == profile_id,
+                Holding.account_id == Account.id
+            )).all()
     return ActionResponse(
         success=data is not None,
         data=data

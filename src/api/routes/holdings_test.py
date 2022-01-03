@@ -1,6 +1,7 @@
 import pytest
 
 from core.models import Holding
+from core.schemas import read_account_schema
 from api.lib.constants import API_PREFIX
 
 from tests.fixtures import *
@@ -25,7 +26,6 @@ def test_get_holdings_by_profile_id_returns_holdings(
     assert holding.id in [d['id'] for d in result['data']]
 
 
-@pytest.mark.focus
 def test_get_holdings_by_profile_id_returns_empty_array_with_no_holdings(
         db, client, profile_factory, account_factory, user_token_factory):
     profile = profile_factory()
