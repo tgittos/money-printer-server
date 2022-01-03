@@ -19,10 +19,8 @@ class HoldingRepository:
 
     logger = get_logger(__name__)
     db = MySql(mysql_config)
-
-    def __init__(self):
-        self.scheduled_job_repo = ScheduledJobRepository()
-        self.security_repo = SecurityRepository()
+    scheduled_job_repo = ScheduledJobRepository()
+    security_repo = SecurityRepository()
 
     def get_holding_by_id(self, profile_id: int, holding_id: int) -> RepositoryResponse:
         return crud.get_holding_by_id(self.db, profile_id, holding_id)
