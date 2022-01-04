@@ -60,8 +60,6 @@ def register(db, request: RegisterProfileSchema) -> ActionResponse:
     """
     # first, check if the request email is already taken
     profile_response = get_profile_by_email(db, request['email'])
-    print("request:", request)
-    print("profile_response:", profile_response)
     if profile_response.data is not None:
         return ActionResponse(
             success=False,

@@ -58,8 +58,6 @@ def get_security_by_security_id(db, plaid_security_id: str) -> ActionResponse:
 def get_holdings_by_profile_id_and_account_id(db, profile_id: int, account_id: int) -> ActionResponse:
     # TODO - I need to re-write this SQL to pull in the holdings and the attached securities
     # and return that for schema dumping
-    print('profile_id:', profile_id)
-    print('account_id:', account_id)
     with db.get_session() as session:
         account = session.query(Account).where(and_(
             Account.profile_id == profile_id,

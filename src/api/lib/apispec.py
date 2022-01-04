@@ -1,11 +1,12 @@
 import json
 from os import sync
+from flask.views import MethodView
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin 
 
 from core.schemas import *
-from api.views import view_funcs
+from core.lib.logger import get_logger
 
 
 def write_apispec(path, app):
@@ -26,9 +27,8 @@ def write_apispec(path, app):
 
     # paths
     with app.test_request_context():
-        for view_func in view_funcs:
-            spec.path(view=view_func)
-
+        for name, view in app.view_functions.items():
+            spec.path(view=view)
 
     with open(path, 'w') as f:
         f.write(json.dumps(spec.to_dict()))

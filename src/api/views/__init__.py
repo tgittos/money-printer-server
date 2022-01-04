@@ -1,26 +1,50 @@
 import sys
 import inspect
+import re
+import os
+import importlib.util
+import glob
 
-from .base import BaseApi
 from .webhooks import webhooks_bp
 from .health import health_bp
 from .swagger import swagger_bp
-
-view_funcs = []
 
 def register_api(app):
     """
     Iterates through all available views and registers them with
     the application if they can be registered.
     """
-    api_views = inspect.getmembers(sys.modules[__name__], inspect.isclass)
-    for name, api_view in api_views:
-        if api_view is not issubclass(BaseApi, api_view):
-            next
-        obj = api_views()
-        view_funcs.append(obj.view_func)
+    current_dir = os.path.dirname(__file__)
+    for path in glob.glob(current_dir + "/**/*.py", recursive=True):
+        basename = os.path.basename(path)
+
+        if basename == "__init__.py" or re.search(r'_test.py$', basename):
+            continue
+        
+        mod_name = basename.split('.')[0]
+        spec = importlib.util.spec_from_file_location(mod_name, path)
+        mod = importlib.util.module_from_spec(spec)
+
+        #import the module into this package
+        spec.loader.exec_module(mod)
+
+        # fetch the actual class from the module
+        mod_name_parts = mod_name.split('_')
+        cls_name = ''.join(p.title() for p in mod_name_parts) + "Api"
+        if cls_name == "BaseApi":
+            continue
+        if hasattr(mod, cls_name):
+            cls = getattr(mod, cls_name)
+        else:
+            continue
+
+        # create a new instance of this view function
+        obj = cls()
+
+        # register with app if valid
         if hasattr(obj, 'register_api'):
             obj.register_api(app)
+
     
     # Manually register a few lower level APIs we don't expose to the user
     app.register_blueprint(health_bp)

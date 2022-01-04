@@ -9,7 +9,7 @@ class BaseApi(MethodView):
 
     def __init__(self, url, name):
         self.view_func = self.as_view(name)
-        self.url_base = f"{self.api_base}/{url}"
+        self.url_base = f"{self.api_base}{url}"
 
     def register_api(self, app, pk='id', pk_type='int', expose_delete=False):
         bulk_methods = ['GET', 'PUT']
@@ -22,7 +22,7 @@ class BaseApi(MethodView):
 
     def add_url(self, app, url, view_func=None, methods=['GET',]):
         app.add_url_rule(
-            f"{self.url_base}/{url}",
+            f"{self.url_base}{url}",
             view_func=view_func or self.view_func,
             methods=methods
         )

@@ -8,7 +8,7 @@ from api.schemas import read_scheduled_jobs_schema, read_scheduled_job_schema
 from api.lib.constants import API_PREFIX
 from api.views.base import BaseApi
 
-from .decorators import authed, admin, get_identity
+from api.views.decorators import authed, admin, get_identity
 
 
 class SchedulerApi(BaseApi):
@@ -28,24 +28,23 @@ class SchedulerApi(BaseApi):
         """
         ---
         get:
-        summary: List the currently active scheduled jobs. This requires an admin profile.
-        security:
-            - jwt: []
-        responses:
-            200:
-            content:
-                application/json:
-                schema:
-                    type: object
-                    properties:
-                    success:
-                        type: boolean
-                    data:
-                        type: array
-                        items: ReadScheduledJobApiSchema
-        tags:
-            - Scheduling
-            - Admin
+            summary: List the currently active scheduled jobs. This requires an admin profile.
+            security:
+                - jwt: []
+            responses:
+                200:
+                    content:
+                        application/json:
+                            type: object
+                            schema:
+                                success:
+                                    type: boolean
+                                data:
+                                    type: array
+                                    items: ReadScheduledJobApiSchema
+            tags:
+                - Scheduling
+                - Admin
         """
 
         repo = ScheduledJobRepository()
@@ -64,29 +63,29 @@ class SchedulerApi(BaseApi):
     @admin
     def create_schedule():
         """
-        ---
-        post:
-        summary: Create a new scheduled job based on the available jobs. This requires an admin profile.
-        security:
-            - jwt: []
-        parameters:
-            - in: request
-            schema: CreateScheduledJobSchema
-        responses:
-            200:
-            content:
-                application/json:
-                schema:
-                    type: object
-                    properties:
-                    success:
-                        type: boolean
-                    data:
-                        type: array
-                        items: ReadScheduledJobApiSchema
-        tags:
-            - Scheduling
-            - Admin
+            ---
+            post:
+                summary: Create a new scheduled job based on the available jobs. This requires an admin profile.
+                security:
+                    - jwt: []
+                requestBody:
+                    content:
+                        application/json:
+                            schema: CreateScheduledJobSchema
+                responses:
+                    200:
+                        content:
+                            application/json:
+                                type: object
+                                schema:
+                                    success:
+                                        type: boolean
+                                    data:
+                                        type: array
+                                        items: ReadScheduledJobApiSchema
+            tags:
+                - Scheduling
+                - Admin
         """
         try:
             repo = ScheduledJobRepository()
@@ -112,27 +111,27 @@ class SchedulerApi(BaseApi):
         """
         ---
         put:
-        summary: Update an existing scheduled job definition. This requires an admin profile.
-        security:
-            - jwt: []
-        parameters:
-            - in: request
-            schema: UpdateScheduledJobSchema
-        responses:
-            200:
-            content:
-                application/json:
-                schema:
-                    type: object
-                    properties:
-                    success:
-                        type: boolean
-                    data:
-                        type: array
-                        items: ReadScheduledJobApiSchema
-        tags:
-            - Scheduling
-            - Admin
+            summary: Update an existing scheduled job definition. This requires an admin profile.
+            security:
+                - jwt: []
+            requestBody:
+                content:
+                    application/json:
+                        schema: UpdateScheduledJobSchema
+            responses:
+                200:
+                    content:
+                        application/json:
+                            type: object
+                            schema:
+                                success:
+                                    type: boolean
+                                data:
+                                    type: array
+                                    items: ReadScheduledJobApiSchema
+            tags:
+                - Scheduling
+                - Admin
         """
         try:
             schema = read_scheduled_job_schema.load(request.json)
@@ -168,22 +167,21 @@ class SchedulerApi(BaseApi):
         """
         ---
         delete:
-        summary: Delete an existing scheduled job definition. This requires an admin profile.
-        security:
-            - jwt: []
-        parameters:
-            - in: schedule_id
-            name: schedule_id
-            type: Integer
-        responses:
-            200:
-            content:
-                application/json:
-                schema:
-                    type: object
-                    properties:
-                    success:
-                        type: boolean
+            summary: Delete an existing scheduled job definition. This requires an admin profile.
+            security:
+                - jwt: []
+            parameters:
+                - in: schedule_id
+                  name: schedule_id
+                  type: Integer
+            responses:
+                200:
+                    content:
+                        application/json:
+                            type: object
+                            schema:
+                                success:
+                                    type: boolean
         tags:
             - Scheduling
             - Admin

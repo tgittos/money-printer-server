@@ -2,7 +2,7 @@ from flask import abort
 
 from core.repositories import AccountRepository, SecurityRepository
 from api.schemas import read_holdings_schema, read_accounts_schema, read_account_balances_schema
-from .decorators import authed, get_identity
+from api.views.decorators import authed, get_identity
 
 from api.views.base import BaseApi
 from api.lib.constants import API_PREFIX
@@ -10,14 +10,14 @@ from api.lib.constants import API_PREFIX
 
 class AccountsApi(BaseApi):
 
-    def __init__(self, url):
-        super().__init__(url, 'accounts')
+    def __init__(self):
+        super().__init__('/accounts', 'accounts')
 
     def register_api(self, app):
-        self.add_url(app, "/accounts", self.list_accounts)
-        self.add_url(app, '/accounts/<account_id>/sync', self.request_account_sync)
-        self.add_url(app, "/accounts/<account_id>/balances", self.request_account_balances)
-        self.add_url(app, "/accounts/<account_id>/holdings", self.list_holdings)
+        self.add_url(app, "/", self.list_accounts)
+        self.add_url(app, '/<account_id>/sync', self.request_account_sync)
+        self.add_url(app, "/<account_id>/balances", self.request_account_balances)
+        self.add_url(app, "/<account_id>/holdings", self.list_holdings)
 
 
     @authed

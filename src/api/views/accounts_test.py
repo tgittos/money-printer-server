@@ -121,7 +121,6 @@ def test_request_holdings_gets_holdings_for_account(client, user_token_factory,
     account = account_factory(profile_id=profile.id)
     holding = holding_factory(account_id=account.id)
     token = user_token_factory(profile=profile)
-    print('profile id', profile.id)
     response = client.get(f"/{API_PREFIX}/accounts/{account.id}/holdings",
         headers={
             'Authorization': f"Bearer {token}"
@@ -141,7 +140,6 @@ def test_request_holdings_fails_for_no_account(client, user_token_factory,
     account = account_factory(profile_id=profile.id)
     holding = holding_factory(account_id=account.id)
     token = user_token_factory(profile=profile)
-    print('profile id', profile.id)
     response = client.get(f"/{API_PREFIX}/accounts/23423452/holdings",
         headers={
             'Authorization': f"Bearer {token}"

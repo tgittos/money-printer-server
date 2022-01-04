@@ -4,7 +4,7 @@ from flask import request, abort
 from marshmallow import ValidationError
 
 from core.repositories.profile_repository import ProfileRepository
-from .decorators import authed, get_identity
+from api.views.decorators import authed, get_identity
 from core.schemas import ReadAuthSchema, ResetPasswordSchema, RegisterProfileSchema, LoginSchema, ReadProfileSchema
 
 from api.lib.constants import API_PREFIX
@@ -29,17 +29,26 @@ class AuthApi(BaseApi):
         """
         ---
         post:
-        summary: Create a new user in the database and email a temporary password to them.
-        parameters:
-        - in: request
-            schema: RegisterProfileSchema
-        responses:
-            200:
-            content:
-                application/json:
-                schema: ReadAuthSchema
-        tags:
-            - Auth
+            summary: Create a new user in the database and email a temporary password to them.
+            parameters:
+                - in: request
+                  schema: RegisterProfileSchema
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema: ReadAuthSchema
+                400:
+                    content:
+                        application/json:
+                            type: object
+                            properties:
+                                success:
+                                    type: boolean
+                                message:
+                                    type: string
+            tags:
+                - Auth
         """
         try:
             schema = RegisterProfileSchema().load(request.json)
@@ -75,17 +84,17 @@ class AuthApi(BaseApi):
         """
         ---
         post:
-        summary: Authenticate user credentials in exchange for a JWT token.
-        parameters:
-        - in: request
-            schema: LoginSchema
-        responses:
-            200:
-            content:
-                application/json:
-                schema: ReadAuthSchema
-        tags:
-            - Auth
+            summary: Authenticate user credentials in exchange for a JWT token.
+            parameters:
+                - in: request
+                  schema: LoginSchema
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema: ReadAuthSchema
+            tags:
+                - Auth
         """
         try:
             schema = LoginSchema().load(request.json)
@@ -109,17 +118,17 @@ class AuthApi(BaseApi):
         """
         ---
         post:
-        summary: Initiate the user password reset process by emailing a reset link to the user.
-        parameters:
-        - in: email
-            name: email
-            schema:
-                type: string
-        responses:
-            204:
-            description: Accepted
-        tags:
-            - Auth
+            summary: Initiate the user password reset process by emailing a reset link to the user.
+            parameters:
+                - in: email
+                  name: email
+                  schema:
+                      type: string
+            responses:
+                204:
+                    description: Accepted
+            tags:
+                - Auth
         """
         email = request.json['email']
         repo = ProfileRepository()
@@ -133,15 +142,15 @@ class AuthApi(BaseApi):
         """
         ---
         post:
-        summary: Continue the user reset process by providing a private reset token and a new password.
-        parameters:
-        - in: request
-            schema: ResetPasswordSchema
-        responses:
-            204:
-            description: Accepted
-        tags:
-            - Auth
+            summary: Continue the user reset process by providing a private reset token and a new password.
+            parameters:
+                - in: request
+                  schema: ResetPasswordSchema
+            responses:
+                204:
+                    description: Accepted
+            tags:
+                - Auth
         """
         try:
             repo = ProfileRepository()

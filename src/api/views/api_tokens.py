@@ -3,12 +3,12 @@ from flask import Blueprint
 from core.repositories.profile_repository import ProfileRepository
 from api.schemas import read_api_token_schema
 
-from api.routes.decorators import authed, get_identity
+from api.views.decorators import authed, get_identity
 from api.lib.constants import API_PREFIX
 from api.views.base import BaseApi
 
 
-class ApiTokenApi(BaseApi):
+class ApiTokensApi(BaseApi):
 
     def __init__(self):
         super().__init__("/profile/api_tokens", 'api_tokens')

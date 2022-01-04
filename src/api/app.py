@@ -16,18 +16,24 @@ from core.lib.logger import init_logger, get_logger
 from api.lib.client_bus import ClientBus
 from api.lib.constants import API_PREFIX
 
-from config import config, redis_config, env
+from config import config
 
+
+# Flask app
+app = Flask(__name__)
+# marshmallow for schema gen based on Flask/SQLAlchemy
+ma = Marshmallow(app)
+# websocket server
+ws = None
+# client communication bus app
+cb = None
 
 from api.views import register_api, register_swagger
 
-# globals needed to hook things up, for example, schemas
-app = Flask(__name__)
-ma = Marshmallow(app)
-
-
 # create the app
-def create_app(store):
+def create_app():
+    global app, ma, ws, cb
+
     in_prod = 'MP_ENVIRONMENT' in os.environ and os.environ['MP_ENVIRONMENT'] == "production"
 
     log_path = os.path.dirname(__file__) + "/../../logs/"
@@ -56,21 +62,20 @@ def create_app(store):
         register_swagger(app)
 
     logger.debug("* configuring SocketIO ws")
-    socket_app, client_bus = _configure_ws(app)
+    ws, cb = _configure_ws(app)
 
 
 def _configure_flask(app):
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config['SECRET_KEY'] = config.secret
     CORS(app)
-    # app.handle_exception = self._rescue_exceptions
     app.config.from_object(rq_dashboard.default_settings)
 
 
 def _configure_ws(app):
-    socket_app = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
-    client_bus = ClientBus(socket_app)
-    return (socket_app, client_bus)
+    ws = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
+    cb = ClientBus(ws)
+    return (ws, cb)
 
 
 def _configure_graphql(app, in_prod=True):
@@ -87,20 +92,20 @@ def _configure_graphql(app, in_prod=True):
     )
 
 def _configure_prometheus(app):
-    app.wsgi_app = DispatcherMiddleware(globals.flask_app.wsgi_app, {
+    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         '/v1/api/metrics': make_wsgi_app()
     })
 
 
-def run(self):
+def run():
     print(" * Starting money-printer api/ws application", flush=True)
-    self.client_bus.start()
-    self.flask_app.run(host=config.host, port=config.port)
-    self.socket_app.run(globals.flask_app, host=config.host, port=config.port)
+    cb.start()
+    app.run(host=config.host, port=config.port)
+    ws.run(app, host=config.host, port=config.port)
 
 
-def init(self, first_name, last_name, email):
-    repo = ProfileRepository(self.store)
+def init(first_name, last_name, email):
+    repo = ProfileRepository()
     result = repo.register(RegisterProfileSchema(
         email=email, first_name=first_name, last_name=last_name
     ))

@@ -20,8 +20,10 @@
     "stop:prod": "docker-compose -f docker-compose.prod.yml stop",
     "down": "docker-compose -f docker-compose.dev.yml down",
     "down:prod": "docker-compose -f docker-compose.prod.yml down",
-    "recycle": "npm run stop && npm run build && npm run start",
-    "recycle:prod": "npm run stop:prod && npm run build:prod && npm run start:prod"
+    "logs": "docker-compose -f docker-compose.dev.yml logs -f",
+    "logs:prod": "docker-compose -f docker-compose.prod.yml logs -f",
+    "recycle": "npm run stop; sleep 1 && npm run build; sleep 1 && npm run start",
+    "recycle:prod": "npm run stop:prod; sleep 1 && npm run build:prod; sleep 1 && npm run start:prod"
   },
   "author": "Tim Gittos",
   "license": "ISC",

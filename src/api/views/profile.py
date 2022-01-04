@@ -10,7 +10,7 @@ from api.views.base import BaseApi
 from api.lib.constants import API_PREFIX
 from api.metrics.profile_metrics import *
 
-from .decorators import authed, get_identity
+from api.views.decorators import authed, get_identity
 
 
 class ProfileApi(BaseApi):
@@ -30,16 +30,16 @@ class ProfileApi(BaseApi):
         """
         ---
         get:
-        summary: Return the personal details of the signed in user.
-        security:
-            - jwt: []
-        responses:
-            200:
-            content:
-                application/json:
-                schema: ReadProfileApiSchema
-        tags:
-            - Profile
+            summary: Return the personal details of the signed in user.
+            security:
+                - jwt: []
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema: ReadProfileApiSchema
+            tags:
+                - Profile
         """
 
         user = get_identity()
@@ -52,21 +52,22 @@ class ProfileApi(BaseApi):
         """
         ---
         put:
-        summary: Update the user details of the signed in user.
-        security:
-            - jwt: []
-        parameters:
-        - in: request
-            schema: UpdateProfileSchema
-        responses:
-            200:
-            content:
-                application/json:
-                schema: ReadProfileApiSchema
-            400:
-            description: Bad request
-        tags:
-            - Profile
+            summary: Update the user details of the signed in user.
+            security:
+                - jwt: []
+            requestBody:
+                content:
+                    application/json:
+                        schema: UpdateProfileSchema
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema: ReadProfileApiSchema
+                400:
+                    description: Bad request
+            tags:
+                - Profile
         """
 
         user = get_identity()
@@ -95,14 +96,14 @@ class ProfileApi(BaseApi):
         """
         ---
         post:
-        summary: Request a full account sync for all accounts belonging to the profile.
-        security:
-            - jwt: []
-        responses:
-            204:
-            description: Accepted
-        tags:
-            - Profile
+            summary: Request a full account sync for all accounts belonging to the profile.
+            security:
+                - jwt: []
+            responses:
+                204:
+                    description: Accepted
+            tags:
+                - Profile
         """
         user = get_identity()
         profile_repo = ProfileRepository()

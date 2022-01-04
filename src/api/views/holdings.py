@@ -4,7 +4,7 @@ from core.repositories import HoldingRepository
 from api.schemas import read_holdings_schema, read_holding_schema, read_holding_balances_schema
 
 from api.lib.constants import API_PREFIX
-from api.routes.decorators import authed, get_identity
+from api.views.decorators import authed, get_identity
 from api.views.base import BaseApi
 
 
@@ -15,8 +15,8 @@ class HoldingsApi(BaseApi):
     
     def register_api(self, app):
         self.add_url(app, "/", self.get_holdings_by_profile)
-        self.add_url("/<holding_id>", self.get_holding)
-        self.add_url("/<holding_id>/balances", self.get_holding_balances)
+        self.add_url(app, "/<holding_id>", self.get_holding)
+        self.add_url(app, "/<holding_id>/balances", self.get_holding_balances)
 
 
     @authed

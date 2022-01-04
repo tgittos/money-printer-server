@@ -2,7 +2,7 @@ import graphene
 from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 
-from api.routes.decorators import decode_token
+from api.views.decorators import decode_token
 
 from core.repositories.account_repository import AccountRepository
 from core.repositories.holding_repository import HoldingRepository

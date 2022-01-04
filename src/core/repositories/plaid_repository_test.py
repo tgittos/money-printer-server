@@ -54,7 +54,6 @@ def test_create_link_token_calls_into_plaid_api(repo, profile_factory, faker, pl
     profile = profile_factory()
     faker.add_provider(internet)
     result = repo.create_link_token(profile.id, faker.domain_name())
-    print('result:', result.message)
     assert result.success
     plaid_api_link_spy.assert_called_once()
 

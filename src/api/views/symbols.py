@@ -1,26 +1,20 @@
 from datetime import datetime, timedelta, timezone
 
-from flask import Blueprint
 from flask import request
 
 from core.repositories.stock_repository import StockRepository
 from config import mysql_config, iex_config
 
-from api.lib.constants import API_PREFIX
 from api.views.base import BaseApi
-from .decorators import authed
+from api.views.decorators import authed
 
-# define the blueprint for symbol routes
-symbol_bp = Blueprint('symbols', __name__)
-
-
-class SymbolApi(BaseApi):
+class SymbolsApi(BaseApi):
 
     def __init__(self):
-        super().__init__("/symbols")
+        super().__init__("/symbols", "symbols")
     
     def register_api(self, app):
-        self.add_url(app, "/<symbol/previous", self.symbol_previous)
+        self.add_url(app, "/<symbol>/previous", self.symbol_previous)
         self.add_url(app, '/<symbol>/intraday', self.symbol_intraday)
         self.add_url(app, '/<symbol>/eod', self.symbol_eod)
 
