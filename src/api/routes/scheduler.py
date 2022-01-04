@@ -1,11 +1,13 @@
 from flask import Blueprint, request, Response, abort
 from marshmallow import ValidationError
 
-from core.schemas.scheduler_schemas import CreateScheduledJobSchema, ReadScheduledJobSchema
+from core.schemas import CreateScheduledJobSchema
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
-from .decorators import authed, admin, get_identity
 
+from api.schemas import ReadScheduledJobSchema
 from api.lib.constants import API_PREFIX
+
+from .decorators import authed, admin, get_identity
 
 scheduler_bp = Blueprint('scheduler', __name__)
 
@@ -36,7 +38,7 @@ def list_schedules():
         - Scheduling
         - Admin
     """
-    
+
     repo = ScheduledJobRepository()
     response = repo.get_scheduled_jobs()
     if response.success:

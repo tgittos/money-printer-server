@@ -7,13 +7,11 @@ from rq_scheduler import Scheduler
 
 from core.apis.mailgun import MailGun
 from core.stores.mysql import MySql
-from core.models.scheduler.scheduled_job import ScheduledJob
-from core.schemas.scheduler_schemas import CreateScheduledJobSchema, CreateInstantJobSchema
-from core.models.scheduler.job_result import JobResult
-from core.lib.types import ScheduledJobList
+from core.models import ScheduledJob, JobResult
+from core.schemas import CreateScheduledJobSchema, CreateInstantJobSchema
 from core.lib.constants import WORKER_QUEUE
-from config import redis_config, mailgun_config, mysql_config
 from core.repositories.repository_response import RepositoryResponse
+from config import redis_config, mailgun_config, mysql_config
 
 
 class ScheduledJobRepository:

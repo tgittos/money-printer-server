@@ -1,12 +1,7 @@
 from flask import Blueprint, request, abort
 
-from core.repositories.profile_repository import ProfileRepository
-from core.repositories.account_repository import AccountRepository
-from core.repositories.security_repository import SecurityRepository
-from core.schemas import ReadAccountSchema, ReadAccountBalanceSchema, ReadHoldingSchema
-from core.schemas.account_schemas import ReadAccountSchema
-from core.schemas.holding_schemas import ReadHoldingSchema
-from config import env
+from core.repositories import AccountRepository, SecurityRepository
+from api.schemas import read_holdings_schema, read_accounts_schema, read_account_balances_schema
 from .decorators import authed, get_identity
 
 from api.lib.constants import API_PREFIX
@@ -46,18 +41,14 @@ def list_accounts():
     if accounts.success and accounts.data is not None:
         return {
             'success': True,
-            'data': ReadAccountSchema(
-                many=True,
-                exclude=("balances", "profile", "transactions",
-                         "holdings", "plaid_item")
-            ).dump(accounts.data)
+            'data': read_accounts_schema().dump(accounts.data)
         }
     else:
         abort(404)
 
 
-@account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/sync", methods=['POST'])
-@authed
+@ account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/sync", methods=['POST'])
+@ authed
 def request_account_sync(account_id: int):
     """
     ---
@@ -89,8 +80,8 @@ def request_account_sync(account_id: int):
     }, 400
 
 
-@account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/balances", methods=['GET'])
-@authed
+@ account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/balances", methods=['GET'])
+@ authed
 def request_account_balances(account_id):
     """
     ---
@@ -115,20 +106,18 @@ def request_account_balances(account_id):
     """
     user = get_identity()
     account_repo = AccountRepository()
-    balance_result = account_repo.get_balances_by_account_id(user['id'], account_id)
+    balance_result = account_repo.get_balances_by_account_id(
+        user['id'], account_id)
     if not balance_result or balance_result is None:
         abort(404)
     return {
         'success': True,
-        'data': ReadAccountBalanceSchema(
-            many=True,
-            exclude=("account",)
-        ).dump(balance_result.data)
+        'data': read_account_balances_schema.dump(balance_result.data)
     }
 
 
-@account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/holdings", methods=['GET'])
-@authed
+@ account_bp.route(f"/{API_PREFIX}/accounts/<account_id>/holdings", methods=['GET'])
+@ authed
 def list_holdings(account_id):
     """
     ---
@@ -160,8 +149,5 @@ def list_holdings(account_id):
         abort(404)
     return {
         'success': True,
-        'data': ReadHoldingSchema(
-            many=True,
-            exclude=("account", "balances", "security")
-        ).dump(holding_result.data)
+        'data': read_holdings_schema.dump(holding_result.data)
     }

@@ -1,9 +1,8 @@
 from sqlalchemy import and_
 from datetime import datetime
 
-from core.models.profile import Profile
-from core.models.plaid_item import PlaidItem
-from core.schemas.plaid_item_schemas import CreatePlaidItemSchema, UpdatePlaidItemSchema
+from core.models import Profile, PlaidItem
+from core.schemas import CreatePlaidItemSchema, UpdatePlaidItemSchema
 from core.actions.action_response import ActionResponse
 
 

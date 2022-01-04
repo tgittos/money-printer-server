@@ -1,34 +1,23 @@
 from marshmallow import Schema, fields
 
+from core.models import ApiToken, ApiTokenPolicy
 
-class CreateApiKeySchema(Schema):
+
+class CreateApiTokenSchema(Schema):
     class Meta:
         fields = ("profile_id",)
 
 
-class ReadApiKeySchema(Schema):
-    policy: fields.Nested('ReadApiKeyPolicySchema')
-
-    class Meta:
-        additional = ("id", "profile_id", "status", "timestamp")
-
-
-class UpdateApiKeySchema(Schema):
+class UpdateApiTokenSchema(Schema):
     class Meta:
         fields = ("id", "status", "api_token_policy_id")
 
 
-class CreateApiKeyPolicySchema():
+class CreateApiTokenPolicySchema():
     class Meta:
-        fields = ("doc", "hosts")
+        model = ApiTokenPolicy
 
 
-class ReadApiKeyPolicySchema():
-    class Meta:
-        fields = ("id", "doc", "hosts")
-
-
-class UpdateApiKeyPolicySchema():
+class UpdateApiTokenPolicySchema():
     class Meta:
         fields = ("id", "doc", "hosts")
-    

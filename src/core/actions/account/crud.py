@@ -4,7 +4,7 @@ from marshmallow import EXCLUDE
 from sqlalchemy import and_, desc
 
 from core.models import Account, AccountBalance
-from core.schemas.account_schemas import *
+from core.schemas import CreateAccountSchema, UpdateAccountSchema, CreateAccountBalanceSchema, UpdateAccountBalanceSchema
 from core.actions.action_response import ActionResponse
 
 

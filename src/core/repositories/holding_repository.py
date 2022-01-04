@@ -5,7 +5,7 @@ from core.stores.mysql import MySql
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.repositories.security_repository import SecurityRepository
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas.scheduler_schemas import CreateInstantJobSchema
+from core.schemas import CreateInstantJobSchema
 from core.lib.logger import get_logger
 from config import mysql_config
 
@@ -127,7 +127,8 @@ class HoldingRepository:
             )
 
         profile_result = get_profile_by_id(self, plaid_result.data.profile_id)
-        accounts_result = get_accounts_by_plaid_item_id(self, profile_id, plaid_result.data.id)
+        accounts_result = get_accounts_by_plaid_item_id(
+            self, profile_id, plaid_result.data.id)
         if not profile_result.success or not accounts_result.success:
             self.logger.error("received request to update investment transactions with no corresponding accounts: {0}"
                               .format(plaid_result.data.id))

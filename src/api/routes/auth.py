@@ -5,8 +5,7 @@ from marshmallow import ValidationError
 
 from core.repositories.profile_repository import ProfileRepository
 from .decorators import authed, get_identity
-from core.schemas.auth_schemas import ReadAuthSchema, ResetPasswordSchema, RegisterProfileSchema, LoginSchema
-from core.schemas.profile_schemas import ReadProfileSchema
+from core.schemas import ReadAuthSchema, ResetPasswordSchema, RegisterProfileSchema, LoginSchema, ReadProfileSchema
 
 from api.lib.constants import API_PREFIX
 from api.metrics.auth_metrics import *

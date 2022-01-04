@@ -5,7 +5,7 @@ from core.stores.mysql import MySql
 from core.apis.plaid.oauth import PlaidOauth
 from core.apis.plaid.common import PLAID_PRODUCTS_STRINGS
 from core.models import PlaidItem
-from core.schemas.plaid_item_schemas import *
+from core.schemas import CreatePlaidItemSchema
 
 # import all the actions so that consumers of the repo can access everything
 import core.actions.plaid.crud as crud
@@ -85,10 +85,11 @@ class PlaidRepository:
                     success=False,
                     message=f"Unknown error from Plaid exchanging public token"
                 )
-            
+
             print(plaid_access_result)
             # create a plaid token if it's valid
-            create_link_result = crud.create_plaid_item(self.db, profile_id, CreatePlaidItemSchema().load(plaid_access_result))
+            create_link_result = crud.create_plaid_item(
+                self.db, profile_id, CreatePlaidItemSchema().load(plaid_access_result))
 
             if not create_link_result.success:
                 return RepositoryResponse(

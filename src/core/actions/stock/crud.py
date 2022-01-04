@@ -3,8 +3,7 @@ from datetime import datetime
 from pandas import DataFrame
 from sqlalchemy import and_
 
-from core.models.security_price import SecurityPrice
-from core.models.iex_blacklist import IexBlacklist
+from core.models import SecurityPrice, IexBlacklist
 from core.lib.utilities import sanitize_float, local_to_utc
 from core.actions.action_response import ActionResponse
 

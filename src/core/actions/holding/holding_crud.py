@@ -3,8 +3,8 @@ from sqlalchemy.orm import selectinload
 from datetime import datetime, timezone
 
 from core.models import Holding, HoldingBalance, Security, Account
+from core.schemas import CreateHoldingSchema, UpdateHoldingSchema, CreateHoldingBalanceSchema, UpdateHoldingBalanceSchema
 from core.actions.action_response import ActionResponse
-from core.schemas.holding_schemas import *
 
 
 def get_holding_by_id(db, profile_id: int, holding_id: int) -> ActionResponse:

@@ -2,9 +2,9 @@ from copy import Error
 from flask import Blueprint, abort, request
 from marshmallow import ValidationError
 
-from core.repositories.account_repository import AccountRepository
 from core.repositories.profile_repository import ProfileRepository
-from core.schemas.profile_schemas import ReadProfileSchema, UpdateProfileSchema
+from core.schemas import UpdateProfileSchema
+from api.schemas import read_profile_schema
 
 from api.lib.constants import API_PREFIX
 from api.metrics.profile_metrics import *
@@ -35,7 +35,7 @@ def get_profile():
     """
 
     user = get_identity()
-    return ReadProfileSchema().dump(user)
+    return read_profile_schema.dump(user)
 
 
 @profile_bp.route(f"/{API_PREFIX}/profile", methods=['PUT'])
@@ -70,7 +70,7 @@ def update_profile():
             ** UpdateProfileSchema().load(request.json)
         })
         if update_result.success:
-            return ReadProfileSchema().dump(update_result.data)
+            return read_profile_schema.dump(update_result.data)
         return {
             'success': False,
             'message': update_result.message

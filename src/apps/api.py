@@ -10,25 +10,30 @@ from flask_graphql import GraphQLView
 import rq_dashboard
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from prometheus_client import make_wsgi_app
-
-from config import config, redis_config, env
+from flask_marshmallow import Marshmallow
 
 from core.repositories.profile_repository import ProfileRepository
 from core.schemas.auth_schemas import RegisterProfileSchema
 from core.lib.logger import init_logger, get_logger
 
-from api.routes import *
-from api.routes.swagger import swagger_bp
-
-from api.graphql.schema import schema
 from api.lib.client_bus import ClientBus
 from api.lib.constants import API_PREFIX
 
+from config import config, redis_config, env
+import api.lib.globals as globals
+
+globals.flask_app = Flask(__name__)
+globals.marshmallow_app = Marshmallow(globals.flask_app)
+
+from api.routes import *
+from api.routes.swagger import swagger_bp
+from api.graphql.schema import schema
 
 class ApiApplication:
 
     log_path = os.path.dirname(__file__) + "/../../logs/"
-    flask_app = None
+    flask_app = globals.flask_app
+    marshmallow_app = globals.marshmallow_app
     socket_app = None
     client_bus = None
     store = None
@@ -38,11 +43,10 @@ class ApiApplication:
         init_logger(self.log_path)
         self.logger = get_logger("server.services.api")
         self.store = store
-        self.flask_app = Flask(__name__)
         self._configure_flask()
         self._configure_ws()
         # override RQ redis url
-        self.flask_app.config["RQ_DASHBOARD_REDIS_URL"] = "redis://{0}:{1}".format(
+        globals.flask_app.config["RQ_DASHBOARD_REDIS_URL"] = "redis://{0}:{1}".format(
             redis_config.host,
             redis_config.port
         )
@@ -51,8 +55,8 @@ class ApiApplication:
     def run(self):
         print(" * Starting money-printer api/ws application", flush=True)
         self.client_bus.start()
-        self.flask_app.run(host=config.host, port=config.port)
-        self.socket_app.run(self.flask_app, host=config.host, port=config.port)
+        globals.flask_app.run(host=config.host, port=config.port)
+        self.socket_app.run(globals.flask_app, host=config.host, port=config.port)
 
     def init(self, first_name, last_name, email):
         repo = ProfileRepository(self.store)
@@ -65,11 +69,11 @@ class ApiApplication:
         if self.configured:
             return
         self.logger.debug("configuring base Flask application")
-        self.flask_app.config['CORS_HEADERS'] = 'Content-Type'
-        self.flask_app.config['SECRET_KEY'] = config.secret
-        CORS(self.flask_app)
-        self.flask_app.handle_exception = self._rescue_exceptions
-        self.flask_app.config.from_object(rq_dashboard.default_settings)
+        globals.flask_app.config['CORS_HEADERS'] = 'Content-Type'
+        globals.flask_app.config['SECRET_KEY'] = config.secret
+        CORS(globals.flask_app)
+        globals.flask_app.handle_exception = self._rescue_exceptions
+        globals.flask_app.config.from_object(rq_dashboard.default_settings)
         self._configure_graphql()
         self._configure_prometheus()
         self._configure_routes()
@@ -78,28 +82,28 @@ class ApiApplication:
         if self.configured:
             return
         self.logger.info("registering rq blueprint")
-        self.flask_app.register_blueprint(
+        globals.flask_app.register_blueprint(
             rq_dashboard.blueprint, url_prefix="/rq")
         self.logger.info("registering health blueprint")
-        self.flask_app.register_blueprint(health_bp)
+        globals.flask_app.register_blueprint(health_bp)
         self.logger.info("registering auth blueprint")
-        self.flask_app.register_blueprint(auth_bp)
+        globals.flask_app.register_blueprint(auth_bp)
         self.logger.info("registering plaid oauth blueprint")
-        self.flask_app.register_blueprint(oauth_bp)
+        globals.flask_app.register_blueprint(oauth_bp)
         self.logger.info("registering profile blueprint")
-        self.flask_app.register_blueprint(profile_bp)
+        globals.flask_app.register_blueprint(profile_bp)
         self.logger.info("registering accounts blueprint")
-        self.flask_app.register_blueprint(account_bp)
+        globals.flask_app.register_blueprint(account_bp)
         self.logger.info("registering holdings blueprint")
-        self.flask_app.register_blueprint(holdings_bp)
+        globals.flask_app.register_blueprint(holdings_bp)
         self.logger.info("registering symbol blueprint")
-        self.flask_app.register_blueprint(symbol_bp)
+        globals.flask_app.register_blueprint(symbol_bp)
         self.logger.info("registering webhook blueprint")
-        self.flask_app.register_blueprint(webhooks_bp)
+        globals.flask_app.register_blueprint(webhooks_bp)
         self.logger.info("registering scheduler blueprint")
-        self.flask_app.register_blueprint(scheduler_bp)
+        globals.flask_app.register_blueprint(scheduler_bp)
         self.logger.info("registering swagger docs blueprint")
-        self.flask_app.register_blueprint(swagger_bp)
+        globals.flask_app.register_blueprint(swagger_bp)
 
     def _configure_ws(self):
         if self.configured:
@@ -114,7 +118,7 @@ class ApiApplication:
         if self.configured:
             return
         self.logger.debug("configuring Prometheus metrics endpoint")
-        self.flask_app.wsgi_app = DispatcherMiddleware(self.flask_app.wsgi_app, {
+        globals.flask_app.wsgi_app = DispatcherMiddleware(globals.flask_app.wsgi_app, {
             '/v1/api/metrics': make_wsgi_app()
         })
 
@@ -123,7 +127,7 @@ class ApiApplication:
             return
         self.logger.debug("configuring GraphQL endpoint")
         in_prod = 'MP_ENVIRONMENT' in os.environ and os.environ['MP_ENVIRONMENT'] == "production"
-        self.flask_app.add_url_rule(
+        globals.flask_app.add_url_rule(
             f"/{API_PREFIX}/graphql",
             view_func=GraphQLView.as_view(
                 'graphql_view',

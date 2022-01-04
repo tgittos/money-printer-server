@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 
 from core.repositories import HoldingRepository
-from core.schemas.holding_schemas import *
+from api.schemas import read_holdings_schema, read_holding_schema, read_holding_balances_schema
 
 from api.lib.constants import API_PREFIX
 from api.routes.decorators import authed, get_identity
@@ -18,7 +18,7 @@ def get_holdings_by_profile():
     if result.success:
         return {
             'success': True,
-            'data': ReadHoldingSchema(many=True).dump(result.data)
+            'data': read_holdings_schema.dump(result.data)
         }
     return {
         'success': result.success,
@@ -31,11 +31,12 @@ def get_holdings_by_profile():
 def get_holding(holding_id):
     profile = get_identity()
     repo = HoldingRepository()
-    result = repo.get_holding_by_id(profile_id=profile['id'], holding_id=holding_id)
+    result = repo.get_holding_by_id(
+        profile_id=profile['id'], holding_id=holding_id)
     if result.success:
         return {
             'success': True,
-            'data': ReadHoldingSchema().dump(result.data)
+            'data': read_holding_schema.dump(result.data)
         }
     return {
         'success': result.success,
@@ -52,7 +53,7 @@ def get_holding_balances(holding_id):
     if result.success:
         return {
             'success': True,
-            'data': ReadHoldingBalanceSchema(many=True, exclude=("holding",)).dump(result.data)
+            'data': read_holding_balances_schema.dump(result.data)
         }
     return {
         'success': result.success,

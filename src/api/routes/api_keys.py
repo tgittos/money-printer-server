@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 from core.repositories.profile_repository import ProfileRepository
-from core.schemas.api_schemas import ReadApiKeySchema
+from api.schemas import ReadApiTokenSchema
 
 from api.routes.decorators import authed, get_identity
 from api.lib.constants import API_PREFIX
@@ -22,7 +22,7 @@ def get_profile_api_keys():
         200:
           content:
             application/json:
-              schema: ReadApiKeySchema
+              schema: ReadApiTokenSchema
       tags:
         - API Keys
     """
@@ -36,4 +36,4 @@ def get_profile_api_keys():
             'success': False
         }, 400
 
-    return ReadApiKeySchema(many=True).dump(keys_result.data)
+    return ReadApiTokenSchema(many=True).dump(keys_result.data)
