@@ -4,20 +4,20 @@ from core.models import ScheduledJob, JobResult
 from api.lib.globals import marshmallow_app as ma
 
 
-class ReadScheduledJobSchema(ma.SQLAlchemyAutoSchema):
+class ReadScheduledJobApiSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = ScheduledJob
         include_fk = True
 
 
-class ReadJobResultSchema(ma.SQLAlchemyAutoSchema):
+class ReadJobResultApiSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = JobResult
         include_fk = True
 
 
-read_scheduled_job_schema = ReadScheduledJobSchema()
-read_scheduled_jobs_schema = ReadScheduledJobSchema(many=True)
+read_scheduled_job_schema = ReadScheduledJobApiSchema()
+read_scheduled_jobs_schema = ReadScheduledJobApiSchema(many=True)
 
-read_job_result_schema = ReadJobResultSchema()
-read_job_results_schema = ReadJobResultSchema(many=True)
+read_job_result_schema = ReadJobResultApiSchema()
+read_job_results_schema = ReadJobResultApiSchema(many=True)

@@ -4,28 +4,28 @@ from core.models import Security, SecurityPrice, IexBlacklist
 from api.lib.globals import marshmallow_app as ma
 
 
-class ReadSecuritySchema(ma.SQLAlchemyAutoSchema):
+class ReadSecurityApiSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Security
         include_fk = True
 
 
-class ReadSecurityPriceSchema(ma.SQLAlchemyAutoSchema):
+class ReadSecurityPriceApiSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = SecurityPrice
         include_fk = True
 
 
-class ReadIexBlacklistSchema(ma.SQLAlchemyAutoSchema):
+class ReadIexBlacklistApiSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = IexBlacklist
         include_fk = True
 
-read_security_schema = ReadSecuritySchema()
-read_securities_schema = ReadSecuritySchema(many=True)
+read_security_schema = ReadSecurityApiSchema()
+read_securities_schema = ReadSecurityApiSchema(many=True)
 
-read_security_price_schema = ReadSecurityPriceSchema()
-read_security_prices_schema = ReadSecurityPriceSchema(many=True)
+read_security_price_schema = ReadSecurityPriceApiSchema()
+read_security_prices_schema = ReadSecurityPriceApiSchema(many=True)
 
-read_iex_blacklist_schema = ReadIexBlacklistSchema()
-read_iex_blacklists_schema = ReadIexBlacklistSchema(many=True)
+read_iex_blacklist_schema = ReadIexBlacklistApiSchema()
+read_iex_blacklists_schema = ReadIexBlacklistApiSchema(many=True)

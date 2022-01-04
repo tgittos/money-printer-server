@@ -22,8 +22,6 @@ from api.lib.constants import API_PREFIX
 from config import config, redis_config, env
 import api.lib.globals as globals
 
-globals.flask_app = Flask(__name__)
-globals.marshmallow_app = Marshmallow(globals.flask_app)
 
 from api.routes import *
 from api.routes.swagger import swagger_bp
@@ -32,8 +30,6 @@ from api.graphql.schema import schema
 class ApiApplication:
 
     log_path = os.path.dirname(__file__) + "/../../logs/"
-    flask_app = globals.flask_app
-    marshmallow_app = globals.marshmallow_app
     socket_app = None
     client_bus = None
     store = None
@@ -46,10 +42,6 @@ class ApiApplication:
         self._configure_flask()
         self._configure_ws()
         # override RQ redis url
-        globals.flask_app.config["RQ_DASHBOARD_REDIS_URL"] = "redis://{0}:{1}".format(
-            redis_config.host,
-            redis_config.port
-        )
         self.configured = True
 
     def run(self):
@@ -74,7 +66,7 @@ class ApiApplication:
         CORS(globals.flask_app)
         globals.flask_app.handle_exception = self._rescue_exceptions
         globals.flask_app.config.from_object(rq_dashboard.default_settings)
-        self._configure_graphql()
+        # self._configure_graphql()
         self._configure_prometheus()
         self._configure_routes()
 
