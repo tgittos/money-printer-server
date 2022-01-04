@@ -7,90 +7,99 @@ from core.repositories.stock_repository import StockRepository
 from config import mysql_config, iex_config
 
 from api.lib.constants import API_PREFIX
+from api.views.base import BaseApi
 from .decorators import authed
 
 # define the blueprint for symbol routes
 symbol_bp = Blueprint('symbols', __name__)
 
 
-@symbol_bp.route(f"/{API_PREFIX}/symbols/<symbol>/previous", methods=['GET'])
-@authed
-def symbol_previous(symbol):
-    repo = StockRepository()
+class SymbolApi(BaseApi):
 
-    # result is a data frame
-    result = repo.previous(symbol)
+    def __init__(self):
+        super().__init__("/symbols")
+    
+    def register_api(self, app):
+        self.add_url(app, "/<symbol/previous", self.symbol_previous)
+        self.add_url(app, '/<symbol>/intraday', self.symbol_intraday)
+        self.add_url(app, '/<symbol>/eod', self.symbol_eod)
 
-    if result is None:
+
+    @authed
+    def symbol_previous(symbol):
+        repo = StockRepository()
+
+        # result is a data frame
+        result = repo.previous(symbol)
+
+        if result is None:
+            return {
+                'success': False,
+                'message': 'last previous for symbol not found'
+            }
+
         return {
-            'success': False,
-            'message': 'last previous for symbol not found'
+            'success': True,
+            'data': result.to_dict(orient='records')
         }
 
-    return {
-        'success': True,
-        'data': result.to_dict(orient='records')
-    }
 
+    @authed
+    def symbol_intraday(symbol):
+        start = request.args.get('start')
+        repo = StockRepository()
+        # parse given start date
+        start_date = datetime.fromtimestamp(float(start), tz=timezone.utc)
 
-@symbol_bp.route(f"/{API_PREFIX}/symbols/<symbol>/intraday", methods=['GET'])
-@authed
-def symbol_intraday(symbol):
-    start = request.args.get('start')
-    repo = StockRepository()
-    # parse given start date
-    start_date = datetime.fromtimestamp(float(start), tz=timezone.utc)
+        result = repo.historical_intraday(
+            symbol=symbol,
+            start=start_date,
+        )
 
-    result = repo.historical_intraday(
-        symbol=symbol,
-        start=start_date,
-    )
+        if result is None:
+            return {
+                'success': False,
+                'message': 'no data found for symbol {0} over time period {1} - {2}'.format(
+                    symbol,
+                    start_date,
+                    "now"
+                )
+            }, 404
 
-    if result is None:
         return {
-            'success': False,
-            'message': 'no data found for symbol {0} over time period {1} - {2}'.format(
-                symbol,
-                start_date,
-                "now"
-            )
-        }, 404
-
-    return {
-        'success': True,
-        'data': result.to_dict(orient='records')
-    }
+            'success': True,
+            'data': result.to_dict(orient='records')
+        }
 
 
-@symbol_bp.route(f"/{API_PREFIX}/symbols/<symbol>/eod", methods=['GET'])
-@authed
-def symbol_eod(symbol):
-    start = request.args.get('start')
-    if start is None:
-        start = datetime.now(tz=timezone.utc) - timedelta(days=30)
-    else:
-        start = datetime.fromtimestamp(float(start), tz=timezone.utc)
+    @authed
+    def symbol_eod(symbol):
+        start = request.args.get('start')
+        if start is None:
+            start = datetime.now(tz=timezone.utc) - timedelta(days=30)
+        else:
+            start = datetime.fromtimestamp(float(start), tz=timezone.utc)
 
-    end = request.args.get('end')
-    if end is None:
-        end = datetime.now(tz=timezone.utc)
-    else:
-        end = datetime.fromtimestamp(float(end), tz=timezone.utc)
+        end = request.args.get('end')
+        if end is None:
+            end = datetime.now(tz=timezone.utc)
+        else:
+            end = datetime.fromtimestamp(float(end), tz=timezone.utc)
 
-    repo = StockRepository()
-    result = repo.historical_daily(symbol, start=start, end=end)
+        repo = StockRepository()
+        result = repo.historical_daily(symbol, start=start, end=end)
 
-    if result is None:
+        if result is None:
+            return {
+                'success': False,
+                'message': 'no data found for symbol {0} over time period {1} - {2}'.format(
+                    symbol,
+                    start,
+                    end
+                )
+            }, 404
+
         return {
-            'success': False,
-            'message': 'no data found for symbol {0} over time period {1} - {2}'.format(
-                symbol,
-                start,
-                end
-            )
-        }, 404
-
-    return {
-        'success': True,
-        'data': result.to_dict(orient='records')
-    }
+            'success': True,
+            'data': result.to_dict(orient='records')
+        }
