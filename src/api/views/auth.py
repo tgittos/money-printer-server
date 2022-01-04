@@ -14,7 +14,7 @@ from api.views.base import BaseApi
 class AuthApi(BaseApi):
 
     def __init__(self):
-        super().__init__('/auth')
+        super().__init__('/auth', 'auth')
     
     def register_api(self, app):
         self.add_url(app, '/register', self.register, methods=['POST',])

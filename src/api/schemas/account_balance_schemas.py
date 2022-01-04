@@ -1,10 +1,10 @@
 from flask import current_app
 
 from core.models import AccountBalance
-from api.lib.globals import marshmallow_app as ma
+from api.app import ma
 
 
-class ReadAccountBalanceApiSchema(current_app.ma.SQLAlchemyAutoSchema):
+class ReadAccountBalanceApiSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = AccountBalance
         include_fk = True

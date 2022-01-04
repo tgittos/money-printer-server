@@ -13,7 +13,7 @@ from api.views.base import BaseApi
 class PlaidApi(BaseApi):
 
     def __init__(self):
-        super().__init__("/plaid")
+        super().__init__("/plaid", 'plaid')
     
     def register_api(self, app):
         self.add_url("/info", self.info)

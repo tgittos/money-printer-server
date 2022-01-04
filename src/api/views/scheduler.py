@@ -14,7 +14,7 @@ from .decorators import authed, admin, get_identity
 class SchedulerApi(BaseApi):
 
     def __init__(self):
-        super().__init__("/admin/schedules")
+        super().__init__("/admin/schedules", 'schedules')
 
     def register_api(self, app):
         super().register_api(app, expose_delete=True)

@@ -6,6 +6,7 @@ from .webhooks import webhooks_bp
 from .health import health_bp
 from .swagger import swagger_bp
 
+view_funcs = []
 
 def register_api(app):
     """
@@ -17,6 +18,7 @@ def register_api(app):
         if api_view is not issubclass(BaseApi, api_view):
             next
         obj = api_views()
+        view_funcs.append(obj.view_func)
         if hasattr(obj, 'register_api'):
             obj.register_api(app)
     

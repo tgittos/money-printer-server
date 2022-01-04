@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 
 from core.models import InvestmentTransaction
-from api.lib.globals import marshmallow_app as ma
+from api.app import ma
 
 
 class ReadInvestmentTransactionApiSchema(ma.SQLAlchemyAutoSchema):

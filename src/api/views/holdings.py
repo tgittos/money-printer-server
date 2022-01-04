@@ -11,7 +11,7 @@ from api.views.base import BaseApi
 class HoldingsApi(BaseApi):
 
     def __init__(self):
-        super().__init__('/holdings')
+        super().__init__('/holdings', 'holdings')
     
     def register_api(self, app):
         self.add_url(app, "/", self.get_holdings_by_profile)

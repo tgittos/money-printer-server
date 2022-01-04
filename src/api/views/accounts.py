@@ -10,6 +10,9 @@ from api.lib.constants import API_PREFIX
 
 class AccountsApi(BaseApi):
 
+    def __init__(self, url):
+        super().__init__(url, 'accounts')
+
     def register_api(self, app):
         self.add_url(app, "/accounts", self.list_accounts)
         self.add_url(app, '/accounts/<account_id>/sync', self.request_account_sync)

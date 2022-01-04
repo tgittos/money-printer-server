@@ -11,7 +11,7 @@ from api.views.base import BaseApi
 class ApiTokenApi(BaseApi):
 
     def __init__(self):
-        super().__init__("/profile/api_tokens")
+        super().__init__("/profile/api_tokens", 'api_tokens')
 
     def register_api(self, app):
         super().register_api(app, expose_delete=True)

@@ -7,8 +7,8 @@ class BaseApi(MethodView):
 
     api_base = f"/{API_PREFIX}"
 
-    def __init__(self, url):
-        self.view_func = self.as_view(__name__)
+    def __init__(self, url, name):
+        self.view_func = self.as_view(name)
         self.url_base = f"{self.api_base}/{url}"
 
     def register_api(self, app, pk='id', pk_type='int', expose_delete=False):
