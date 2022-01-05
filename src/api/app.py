@@ -21,8 +21,11 @@ from config import config
 log_path = os.path.dirname(__file__) + "/../../logs/"
 init_logger(log_path)
 logger = get_logger("server.services.api")
-logger.debug("* initializing Flask, Marshmallow and Client Bus")
 
+if 'MP_ENVIRONMENT' in os.environ:
+    os.environ['FLASK_ENV'] = os.environ['MP_ENVIRONMENT']
+
+logger.debug("* initializing Flask, Marshmallow and Client Bus")
 app = Flask(__name__)
 ma = Marshmallow(app)
 ws = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
