@@ -38,14 +38,17 @@ def get_identity():
 
 
 class authed:
+
     def __init__(self, func):
         self.func = func
- 
+        setattr(self, '__name__', f"authed_{self.func.__name__}")
+
     def __get__(self, instance, owner):
         p = partial(self.__call__, instance)
-        p.__name__ = str(self.func)
+        setattr(p, '__name__', f"authed_{self.func.__name__}")
+        print(f'setting name of returned wrapped func: {p.__name__}')
         return p
-    
+
     def __call__(self, *args, **kwargs):
         token = decode_token()
         if token is None:
@@ -61,17 +64,20 @@ class authed:
                 "success": False
             }, status=401, mimetype='application/json')
 
+        print("authed: *args:", args)
+        print("authed: **kwargs:", kwargs)
         return self.func(*args, **kwargs)
-   
 
 
 class admin:
     def __init__(self, func):
         self.func = func
-    
+        setattr(self, '__name__', f"admin_{self.func.__name__}")
+
     def __get__(self, instance, owner):
         p = partial(self.__call__, instance)
-        p.__name__ = str(self.func)
+        setattr(p, '__name__', f"admin_{self.func.__name__}")
+        print(f'setting name of returned wrapped func: {p.__name__}')
         return p
 
     def __call__(self, *args, **kwargs):
@@ -80,5 +86,6 @@ class admin:
             return Response({
                 "success": False
             }, status=401, mimetype='application/json')
+        print("admin: *args:", args)
+        print("admin: **kwargs:", kwargs)
         return self.func(*args, **kwargs)
-

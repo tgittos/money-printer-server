@@ -11,7 +11,7 @@ from api.lib.constants import API_PREFIX
 class AccountsApi(BaseApi):
 
     def __init__(self):
-        super().__init__('/accounts', 'accounts')
+        super().__init__('/accounts', 'account')
 
     def register_api(self, app):
         self.add_url(app, "/", self.list_accounts)

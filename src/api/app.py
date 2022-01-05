@@ -21,16 +21,22 @@ from config import config
 log_path = os.path.dirname(__file__) + "/../../logs/"
 init_logger(log_path)
 logger = get_logger("server.services.api")
-logger.debug("* initializing Flask and Marshmallow")
+logger.debug("* initializing Flask, Marshmallow and Client Bus")
 
 app = Flask(__name__)
 ma = Marshmallow(app)
 ws = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
 cb = ClientBus(ws)
 
+configured = False
+
 # create the app
 def create_app(flask_config={}):
-    global app, ma
+    global app, ma, configured
+
+    if configured:
+        return (app, ma, cb, ws)
+
     in_prod = 'MP_ENVIRONMENT' in os.environ and os.environ['MP_ENVIRONMENT'] == "production"
 
     logger.debug("* configuring base Flask application")
@@ -52,7 +58,8 @@ def create_app(flask_config={}):
         logger.debug("* registering SwaggerUI endpoint")
         register_swagger(app)
 
-    logger.debug("* configuring SocketIO ws")
+    configured = True
+
     return (app, ma, cb, ws)
 
 

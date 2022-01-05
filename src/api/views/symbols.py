@@ -11,8 +11,8 @@ from api.views.decorators import authed
 class SymbolsApi(BaseApi):
 
     def __init__(self):
-        super().__init__("/symbols", "symbols")
-    
+        super().__init__("/symbols", "symbol")
+
     def register_api(self, app):
         self.add_url(app, "/<symbol>/previous", self.symbol_previous)
         self.add_url(app, '/<symbol>/intraday', self.symbol_intraday)

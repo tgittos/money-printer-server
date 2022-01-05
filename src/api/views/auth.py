@@ -15,7 +15,7 @@ class AuthApi(BaseApi):
 
     def __init__(self):
         super().__init__('/auth', 'auth')
-    
+
     def register_api(self, app):
         self.add_url(app, '/register', self.register, methods=['POST',])
         self.add_url(app, '/unauthenticated', self.get_unauthenticated_user)
@@ -25,7 +25,7 @@ class AuthApi(BaseApi):
 
 
     @PERF_AUTH_REGISTER.time()
-    def register():
+    def register(self):
         """
         ---
         post:
@@ -67,7 +67,7 @@ class AuthApi(BaseApi):
             return error.messages, 400
 
 
-    def get_unauthenticated_user():
+    def get_unauthenticated_user(self):
         repo = ProfileRepository()
         result = repo.get_unauthenticated_user()
         if result is None:
@@ -81,7 +81,7 @@ class AuthApi(BaseApi):
 
 
     @PERF_AUTH_LOGIN.time()
-    def login():
+    def login(self):
         """
         ---
         post:
@@ -115,7 +115,7 @@ class AuthApi(BaseApi):
 
 
     @PERF_AUTH_RESET.time()
-    def reset_password():
+    def reset_password(self):
         """
         ---
         post:
@@ -139,7 +139,7 @@ class AuthApi(BaseApi):
 
 
     @PERF_AUTH_RESET_CONTINUE.time()
-    def continue_reset_password():
+    def continue_reset_password(self):
         """
         ---
         post:

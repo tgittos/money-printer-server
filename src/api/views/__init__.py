@@ -1,5 +1,3 @@
-import sys
-import inspect
 import re
 import os
 import importlib.util
@@ -20,7 +18,7 @@ def register_api(app):
 
         if basename == "__init__.py" or re.search(r'_test.py$', basename):
             continue
-        
+
         mod_name = basename.split('.')[0]
         spec = importlib.util.spec_from_file_location(mod_name, path)
         mod = importlib.util.module_from_spec(spec)
@@ -45,10 +43,10 @@ def register_api(app):
         if hasattr(obj, 'register_api'):
             obj.register_api(app)
 
-    
+
     # Manually register a few lower level APIs we don't expose to the user
     app.register_blueprint(health_bp)
-    
+
     # Manually register the webhook blueprint, since it's not a full Api class
     app.register_blueprint(webhooks_bp)
 
