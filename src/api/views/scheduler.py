@@ -97,7 +97,7 @@ class SchedulerApi(BaseApi):
             if response.success:
                 return {
                     'success': True,
-                    'data': read_scheduled_jobs_schema.dump(response.data)
+                    'data': read_scheduled_job_schema.dump(response.data)
                 }, 201
 
             return {

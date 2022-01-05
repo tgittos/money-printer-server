@@ -13,7 +13,7 @@ def test_get_holdings_by_profile_id_returns_holdings(
     account = account_factory(profile_id=profile.id)
     holding = holding_factory(account_id=account.id)
     token = user_token_factory(profile=profile)
-    response = client.get(f"/{API_PREFIX}/holdings",
+    response = client.get(f"/{API_PREFIX}/holdings/",
                           headers={
                               'Authorization': f"Bearer {token}"
                           })
@@ -30,7 +30,7 @@ def test_get_holdings_by_profile_id_returns_empty_array_with_no_holdings(
     profile = profile_factory()
     account = account_factory(profile_id=profile.id)
     token = user_token_factory(profile=profile)
-    response = client.get(f"/{API_PREFIX}/holdings",
+    response = client.get(f"/{API_PREFIX}/holdings/",
                           headers={
                               'Authorization': f"Bearer {token}"
                           })
@@ -44,7 +44,7 @@ def test_get_holdings_by_profile_id_returns_empty_array_with_no_holdings(
 
 def test_get_holdings_by_profile_id_fails_unauthed(client, profile_factory):
     profile = profile_factory()
-    response = client.get(f"/{API_PREFIX}/holdings")
+    response = client.get(f"/{API_PREFIX}/holdings/")
     assert response.status_code == 401
 
 

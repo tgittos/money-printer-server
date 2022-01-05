@@ -15,7 +15,7 @@ class AccountsApi(BaseApi):
 
     def register_api(self, app):
         self.add_url(app, "/", self.list_accounts)
-        self.add_url(app, '/<account_id>/sync', self.request_account_sync)
+        self.add_url(app, '/<account_id>/sync', self.request_account_sync, methods=["POST",])
         self.add_url(app, "/<account_id>/balances", self.request_account_balances)
         self.add_url(app, "/<account_id>/holdings", self.list_holdings)
 
@@ -49,7 +49,7 @@ class AccountsApi(BaseApi):
         if accounts.success and accounts.data is not None:
             return {
                 'success': True,
-                'data': read_accounts_schema().dump(accounts.data)
+                'data': read_accounts_schema.dump(accounts.data)
             }
         else:
             abort(404)

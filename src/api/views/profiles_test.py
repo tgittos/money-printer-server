@@ -19,7 +19,7 @@ def instant_job_spy(mocker):
 def test_get_profile_returns_authed_profile(client, profile_factory, user_token_factory):
     profile = profile_factory()
     token = user_token_factory(profile=profile)
-    response = client.get(f"/{API_PREFIX}/profile",
+    response = client.get(f"/{API_PREFIX}/profiles/",
                           headers={'Authorization': f"Bearer {token}"})
     assert response.status_code == 200
     json = response.get_json()
@@ -27,6 +27,7 @@ def test_get_profile_returns_authed_profile(client, profile_factory, user_token_
     assert json['email'] == profile.email
 
 
+@pytest.mark.focus
 def test_get_profile_fails_with_no_token(client):
     response = client.get(f"/{API_PREFIX}/profile")
     assert response.status_code == 401
@@ -36,7 +37,7 @@ def test_update_profile_accepts_valid_input(client, profile_factory, user_token_
     request = valid_profile_update_api_request_factory()
     profile = profile_factory()
     token = user_token_factory(profile=profile)
-    response = client.put(f"/{API_PREFIX}/profile",
+    response = client.put(f"/{API_PREFIX}/profiles/",
                           headers={'Authorization': f"Bearer {token}"},
                           json=request)
     assert response.status_code == 200
@@ -51,7 +52,7 @@ def test_update_rejects_invalid_input(client, profile_factory, user_token_factor
     profile = profile_factory()
     token = user_token_factory(profile=profile)
     request['email'] = profile.email
-    response = client.put(f"/{API_PREFIX}/profile",
+    response = client.put(f"/{API_PREFIX}/profiles/",
                           headers={'Authorization': f"Bearer {token}"},
                           json=request)
     assert response.status_code == 400
@@ -61,7 +62,7 @@ def test_sync_profile_schedules_instant_job(db, client, profile_factory, plaid_i
     profile = profile_factory()
     token = user_token_factory(profile=profile)
     item = plaid_item_factory(profile_id=profile.id)
-    response = client.post(f"/{API_PREFIX}/profile/sync",
+    response = client.post(f"/{API_PREFIX}/profiles/sync",
                            headers={'Authorization': f"Bearer {token}"})
     assert response.status_code == 204
     instant_job_spy.assert_called_once()

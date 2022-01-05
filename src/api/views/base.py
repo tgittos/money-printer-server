@@ -21,17 +21,26 @@ class BaseApi(MethodView):
             self.add_url(app, f"/<{pk_type}:{pk}>", endpoint=f"delete_{self.name}" ,methods=['DELETE',])
 
     def add_url(self, app, url, view_func=None, endpoint=None, methods=['GET',]):
+        
         final_view_func = view_func or self.as_view(self.name)
-        final_url = f"{self.url_base}{url}"
         final_endpoint = endpoint or final_view_func.__name__
+        final_url = f"{self.url_base}{url}"
+        urls = [(final_endpoint, final_url)]
+        if final_url.endswith('/'):
+            urls.append((final_endpoint + "_alt", final_url[0:-1]))
+        else:
+            urls.append((final_endpoint + "_alt", final_url + "/"))
+
         #if self.name not in app.view_functions:
-        print(f'registering url: {final_url} for methods {methods} under name {final_endpoint}')
-        app.add_url_rule(
-            final_url,
-            endpoint=final_endpoint,
-            view_func=final_view_func,
-            methods=methods
-        )
+        for url_tuple in urls:
+            endpoint, url = url_tuple
+            print(f'registering url: {url} for methods {methods} under name {endpoint}')
+            app.add_url_rule(
+                url,
+                endpoint=endpoint,
+                view_func=final_view_func,
+                methods=methods
+            )
 
     def get(self, id):
         abort(404)

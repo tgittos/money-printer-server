@@ -21,7 +21,7 @@ class ProfileApi(BaseApi):
     def register_api(self, app):
         self.add_url(app, "/", self.get)
         self.add_url(app, "/", self.update, methods=['PUT'])
-        self.add_url(app, "/<id>/sync", self.sync_profile, methods=['POST'])
+        self.add_url(app, "/sync", self.sync_profile, methods=['POST'])
 
 
     @Authed

@@ -139,7 +139,6 @@ def test_continue_reset_rejects_invalid_token(client, db, profile_factory, inval
         p.data.password, request['password'])
 
 
-@pytest.mark.focus
 def test_continue_reset_rejects_expired_token(client, db, expired_reset_api_token_factory):
     request = expired_reset_api_token_factory()
     p = get_profile_by_email(db, request['email'])
