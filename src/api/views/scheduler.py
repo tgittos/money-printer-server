@@ -8,7 +8,7 @@ from api.schemas import read_scheduled_jobs_schema, read_scheduled_job_schema
 from api.lib.constants import API_PREFIX
 from api.views.base import BaseApi
 
-from api.views.decorators import authed, admin, get_identity
+from api.views.decorators import Authed, admin, get_identity
 
 
 class SchedulerApi(BaseApi):
@@ -22,7 +22,7 @@ class SchedulerApi(BaseApi):
         self.add_url(app, '/instants', self.list_historical_instants)
 
 
-    @authed
+    @Authed
     @admin
     def get(self):
         """
@@ -60,7 +60,7 @@ class SchedulerApi(BaseApi):
         }, 400
 
 
-    @authed
+    @Authed
     @admin
     def post(self):
         """
@@ -107,7 +107,7 @@ class SchedulerApi(BaseApi):
             return error.messages, 400
 
 
-    @authed
+    @Authed
     @admin
     def put(self, id):
         """
@@ -164,7 +164,7 @@ class SchedulerApi(BaseApi):
             return error.messages, 400
 
 
-    @authed
+    @Authed
     @admin
     def delete(self, id):
         """
@@ -210,7 +210,7 @@ class SchedulerApi(BaseApi):
         }, 400
 
 
-    @authed
+    @Authed
     @admin
     def run_schedule(self):
         return {
@@ -218,7 +218,7 @@ class SchedulerApi(BaseApi):
         }
 
 
-    @authed
+    @Authed
     @admin
     def list_historical_instants(self):
         repo = ScheduledJobRepository()

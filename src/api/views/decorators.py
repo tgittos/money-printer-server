@@ -1,4 +1,4 @@
-from functools import partial
+from functools import partial, wraps
 
 from flask import request, Response, g
 from jwt import DecodeError
@@ -37,19 +37,9 @@ def get_identity():
     return None
 
 
-class authed:
-
-    def __init__(self, func):
-        self.func = func
-        setattr(self, '__name__', f"authed_{self.func.__name__}")
-
-    def __get__(self, instance, owner):
-        p = partial(self.__call__, instance)
-        setattr(p, '__name__', f"authed_{self.func.__name__}")
-        print(f'setting name of returned wrapped func: {p.__name__}')
-        return p
-
-    def __call__(self, *args, **kwargs):
+def authed(func):
+    @wraps(func)
+    def authed_func(*args, **kwargs):
         token = decode_token()
         if token is None:
             return Response({
@@ -63,13 +53,39 @@ class authed:
             return Response({
                 "success": False
             }, status=401, mimetype='application/json')
+        return func(*args, **kwargs)
+    return authed_func
 
-        print("authed: *args:", args)
-        print("authed: **kwargs:", kwargs)
+
+def admin(func):
+    @wraps(func)
+    def admin_func(*args, **kwargs):
+        token = decode_token()
+        if not token or not token['is_admin']:
+            return Response({
+                "success": False
+            }, status=401, mimetype='application/json')
+        return func(*args, **kwargs)
+    return admin_func
+        
+
+class Authed:
+
+    def __init__(self, func):
+        self.func = func
+        setattr(self, '__name__', f"authed_{self.func.__name__}")
+
+    def __get__(self, instance, owner):
+        p = partial(self.__call__, instance)
+        setattr(p, '__name__', f"authed_{self.func.__name__}")
+        return p
+
+    @authed
+    def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
 
-class admin:
+class Admin:
     def __init__(self, func):
         self.func = func
         setattr(self, '__name__', f"admin_{self.func.__name__}")
@@ -77,15 +93,8 @@ class admin:
     def __get__(self, instance, owner):
         p = partial(self.__call__, instance)
         setattr(p, '__name__', f"admin_{self.func.__name__}")
-        print(f'setting name of returned wrapped func: {p.__name__}')
         return p
 
+    @admin
     def __call__(self, *args, **kwargs):
-        token = decode_token()
-        if not token or not token['is_admin']:
-            return Response({
-                "success": False
-            }, status=401, mimetype='application/json')
-        print("admin: *args:", args)
-        print("admin: **kwargs:", kwargs)
         return self.func(*args, **kwargs)

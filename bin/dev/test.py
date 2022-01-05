@@ -25,8 +25,9 @@ if __name__ == '__main__':
     Base.metadata.drop_all(bind=db.engine)
     Base.metadata.create_all(bind=db.engine)
     print("Running tests...")
-    pool = Pool(processes=1)
-    completed = pool.apply_async(run_test)
+    # pool = Pool(processes=1)
+    # completed = pool.apply_async(run_test)
+    completed = run_test()
     print("Dropping db table set...")
     Base.metadata.drop_all(bind=db.engine)
     print("Done")
@@ -34,18 +35,3 @@ if __name__ == '__main__':
         print(completed.stdout.decode())
         print(completed.stdout.decode())
         completed.check_returncode()
-    else:
-        sys.exit(completed.returncode)
-
-
-
-
-
-pool = Pool(processes=2)
-    start = time.time()
-    r1 = pool.apply_async(countdown, [COUNT//2])
-    r2 = pool.apply_async(countdown, [COUNT//2])
-    pool.close()
-    pool.join()
-    end = time.time()
-    print('Time taken in seconds -', end - start)

@@ -4,7 +4,7 @@ from core.repositories import HoldingRepository
 from api.schemas import read_holdings_schema, read_holding_schema, read_holding_balances_schema
 
 from api.lib.constants import API_PREFIX
-from api.views.decorators import authed, get_identity
+from api.views.decorators import Authed, get_identity
 from api.views.base import BaseApi
 
 
@@ -19,7 +19,7 @@ class HoldingsApi(BaseApi):
         self.add_url(app, "/<holding_id>/balances", self.get_holding_balances)
 
 
-    @authed
+    @Authed
     def get_holdings_by_profile(self):
         profile = get_identity()
         repo = HoldingRepository()
@@ -35,7 +35,7 @@ class HoldingsApi(BaseApi):
         }, 404
 
 
-    @authed
+    @Authed
     def get_holding(self, holding_id):
         profile = get_identity()
         repo = HoldingRepository()
@@ -52,7 +52,7 @@ class HoldingsApi(BaseApi):
         }, 404
 
 
-    @authed
+    @Authed
     def get_holding_balances(self, holding_id):
         profile = get_identity()
         repo = HoldingRepository()

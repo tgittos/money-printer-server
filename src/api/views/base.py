@@ -13,19 +13,19 @@ class BaseApi(MethodView):
         self.url_base = f"{self.api_base}{url}"
 
     def register_api(self, app, pk='id', pk_type='int', expose_delete=False):
-        self.add_url(app, "/", f"get_{self.name}s")
-        self.add_url(app, "/", f"create_{self.name}", methods=['POST',])
-        self.add_url(app, f"/<{pk_type}:{pk}>", f"get_{self.name}", methods=['GET',])
-        self.add_url(app, f"/<{pk_type}:{pk}>", f"update_{self.name}", methods=['PUT',])
+        self.add_url(app, "/", endpoint=f"get_{self.name}s")
+        self.add_url(app, "/", endpoint=f"create_{self.name}", methods=['POST',])
+        self.add_url(app, f"/<{pk_type}:{pk}>", endpoint=f"get_{self.name}", methods=['GET',])
+        self.add_url(app, f"/<{pk_type}:{pk}>", endpoint=f"update_{self.name}", methods=['PUT',])
         if expose_delete:
-            self.add_url(app, f"/<{pk_type}:{pk}>", f"delete_{self.name}" ,methods=['DELETE',])
+            self.add_url(app, f"/<{pk_type}:{pk}>", endpoint=f"delete_{self.name}" ,methods=['DELETE',])
 
-    def add_url(self, app, url, endpoint=None, view_func=None, methods=['GET',]):
+    def add_url(self, app, url, view_func=None, endpoint=None, methods=['GET',]):
         final_view_func = view_func or self.as_view(self.name)
         final_url = f"{self.url_base}{url}"
-        final_endpoint = endpoint or None
+        final_endpoint = endpoint or final_view_func.__name__
         #if self.name not in app.view_functions:
-        print(f'registering url: {final_url} under name {final_endpoint} for methods {methods}')
+        print(f'registering url: {final_url} for methods {methods} under name {final_endpoint}')
         app.add_url_rule(
             final_url,
             endpoint=final_endpoint,

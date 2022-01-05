@@ -6,7 +6,7 @@ from core.repositories.stock_repository import StockRepository
 from config import mysql_config, iex_config
 
 from api.views.base import BaseApi
-from api.views.decorators import authed
+from api.views.decorators import Authed
 
 class SymbolsApi(BaseApi):
 
@@ -19,7 +19,7 @@ class SymbolsApi(BaseApi):
         self.add_url(app, '/<symbol>/eod', self.symbol_eod)
 
 
-    @authed
+    @Authed
     def symbol_previous(self, symbol):
         repo = StockRepository()
 
@@ -38,7 +38,7 @@ class SymbolsApi(BaseApi):
         }
 
 
-    @authed
+    @Authed
     def symbol_intraday(self, symbol):
         start = request.args.get('start')
         repo = StockRepository()
@@ -66,7 +66,7 @@ class SymbolsApi(BaseApi):
         }
 
 
-    @authed
+    @Authed
     def symbol_eod(self, symbol):
         start = request.args.get('start')
         if start is None:

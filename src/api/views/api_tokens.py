@@ -3,7 +3,7 @@ from flask import Blueprint
 from core.repositories.profile_repository import ProfileRepository
 from api.schemas import read_api_token_schema
 
-from api.views.decorators import authed, get_identity
+from api.views.decorators import Authed, get_identity
 from api.lib.constants import API_PREFIX
 from api.views.base import BaseApi
 
@@ -16,7 +16,7 @@ class ApiTokensApi(BaseApi):
     def register_api(self, app):
         super().register_api(app, expose_delete=True)
 
-    @authed
+    @Authed
     def get(self):
         """
         ---

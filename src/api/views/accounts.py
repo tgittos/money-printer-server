@@ -2,7 +2,7 @@ from flask import abort
 
 from core.repositories import AccountRepository, SecurityRepository
 from api.schemas import read_holdings_schema, read_accounts_schema, read_account_balances_schema
-from api.views.decorators import authed, get_identity
+from api.views.decorators import Authed, get_identity
 
 from api.views.base import BaseApi
 from api.lib.constants import API_PREFIX
@@ -20,7 +20,7 @@ class AccountsApi(BaseApi):
         self.add_url(app, "/<account_id>/holdings", self.list_holdings)
 
 
-    @authed
+    @Authed
     def list_accounts(self):
         """
         ---
@@ -55,7 +55,7 @@ class AccountsApi(BaseApi):
             abort(404)
 
 
-    @authed
+    @Authed
     def request_account_sync(self, account_id: int):
         """
         ---
@@ -87,7 +87,7 @@ class AccountsApi(BaseApi):
         }, 400
 
 
-    @authed
+    @Authed
     def request_account_balances(self, account_id):
         """
         ---
@@ -122,7 +122,7 @@ class AccountsApi(BaseApi):
         }
 
 
-    @authed
+    @Authed
     def list_holdings(self, account_id):
         """
         ---

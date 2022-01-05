@@ -10,7 +10,7 @@ from api.views.base import BaseApi
 from api.lib.constants import API_PREFIX
 from api.metrics.profile_metrics import *
 
-from api.views.decorators import authed, get_identity
+from api.views.decorators import Authed, get_identity
 
 
 class ProfileApi(BaseApi):
@@ -24,7 +24,7 @@ class ProfileApi(BaseApi):
         self.add_url(app, "/<id>/sync", self.sync_profile, methods=['POST'])
 
 
-    @authed
+    @Authed
     @PERF_GET_PROFILE.time()
     def get(self):
         """
@@ -46,7 +46,7 @@ class ProfileApi(BaseApi):
         return read_profile_schema.dump(user)
 
 
-    @authed
+    @Authed
     @PERF_UPDATE_PROFILE.time()
     def update(self):
         """
@@ -90,7 +90,7 @@ class ProfileApi(BaseApi):
             }, 400
 
 
-    @authed
+    @Authed
     @PERF_SYNC_PROFILE.time()
     def sync_profile(self):
         """
