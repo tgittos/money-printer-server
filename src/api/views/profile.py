@@ -16,7 +16,7 @@ from api.views.decorators import authed, get_identity
 class ProfileApi(BaseApi):
 
     def __init__(self):
-        super().__init__('/profiles', 'profile')
+        super().__init__('/profiles', 'profiles')
 
     def register_api(self, app):
         self.add_url(app, "/", self.get)

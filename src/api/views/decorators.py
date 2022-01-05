@@ -1,4 +1,4 @@
-from functools import wraps
+from functools import partial
 
 from flask import request, Response, g
 from jwt import DecodeError
@@ -37,9 +37,16 @@ def get_identity():
     return None
 
 
-def authed(func):
-    @wraps(func)
-    def decorated(*args, **kwargs):
+class authed:
+    def __init__(self, func):
+        self.func = func
+ 
+    def __get__(self, instance, owner):
+        p = partial(self.__call__, instance)
+        p.__name__ = str(self.func)
+        return p
+    
+    def __call__(self, *args, **kwargs):
         token = decode_token()
         if token is None:
             return Response({
@@ -54,18 +61,24 @@ def authed(func):
                 "success": False
             }, status=401, mimetype='application/json')
 
-        return func(*args, **kwargs)
-    return decorated
+        return self.func(*args, **kwargs)
+   
 
 
-def admin(func):
-    @wraps(func)
-    def decorated(*args, **kwargs):
+class admin:
+    def __init__(self, func):
+        self.func = func
+    
+    def __get__(self, instance, owner):
+        p = partial(self.__call__, instance)
+        p.__name__ = str(self.func)
+        return p
+
+    def __call__(self, *args, **kwargs):
         token = decode_token()
         if not token or not token['is_admin']:
             return Response({
                 "success": False
             }, status=401, mimetype='application/json')
-        return func(*args, **kwargs)
+        return self.func(*args, **kwargs)
 
-    return decorated

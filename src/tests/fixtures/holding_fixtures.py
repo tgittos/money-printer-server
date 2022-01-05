@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 from core.models import Holding, HoldingBalance
 from core.schemas.holding_schemas import *
+from core.schemas.holding_balance_schemas import *
 
 from tests.fixtures import *
 

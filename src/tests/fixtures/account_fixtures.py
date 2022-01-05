@@ -4,6 +4,7 @@ from datetime import datetime, time, timezone
 
 from core.models import Account, AccountBalance
 from core.schemas.account_schemas import *
+from core.schemas.account_balance_schemas import *
 from core.lib.utilities import id_generator
 
 from tests.fixtures import *

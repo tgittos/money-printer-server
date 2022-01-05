@@ -30,9 +30,10 @@ class AuthApi(BaseApi):
         ---
         post:
             summary: Create a new user in the database and email a temporary password to them.
-            parameters:
-                - in: request
-                  schema: RegisterProfileSchema
+            requestBody:
+                content:
+                    application/json:
+                        schema: RegisterProfileSchema
             responses:
                 200:
                     content:

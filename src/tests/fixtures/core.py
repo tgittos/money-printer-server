@@ -1,10 +1,10 @@
+from flask.app import Flask
 import pytest
 from sqlalchemy import inspect
 
 from core.stores.mysql import MySql
 from core.models import Base
-
-from apps.api import ApiApplication
+from api.app import app, create_app
 
 from config import mysql_config
 
@@ -26,8 +26,7 @@ def db():
 # one API for the the whole test session so that we can parallelize it
 @pytest.fixture(scope='session')
 def client(db):
-    app = ApiApplication(db)
-
-    with app.flask_app.test_client() as client:
-        with app.flask_app.app_context():
+    create_app({ 'TESTING': True })
+    with app.test_client() as client:
+        with app.app_context():
             yield client

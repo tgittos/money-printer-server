@@ -24,7 +24,7 @@ class SchedulerApi(BaseApi):
 
     @authed
     @admin
-    def list_schedules():
+    def get(self):
         """
         ---
         get:
@@ -35,16 +35,17 @@ class SchedulerApi(BaseApi):
                 200:
                     content:
                         application/json:
-                            type: object
                             schema:
-                                success:
-                                    type: boolean
-                                data:
-                                    type: array
-                                    items: ReadScheduledJobApiSchema
-            tags:
-                - Scheduling
-                - Admin
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    data:
+                                        type: array
+                                        items: ReadScheduledJobApiSchema
+        tags:
+            - Scheduling
+            - Admin
         """
 
         repo = ScheduledJobRepository()
@@ -61,31 +62,32 @@ class SchedulerApi(BaseApi):
 
     @authed
     @admin
-    def create_schedule():
+    def post(self):
         """
-            ---
-            post:
-                summary: Create a new scheduled job based on the available jobs. This requires an admin profile.
-                security:
-                    - jwt: []
-                requestBody:
+        ---
+        post:
+            summary: Create a new scheduled job based on the available jobs. This requires an admin profile.
+            security:
+                - jwt: []
+            requestBody:
+                content:
+                    application/json:
+                        schema: CreateScheduledJobSchema
+            responses:
+                200:
                     content:
                         application/json:
-                            schema: CreateScheduledJobSchema
-                responses:
-                    200:
-                        content:
-                            application/json:
+                            schema:
                                 type: object
-                                schema:
+                                properties:
                                     success:
                                         type: boolean
                                     data:
                                         type: array
                                         items: ReadScheduledJobApiSchema
-            tags:
-                - Scheduling
-                - Admin
+        tags:
+            - Scheduling
+            - Admin
         """
         try:
             repo = ScheduledJobRepository()
@@ -107,7 +109,7 @@ class SchedulerApi(BaseApi):
 
     @authed
     @admin
-    def update_schedule(schedule_id):
+    def put(self, id):
         """
         ---
         put:
@@ -122,22 +124,23 @@ class SchedulerApi(BaseApi):
                 200:
                     content:
                         application/json:
-                            type: object
                             schema:
-                                success:
-                                    type: boolean
-                                data:
-                                    type: array
-                                    items: ReadScheduledJobApiSchema
-            tags:
-                - Scheduling
-                - Admin
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    data:
+                                        type: array
+                                        items: ReadScheduledJobApiSchema
+        tags:
+            - Scheduling
+            - Admin
         """
         try:
             schema = read_scheduled_job_schema.load(request.json)
 
             repo = ScheduledJobRepository()
-            response = repo.get_scheduled_job_by_id(schedule_id)
+            response = repo.get_scheduled_job_by_id(id)
 
             if response.success:
                 job = response.data
@@ -163,7 +166,7 @@ class SchedulerApi(BaseApi):
 
     @authed
     @admin
-    def delete_schedule(schedule_id):
+    def delete(self, id):
         """
         ---
         delete:
@@ -178,22 +181,23 @@ class SchedulerApi(BaseApi):
                 200:
                     content:
                         application/json:
-                            type: object
                             schema:
-                                success:
-                                    type: boolean
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
         tags:
             - Scheduling
             - Admin
         """
-        if schedule_id is None:
+        if id is None:
             return {
                 'success': False,
                 'message': 'ID of scheduled job required'
             }, 400
 
         repo = ScheduledJobRepository()
-        result = repo.get_scheduled_job_by_id(schedule_id)
+        result = repo.get_scheduled_job_by_id(id)
 
         if result.success and result.data is not None:
             repo.delete_scheduled_job(result.data)
@@ -208,7 +212,7 @@ class SchedulerApi(BaseApi):
 
     @authed
     @admin
-    def run_schedule():
+    def run_schedule(self):
         return {
             'success': False
         }
@@ -216,7 +220,7 @@ class SchedulerApi(BaseApi):
 
     @authed
     @admin
-    def list_historical_instants():
+    def list_historical_instants(self):
         repo = ScheduledJobRepository()
         return {
             'success': False

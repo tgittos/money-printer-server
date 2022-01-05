@@ -20,7 +20,7 @@ class SymbolsApi(BaseApi):
 
 
     @authed
-    def symbol_previous(symbol):
+    def symbol_previous(self, symbol):
         repo = StockRepository()
 
         # result is a data frame
@@ -39,7 +39,7 @@ class SymbolsApi(BaseApi):
 
 
     @authed
-    def symbol_intraday(symbol):
+    def symbol_intraday(self, symbol):
         start = request.args.get('start')
         repo = StockRepository()
         # parse given start date
@@ -67,7 +67,7 @@ class SymbolsApi(BaseApi):
 
 
     @authed
-    def symbol_eod(symbol):
+    def symbol_eod(self, symbol):
         start = request.args.get('start')
         if start is None:
             start = datetime.now(tz=timezone.utc) - timedelta(days=30)

@@ -7,6 +7,7 @@ from tests.fixtures import *
 @pytest.fixture
 def repo():
     repo = HoldingRepository()
+    return repo
 
 
 @pytest.fixture
@@ -19,9 +20,10 @@ def sync_transactions_spy(mocker, repo):
     return mocker.patch.object(repo.security_repo, 'sync_transactions')
 
 
-def test_get_holding_by_id_gets_holding_for_profile(repo, profile_factory, holding_factory):
+def test_get_holding_by_id_gets_holding_for_profile(repo, profile_factory, account_factory, holding_factory):
     profile = profile_factory()
-    holding = holding_factory(profile_id=profile.id)
+    account = account_factory(profile_id=profile.id)
+    holding = holding_factory(account_id=account.id)
     result = repo.get_holding_by_id(profile.id, holding.id)
     assert result.success
     assert result.data is not None

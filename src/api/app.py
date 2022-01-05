@@ -15,35 +15,26 @@ from core.lib.logger import init_logger, get_logger
 
 from api.lib.client_bus import ClientBus
 from api.lib.constants import API_PREFIX
-
+from api.views import register_api, register_swagger
 from config import config
 
+log_path = os.path.dirname(__file__) + "/../../logs/"
+init_logger(log_path)
+logger = get_logger("server.services.api")
+logger.debug("* initializing Flask and Marshmallow")
 
-# Flask app
 app = Flask(__name__)
-# marshmallow for schema gen based on Flask/SQLAlchemy
 ma = Marshmallow(app)
-# websocket server
-ws = None
-# client communication bus app
-cb = None
-
-from api.views import register_api, register_swagger
+ws = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
+cb = ClientBus(ws)
 
 # create the app
-def create_app():
-    global app, ma, ws, cb
-
+def create_app(flask_config={}):
+    global app, ma
     in_prod = 'MP_ENVIRONMENT' in os.environ and os.environ['MP_ENVIRONMENT'] == "production"
 
-    log_path = os.path.dirname(__file__) + "/../../logs/"
-    init_logger(log_path)
-    logger = get_logger("server.services.api")
-
-    logger.debug("* initializing Flask and Marshmallow")
-
     logger.debug("* configuring base Flask application")
-    _configure_flask(app)
+    _configure_flask(app, flask_config)
 
     logger.debug("* configuring GraphQL endpoint")
     _configure_graphql(app, in_prod=in_prod)
@@ -62,34 +53,30 @@ def create_app():
         register_swagger(app)
 
     logger.debug("* configuring SocketIO ws")
-    ws, cb = _configure_ws(app)
+    return (app, ma, cb, ws)
 
 
-def _configure_flask(app):
+def _configure_flask(app, flask_config):
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.config['SECRET_KEY'] = config.secret
     CORS(app)
+    app.config.from_object(flask_config)
     app.config.from_object(rq_dashboard.default_settings)
-
-
-def _configure_ws(app):
-    ws = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
-    cb = ClientBus(ws)
-    return (ws, cb)
 
 
 def _configure_graphql(app, in_prod=True):
     from api.graphql.schema import schema
-    app.add_url_rule(
-        f"/{API_PREFIX}/graphql",
-        view_func=GraphQLView.as_view(
-            'graphql_view',
-            schema=schema,
-            graphiql=not in_prod,
-            header_editor_enabled=not in_prod,
-            should_persist_headers=not in_prod
+    if 'graphql_view' not in app.view_functions:
+        app.add_url_rule(
+            f"/{API_PREFIX}/graphql",
+            view_func=GraphQLView.as_view(
+                'graphql_view',
+                schema=schema,
+                graphiql=not in_prod,
+                header_editor_enabled=not in_prod,
+                should_persist_headers=not in_prod
+            )
         )
-    )
 
 def _configure_prometheus(app):
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {

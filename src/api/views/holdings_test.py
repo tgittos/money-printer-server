@@ -1,7 +1,6 @@
 import pytest
 
 from core.models import Holding
-from core.schemas import read_account_schema
 from api.lib.constants import API_PREFIX
 
 from tests.fixtures import *

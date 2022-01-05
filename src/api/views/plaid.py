@@ -23,7 +23,7 @@ class PlaidApi(BaseApi):
 
     @authed
     @PERF_PLAID_INFO.time()
-    def info():
+    def info(self):
         """
         ---
         get:
@@ -69,7 +69,7 @@ class PlaidApi(BaseApi):
 
     @authed
     @PERF_PLAID_LINK.time()
-    def create_link_token():
+    def create_link_token(self):
         """
         ---
         post:
@@ -112,7 +112,7 @@ class PlaidApi(BaseApi):
 
     @authed
     @PERF_PLAID_ACCESS.time()
-    def get_access_token():
+    def get_access_token(self):
         """
         ---
         post:

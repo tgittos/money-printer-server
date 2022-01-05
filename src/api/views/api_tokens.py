@@ -17,7 +17,7 @@ class ApiTokensApi(BaseApi):
         super().register_api(app, expose_delete=True)
 
     @authed
-    def get_profile_api_keys():
+    def get(self):
         """
         ---
         get:

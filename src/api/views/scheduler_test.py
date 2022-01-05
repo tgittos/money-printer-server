@@ -3,10 +3,10 @@ from werkzeug.datastructures import Authorization
 import pytest
 import json
 
-from core.models.scheduler.scheduled_job import ScheduledJob
+from core.models import ScheduledJob
+from core.repositories import ScheduledJobRepository
 from core.lib.jwt import encode_jwt
 
-from api.routes.scheduler import ScheduledJobRepository
 from api.lib.constants import API_PREFIX
 
 from tests.fixtures import *
@@ -120,7 +120,7 @@ def test_update_schedule_returns_401_for_user_token(db, client, user_token_facto
     assert updated_job.job_name == job.job_name
 
 
-# /v1/api/admin/schedules/1
+@pytest.mark.focus
 def test_update_schedule_rejects_invalid_input(client, admin_token_factory, scheduled_job_factory, invalid_update_scheduled_job_api_request):
     token = admin_token_factory()
     job = scheduled_job_factory()

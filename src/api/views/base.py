@@ -1,3 +1,4 @@
+from flask import abort
 from flask.views import MethodView
 
 from api.lib.constants import API_PREFIX
@@ -8,7 +9,7 @@ class BaseApi(MethodView):
     api_base = f"/{API_PREFIX}"
 
     def __init__(self, url, name):
-        self.view_func = self.as_view(name)
+        self.name = name
         self.url_base = f"{self.api_base}{url}"
 
     def register_api(self, app, pk='id', pk_type='int', expose_delete=False):
@@ -17,32 +18,25 @@ class BaseApi(MethodView):
             bulk_methods.append('DELETE')
         self.add_url(app, "/")
         self.add_url(app, "/", methods=['POST',])
-        self.add_url(app, f'/<{pk_type}:{pk}>', view_func=self.view_func,
-                        methods=bulk_methods)
+        self.add_url(app, f'/<{pk_type}:{pk}>', methods=bulk_methods)
 
     def add_url(self, app, url, view_func=None, methods=['GET',]):
-        app.add_url_rule(
-            f"{self.url_base}{url}",
-            view_func=view_func or self.view_func,
-            methods=methods
-        )
+        final_url = f"{self.url_base}{url}"
+        if self.name not in app.view_functions:
+            app.add_url_rule(
+                final_url,
+                view_func=view_func or self.as_view(self.name),
+                methods=methods
+            )
 
     def get(self, id):
-        if id is None:
-            # return a list of users
-            pass
-        else:
-            # expose a single user
-            pass
+        abort(404)
 
     def post(self):
-        # create a new user
-        pass
+        abort(404)
 
     def delete(self, id):
-        # delete a single user
-        pass
+        abort(404)
 
     def put(self, id):
-        # update a single user
-        pass
+        abort(404)

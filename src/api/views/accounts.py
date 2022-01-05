@@ -21,7 +21,7 @@ class AccountsApi(BaseApi):
 
 
     @authed
-    def list_accounts():
+    def list_accounts(self):
         """
         ---
         get:
@@ -56,7 +56,7 @@ class AccountsApi(BaseApi):
 
 
     @authed
-    def request_account_sync(account_id: int):
+    def request_account_sync(self, account_id: int):
         """
         ---
         post:
@@ -88,7 +88,7 @@ class AccountsApi(BaseApi):
 
 
     @authed
-    def request_account_balances(account_id):
+    def request_account_balances(self, account_id):
         """
         ---
         get:
@@ -123,7 +123,7 @@ class AccountsApi(BaseApi):
 
 
     @authed
-    def list_holdings(account_id):
+    def list_holdings(self, account_id):
         """
         ---
         get:

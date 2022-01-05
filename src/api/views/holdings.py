@@ -20,7 +20,7 @@ class HoldingsApi(BaseApi):
 
 
     @authed
-    def get_holdings_by_profile():
+    def get_holdings_by_profile(self):
         profile = get_identity()
         repo = HoldingRepository()
         result = repo.get_holdings_by_profile_id(profile['id'])
@@ -36,7 +36,7 @@ class HoldingsApi(BaseApi):
 
 
     @authed
-    def get_holding(holding_id):
+    def get_holding(self, holding_id):
         profile = get_identity()
         repo = HoldingRepository()
         result = repo.get_holding_by_id(
@@ -53,7 +53,7 @@ class HoldingsApi(BaseApi):
 
 
     @authed
-    def get_holding_balances(holding_id):
+    def get_holding_balances(self, holding_id):
         profile = get_identity()
         repo = HoldingRepository()
         result = repo.get_holding_balances_by_holding_id(profile['id'], holding_id)
