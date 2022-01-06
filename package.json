@@ -20,7 +20,7 @@
     "stop:prod": "docker-compose -f docker-compose.prod.yml stop",
     "up": "docker-compose -f docker-compose.dev.yml up -d",
     "up:prod": "docker-compose -f docker-compose.prod.yml down",
-    "down": "docker-compose -f docker-compose.dev.yml up",
+    "down": "docker-compose -f docker-compose.dev.yml down",
     "down:prod": "docker-compose -f docker-compose.prod.yml down",
     "logs": "docker-compose -f docker-compose.dev.yml logs -f",
     "logs:prod": "docker-compose -f docker-compose.prod.yml logs -f",
