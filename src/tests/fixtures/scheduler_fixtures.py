@@ -20,7 +20,7 @@ def scheduled_job_factory(db, faker):
         with db.get_session() as session:
             job = ScheduledJob()
 
-            job.id = random.randint(1, 50000)
+            job.id = random.randint(1, 99999999)
             job.job_name = job_name
             job.cron = cron
             job.json_args = json_args

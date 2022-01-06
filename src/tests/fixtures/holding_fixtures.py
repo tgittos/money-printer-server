@@ -27,7 +27,7 @@ def holding_factory(db, faker, account_factory, security_factory):
         with db.get_session() as session:
             holding = Holding()
 
-            holding.id = random.randint(1, 50000)
+            holding.id = random.randint(1, 99999999)
             holding.account_id = account_id
             holding.security_symbol = security_symbol
             holding.cost_basis = cost_basis
@@ -55,7 +55,7 @@ def holding_balance_factory(db, faker, holding_factory):
         with db.get_session() as session:
             balance = HoldingBalance()
 
-            balance.id = random.randint(1, 50000)
+            balance.id = random.randint(1, 99999999)
             balance.holding_id = holding_id
             balance.cost_basis = cost_basis
             balance.quantity = quantity

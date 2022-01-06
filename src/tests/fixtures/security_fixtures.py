@@ -29,7 +29,7 @@ def security_factory(db, faker):
 
             security = Security()
 
-            security.id = random.randint(1, 50000)
+            security.id = random.randint(1, 99999999)
             security.name = name
             security.symbol = symbol
             security.iso_currency_code = iso_currency_code

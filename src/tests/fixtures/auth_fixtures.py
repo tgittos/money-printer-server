@@ -21,7 +21,7 @@ def reset_token_factory(db, faker):
         with db.get_session() as session:
             t = ResetToken()
 
-            t.id = random.randint(1, 50000)
+            t.id = random.randint(1, 99999999)
             t.token = token
             t.profile_id = profile_id
             t.expiry = expiry

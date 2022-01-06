@@ -20,7 +20,7 @@ def profile_factory(db, faker):
         with db.get_session() as session:
             profile = Profile()
 
-            profile.id = random.randint(1, 50000)
+            profile.id = random.randint(1, 99999999)
             profile.first_name = first_name
             profile.last_name = last_name
             profile.email = email or f"{first_name}.{last_name}@{faker.unique.domain_name()}"

@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime, timezone
+import random
 
 from core.models import ApiToken, ApiTokenPolicy
 from core.schemas.api_schemas import *
@@ -16,7 +17,7 @@ def api_token_policy_factory(db):
     ):
         with db.get_session() as session:
             policy = ApiTokenPolicy()
-            policy.id = random.randint(1, 50000)
+            policy.id = random.randint(1, 99999999)
             policy.doc = doc
             policy.hosts = hosts
             policy.timestamp = datetime.now(tz=timezone.utc)

@@ -46,7 +46,7 @@ def plaid_item_factory(db, faker, profile_factory):
                 profile_id = profile.id
 
             plaid_item = PlaidItem()
-            plaid_item.id = random.randint(1, 50000)
+            plaid_item.id = random.randint(1, 99999999)
             plaid_item.item_id = item_id
             plaid_item.profile_id = profile_id
             plaid_item.access_token = access_token
