@@ -16,26 +16,67 @@ services:
     image: "git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-matom\
       o:latest"
     ports:
-      - 8080:8080
+      - 7070:8080
     volumes:
       - matomo-config:/var/www/matomo/config
     env_file:
       - .env.dev
-    depends_on: [ "db" ]
+    depends_on: [ "mysql" ]
   prometheus:
     image: "git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-prome\
       theus:latest"
     ports:
       - 9090:9090
     entrypoint: [ "/bin/sh", "prometheus.sh" ]
-  db:
+  mysql:
     image: "mysql/mysql-server:5.7"
     volumes:
-      - db-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: dev-root-password
+      MYSQL_ROOT_HOST: "%"
     ports:
       - 3306:3306
+  pg:
+    image: postgres:12
+    restart: always
+    volumes:
+      - pg-data:/var/lib/posgresql/data
+    environment:
+      POSTGRES_PASSWORD: dev-root-password
+  hasura:
+    image: hasura/graphql-engine:pull5655-633f084f 
+    restart: always
+    ports:
+      - 8080:8080
+    env_file:
+      - .env.dev
+    command:
+      [
+        "graphql-engine",
+        "--mysql-host",
+        mysql,
+        "--mysql-user",
+        "root",
+        "--mysql-port",
+        $HASURA_MYSQL_PORT,
+        "--mysql-dbname",
+        $HASURA_MYSQL_SCHEMA,
+        "--mysql-password",
+        "dev-root-password",
+        "serve"
+      ]
+    environment:
+      ## postgres database to store Hasura metadata
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:dev-root-password@pg:5432/postgres
+      ## enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      ## enable debugging mode. It is recommended to disable this in production
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      ## uncomment next line to set an admin secret
+      # HASURA_GRAPHQL_ADMIN_SECRET: hasura
+    depends_on: ["pg", "mysql"]
   api:
     build:
       dockerfile: Dockerfile
@@ -49,11 +90,11 @@ services:
       - 5000:5000
     environment:
       MP_REDIS__HOST: redis
-      MP_DB__HOST: db
+      MP_DB__HOST: mysql
       MP_WEBHOOK_HOST: ngrok
     env_file:
       - .env.dev
-    depends_on: [ "redis", "db", "ngrok", "matomo", "prometheus" ]
+    depends_on: [ "redis", "mysql", "ngrok", "matomo", "prometheus" ]
     image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
     entrypoint:
       [
@@ -68,10 +109,10 @@ services:
     image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
     environment:
       MP_REDIS__HOST: redis
-      MP_DB__HOST: db
+      MP_DB__HOST: mysql
     env_file:
       - .env.dev
-    depends_on: [ "redis", "db" ]
+    depends_on: [ "redis", "mysql" ]
     entrypoint:
       [
         "python",
@@ -85,19 +126,19 @@ services:
     image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
     environment:
       MP_REDIS__HOST: redis
-      MP_DB__HOST: db
+      MP_DB__HOST: mysql
     env_file:
       - .env.dev
-    depends_on: [ "redis", "db" ]
+    depends_on: [ "redis", "mysql" ]
     entrypoint: [ "python", "bin/task-runner.py" ]
   scheduler:
     image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
     environment:
       MP_REDIS__HOST: "redis"
-      MP_DB__HOST: db
+      MP_DB__HOST: mysql
     env_file:
       - .env.dev
-    depends_on: [ "redis", "db" ]
+    depends_on: [ "redis", "mysql" ]
     entrypoint:
       [
         "rqscheduler",
@@ -110,5 +151,6 @@ services:
       ]
 
 volumes:
-  db-data: null
+  mysql-data: null
+  pg-data: null
   matomo-config: null

@@ -54,12 +54,24 @@ def encode_jwt(profile: Profile) -> str:
     """
     Encodes a Profile into a valid and secure JWT token
     """
+    hasura_roles = ["user"]
+    hasura_default_role = "user"
+    if profile.is_admin:
+        hasura_roles.append("admin")
+        hasura_default_role = "admin"
+
     token = jwt.encode({
         "profile": ReadProfileSchema().dumps(profile),
         "is_admin": profile.is_admin,
         "authenticated": True,
         "exp": (datetime.utcnow() + relativedelta(months=1)).timestamp(),
-        "algorithm": "HS256"
+        "algorithm": "HS256",
+        "https://hasura.io/jwt/claims": {
+            "x-hasura-allowed-roles": hasura_roles,
+            "x-hasura-default-role": hasura_default_role,
+            "x-hasura-user-id": profile.id,
+            "x-hasura-org-id": profile.id
+        }
     }, config.secret)
     return token
 
