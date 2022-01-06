@@ -3,7 +3,6 @@ from datetime import datetime, timedelta, timezone
 from flask import request
 
 from core.repositories.stock_repository import StockRepository
-from config import mysql_config, iex_config
 
 from api.views.base import BaseApi
 from api.views.decorators import Authed

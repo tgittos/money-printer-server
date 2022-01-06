@@ -22,7 +22,7 @@
     },
     "db": {
       "host": "127.0.0.1",
-      "port": "3306",
+      "port": "5432",
       "schema": "mp_dev",
       "debug": "false",
       "username": "",
@@ -41,11 +41,11 @@
     "secret": "test secret",
     "db": {
       "host": "127.0.0.1",
-      "port": "3306",
+      "port": "5432",
       "schema": "mp_test",
       "debug": "false",
       "username": "mp_dev",
-      "password": "mp!QAZxsw2"
+      "password": "mp-dev-password1#"
     },
     "redis": {
       "host": "localhost",

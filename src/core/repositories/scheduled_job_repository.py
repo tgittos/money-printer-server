@@ -6,17 +6,17 @@ from rq import Queue
 from rq_scheduler import Scheduler
 
 from core.apis.mailgun import MailGun
-from core.stores.mysql import MySql
+from core.stores.database import Database
 from core.models import ScheduledJob, JobResult
 from core.schemas import CreateScheduledJobSchema, CreateInstantJobSchema
 from core.lib.constants import WORKER_QUEUE
 from core.repositories.repository_response import RepositoryResponse
-from config import redis_config, mailgun_config, mysql_config
+from config import redis_config, mailgun_config
 
 
 class ScheduledJobRepository:
 
-    db = MySql(mysql_config)
+    db = Database()
     redis = redis.Redis(
         host=redis_config['host'], port=redis_config['port'], db=0)
     mailgun_client = MailGun(mailgun_config)

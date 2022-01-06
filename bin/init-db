@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo "Sourcing dev env from `pwd`/.env.dev"
+source "`pwd`/.env.dev"
+
+echo "Creating user $MP_DB__USERNAME in mysql db with $MP_DB__PASSWORD"
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q mysql) /bin/bash -c "mysql --user=root --password='$MP_DB__PASSWORD' --execute=\"CREATE USER '$MP_DB__USERNAME' IDENTIFIED BY '$MP_DB__PASSWORD'\""
+
+echo "Creating db mp_matomo in mysql"
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q mysql) /bin/bash -c "mysql --user=root --password='$MP_DB__PASSWORD' --execute=\"CREATE SCHEMA mp_matomo;\""
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q mysql) /bin/bash -c "mysql --user=root --password='$MP_DB__PASSWORD' --database mp_matomo --execute=\"GRANT ALL PRIVILEGES ON *.* TO '$MP_DB__USERNAME';\""
+
+echo "Creating user $MP_DB__USERNAME in pg with pw $MP_DB__PASSWORD"
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE USER $MP_DB__USERNAME WITH PASSWORD '$MP_DB__PASSWORD'\""
+
+echo "Creating db mp_dev in pg"
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE DATABASE mp_dev;\""
+
+echo "Creating db mp_test in pg"
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE DATABASE mp_test;\""
+
+echo "Granting access to mp_dev, mp_test to $MP_DB__USERNAME"
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"GRANT ALL PRIVILEGES ON DATABASE mp_dev TO $MP_DB__USERNAME;\""
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"GRANT ALL PRIVILEGES ON DATABASE mp_test TO $MP_DB__USERNAME;\""
+
+if [ $(docker-compose -f docker-compose.dev.yml ps -q api) ]; then
+    echo "Migrating db"
+    docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q api) /bin/bash -c "cd /app/src && alembic upgrade head"
+fi
+
+echo "Done"

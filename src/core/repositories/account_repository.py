@@ -7,9 +7,9 @@ from core.repositories.repository_response import RepositoryResponse
 from core.models import Account, AccountBalance
 from core.schemas import CreateInstantJobSchema, CreateAccountBalanceSchema
 from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
-from core.stores.mysql import MySql
+from core.stores.database import Database
 from core.lib.logger import get_logger
-from config import mysql_config, plaid_config
+from config import plaid_config
 
 # import all the actions so that consumers of the repo can access everything
 import core.actions.account.crud as account_crud
@@ -20,7 +20,7 @@ from core.actions.plaid.crud import get_plaid_item_by_id
 class AccountRepository:
 
     logger = get_logger(__name__)
-    db = MySql(mysql_config)
+    db = Database()
     plaid_repo = PlaidRepository()
     scheduled_job_repo = ScheduledJobRepository()
     plaid_accounts_api = PlaidAccounts(PlaidAccountsConfig(

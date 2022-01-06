@@ -15,6 +15,7 @@ from core.lib.logger import init_logger, get_logger
 
 from api.lib.client_bus import ClientBus
 from api.lib.constants import API_PREFIX
+from api.lib.apispec import write_apispec
 from api.views import register_api, register_swagger
 from config import config
 
@@ -107,3 +108,19 @@ def init(first_name, last_name, email):
         email=email, first_name=first_name, last_name=last_name
     ))
     return result
+
+
+if __name__ == '__main__':
+
+    # create the app
+    app, ma, cb, ws = create_app()
+
+    # generate docs when running in dev and staging
+    if 'MP_ENVIRONMENT' in os.environ:
+        os.environ['FLASK_ENV'] = os.environ['MP_ENVIRONMENT']
+        if os.environ['MP_ENVIRONMENT'] == "development" or os.environ['MP_ENVIRONMENT'] == "staging":
+            doc_path = os.path.dirname(__file__) + "/../../docs/swagger/"
+            write_apispec(doc_path + "swagger.json", app)
+    
+    # always run on the public port, cause we're in a container
+    app.run(host='0.0.0.0')

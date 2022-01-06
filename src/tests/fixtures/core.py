@@ -2,17 +2,16 @@ from flask.app import Flask
 import pytest
 from sqlalchemy import inspect
 
-from core.stores.mysql import MySql
+from core.stores.database import Database
 from core.models import Base
 from api.app import app, create_app
 
-from config import mysql_config
 
 
 # one DB for the whole test session so that we can parallelize it
 @pytest.fixture(scope='session')
 def db():
-    db = MySql(mysql_config)
+    db = Database()
     inspector = inspect(db.engine)
     created = False
     if not inspector.has_table('profiles'):

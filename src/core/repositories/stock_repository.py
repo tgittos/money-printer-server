@@ -4,10 +4,10 @@ from marshmallow import Schema, fields, EXCLUDE
 
 import pandas as pd
 
-from core.stores.mysql import MySql
+from core.stores.database import Database
 from core.lib.logger import get_logger
 from core.lib.types import StringList
-from config import iex_config, mysql_config
+from config import iex_config
 from core.repositories.repository_response import RepositoryResponse
 from core.schemas import ReadSecurityPriceSchema, RequestStockPriceSchema, RequestStockPriceListSchema
 
@@ -19,7 +19,7 @@ from core.actions.stock.fetch import *
 class StockRepository:
 
     logger = get_logger(__name__)
-    db = MySql(mysql_config)
+    db = Database()
 
     def __init__(self):
         # pull the IEX config and store the token in the IEX_TOKEN env var

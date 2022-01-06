@@ -1,13 +1,12 @@
 from sqlalchemy import and_
 
 from core.models import Account, Holding, Security
-from core.stores.mysql import MySql
+from core.stores.database import Database
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.repositories.security_repository import SecurityRepository
 from core.repositories.repository_response import RepositoryResponse
 from core.schemas import CreateInstantJobSchema
 from core.lib.logger import get_logger
-from config import mysql_config
 
 import core.actions.holding.holding_crud as crud
 from core.actions.account.crud import get_accounts_by_plaid_item_id
@@ -18,7 +17,7 @@ from core.actions.plaid.crud import get_plaid_item_by_id
 class HoldingRepository:
 
     logger = get_logger(__name__)
-    db = MySql(mysql_config)
+    db = Database()
     scheduled_job_repo = ScheduledJobRepository()
     security_repo = SecurityRepository()
 

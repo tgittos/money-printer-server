@@ -1,10 +1,10 @@
 from marshmallow import EXCLUDE
 from datetime import date, timedelta
 
-from core.stores.mysql import MySql
+from core.stores.database import Database
 from core.apis.plaid.investments import PlaidInvestments, PlaidInvestmentsConfig
 from core.lib.logger import get_logger
-from config import mysql_config, plaid_config
+from config import plaid_config
 from core.actions.plaid.crud import get_plaid_item_by_id
 from core.repositories.repository_response import RepositoryResponse
 from core.models import PlaidItem, Account, InvestmentTransaction
@@ -19,7 +19,7 @@ from core.actions.account.crud import get_account_by_id
 class SecurityRepository:
 
     logger = get_logger(__name__)
-    db = MySql(mysql_config)
+    db = Database()
 
     def __init__(self):
         self.plaid_config = plaid_config

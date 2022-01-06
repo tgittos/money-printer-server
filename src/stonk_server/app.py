@@ -54,3 +54,8 @@ class DataServerApplication:
             sys.exit(0)
 
         return sigint_handler
+
+
+if __name__ == '__main__':
+    app = DataServerApplication()
+    app.run()

@@ -36,3 +36,8 @@ class TaskRunnerApplication:
     def _handle_thread_error(self):
         self.logger.exception(
             "exception in thread: {0}".format(traceback.format_exc()))
+
+
+if __name__ == '__main__':
+    app = TaskRunnerApplication()
+    app.run()

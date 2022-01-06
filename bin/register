@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from server.services.api.application import ApiApplication
 
 if __name__ == "__main__":

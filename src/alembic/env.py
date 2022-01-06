@@ -23,7 +23,7 @@ config_json = json.loads(f1.read())
 f1.close()
 
 config.set_main_option('sqlalchemy.url',
-                       "mysql://{0}:{1}@{2}:{3}/{4}".format(
+                       "postgresql://{0}:{1}@{2}:{3}/{4}".format(
                            os.environ['MP_DB__USERNAME'],
                            os.environ['MP_DB__PASSWORD'],
                            os.environ['MP_DB__HOST'],

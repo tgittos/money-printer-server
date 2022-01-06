@@ -3,9 +3,9 @@ from core.repositories.holding_repository import HoldingRepository
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
 from core.lib.logger import get_logger
-from core.stores.mysql import MySql
+from core.stores.database import Database
 from core.repositories.repository_response import RepositoryResponse
-from config import mysql_config, plaid_config
+from config import plaid_config
 from core.schemas import CreateInstantJobSchema, CreateProfileSchema, UpdateProfileSchema,\
     RegisterProfileSchema, ResetPasswordSchema, LoginSchema
 
@@ -17,7 +17,7 @@ import core.actions.profile.auth as auth
 
 class ProfileRepository:
 
-    db = MySql(mysql_config)
+    db = Database()
     logger = get_logger(__name__)
     account_repo = AccountRepository()
     holdings_repo = HoldingRepository()
