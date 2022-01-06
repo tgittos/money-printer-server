@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields
 
+from core.models import Holding
+
 
 class CreateHoldingSchema(Schema):
     class Meta:
@@ -7,33 +9,6 @@ class CreateHoldingSchema(Schema):
                   "quantity", "iso_currency_code")
 
 
-class ReadHoldingSchema(Schema):
-    account = fields.Nested('ReadAccountSchema')
-    security = fields.Nested('ReadSecuritySchema')
-    balances = fields.Nested('ReadHoldingBalanceSchema', many=True)
-
-    class Meta:
-        additional = ("id", "cost_basis", "quantity",
-                      "iso_currency_code", "timestamp")
-
-
 class UpdateHoldingSchema(Schema):
     class Meta:
         fields = ("id", "cost_basis", "quantity", "iso_currency_code")
-
-
-class CreateHoldingBalanceSchema(Schema):
-    class Meta:
-        fields = ("holding_id", "cost_basis", "quantity")
-
-
-class ReadHoldingBalanceSchema(Schema):
-    holding = fields.Nested('ReadHoldingSchema')
-
-    class Meta:
-        additional = ("id", "cost_basis", "quantity", "timestamp")
-
-
-class UpdateHoldingBalanceSchema(Schema):
-    class Meta:
-        fields = ("id", "cost_basis", "quantity")

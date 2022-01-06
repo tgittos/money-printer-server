@@ -4,6 +4,7 @@ from datetime import datetime, time, timezone
 
 from core.models import Account, AccountBalance
 from core.schemas.account_schemas import *
+from core.schemas.account_balance_schemas import *
 from core.lib.utilities import id_generator
 
 from tests.fixtures import *
@@ -27,6 +28,7 @@ def account_factory(db, faker, profile_factory, plaid_item_factory):
         with db.get_session() as session:
             account = Account()
 
+            account.id = random.randint(1, 99999999)
             account.profile_id = profile_id
             account.plaid_item_id = plaid_item_id
             account.account_id = account_id
@@ -57,6 +59,7 @@ def account_balance_factory(db, faker, account_factory):
         with db.get_session() as session:
             balance = AccountBalance()
 
+            balance.id = random.randint(1, 50000)
             balance.account_id = account_id
             balance.available = available
             balance.current = current

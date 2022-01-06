@@ -50,10 +50,10 @@ def test_info_fails_with_profile_with_no_plaid_item(repo, profile_factory):
     assert result.data is None
 
 
-def test_create_link_token_calls_into_plaid_api(repo, faker, plaid_api_link_spy):
+def test_create_link_token_calls_into_plaid_api(repo, profile_factory, faker, plaid_api_link_spy):
+    profile = profile_factory()
     faker.add_provider(internet)
-    result = repo.create_link_token(faker.domain_name())
-    print('result:', result.message)
+    result = repo.create_link_token(profile.id, faker.domain_name())
     assert result.success
     plaid_api_link_spy.assert_called_once()
 

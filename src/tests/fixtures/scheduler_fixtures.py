@@ -1,4 +1,5 @@
 import pytest
+import random
 
 from core.models import ScheduledJob
 from core.schemas.scheduler_schemas import CreateScheduledJobSchema, CreateInstantJobSchema,\
@@ -18,13 +19,17 @@ def scheduled_job_factory(db, faker):
             queue=WORKER_QUEUE):
         with db.get_session() as session:
             job = ScheduledJob()
+
+            job.id = random.randint(1, 99999999)
             job.job_name = job_name
             job.cron = cron
             job.json_args = json_args
             job.active = active
             job.queue = queue
+
             session.add(job)
             session.commit()
+
             return job
     return __scheduled_job_factory
 
@@ -55,6 +60,7 @@ def valid_create_instant_job_request_factory(faker):
             'json_args': json_args
         })
     return __valid_create_instant_job_request_factory
+
 
 @pytest.fixture()
 def valid_update_scheduled_job_request_factory(faker, scheduled_job_factory):
@@ -90,13 +96,14 @@ def valid_create_instant_job_api_request_factory(valid_create_instant_job_reques
         return CreateInstantJobSchema().dump(request)
     return __factory
 
+
 @pytest.fixture
 def valid_update_scheduled_job_api_request_factory(faker, valid_update_scheduled_job_request_factory):
     def __factory(
-        job_id: None,
-        job_name=f"{' '.join(faker.words())} Job",
-        cron="0 * * * *",
-        json_args={}):
+            job_id: None,
+            job_name=f"{' '.join(faker.words())} Job",
+            cron="0 * * * *",
+            json_args={}):
         request = valid_update_scheduled_job_request_factory(
             job_id=job_id,
             job_name=job_name,
@@ -120,6 +127,7 @@ def invalid_scheduled_job_api_request():
         'cron': None,
         'json_args': ""
     }
+
 
 @pytest.fixture()
 def invalid_update_scheduled_job_api_request():

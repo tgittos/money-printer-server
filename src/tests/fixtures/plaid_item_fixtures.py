@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime, timedelta, timezone
+import random
 
 from core.models import PlaidItem
 from core.schemas.plaid_item_schemas import CreatePlaidItemSchema, UpdatePlaidItemSchema
@@ -45,6 +46,7 @@ def plaid_item_factory(db, faker, profile_factory):
                 profile_id = profile.id
 
             plaid_item = PlaidItem()
+            plaid_item.id = random.randint(1, 99999999)
             plaid_item.item_id = item_id
             plaid_item.profile_id = profile_id
             plaid_item.access_token = access_token
@@ -61,15 +63,11 @@ def plaid_item_factory(db, faker, profile_factory):
 
 @pytest.fixture
 def valid_plaid_item_create_request_factory(faker, profile_factory):
-    def __request_factory(profile_id=None,
-                          item_id=faker.md5(),
+    def __request_factory(item_id=faker.md5(),
                           access_token=faker.md5(),
                           request_id=faker.md5(),
                           status=''):
-        if profile_id is None:
-            profile_id = profile_factory().id
         return CreatePlaidItemSchema().load({
-            'profile_id': profile_id,
             'item_id': item_id,
             'access_token': access_token,
             'request_id': request_id,

@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime, timezone, timedelta
+import random
 
 from core.models import ResetToken
 from core.schemas.auth_schemas import RegisterProfileSchema, LoginSchema, ResetPasswordSchema
@@ -19,6 +20,8 @@ def reset_token_factory(db, faker):
                               timestamp=datetime.now(tz=timezone.utc)):
         with db.get_session() as session:
             t = ResetToken()
+
+            t.id = random.randint(1, 99999999)
             t.token = token
             t.profile_id = profile_id
             t.expiry = expiry
@@ -72,7 +75,6 @@ def valid_auth_request_factory(profile_factory):
     def __valid_auth_request_factory(profile=None, password=None):
         if profile is None:
             password = id_generator(size=8)
-            print('creating a profile with password:', password)
             profile = profile_factory(password=password)
         args = {
             'email': profile.email,

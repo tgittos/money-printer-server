@@ -31,13 +31,14 @@ def cannot_construct_invalid_update_request(plaid_item_factory):
 
 def test_get_plaid_item_by_id_returns_plaid_item(db, plaid_item_factory):
     item = plaid_item_factory()
-    result = get_plaid_item_by_id(db, item.id)
+    result = get_plaid_item_by_id(db, item.profile_id, item.id)
     assert result.success
     assert result.data.id == item.id
 
 
-def test_get_plaid_item_by_id_fails_if_item_missing(db):
-    result = get_plaid_item_by_id(db, 23423)
+def test_get_plaid_item_by_id_fails_if_item_missing(db, profile_factory):
+    profile = profile_factory()
+    result = get_plaid_item_by_id(db, profile.id, 23423)
     assert not result.success
     assert result.data is None
 
@@ -45,13 +46,14 @@ def test_get_plaid_item_by_id_fails_if_item_missing(db):
 def test_get_plaid_item_by_plaid_item_id_returns_plaid_item(db, plaid_item_factory):
     item_id = "this is my item id"
     item = plaid_item_factory(item_id=item_id)
-    result = get_plaid_item_by_plaid_item_id(db, item_id)
+    result = get_plaid_item_by_plaid_item_id(db, item.profile_id, item_id)
     assert result.success
     assert result.data.id == item.id
 
 
-def test_get_plaid_item_by_plaid_item_id_fails_if_item_missing(db):
-    result = get_plaid_item_by_id(db, 'fake-plaid-id')
+def test_get_plaid_item_by_plaid_item_id_fails_if_item_missing(db, profile_factory):
+    profile = profile_factory()
+    result = get_plaid_item_by_id(db, profile.id, 'fake-plaid-id')
     assert not result.success
     assert result.data is None
 
@@ -59,7 +61,7 @@ def test_get_plaid_item_by_plaid_item_id_fails_if_item_missing(db):
 def test_get_plaid_item_by_profile_returns_plaid_item(db, profile_factory, plaid_item_factory):
     profile = profile_factory()
     item = plaid_item_factory(profile_id=profile.id)
-    result = get_plaid_items_by_profile(db, profile)
+    result = get_plaid_items_by_profile_id(db, profile.id)
     assert result.success
     assert result.data is not None
     assert len(result.data) == 1
@@ -69,15 +71,16 @@ def test_get_plaid_item_by_profile_returns_plaid_item(db, profile_factory, plaid
 
 def test_get_plaid_item_by_profile_fails_if_item_missing(db, profile_factory):
     profile = profile_factory()
-    result = get_plaid_items_by_profile(db, profile)
+    result = get_plaid_items_by_profile_id(db, profile.id)
     assert result.success
     assert result.data is not None
     assert len(result.data) == 0
 
 
-def test_create_plaid_item_accepts_valid_input(db, valid_plaid_item_create_request_factory):
+def test_create_plaid_item_accepts_valid_input(db, profile_factory, valid_plaid_item_create_request_factory):
+    profile = profile_factory()
     request = valid_plaid_item_create_request_factory()
-    result = create_plaid_item(db, request)
+    result = create_plaid_item(db, profile.id, request)
     assert result.success
     assert result.data.id is not None
 
@@ -86,29 +89,31 @@ def test_update_plaid_item_accepts_valid_input(db, plaid_item_factory, valid_pla
     item = plaid_item_factory()
     request = valid_plaid_item_update_request_factory(plaid_item_id=item.id)
     assert item.status != request['status']
-    result = update_plaid_item(db, request)
+    result = update_plaid_item(db, item.profile_id, request)
     assert result.success
     assert result.data is not None
     assert result.data.id == item.id
     assert result.data.status == request['status']
 
 
-def test_update_plaid_item_fails_if_item_not_found(db, valid_plaid_item_update_request_factory):
+def test_update_plaid_item_fails_if_item_not_found(db, profile_factory, valid_plaid_item_update_request_factory):
+    profile = profile_factory()
     request = valid_plaid_item_update_request_factory()
     request['id'] = 2342342
-    result = update_plaid_item(db, request)
+    result = update_plaid_item(db, profile.id, request)
     assert not result.success
     assert result.data is None
 
 
 def test_delete_plaid_item_succeeds_if_exists(db, plaid_item_factory):
     item = plaid_item_factory()
-    result = delete_plaid_item(db, item.id)
+    result = delete_plaid_item(db, item.profile_id, item.id)
     assert result.success
-    assert get_plaid_item_by_id(db, item.id).data is None
+    assert get_plaid_item_by_id(db, item.profile_id, item.id).data is None
 
 
-def test_delete_plaid_item_fails_if_missing(db):
-    result = delete_plaid_item(db, 132342)
+def test_delete_plaid_item_fails_if_missing(db, profile_factory):
+    profile = profile_factory()
+    result = delete_plaid_item(db, profile.id, 132342)
     assert not result.success
     assert result.data is None

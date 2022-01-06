@@ -10,7 +10,7 @@ def test_list_accounts_returns_all_accounts_for_profile(client, profile_factory,
     profile = profile_factory()
     account = account_factory(profile_id=profile.id)
     token = user_token_factory(profile=profile)
-    response = client.get(f"/{API_PREFIX}/accounts", headers={
+    response = client.get(f"/{API_PREFIX}/accounts/", headers={
         'Authorization': f"Bearer {token}"
     })
     assert response.status_code == 200
@@ -23,7 +23,7 @@ def test_list_accounts_returns_all_accounts_for_profile(client, profile_factory,
 
 def test_list_accounts_returns_no_accounts(client, user_token_factory):
     token = user_token_factory()
-    response = client.get(f"/{API_PREFIX}/accounts", headers={
+    response = client.get(f"/{API_PREFIX}/accounts/", headers={
         'Authorization': f"Bearer {token}"
     })
     assert response.status_code == 200
@@ -34,7 +34,7 @@ def test_list_accounts_returns_no_accounts(client, user_token_factory):
 
 
 def test_list_accounts_fails_for_no_token(client):
-    response = client.get(f"/{API_PREFIX}/accounts")
+    response = client.get(f"/{API_PREFIX}/accounts/")
     assert response.status_code == 401
 
 
@@ -121,7 +121,6 @@ def test_request_holdings_gets_holdings_for_account(client, user_token_factory,
     account = account_factory(profile_id=profile.id)
     holding = holding_factory(account_id=account.id)
     token = user_token_factory(profile=profile)
-    print('profile id', profile.id)
     response = client.get(f"/{API_PREFIX}/accounts/{account.id}/holdings",
         headers={
             'Authorization': f"Bearer {token}"
@@ -141,7 +140,6 @@ def test_request_holdings_fails_for_no_account(client, user_token_factory,
     account = account_factory(profile_id=profile.id)
     holding = holding_factory(account_id=account.id)
     token = user_token_factory(profile=profile)
-    print('profile id', profile.id)
     response = client.get(f"/{API_PREFIX}/accounts/23423452/holdings",
         headers={
             'Authorization': f"Bearer {token}"

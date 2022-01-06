@@ -85,7 +85,6 @@ def test_create_link_token_returns_plaid_link_token(client, user_token_factory):
     })
     assert result.status_code == 200
     json = result.get_json()
-    print(json)
     assert json['item_id'] is not None
     assert json['link_token'] is not None
 

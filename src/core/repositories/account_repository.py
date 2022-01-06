@@ -41,11 +41,11 @@ class AccountRepository:
             self.db, profile_id)
         return accounts_result
 
-    def get_balances_by_account_id(self, account_id: int, start=None, end=None) -> RepositoryResponse:
+    def get_balances_by_account_id(self, profile_id: int, account_id: int, start=None, end=None) -> RepositoryResponse:
         """
         Returns the balance history for the requested profile/account, optionally filtered by a time window
         """
-        return account_crud.get_balances_by_account(self.db, account_id, start=start, end=end)
+        return account_crud.get_balances_by_account(self.db, profile_id, account_id, start=start, end=end)
 
     def schedule_account_sync(self, profile_id: int, account_id: int) -> RepositoryResponse:
         """
@@ -61,8 +61,7 @@ class AccountRepository:
                 message=account_result.message
             )
 
-        plaid_item_result = get_plaid_item_by_id(
-            self.db, account_result.data.plaid_item_id)
+        plaid_item_result = get_plaid_item_by_id(self.db, profile_id, account_result.data.plaid_item_id)
 
         if not plaid_item_result.success or plaid_item_result.data is None:
             self.logger.error(
@@ -78,11 +77,11 @@ class AccountRepository:
             }
         }))
 
-    def schedule_update_all_balances(self, plaid_item_id: int) -> RepositoryResponse:
+    def schedule_update_all_balances(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """
         Schedules an instant job to update the balances of all accounts attached to a plaid Link item
         """
-        plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.warning(
                 "requested schedule update all balances without PlaidItem")
@@ -106,8 +105,7 @@ class AccountRepository:
                 "requested schedule update balance without Account")
             return account_result
 
-        plaid_result = self.plaid_repo.get_plaid_item_by_id(
-            account_result.data.plaid_item_id)
+        plaid_result = self.plaid_repo.get_plaid_item_by_id(profile_id, account_result.data.plaid_item_id)
         if not plaid_result.success:
             return plaid_result
 
@@ -118,12 +116,12 @@ class AccountRepository:
             }
         }))
 
-    def sync_all_balances(self, plaid_item_id: int) -> RepositoryResponse:
+    def sync_all_balances(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """
         Fetches the latest balances for all accounts attached to a given PlaidItem
         Returns None on any error
         """
-        plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.warning("requested all balance sync with no PlaidItem")
             return plaid_result
@@ -131,8 +129,7 @@ class AccountRepository:
         self.logger.info(
             "syncing account balance/s for plaid item: {0}".format(plaid_result.data.id))
 
-        accounts_result = account_crud.get_accounts_by_plaid_item_id(
-            self.db, plaid_result.data.id)
+        accounts_result = account_crud.get_accounts_by_plaid_item_id(self.db, profile_id, plaid_result.data.id)
         if accounts_result.success and len(accounts_result.data) > 0:
             accounts = accounts_result.data
             self.logger.info(
@@ -157,8 +154,7 @@ class AccountRepository:
         Fetches the latest balance for the given account from Plaid
         Returns None on any error
         """
-        account_result = account_crud.get_account_by_id(
-            self.db, profile_id, account_id)
+        account_result = account_crud.get_account_by_id( self.db, profile_id, account_id)
         if not account_result.success:
             self.logger.warning(
                 "requested balance sync for account with no Account")
@@ -167,8 +163,7 @@ class AccountRepository:
         self.logger.info("syncing account balance for account id: {0}".format(
             account_result.data.id))
 
-        plaid_item_result = get_plaid_item_by_id(
-            self.db, account_result.data.plaid_item_id)
+        plaid_item_result = get_plaid_item_by_id(self.db, profile_id, account_result.data.plaid_item_id)
 
         if not plaid_item_result.success or plaid_item_result.data is None:
             self.logger.warning("could not find PlaidItem attached to account {0}".format(
@@ -197,8 +192,7 @@ class AccountRepository:
                 **{'account': account_result.data},
                 **balance_dict
             })
-            balance_result = account_crud.create_account_balance(
-                self.db, schema)
+            balance_result = account_crud.create_account_balance(self.db, profile_id, schema)
 
             if balance_result.success:
                 balances.append(balance_result.data)

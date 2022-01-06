@@ -22,12 +22,14 @@ def security_factory(db, faker):
     ):
         with db.get_session() as session:
 
-            security = session.query(Security).where(Security.symbol == symbol).first()
+            security = session.query(Security).where(
+                Security.symbol == symbol).first()
             if security is not None:
                 return security
 
             security = Security()
 
+            security.id = random.randint(1, 99999999)
             security.name = name
             security.symbol = symbol
             security.iso_currency_code = iso_currency_code

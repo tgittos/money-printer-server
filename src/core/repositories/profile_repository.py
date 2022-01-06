@@ -1,17 +1,16 @@
-from core.models.plaid_item import PlaidItem
-from core.repositories import AccountRepository, HoldingRepository
+from core.repositories.account_repository import AccountRepository
+from core.repositories.holding_repository import HoldingRepository
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.apis.plaid.accounts import PlaidAccounts, PlaidAccountsConfig
 from core.lib.logger import get_logger
 from core.stores.mysql import MySql
 from core.repositories.repository_response import RepositoryResponse
 from config import mysql_config, plaid_config
-from core.schemas.scheduler_schemas import CreateInstantJobSchema
-from core.schemas.profile_schemas import *
-from core.schemas.auth_schemas import *
+from core.schemas import CreateInstantJobSchema, CreateProfileSchema, UpdateProfileSchema,\
+    RegisterProfileSchema, ResetPasswordSchema, LoginSchema
 
 from core.actions.account.crud import create_or_update_account
-from core.actions.plaid.crud import get_plaid_items_by_profile, get_plaid_item_by_id
+from core.actions.plaid.crud import get_plaid_items_by_profile_id, get_plaid_item_by_id
 import core.actions.profile.crud as crud
 import core.actions.profile.auth as auth
 
@@ -81,7 +80,8 @@ class ProfileRepository:
                 message=profile_result.message
             )
 
-        plaid_result = get_plaid_items_by_profile(self.db, profile_result.data)
+        plaid_result = get_plaid_items_by_profile_id(
+            self.db, profile_result.data.id)
         if not plaid_result.success or len(plaid_result.data) == 0:
             self.logger.error(
                 "scheduled account sync for Profile, but no PlaidItems found")
@@ -100,7 +100,7 @@ class ProfileRepository:
 
         return RepositoryResponse(success=True)
 
-    def sync_all_accounts(self, plaid_item_id: int) -> RepositoryResponse:
+    def sync_all_accounts(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """
         Syncs the account state from Plaid for all accounts attached to the given Plaid Item
         This will pull:
@@ -108,7 +108,7 @@ class ProfileRepository:
           - account balances
           - investment holdings
         """
-        plaid_result = get_plaid_item_by_id(self.db, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.warning(
                 "Sync all accounts requested without PlaidItem")
@@ -143,20 +143,21 @@ class ProfileRepository:
                 self.logger.info("updating account details for profile {0}, account {1}"
                                  .format(profile_result.data.id, account_dict['account_id']))
                 account_result = create_or_update_account(self.db,
-                                                          profile=profile_result.data,
-                                                          plaid_link=plaid_result.data,
+                                                          profile_id=profile_result.data.id,
+                                                          plaid_link_id=plaid_result.data.id,
                                                           account_dict=account_dict)
                 accounts.append(account_result.data)
                 self.logger.info("updating account balance for account {0}".format(
                     account_result.data.id))
-                self.account_repo.sync_account_balance(account_result.data.id)
+                self.account_repo.sync_account_balance(
+                    profile_id, account_result.data.id)
             else:
                 self.logger.warning(
                     "upstream returned account response missing an id: {0}".format(account_dict))
 
         self.logger.info(
             "fetching investment holdings for PlaidItem {0}".format(plaid_result.data.id))
-        self.holdings_repo.update_holdings(plaid_result.data.id)
+        self.holdings_repo.update_holdings(profile_id, plaid_result.data.id)
 
         self.logger.info("done updating accounts for profile {0}".format(
             profile_result.data.id))

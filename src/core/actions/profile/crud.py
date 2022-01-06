@@ -1,12 +1,11 @@
 from datetime import datetime
 
 from core.models.profile import Profile
-from core.schemas.auth_schemas import RegisterProfileSchema
-from core.schemas.profile_schemas import CreateProfileSchema, UpdateProfileSchema
-from core.actions.action_response import ActionResponse
+from core.schemas import RegisterProfileSchema, CreateProfileSchema, UpdateProfileSchema
 from core.lib.jwt import generate_temp_password, hash_password
 from core.lib.notifications import ProfileCreatedNotification, notify_profile_created
 from core.lib.utilities import is_valid_email
+from core.actions.action_response import ActionResponse
 
 from config import mailgun_config
 
@@ -61,8 +60,6 @@ def register(db, request: RegisterProfileSchema) -> ActionResponse:
     """
     # first, check if the request email is already taken
     profile_response = get_profile_by_email(db, request['email'])
-    print("request:", request)
-    print("profile_response:", profile_response)
     if profile_response.data is not None:
         return ActionResponse(
             success=False,

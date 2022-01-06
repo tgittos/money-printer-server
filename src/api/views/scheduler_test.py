@@ -3,10 +3,10 @@ from werkzeug.datastructures import Authorization
 import pytest
 import json
 
-from core.models.scheduler.scheduled_job import ScheduledJob
+from core.models import ScheduledJob
+from core.repositories import ScheduledJobRepository
 from core.lib.jwt import encode_jwt
 
-from api.routes.scheduler import ScheduledJobRepository
 from api.lib.constants import API_PREFIX
 
 from tests.fixtures import *
@@ -22,7 +22,7 @@ def mock_scheduler_methods(mocker):
 def test_create_schedule_accepts_valid_input_for_admin_token(client, admin_token_factory, valid_create_scheduled_job_api_request_factory):
     request = valid_create_scheduled_job_api_request_factory()
     token = admin_token_factory()
-    response = client.post(f"/{API_PREFIX}/admin/schedules",
+    response = client.post(f"/{API_PREFIX}/admin/schedules/",
                            headers={'Authorization': f"Bearer {token}"},
                            json=request)
     assert response.status_code == 201
@@ -35,7 +35,7 @@ def test_create_schedule_accepts_valid_input_for_admin_token(client, admin_token
 # /v1/api/admin/schedules
 def test_create_schedule_rejects_invalid_input_for_admin_token(client, admin_token_factory, invalid_scheduled_job_api_request):
     token = admin_token_factory()
-    response = client.post(f"/{API_PREFIX}/admin/schedules",
+    response = client.post(f"/{API_PREFIX}/admin/schedules/",
                            headers={'Authorization': f"Bearer {token}"},
                            json=invalid_scheduled_job_api_request)
     assert response.status_code == 400
@@ -44,7 +44,7 @@ def test_create_schedule_rejects_invalid_input_for_admin_token(client, admin_tok
 def test_create_schedule_rejects_valid_input_for_non_admin_token(client, user_token_factory, valid_create_scheduled_job_api_request_factory):
     request = valid_create_scheduled_job_api_request_factory()
     token = user_token_factory()
-    response = client.post(f"/{API_PREFIX}/admin/schedules",
+    response = client.post(f"/{API_PREFIX}/admin/schedules/",
                            headers={'Authorization': f"Bearer {token}"},
                            json=request)
     assert response.status_code == 401
@@ -58,7 +58,7 @@ def test_list_schedules_returns_all_schedules_for_admin_token(db, client, admin_
     job_2 = scheduled_job_factory()
     with db.get_session() as session:
         count = session.query(ScheduledJob).count()
-    response = client.get(f"/{API_PREFIX}/admin/schedules",
+    response = client.get(f"/{API_PREFIX}/admin/schedules/",
                           headers={'Authorization': f"Bearer {token}"},
                           follow_redirects=True)
     assert response.status_code == 200
@@ -74,7 +74,7 @@ def test_list_schedules_returns_401_for_non_admin(db, client, user_token_factory
     token = user_token_factory()
     job_1 = scheduled_job_factory()
     job_2 = scheduled_job_factory()
-    response = client.get(f"/{API_PREFIX}/admin/schedules",
+    response = client.get(f"/{API_PREFIX}/admin/schedules/",
                           headers={'Authorization': f"Bearer {token}"},
                           follow_redirects=True)
     assert response.status_code == 401
@@ -120,7 +120,6 @@ def test_update_schedule_returns_401_for_user_token(db, client, user_token_facto
     assert updated_job.job_name == job.job_name
 
 
-# /v1/api/admin/schedules/1
 def test_update_schedule_rejects_invalid_input(client, admin_token_factory, scheduled_job_factory, invalid_update_scheduled_job_api_request):
     token = admin_token_factory()
     job = scheduled_job_factory()

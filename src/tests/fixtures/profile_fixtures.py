@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime, timedelta, timezone
+import random
 
 from core.models import Profile, PlaidItem
 from core.lib.jwt import hash_password
@@ -18,6 +19,8 @@ def profile_factory(db, faker):
                           timestamp=datetime.now(tz=timezone.utc)):
         with db.get_session() as session:
             profile = Profile()
+
+            profile.id = random.randint(1, 99999999)
             profile.first_name = first_name
             profile.last_name = last_name
             profile.email = email or f"{first_name}.{last_name}@{faker.unique.domain_name()}"

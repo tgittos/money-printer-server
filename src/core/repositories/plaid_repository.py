@@ -5,7 +5,7 @@ from core.stores.mysql import MySql
 from core.apis.plaid.oauth import PlaidOauth
 from core.apis.plaid.common import PLAID_PRODUCTS_STRINGS
 from core.models import PlaidItem
-from core.schemas.plaid_item_schemas import *
+from core.schemas import CreatePlaidItemSchema
 
 # import all the actions so that consumers of the repo can access everything
 import core.actions.plaid.crud as crud
@@ -43,7 +43,7 @@ class PlaidRepository:
             }
         )
 
-    def create_link_token(self, webhook_host: str) -> RepositoryResponse:
+    def create_link_token(self, profile_id: int, webhook_host: str) -> RepositoryResponse:
         """
         Calls into the Plaid API to fetch a link token for the user to auth with Plaid.
         """
@@ -86,11 +86,10 @@ class PlaidRepository:
                     message=f"Unknown error from Plaid exchanging public token"
                 )
 
+            print(plaid_access_result)
             # create a plaid token if it's valid
-            create_link_result = crud.create_plaid_item(self.db, CreatePlaidItemSchema().load({
-                **{'profile_id': profile_id},
-                **plaid_access_result
-            }))
+            create_link_result = crud.create_plaid_item(
+                self.db, profile_id, CreatePlaidItemSchema().load(plaid_access_result))
 
             if not create_link_result.success:
                 return RepositoryResponse(
@@ -112,8 +111,8 @@ class PlaidRepository:
                 message=f"Unknown error from Plaid exchanging public token"
             )
 
-    def get_plaid_item_by_id(self, id: int) -> RepositoryResponse:
+    def get_plaid_item_by_id(self, profile_id: int, id: int) -> RepositoryResponse:
         """
         Return the Plaid Item from the DB by it's ID
         """
-        return crud.get_plaid_item_by_id(self.db, id)
+        return crud.get_plaid_item_by_id(self.db, profile_id, id)

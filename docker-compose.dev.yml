@@ -84,9 +84,10 @@ services:
     volumes:
       - ./docs:/app/docs
       - ./src:/app/src
+      - ./bin:/app/bin
+      - ./logs:/app/logs
     ports:
-      - 80:80
-      - 443:443
+      - 5000:5000
     environment:
       MP_REDIS__HOST: redis
       MP_DB__HOST: mysql

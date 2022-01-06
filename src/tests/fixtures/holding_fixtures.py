@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 from core.models import Holding, HoldingBalance
 from core.schemas.holding_schemas import *
+from core.schemas.holding_balance_schemas import *
 
 from tests.fixtures import *
 
@@ -26,6 +27,7 @@ def holding_factory(db, faker, account_factory, security_factory):
         with db.get_session() as session:
             holding = Holding()
 
+            holding.id = random.randint(1, 99999999)
             holding.account_id = account_id
             holding.security_symbol = security_symbol
             holding.cost_basis = cost_basis
@@ -53,6 +55,7 @@ def holding_balance_factory(db, faker, holding_factory):
         with db.get_session() as session:
             balance = HoldingBalance()
 
+            balance.id = random.randint(1, 99999999)
             balance.holding_id = holding_id
             balance.cost_basis = cost_basis
             balance.quantity = quantity

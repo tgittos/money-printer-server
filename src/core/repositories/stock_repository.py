@@ -9,7 +9,7 @@ from core.lib.logger import get_logger
 from core.lib.types import StringList
 from config import iex_config, mysql_config
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas.security_schemas import ReadSecurityPriceSchema, RequestStockPriceSchema, RequestStockPriceListSchema
+from core.schemas import ReadSecurityPriceSchema, RequestStockPriceSchema, RequestStockPriceListSchema
 
 # import all the actions so that consumers of the repo can access everything
 from core.actions.stock.crud import *

@@ -14,4 +14,6 @@ import random
 
 @pytest.fixture(scope='function', autouse=True)
 def faker_seed():
+    seed = random.randint(1, 50000)
+    random.seed(seed)
     return random.randint(1, 50000)

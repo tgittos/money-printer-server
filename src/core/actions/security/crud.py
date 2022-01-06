@@ -1,17 +1,10 @@
 from datetime import datetime
 from sqlalchemy import and_
 
-from core.models.profile import Profile
-from core.models.account import Account
-from core.models.security import Security
-from core.models.holding import Holding
-from core.models.holding_balance import HoldingBalance
-from core.models.investment_transaction import InvestmentTransaction
+from core.models import Account, Security, Holding, HoldingBalance, InvestmentTransaction
+from core.schemas import CreateSecuritySchema, CreateHoldingSchema, UpdateHoldingSchema, CreateInvestmentTransactionSchema
 from core.lib.utilities import sanitize_float
 from core.actions.action_response import ActionResponse
-from core.schemas.security_schemas import CreateSecuritySchema
-from core.schemas.holding_schemas import CreateHoldingSchema, UpdateHoldingSchema
-from core.schemas.investment_schemas import CreateInvestmentTransactionSchema
 
 
 def get_securities(db) -> ActionResponse:
@@ -65,8 +58,6 @@ def get_security_by_security_id(db, plaid_security_id: str) -> ActionResponse:
 def get_holdings_by_profile_id_and_account_id(db, profile_id: int, account_id: int) -> ActionResponse:
     # TODO - I need to re-write this SQL to pull in the holdings and the attached securities
     # and return that for schema dumping
-    print('profile_id:', profile_id)
-    print('account_id:', account_id)
     with db.get_session() as session:
         account = session.query(Account).where(and_(
             Account.profile_id == profile_id,

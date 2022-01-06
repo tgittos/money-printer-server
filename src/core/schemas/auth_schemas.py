@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields
 
+from core.models import ResetToken
+
 
 class ReadAuthSchema(Schema):
     profile = fields.Nested('ReadProfileSchema',)
@@ -29,7 +31,6 @@ class CreateResetTokenSchema(Schema):
 
 
 class ReadResetTokenSchema(Schema):
-    profile = fields.Nested('ReadProfileSchema')
 
     class Meta:
-        additional = ("id", "profile_id", "timestamp", "expiry")
+        model = ResetToken

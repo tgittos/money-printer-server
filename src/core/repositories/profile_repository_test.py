@@ -56,7 +56,7 @@ def test_sync_all_accounts_requests_accounts_from_plaid(mocker, repository, plai
     mocker.patch.object(repository.holdings_repo, 'update_holdings')
     # ensure we request from plaid
     spy = mocker.patch.object(repository.plaid_accounts_api, 'get_accounts')
-    result = repository.sync_all_accounts(item.id)
+    result = repository.sync_all_accounts(item.profile_id, item.id)
     assert result.success
     spy.assert_called_once()
 
@@ -76,7 +76,7 @@ def test_sync_all_accounts_calls_create_or_update_account(db, mocker, plaid_item
     spy = mocker.patch(
         'core.repositories.profile_repository.create_or_update_account')
     # do the test
-    result = repository.sync_all_accounts(item.id)
+    result = repository.sync_all_accounts(item.profile_id, item.id)
     assert result.success
     spy.assert_called_once()
 
@@ -97,7 +97,7 @@ def test_sync_all_accounts_syncs_balances_for_accounts(mocker, repository, profi
     # this method is tested in the actions test
     spy = mocker.patch.object(repository.account_repo, 'sync_account_balance')
     # do the test
-    result = repository.sync_all_accounts(item.id)
+    result = repository.sync_all_accounts(profile.id, item.id)
     assert result.success
     spy.assert_called_once()
 
@@ -113,12 +113,13 @@ def test_sync_all_accounts_updates_holdings(mocker, repository, plaid_item_facto
     # this method is tested in the actions test
     spy = mocker.patch.object(repository.holdings_repo, 'update_holdings')
     # do the test
-    result = repository.sync_all_accounts(item.id)
+    result = repository.sync_all_accounts(item.profile_id, item.id)
     assert result.success
     spy.assert_called_once()
 
 
-def test_sync_all_accounts_fails_with_invalid_plaid_item_id(repository):
-    result = repository.sync_all_accounts(2342)
+def test_sync_all_accounts_fails_with_invalid_plaid_item_id(repository, profile_factory):
+    profile = profile_factory()
+    result = repository.sync_all_accounts(profile.id, 2342)
     assert not result.success
     assert result.data is None

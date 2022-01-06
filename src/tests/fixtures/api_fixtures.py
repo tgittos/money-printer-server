@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime, timezone
+import random
 
 from core.models import ApiToken, ApiTokenPolicy
 from core.schemas.api_schemas import *
@@ -11,11 +12,12 @@ from tests.fixtures import *
 @pytest.fixture()
 def api_token_policy_factory(db):
     def __api_token_policy_factory(
-        doc="", # TODO - replace this with a static default generator or something
+        doc="",  # TODO - replace this with a static default generator or something
         hosts=None
     ):
         with db.get_session() as session:
             policy = ApiTokenPolicy()
+            policy.id = random.randint(1, 99999999)
             policy.doc = doc
             policy.hosts = hosts
             policy.timestamp = datetime.now(tz=timezone.utc)
@@ -40,6 +42,7 @@ def api_token_factory(db, faker, profile_factory, api_token_policy_factory):
             api_token_policy_id = api_token_policy_factory().id
         with db.get_session() as session:
             token_obj = ApiToken()
+            token.id = random.randint(1, 50000)
             token_obj.profile_id = profile_id
             token_obj.api_token_policy_id = api_token_policy_id
             token_obj.token = hash_password(token)
@@ -93,7 +96,7 @@ def valid_api_token_update_request_factory(api_token_factory):
 @pytest.fixture()
 def valid_api_token_policy_create_request_factory(faker):
     def __request_factory(
-        doc="", #TODO
+        doc="",  # TODO
         hosts=[faker.unique.host_name()]
     ):
         return CreateApiKeyPolicySchema().load({
@@ -106,7 +109,7 @@ def valid_api_token_policy_create_request_factory(faker):
 @pytest.fixture()
 def valid_api_token_policy_update_request_factory(faker):
     def __request_factory(
-        doc="", #TODO
+        doc="",  # TODO
         hosts=[faker.unique.host_name()]
     ):
         return UpdateApiKeyPolicySchema().load({
