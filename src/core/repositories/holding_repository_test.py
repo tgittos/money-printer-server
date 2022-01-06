@@ -45,8 +45,16 @@ def test_get_holding_by_id_fails_for_holding_that_doesnt_exist(repo, profile_fac
     assert result.data is None
 
 
-def test_get_holdings_by_profile_id_gets_holding_for_profile():
-    assert False
+def test_get_holdings_by_profile_id_gets_holding_for_profile(repo, profile_factory, account_factory,\
+    holding_factory):
+    profile = profile_factory()
+    account = account_factory(profile_id=profile.id)
+    holding = holding_factory(account_id=account.id)
+    result = repo.get_holdings_by_profile_id(profile.id)
+    assert result.success
+    assert result.data is not None
+    ids = [d.id for d in result.data]
+    assert holding.id in ids
 
 
 def test_get_holdings_by_profile_id_cant_get_holding_in_another_profile():
