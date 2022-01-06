@@ -1,7 +1,7 @@
 from flask import Blueprint, request, Response, abort
 from marshmallow import ValidationError
 
-from core.schemas import CreateScheduledJobSchema
+from core.schemas import CreateScheduledJobSchema, UpdateScheduledJobSchema
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 
 from api.schemas import read_scheduled_jobs_schema, read_scheduled_job_schema
@@ -47,7 +47,6 @@ class SchedulerApi(BaseApi):
             - Scheduling
             - Admin
         """
-
         repo = ScheduledJobRepository()
         response = repo.get_scheduled_jobs()
         if response.success:
@@ -137,7 +136,7 @@ class SchedulerApi(BaseApi):
             - Admin
         """
         try:
-            schema = read_scheduled_job_schema.load(request.json)
+            schema = UpdateScheduledJobSchema().load(request.json)
 
             repo = ScheduledJobRepository()
             response = repo.get_scheduled_job_by_id(id)

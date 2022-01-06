@@ -27,9 +27,8 @@ def test_get_profile_returns_authed_profile(client, profile_factory, user_token_
     assert json['email'] == profile.email
 
 
-@pytest.mark.focus
 def test_get_profile_fails_with_no_token(client):
-    response = client.get(f"/{API_PREFIX}/profile")
+    response = client.get(f"/{API_PREFIX}/profiles/")
     assert response.status_code == 401
 
 
