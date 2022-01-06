@@ -44,12 +44,12 @@ class HoldingRepository:
                 message=plaid_result.message
             )
 
-        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema(
-            job_name='sync_holdings',
-            args={
+        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema().load({
+            'job_name': 'sync_holdings',
+            'json_args': {
                 'plaid_item_id': plaid_result.data.id
             }
-        ))
+        }))
 
     def schedule_update_transactions(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """
@@ -64,12 +64,12 @@ class HoldingRepository:
                 message=plaid_result.message
             )
 
-        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema(
-            job_name='sync_transactions',
-            args={
+        return self.scheduled_job_repo.create_instant_job(CreateInstantJobSchema().load({
+            'job_name': 'sync_transactions',
+            'json_args': {
                 'plaid_item_id': plaid_item_id
             }
-        ))
+        }))
 
     def update_holdings(self, profile_id: int, plaid_item_id: int) -> RepositoryResponse:
         """

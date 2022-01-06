@@ -1,10 +1,11 @@
 from sqlalchemy import and_
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, lazyload
 from datetime import datetime, timezone
 
 from core.models import Holding, HoldingBalance, Security, Account
 from core.schemas import CreateHoldingSchema, UpdateHoldingSchema, CreateHoldingBalanceSchema, UpdateHoldingBalanceSchema
 from core.actions.action_response import ActionResponse
+from core.actions.account.crud import get_account_by_id
 
 
 def get_holding_by_id(db, profile_id: int, holding_id: int) -> ActionResponse:
@@ -16,7 +17,11 @@ def get_holding_by_id(db, profile_id: int, holding_id: int) -> ActionResponse:
             .options(selectinload(Holding.account))\
             .options(selectinload(Holding.balances))\
             .options(selectinload(Holding.security))\
-            .where(Holding.id == holding_id).first()
+            .filter(and_(
+                Holding.id == holding_id,
+                Holding.account_id == Account.id,
+                Account.profile_id == profile_id
+            )).first()
     return ActionResponse(
         success=holding is not None,
         data=holding,
@@ -33,7 +38,11 @@ def get_holdings_by_account_id(db, profile_id: int, account_id: int) -> ActionRe
             .options(selectinload(Holding.account))\
             .options(selectinload(Holding.balances))\
             .options(selectinload(Holding.security))\
-            .filter(Holding.account_id == account_id)\
+            .filter(and_(
+                Holding.account_id == account_id,
+                Holding.account_id == Account.id,
+                Account.profile_id == profile_id
+            ))\
             .all()
     return ActionResponse(
         success=holding is not None,
@@ -66,9 +75,14 @@ def get_holding_balances_by_holding_id(db, profile_id: int, holding_id: int) -> 
     Returns all balances for a given holding by it's ID
     """
     with db.get_session() as session:
-        balances = session.query(HoldingBalance).where(
-            HoldingBalance.holding_id == holding_id
-        ).all()
+        balances = session.query(HoldingBalance)\
+            .options(lazyload(HoldingBalance.holding)\
+                .lazyload(Holding.account))\
+            .where(and_(
+                HoldingBalance.holding_id == holding_id,
+                Holding.account_id == Account.id,
+                Account.profile_id == profile_id
+            )).all()
     return ActionResponse(
         success=balances is not None,
         data=balances,
@@ -80,6 +94,10 @@ def create_holding(db, profile_id: int, account_id: int, request: CreateHoldingS
     """
     Creates a holding object in the given database and returns it
     """
+    verification_result = _verify_holding_ownership(db, profile_id, account_id)
+    if not verification_result.success:
+        return verification_result
+
     holding = Holding()
 
     holding.account_id = account_id
@@ -134,6 +152,10 @@ def delete_holding(db, profile_id: int, holding_id: int) -> ActionResponse:
 
     holding = holding_result.data
 
+    verification_result = _verify_holding_ownership(db, profile_id, holding.account_id)
+    if not verification_result.success:
+        return verification_result
+
     with db.get_session() as session:
         session.delete(holding)
         session.commit()
@@ -145,6 +167,16 @@ def create_holding_balance(db, profile_id: int, request: CreateHoldingBalanceSch
     """
     Creates a balance entry for a Holding record in the database
     """
+    holding_result = get_holding_by_id(db, profile_id, request['holding_id'])
+    if not holding_result.success or holding_result.data is None:
+        return holding_result
+
+    holding = holding_result.data
+
+    verification_result = _verify_holding_ownership(db, profile_id, holding.account_id)
+    if not verification_result.success:
+        return verification_result
+
     holding_balance = HoldingBalance()
 
     holding_balance.holding_id = request['holding_id']
@@ -160,3 +192,18 @@ def create_holding_balance(db, profile_id: int, request: CreateHoldingBalanceSch
         success=True,
         data=holding_balance
     )
+
+
+def _verify_holding_ownership(db, profile_id, account_id):
+    account_result = get_account_by_id(db, profile_id, account_id)
+
+    if not account_result.success or account_result.data is None:
+        return account_result
+
+    if not account_result.data.profile_id == profile_id:
+        return ActionResponse(
+            success=False,
+            message=f"Can't create entity for that account - it doesn't belong to the requested profile"
+        )
+    
+    return account_result

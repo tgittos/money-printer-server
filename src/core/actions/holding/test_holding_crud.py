@@ -138,9 +138,10 @@ def test_update_holding_accepts_valid_input(db, profile_factory, account_factory
     assert round(updated.cost_basis, 5) == round(request['cost_basis'], 5)
 
 
-def test_delete_holding_deletes_holding(db, profile_factory, account_factory, holding_factory):
+def test_delete_holding_deletes_holding(db, profile_factory, plaid_item_factory, account_factory, holding_factory):
     profile = profile_factory()
-    account = account_factory(profile_id=profile.id)
+    item = plaid_item_factory(profile_id=profile.id)
+    account = account_factory(profile_id=profile.id, plaid_item_id=item.id)
     holding = holding_factory(account_id=account.id)
     result = delete_holding(db, profile.id, holding.id)
     assert result.success
