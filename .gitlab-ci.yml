@@ -46,7 +46,7 @@ test:
       echo "Fetching latest build"
       docker pull $CONTAINER_LATEST_IMAGE
       echo "Starting containers for test run"
-      npm run start api
+      npm run up api
       sleep 10
       echo "Initializing db for test run"
       npm run db:init
