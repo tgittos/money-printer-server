@@ -3,14 +3,22 @@ import os
 import signal
 import sys
 
+from flask import Flask, g
+from flask_cors import CORS
+from flask_socketio import SocketIO
+from flask_marshmallow import Marshmallow
+
 from core.lib.logger import init_logger, get_logger
 from config import config, env
 
 from .lib.sse_client import SSEClient
 from .lib.historical_client import HistoricalClient
 
+app = Flask(__name__)
+ma = Marshmallow(app)
+ws = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
 
-class DataServerApplication:
+def create_app(flask_config={}):
 
     log_path = os.path.dirname(__file__) + "/../../logs/"
 
@@ -57,5 +65,5 @@ class DataServerApplication:
 
 
 if __name__ == '__main__':
-    app = DataServerApplication()
+    app, ma, ws = create_app()
     app.run()

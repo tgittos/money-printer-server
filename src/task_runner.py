@@ -13,7 +13,7 @@ from config import redis_config
 
 class TaskRunnerApplication:
 
-    log_path = os.path.dirname(__file__) + "/../../logs/"
+    log_path = os.path.dirname(__file__) + "/../logs/"
     worker = None
 
     def __init__(self):

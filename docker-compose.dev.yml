@@ -31,8 +31,6 @@ services:
   matomo:
     image: "git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-matom\
       o:latest"
-    volumes:
-      - matomo-config:/var/www/matomo/config
     environment:
       MP_DB_HOST: mysql
     env_file:
