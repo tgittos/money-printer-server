@@ -2,7 +2,6 @@ import os
 
 from flask import Flask, g
 from flask_cors import CORS
-from flask_socketio import SocketIO
 from flask_graphql import GraphQLView
 import rq_dashboard
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
@@ -13,7 +12,6 @@ from core.repositories.profile_repository import ProfileRepository
 from core.schemas.auth_schemas import RegisterProfileSchema
 from core.lib.logger import init_logger, get_logger
 
-from api.lib.client_bus import ClientBus
 from api.lib.constants import API_PREFIX
 from api.lib.apispec import write_apispec
 from api.views import register_api, register_swagger
@@ -29,8 +27,6 @@ if 'MP_ENVIRONMENT' in os.environ:
 logger.debug("* initializing Flask, Marshmallow and Client Bus")
 app = Flask(__name__)
 ma = Marshmallow(app)
-ws = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
-cb = ClientBus(ws)
 
 configured = False
 
@@ -39,7 +35,7 @@ def create_app(flask_config={}):
     global app, ma, configured
 
     if configured:
-        return (app, ma, cb, ws)
+        return (app, ma)
 
     in_prod = 'MP_ENVIRONMENT' in os.environ and os.environ['MP_ENVIRONMENT'] == "production"
 
@@ -64,7 +60,7 @@ def create_app(flask_config={}):
 
     configured = True
 
-    return (app, ma, cb, ws)
+    return (app, ma)
 
 
 def _configure_flask(app, flask_config):
@@ -97,9 +93,7 @@ def _configure_prometheus(app):
 
 def run():
     print(" * Starting money-printer api/ws application", flush=True)
-    cb.start()
     app.run(host=config.host, port=config.port)
-    ws.run(app, host=config.host, port=config.port)
 
 
 def init(first_name, last_name, email):
@@ -113,7 +107,7 @@ def init(first_name, last_name, email):
 if __name__ == '__main__':
 
     # create the app
-    app, ma, cb, ws = create_app()
+    app, ma = create_app()
 
     # generate docs when running in dev and staging
     if 'MP_ENVIRONMENT' in os.environ:

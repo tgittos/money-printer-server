@@ -1,4 +1,4 @@
-from core.lib.jwt import hash_password, check_password
+from .jwt import hash_password, check_password
 
 def check_password_works():
     candidate = "this is my password1!"

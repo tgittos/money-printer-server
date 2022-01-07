@@ -41,7 +41,7 @@ services:
       theus:latest"
     entrypoint: [ "/bin/sh", "prometheus.sh" ]
   pg:
-    image: postgres:12
+    image: timescale/timescaledb:latest-pg12
     restart: always
     volumes:
       - pg-data:/var/lib/posgresql/data
@@ -63,6 +63,7 @@ services:
       - 3306:3306
   hasura:
     image: hasura/graphql-engine
+    # image: fedormelexin/graphql-engine-arm64
     restart: always
     env_file:
       - .env.dev

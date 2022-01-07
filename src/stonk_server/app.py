@@ -11,57 +11,59 @@ from flask_marshmallow import Marshmallow
 from core.lib.logger import init_logger, get_logger
 from config import config, env
 
+from core.lib.client_bus import ClientBus
 from .lib.sse_client import SSEClient
 from .lib.historical_client import HistoricalClient
+from .rest.blueprints import prices_bp
 
+log_path = os.path.dirname(__file__) + "/../../logs/"
+init_logger(log_path)
+logger = get_logger("server.services.stonk_server")
+
+if 'MP_ENVIRONMENT' in os.environ:
+    os.environ['FLASK_ENV'] = os.environ['MP_ENVIRONMENT']
+
+logger.debug("* initializing Flask, Marshmallow and Client Bus")
 app = Flask(__name__)
 ma = Marshmallow(app)
-ws = SocketIO(app, cors_allowed_origins='*', message_queue="redis://")
+cb = ClientBus()
+sse_client = SSEClient(env, config.iex.secret)
+historical_client = HistoricalClient()
+
 
 def create_app(flask_config={}):
 
-    log_path = os.path.dirname(__file__) + "/../../logs/"
+    logger.debug("registering prices endpoints")
+    app.register_blueprint(prices_bp)
 
-    def __init__(self):
-        init_logger(self.log_path)
-        self.logger = get_logger("server.services.data_server")
-        self.sse_client = SSEClient(env, config.iex.secret)
-        self.historical_client = HistoricalClient()
-        # self._configure_signals()
+    logger.debug("intercepting sigints for graceful shutdown")
+    signal.signal(signal.SIGINT, sigint_handler({
+        "sse_client": sse_client,
+        "historical_client": historical_client
+    }))
 
-    def run(self):
-        print(" * Starting money-printer data server", flush=True)
-        self.logger.info("starting sse client")
-        self.sse_client.start()
-        self.logger.info("starting historical client")
-        self.historical_client.start()
-        # block until a stop is requested, sigint handler should handle the
-        # all thread shutdowns
-        while True:
-            time.sleep(1)
 
-    def _configure_signals(self):
-        self.logger.debug("intercepting sigints for graceful shutdown")
-        signal.signal(signal.SIGINT, self._curry_sigint_handler({
-            "sse_client": self.sse_client,
-            "historical_client": self.historical_client
-        }))
+def sigint_handler(signal, frame):
+    print("requested data-server shutdown", flush=True)
+    if sse_client:
+        print("shutting down sse client", flush=True)
+        sse_client.stop()
+    if historical_client:
+        print("shutting down historical client", flush=True)
+        historical_client.stop()
+    sys.exit(0)
 
-    def _curry_sigint_handler(self, context):
-        sse_client = context["sse_client"]
-        historical_client = context["historical_client"]
 
-        def sigint_handler(signal, frame):
-            print("requested data-server shutdown", flush=True)
-            if sse_client:
-                print("shutting down sse client", flush=True)
-                sse_client.stop()
-            if historical_client:
-                print("shutting down historical client", flush=True)
-                historical_client.stop()
-            sys.exit(0)
-
-        return sigint_handler
+def run():
+    print(" * Starting money-printer data server", flush=True)
+    logger.info("starting sse client")
+    sse_client.start()
+    logger.info("starting historical client")
+    historical_client.start()
+    # block until a stop is requested, sigint handler should handle the
+    # all thread shutdowns
+    while True:
+        time.sleep(1)
 
 
 if __name__ == '__main__':

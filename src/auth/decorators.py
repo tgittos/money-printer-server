@@ -3,9 +3,9 @@ from functools import partial, wraps
 from flask import request, Response, g
 from jwt import DecodeError
 
-from core.lib.jwt import is_token_valid, decode_jwt
-
 from core.lib.logger import get_logger
+
+from .jwt import is_token_valid, decode_jwt
 
 
 logger = get_logger(__name__)
