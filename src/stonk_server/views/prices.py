@@ -1,10 +1,14 @@
 from flask import Blueprint, request, redirect, abort, send_from_directory
 from datetime import datetime, timezone, timedelta
 
+from core.stores.database import Database
+
 from constants import STONK_PREFIX
 from auth import authed
+from config import config
 
-from .repositories import StockRepository
+from stonk_server.repositories.stock_repository import StockRepository
+from . import db
 
 
 prices_bp = Blueprint('prices', __name__)

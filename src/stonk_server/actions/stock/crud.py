@@ -3,9 +3,9 @@ from datetime import datetime
 from pandas import DataFrame
 from sqlalchemy import and_
 
-from core.models import SecurityPrice, IexBlacklist
 from core.lib.utilities import sanitize_float, local_to_utc
 from core.actions.action_response import ActionResponse
+from stonk_server.models import SecurityPrice, IexBlacklist
 
 
 def create_stock_price(db, symbol: str, resolution: str, dfs: DataFrame) -> ActionResponse:

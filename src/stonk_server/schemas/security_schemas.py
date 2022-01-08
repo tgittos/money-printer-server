@@ -2,8 +2,8 @@ from marshmallow import Schema, fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from stonk_server.models import Security, SecurityPrice, IexBlacklist
-from stonk_server.app import ma
 
+from . import ma
 
 class CreateSecuritySchema(Schema):
     class Meta:

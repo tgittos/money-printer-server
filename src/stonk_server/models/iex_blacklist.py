@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 
-from stonk_server.models.base import Base
+from .base import Base
 
 
 class IexBlacklist(Base):

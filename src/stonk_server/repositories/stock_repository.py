@@ -8,11 +8,15 @@ from core.repositories.repository_response import RepositoryResponse
 from core.lib.logger import get_logger
 from core.lib.utilities import get_last_bus_day
 
-from stonk_server.models import Security, SecurityPrice
-from stonk_server.schemas import ReadSecurityPriceSchema, RequestStockPriceSchema, RequestStockPriceListSchema
+from stonk_server.models.security import Security
+from stonk_server.models.security_price import SecurityPrice
+from stonk_server.schemas.security_schemas import ReadSecurityPriceSchema, RequestStockPriceSchema,\
+    RequestStockPriceListSchema
 from stonk_server.actions.security.crud import *
 
-from config import iex_config
+from config import config
+
+from . import db
 
 class StockRepository:
 
@@ -21,9 +25,9 @@ class StockRepository:
     def __init__(self, db):
         self.db = db
         # pull the IEX config and store the token in the IEX_TOKEN env var
-        secret = iex_config['secret']
+        secret = config.iex.secret
         os.environ['IEX_TOKEN'] = secret
-        if iex_config['env'] == 'sandbox':
+        if config.iex.env == 'sandbox':
             os.environ['IEX_API_VERSION'] = 'iexcloud-sandbox'
 
     def historical_daily(self, request: RequestStockPriceSchema) -> RepositoryResponse:

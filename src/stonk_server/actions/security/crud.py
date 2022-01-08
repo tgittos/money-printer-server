@@ -4,8 +4,8 @@ from sqlalchemy import and_
 from core.lib.utilities import sanitize_float
 from core.actions.action_response import ActionResponse
 
-from stonk_server.schemas import CreateSecuritySchema
-from stonk_server.models import Security
+from stonk_server.schemas.security_schemas import CreateSecuritySchema
+from stonk_server.models.security import Security
 
 def get_securities(db) -> ActionResponse:
     with db.get_session() as session:
