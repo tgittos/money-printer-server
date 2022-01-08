@@ -4,7 +4,7 @@ from core.repositories.profile_repository import ProfileRepository
 from auth.decorators import Authed, get_identity
 from api.schemas import read_api_token_schema
 from api.views.base import BaseApi
-from flask_app import db
+from api.flask_app import db
 
 
 class ApiTokensApi(BaseApi):

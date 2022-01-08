@@ -6,7 +6,7 @@ from core.repositories.plaid_repository import PlaidRepository, PLAID_PRODUCTS_S
 from auth.decorators import authed, get_identity
 from api.metrics.plaid_metrics import *
 from api.views.base import BaseApi
-from flask_app import db
+from api.flask_app import db
 
 
 class PlaidApi(BaseApi):

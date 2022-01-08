@@ -20,7 +20,6 @@ def get_holding_by_id(db, profile_id: int, holding_id: int) -> ActionResponse:
         holding = session.query(Holding)\
             .options(selectinload(Holding.account))\
             .options(selectinload(Holding.balances))\
-            .options(selectinload(Holding.security))\
             .filter(and_(
                 Holding.id == holding_id,
                 Holding.account_id == Account.id,
@@ -41,7 +40,6 @@ def get_holdings_by_account_id(db, profile_id: int, account_id: int) -> ActionRe
         holding = session.query(Holding)\
             .options(selectinload(Holding.account))\
             .options(selectinload(Holding.balances))\
-            .options(selectinload(Holding.security))\
             .filter(and_(
                 Holding.account_id == account_id,
                 Holding.account_id == Account.id,
@@ -63,7 +61,6 @@ def get_holdings_by_profile_id(db, profile_id: int) -> ActionResponse:
         data = session.query(Holding)\
             .options(selectinload(Holding.account))\
             .options(selectinload(Holding.balances))\
-            .options(selectinload(Holding.security))\
             .filter(and_(
                 Account.profile_id == profile_id,
                 Holding.account_id == Account.id
@@ -167,7 +164,7 @@ def create_holding(db, profile_id: int, account_id: int, request: CreateHoldingS
     holding = Holding()
 
     holding.account_id = account_id
-    holding.security_symbol = request['security_symbol']
+    holding.symbol = request['security_symbol']
     holding.cost_basis = request['cost_basis']
     holding.quantity = request['quantity']
     holding.iso_currency_code = request['iso_currency_code']
@@ -263,7 +260,7 @@ def create_holding(db, request: CreateHoldingSchema) -> ActionResponse:
     holding = Holding()
 
     holding.account_id = request['account.id']
-    holding.security_id = request['security.id']
+    holding.symbol = request['symbol']
     holding.cost_basis = request['cost_basis']
     holding.quantity = request['quantity']
     holding.iso_currency_code = request['iso_currency_code']
