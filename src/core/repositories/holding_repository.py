@@ -1,10 +1,11 @@
 from sqlalchemy import and_
+from marshmallow import EXCLUDE
+from datetime import date, timedelta
 
-from core.models import Account, Holding, Security
-from core.stores.database import Database
+from core.models import Account, InvestmentTransaction, PlaidItem
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas import CreateInstantJobSchema
+from core.schemas import CreateInstantJobSchema, CreateHoldingSchema, UpdateHoldingSchema, CreateInvestmentTransactionSchema 
 from core.lib.logger import get_logger
 from core.apis.plaid.investments import PlaidInvestments, PlaidInvestmentsConfig
 
@@ -13,16 +14,17 @@ from core.actions.account.crud import get_accounts_by_plaid_item_id, get_account
 from core.actions.profile.crud import get_profile_by_id
 from core.actions.plaid.crud import get_plaid_item_by_id
 
-import config
+from config import config
 
 class HoldingRepository:
 
     logger = get_logger(__name__)
-    scheduled_job_repo = ScheduledJobRepository()
-    plaid_config = config.plaid
+    scheduled_job_repo = None
+    plaid_config = config['plaid']
 
     def __init__(self, db):
         self.db = db
+        self.scheduled_job_repo = ScheduledJobRepository(self.db)
 
     def get_holding_by_id(self, profile_id: int, holding_id: int) -> RepositoryResponse:
         return crud.get_holding_by_id(self.db, profile_id, holding_id)
@@ -200,20 +202,6 @@ class HoldingRepository:
 
         api = PlaidInvestments(PlaidInvestmentsConfig(self.plaid_config))
         investment_dict = api.get_investments(plaid_result.data.access_token)
-
-        # update securities from this account
-        # these might not be account specific, but institution specific
-        # so there's a chance I can detach it from the profile/account and just
-        # link it in from the holdings
-        for security_dict in investment_dict["securities"]:
-            security_result = self.get_security_by_security_id(
-                plaid_security_id=security_dict['security_id'])
-            if not security_result.success:
-                schema = CreateSecuritySchema(unknown=EXCLUDE).load({
-                    **{'profile': plaid_result.data, 'account': account_result.data},
-                    **security_dict
-                })
-                security = self.create_security(schema)
 
         # update the holdings
         for holding_dict in investment_dict["holdings"]:

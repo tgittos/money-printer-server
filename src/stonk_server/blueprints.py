@@ -1,19 +1,19 @@
-import os
 from flask import Blueprint, request, redirect, abort, send_from_directory
 from datetime import datetime, timezone, timedelta
 
-from core.repositories import StockRepository
-from constants import API_PREFIX
+from constants import STONK_PREFIX
 from auth import authed
+
+from .repositories import StockRepository
+
 
 prices_bp = Blueprint('prices', __name__)
 
 
-
-@prices_bp.route('/api/v1/prices/<symbol>/previous', methods=['GET'])
+@prices_bp.route(f'/{STONK_PREFIX}/prices/<symbol>/previous', methods=['GET'])
 @authed
 def symbol_previous(symbol):
-    repo = StockRepository()
+    repo = StockRepository(db)
 
     # result is a data frame
     result = repo.previous(symbol)
@@ -30,11 +30,11 @@ def symbol_previous(symbol):
     }
 
 
-@prices_bp.route('/api/v1/prices/<symbol>/intraday', methods=['GET'])
+@prices_bp.route(f'/{STONK_PREFIX}/prices/<symbol>/intraday', methods=['GET'])
 @authed
 def symbol_intraday(symbol):
     start = request.args.get('start')
-    repo = StockRepository()
+    repo = StockRepository(db)
     # parse given start date
     start_date = datetime.fromtimestamp(float(start), tz=timezone.utc)
 
@@ -59,7 +59,7 @@ def symbol_intraday(symbol):
     }
 
 
-@prices_bp.route('/api/v1/prices/<symbol>/eod', methods=['GET'])
+@prices_bp.route(f'/{STONK_PREFIX}/prices/<symbol>/eod', methods=['GET'])
 @authed
 def symbol_eod(symbol):
     start = request.args.get('start')
@@ -74,7 +74,7 @@ def symbol_eod(symbol):
     else:
         end = datetime.fromtimestamp(float(end), tz=timezone.utc)
 
-    repo = StockRepository()
+    repo = StockRepository(db)
     result = repo.historical_daily(symbol, start=start, end=end)
 
     if result is None:

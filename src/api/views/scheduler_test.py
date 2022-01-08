@@ -5,9 +5,9 @@ import json
 
 from core.models import ScheduledJob
 from core.repositories import ScheduledJobRepository
-from core.lib.jwt import encode_jwt
+from auth.jwt import encode_jwt
 
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 
 from tests.fixtures import *
 

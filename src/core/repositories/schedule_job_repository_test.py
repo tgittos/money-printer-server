@@ -11,7 +11,7 @@ def test_get_scheduled_jobs_returns_list_of_jobs(db, scheduled_job_factory):
         scheduled_job_factory()
         scheduled_job_factory()
         count = session.query(ScheduledJob).count()
-    repo = ScheduledJobRepository()
+    repo = ScheduledJobRepository(db)
     result = repo.get_scheduled_jobs()
     assert result.success
     assert result.data is not None

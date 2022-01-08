@@ -3,11 +3,10 @@ from flask import request
 
 from core.repositories.account_repository import AccountRepository
 from core.repositories.plaid_repository import PlaidRepository, PLAID_PRODUCTS_STRINGS
-from api.views.decorators import authed, get_identity
-
-from api.lib.constants import API_PREFIX
+from auth.decorators import authed, get_identity
 from api.metrics.plaid_metrics import *
 from api.views.base import BaseApi
+from app import db
 
 
 class PlaidApi(BaseApi):
@@ -55,7 +54,7 @@ class PlaidApi(BaseApi):
                 - Plaid
         """
         user = get_identity()
-        repo = PlaidRepository()
+        repo = PlaidRepository(db)
         result = repo.info(user['id'])
         if result.success:
             return result.data
@@ -100,7 +99,7 @@ class PlaidApi(BaseApi):
         """
         profile = get_identity()
         base_url = request.base_url
-        repo = PlaidRepository()
+        repo = PlaidRepository(db)
         result = repo.create_link_token(profile['id'], base_url)
         if result.success:
             return result.data
@@ -150,7 +149,7 @@ class PlaidApi(BaseApi):
         profile = get_identity()
         public_token = request.json['public_token']
 
-        repo = PlaidRepository()
+        repo = PlaidRepository(db)
         access_token_result = repo.get_access_token(profile['id'], public_token)
         if not access_token_result.success:
             return {
@@ -158,7 +157,7 @@ class PlaidApi(BaseApi):
                 'message': access_token_result.message
             }, 400
 
-        account_repo = AccountRepository()
+        account_repo = AccountRepository(db)
         schedule_result = account_repo.schedule_account_sync(profile_id=profile['id'], plaid_item=access_token_result.data)
 
         if not schedule_result.success:

@@ -2,12 +2,12 @@ from datetime import datetime
 
 from core.models.profile import Profile
 from core.schemas import RegisterProfileSchema, CreateProfileSchema, UpdateProfileSchema
-from core.lib.jwt import generate_temp_password, hash_password
 from core.lib.notifications import ProfileCreatedNotification, notify_profile_created
 from core.lib.utilities import is_valid_email
 from core.actions.action_response import ActionResponse
+from auth.jwt import generate_temp_password, hash_password
 
-from config import mailgun_config
+from config import config
 
 
 def get_profile_by_id(db, profile_id: int) -> ActionResponse:
@@ -85,7 +85,7 @@ def create_profile(db, request: CreateProfileSchema) -> ActionResponse:
     with db.get_session() as session:
         session.add(new_profile)
 
-        notify_result = notify_profile_created(mailgun_config, ProfileCreatedNotification(
+        notify_result = notify_profile_created(config['mailgun'], ProfileCreatedNotification(
             profile=new_profile,
             password=new_pw
         ))

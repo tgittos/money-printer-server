@@ -5,8 +5,8 @@ from tests.fixtures import *
 
 
 @pytest.fixture
-def repo():
-    repo = HoldingRepository()
+def repo(db):
+    repo = HoldingRepository(db)
     return repo
 
 

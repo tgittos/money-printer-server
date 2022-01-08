@@ -1,11 +1,10 @@
 from flask import Blueprint, request
 
 from core.repositories import HoldingRepository
+from auth.decorators import Authed, get_identity
 from api.schemas import read_holdings_schema, read_holding_schema, read_holding_balances_schema
-
-from api.lib.constants import API_PREFIX
-from api.views.decorators import Authed, get_identity
 from api.views.base import BaseApi
+from app import db
 
 
 class HoldingsApi(BaseApi):
@@ -22,7 +21,7 @@ class HoldingsApi(BaseApi):
     @Authed
     def get_holdings_by_profile(self):
         profile = get_identity()
-        repo = HoldingRepository()
+        repo = HoldingRepository(db)
         result = repo.get_holdings_by_profile_id(profile['id'])
         if result.success:
             return {
@@ -38,7 +37,7 @@ class HoldingsApi(BaseApi):
     @Authed
     def get_holding(self, holding_id):
         profile = get_identity()
-        repo = HoldingRepository()
+        repo = HoldingRepository(db)
         result = repo.get_holding_by_id(
             profile_id=profile['id'], holding_id=holding_id)
         if result.success:
@@ -55,7 +54,7 @@ class HoldingsApi(BaseApi):
     @Authed
     def get_holding_balances(self, holding_id):
         profile = get_identity()
-        repo = HoldingRepository()
+        repo = HoldingRepository(db)
         result = repo.get_holding_balances_by_holding_id(profile['id'], holding_id)
         if result.success:
             return {

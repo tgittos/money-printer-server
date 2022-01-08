@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, request, redirect, abort, send_from_directory
 
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 
 swagger_bp = Blueprint('swagger', __name__)
 

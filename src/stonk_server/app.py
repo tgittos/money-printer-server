@@ -10,13 +10,11 @@ from flask_marshmallow import Marshmallow
 
 from core.lib.logger import init_logger, get_logger
 from core.stores.database import Database
-from config import config, env
+from config import config
 
 from core.lib.client_bus import ClientBus
 
-from stonk_server.blueprints import prices_bp
 from stonk_server.sse_client import SSEClient
-from stonk_server.apispec import write_apispec
 
 log_path = os.path.dirname(__file__) + "/../../logs/"
 init_logger(log_path)
@@ -27,11 +25,13 @@ if 'MP_ENVIRONMENT' in os.environ:
 
 logger.debug("* initializing Flask, Marshmallow and Client Bus")
 app = Flask(__name__)
+db = Database(config.stonks)
 ma = Marshmallow(app)
-db = Database(config.api)
 cb = ClientBus()
-sse_client = SSEClient(env, config.iex.secret)
+sse_client = SSEClient(config.iex.secret)
 
+from stonk_server.blueprints import prices_bp
+from stonk_server.api import write_apispec
 
 def create_app(flask_config={}):
 

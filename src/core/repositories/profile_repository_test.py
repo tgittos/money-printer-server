@@ -9,7 +9,7 @@ from tests.fixtures import *
 
 @pytest.fixture(autouse=True)
 def repository(db, mocker):
-    repo = ProfileRepository()
+    repo = ProfileRepository(db)
     fake_job_repo = mocker.patch.object(
         repo, 'scheduled_job_repo', autospec=True)
     mock_repo = mocker.Mock()

@@ -11,7 +11,7 @@ config = Dynaconf(
     envvar_prefix="MP",
     core_loaders=['json'],
     default_env="development",
-    environments=True,
-    env_switcher="MP_ENVIRONMENT",
     settings_files=['config.json']
 )
+
+config['env'] = env

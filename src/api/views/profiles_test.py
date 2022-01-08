@@ -1,9 +1,9 @@
 import pytest
 
-from core.lib.jwt import encode_jwt
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
+from auth.jwt import encode_jwt
 
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 
 from tests.fixtures import *
 

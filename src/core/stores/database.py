@@ -24,7 +24,7 @@ class Database(object):
                 config.port,
                 config.schema
             )
-            Database.engine = create_engine(conn_str, echo=config.db.debug.lower()=='true')
+            Database.engine = create_engine(conn_str, echo=config.debug)
             Database.sm = sessionmaker(
                 bind=Database.engine, autoflush=True, expire_on_commit=False)
 

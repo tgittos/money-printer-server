@@ -8,11 +8,9 @@ from core.repositories.repository_response import RepositoryResponse
 from core.lib.logger import get_logger
 from core.lib.utilities import get_last_bus_day
 
-
 from stonk_server.models import Security, SecurityPrice
 from stonk_server.schemas import ReadSecurityPriceSchema, RequestStockPriceSchema, RequestStockPriceListSchema
 from stonk_server.actions.security.crud import *
-from stonk_server.app import db
 
 from config import iex_config
 
@@ -20,7 +18,8 @@ class StockRepository:
 
     logger = get_logger(__name__)
 
-    def __init__(self):
+    def __init__(self, db):
+        self.db = db
         # pull the IEX config and store the token in the IEX_TOKEN env var
         secret = iex_config['secret']
         os.environ['IEX_TOKEN'] = secret
@@ -155,7 +154,7 @@ class StockRepository:
                                 "symbol: {0}, start: {1}" .format(symbol, start))
             # ok, so we can't fetch the price for today, and we dont have todays price in the db
             # so just return the latest price for this symbol that we do have
-            with db.get_session() as session:
+            with self.db.get_session() as session:
                 last = session.query(SecurityPrice).where(
                     SecurityPrice.symbol == symbol).order_by(
                         SecurityPrice.date.desc()).first()
@@ -174,7 +173,7 @@ class StockRepository:
         """
         Does this symbol have any price data?
         """
-        with db.get_session() as session:
+        with self.db.get_session() as session:
             return session.query(SecurityPrice).filter(SecurityPrice.symbol == symbol).count() > 0
 
     def _to_dataframe(self, data: Union[SecurityPrice, list]) -> pd.DataFrame:

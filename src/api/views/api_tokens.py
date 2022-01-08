@@ -1,11 +1,10 @@
 from flask import Blueprint
 
 from core.repositories.profile_repository import ProfileRepository
+from auth.decorators import Authed, get_identity
 from api.schemas import read_api_token_schema
-
-from api.views.decorators import Authed, get_identity
-from api.lib.constants import API_PREFIX
 from api.views.base import BaseApi
+from app import db
 
 
 class ApiTokensApi(BaseApi):
@@ -34,7 +33,7 @@ class ApiTokensApi(BaseApi):
         """
 
         user = get_identity()
-        repo = ProfileRepository()
+        repo = ProfileRepository(db)
 
         keys_result = repo.get_api_keys_by_profile_id(user['id'])
         if not keys_result.success or keys_result is None:

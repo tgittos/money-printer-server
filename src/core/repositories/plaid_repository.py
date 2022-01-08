@@ -11,18 +11,20 @@ from core.schemas import CreatePlaidItemSchema
 import core.actions.plaid.crud as crud
 from core.repositories.repository_response import RepositoryResponse
 
-from api.app import db
 
 class PlaidRepository:
 
     logger = get_logger(__name__)
     api = PlaidOauth()
 
+    def __init__(self, db):
+        self.db = db
+
     def info(self, profile_id: int) -> RepositoryResponse:
         """
         Returns the Plaid specific information for the given profile.
         """
-        with db.get_session() as session:
+        with self.db.get_session() as session:
             plaid_item = session.query(PlaidItem).where(
                 PlaidItem.profile_id == profile_id).first()
 
@@ -87,7 +89,7 @@ class PlaidRepository:
             print(plaid_access_result)
             # create a plaid token if it's valid
             create_link_result = crud.create_plaid_item(
-                db, profile_id, CreatePlaidItemSchema().load(plaid_access_result))
+                self.db, profile_id, CreatePlaidItemSchema().load(plaid_access_result))
 
             if not create_link_result.success:
                 return RepositoryResponse(
@@ -113,4 +115,4 @@ class PlaidRepository:
         """
         Return the Plaid Item from the DB by it's ID
         """
-        return crud.get_plaid_item_by_id(db, profile_id, id)
+        return crud.get_plaid_item_by_id(self.db, profile_id, id)
