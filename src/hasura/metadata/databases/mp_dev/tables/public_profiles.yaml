@@ -1,0 +1,36 @@
+table:
+  name: profiles
+  schema: public
+array_relationships:
+- name: accounts
+  using:
+    foreign_key_constraint_on:
+      column: profile_id
+      table:
+        name: accounts
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - email
+    - first_name
+    - force_password_reset
+    - id
+    - is_admin
+    - is_demo_profile
+    - last_name
+    - timestamp
+    filter:
+      id:
+        _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - first_name
+    - last_name
+    filter:
+      id:
+        _eq: X-Hasura-User-Id
+  role: user

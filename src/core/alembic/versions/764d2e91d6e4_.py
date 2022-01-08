@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: c2beadfe25cf
+Revision ID: 764d2e91d6e4
 Revises: 
-Create Date: 2022-01-06 23:15:01.480681
+Create Date: 2022-01-08 19:01:16.187712
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c2beadfe25cf'
+revision = '764d2e91d6e4'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,12 +22,6 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('doc', sa.String(length=10240), nullable=True),
     sa.Column('hosts', sa.String(length=256), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('iex_blacklists',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('symbol', sa.String(length=265), nullable=False),
-    sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('profiles',
@@ -52,20 +46,6 @@ def upgrade():
     sa.Column('active', sa.Boolean(), nullable=False),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('securities',
-    sa.Column('symbol', sa.String(length=64), nullable=False),
-    sa.Column('name', sa.String(length=512), nullable=True),
-    sa.Column('iso_currency_code', sa.String(length=8), nullable=True),
-    sa.Column('institution_id', sa.String(length=128), nullable=True),
-    sa.Column('institution_security_id', sa.String(length=128), nullable=True),
-    sa.Column('security_id', sa.String(length=128), nullable=True),
-    sa.Column('proxy_security_id', sa.String(length=128), nullable=True),
-    sa.Column('cusip', sa.String(length=16), nullable=True),
-    sa.Column('isin', sa.String(length=16), nullable=True),
-    sa.Column('sedol', sa.String(length=16), nullable=True),
-    sa.Column('timestamp', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('symbol')
     )
     op.create_table('api_tokens',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -109,29 +89,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['profile_id'], ['profiles.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('security_prices',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('symbol', sa.String(length=64), nullable=True),
-    sa.Column('high', sa.Float(), nullable=True),
-    sa.Column('low', sa.Float(), nullable=True),
-    sa.Column('open', sa.Float(), nullable=True),
-    sa.Column('close', sa.Float(), nullable=True),
-    sa.Column('volume', sa.Integer(), nullable=True),
-    sa.Column('u_high', sa.Float(), nullable=True),
-    sa.Column('u_low', sa.Float(), nullable=True),
-    sa.Column('u_open', sa.Float(), nullable=True),
-    sa.Column('u_close', sa.Float(), nullable=True),
-    sa.Column('u_volume', sa.Integer(), nullable=True),
-    sa.Column('date', sa.DateTime(), nullable=True),
-    sa.Column('change', sa.Float(), nullable=True),
-    sa.Column('change_percent', sa.Float(), nullable=True),
-    sa.Column('change_over_time', sa.Float(), nullable=True),
-    sa.Column('market_change_over_time', sa.Float(), nullable=True),
-    sa.Column('resolution', sa.String(length=32), nullable=False),
-    sa.Column('timestamp', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['symbol'], ['securities.symbol'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('accounts',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('plaid_item_id', sa.Integer(), nullable=False),
@@ -159,13 +116,12 @@ def upgrade():
     op.create_table('holdings',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('account_id', sa.Integer(), nullable=False),
-    sa.Column('security_symbol', sa.String(length=64), nullable=True),
+    sa.Column('symbol', sa.String(length=64), nullable=True),
     sa.Column('cost_basis', sa.Float(), nullable=True),
     sa.Column('quantity', sa.Float(), nullable=True),
     sa.Column('iso_currency_code', sa.String(length=8), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['account_id'], ['accounts.id'], ),
-    sa.ForeignKeyConstraint(['security_symbol'], ['securities.symbol'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('investment_transactions',
@@ -204,14 +160,11 @@ def downgrade():
     op.drop_table('holdings')
     op.drop_table('account_balances')
     op.drop_table('accounts')
-    op.drop_table('security_prices')
     op.drop_table('reset_tokens')
     op.drop_table('plaid_items')
     op.drop_table('job_results')
     op.drop_table('api_tokens')
-    op.drop_table('securities')
     op.drop_table('scheduled_jobs')
     op.drop_table('profiles')
-    op.drop_table('iex_blacklists')
     op.drop_table('api_token_policies')
     # ### end Alembic commands ###

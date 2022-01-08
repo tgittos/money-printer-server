@@ -11,8 +11,10 @@
     "tests:ci": "docker exec -e MP_CI=true -e MP_ENVIRONMENT=test $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q api) sh -c 'python bin/tests'; exit $?",
     "gendoc": "docker exec --tty $(docker-compose -f docker-compose.dev.yml ps --env-file=.env.dev -q api) /bin/bash -c \"MP_ENVIRONMENT=development PYTHONPATH=src python bin/dev/gendoc\"",
     "db:init": "/bin/bash bin/init-db",
-    "db:migrate": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=development alembic revision --autogenerate\"",
-    "db:update": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=development alembic upgrade head\"",
+    "db:api:migrate": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q api) /bin/bash -c \"cd src/core && MP_ENVIRONMENT=development alembic revision --autogenerate\"",
+    "db:api:update": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q api) /bin/bash -c \"cd src/core && MP_ENVIRONMENT=development alembic upgrade head\"",
+    "db:stonks:migrate": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q stonks) /bin/bash -c \"cd src/stonk_server && MP_ENVIRONMENT=development alembic revision --autogenerate\"",
+    "db:stonks:update": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q stonks) /bin/bash -c \"cd src/stonk_server && MP_ENVIRONMENT=development alembic upgrade head\"",
     "db:test:update": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q api) /bin/bash -c \"cd src && MP_ENVIRONMENT=test alembic upgrade head\"",
     "start": "docker-compose -f docker-compose.dev.yml --env-file=.env.dev start",
     "start:prod": "docker-compose -f docker-compose.prod.yml --env-file=.env.dev start",
@@ -27,7 +29,9 @@
     "recycle": "npm run down; sleep 1 && npm run build; sleep 1 && npm run up",
     "recycle:prod": "npm run down:prod; sleep 1 && npm run build:prod; sleep 1 && npm run up:prod",
     "restart": "npm run stop; sleep 1 && npm run start",
-    "restart:prod": "npm run stop:prod; sleep 1 npm run start:prod"
+    "restart:prod": "npm run stop:prod; sleep 1 npm run start:prod",
+    "hasura:metadata:export": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q hasura) /bin/bash -c \"cd /hasura && hasura metadata export\"",
+    "hasura:metadata:apply": "docker exec --tty $(docker-compose -f docker-compose.dev.yml --env-file=.env.dev ps -q hasura) /bin/bash -c \"cd /hasura && hasura metadata apply\""
   },
   "author": "Tim Gittos",
   "license": "ISC",

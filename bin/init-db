@@ -11,11 +11,13 @@ docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q mysql) /bin/b
 docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q mysql) /bin/bash -c "mysql --user=root --password='$MP_API__PASSWORD' --database mp_matomo --execute=\"GRANT ALL PRIVILEGES ON *.* TO '$MP_API__USERNAME';\""
 
 echo "Creating user $MP_API__USERNAME in pg with pw $MP_API__PASSWORD"
-docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE USER $MP_API__USERNAME WITH PASSWORD '$MP_API__PASSWORD'\""
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE USER $MP_API__USERNAME WITH PASSWORD '$MP_API__PASSWORD';\""
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"ALTER USER $MP_API__USERNAME WITH PASSWORD '$MP_API_PASSWORD';\""
 docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"ALTER USER $MP_API__USERNAME WITH SUPERUSER;\""
 
 echo "Creating user $MP_STONKS__USERNAME in pg with pw $MP_STONKS__PASSWORD"
-docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE USER $MP_STONKS__USERNAME WITH PASSWORD '$MP_STONKS__PASSWORD'\""
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE USER $MP_STONKS__USERNAME WITH PASSWORD '$MP_STONKS__PASSWORD';\""
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"ALTER USER $MP_STONKS__USERNAME WITH PASSWORD '$MP_STONKS__PASSWORD';\""
 docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"ALTER USER $MP_STONKS__USERNAME WITH SUPERUSER;\""
 
 echo "Creating db mp_stonks in pg"
@@ -26,15 +28,5 @@ docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash
 
 echo "Creating db mp_test in pg"
 docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE DATABASE mp_test;\""
-
-if [ $(docker-compose -f docker-compose.dev.yml ps -q api) ]; then
-    echo "Migrating api db"
-    docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q api) /bin/bash -c "cd /app/src/core && alembic upgrade head"
-fi
-
-if [ $(docker-compose -f docker-compose.dev.yml ps -q stonks) ]; then
-    echo "Migrating stonks db"
-    docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q stonks) /bin/bash -c "cd /app/src/stonk_server && alembic upgrade head"
-fi
 
 echo "Done"

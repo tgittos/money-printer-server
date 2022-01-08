@@ -1,6 +1,6 @@
 services:
   rproxy:
-    image: git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-rproxy:latest
+    image: git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-rproxy
     ports:
       - 80:80
     environment:
@@ -29,22 +29,20 @@ services:
   redis:
     image: "redis:alpine"
   matomo:
-    image: "git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-matom\
-      o:latest"
+    image: git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-matomo
     environment:
       MP_DB_HOST: mysql
     env_file:
       - .env.dev
     depends_on: [ "mysql" ]
   prometheus:
-    image: "git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-prome\
-      theus:latest"
+    image: git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-prometheus
     entrypoint: [ "/bin/sh", "prometheus.sh" ]
   pg:
     image: timescale/timescaledb:latest-pg12
     restart: always
     volumes:
-      - pg-data:/var/lib/posgresql/data
+      - pg-data:/var/lib/postgresql/data
     env_file:
       - .env.dev
     ports:
@@ -60,18 +58,23 @@ services:
     ports:
       - 3306:3306
   hasura:
-    image: hasura/graphql-engine
+    image: git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-hasura
+    # image: hasura/graphql-engine:latest.cli-migrations-v3
     restart: always
+    volumes:
+      - ./src/hasura:/hasura
     env_file:
       - .env.dev
     environment:
       ## postgres database to store Hasura metadata
-      HASURA_GRAPHQL_DATABASE_URL: postgres://$MP_API__USERNAME:$MP_API__PASSWORD@pg:5432/postgres
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:$POSTGRES_PASSWORD@pg:5432/postgres
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       ## enable debugging mode. It is recommended to disable this in production
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      # HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura/migrations
+      HASURA_GRAPHQL_METADATA_DIR: /hasura/metadata
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: hasura
     depends_on: ["pg"]
@@ -102,7 +105,7 @@ services:
         "logs/mp.log"
       ]
   stonks:
-    image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
+    image: git.gittos.net:5050/money-printer/money-printer-server/mp-api
     environment:
       MP_REDIS__HOST: redis
       MP_STONKS__HOST: pg
@@ -124,7 +127,7 @@ services:
         "logs/mp.log"
       ]
   task-runner:
-    image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
+    image: git.gittos.net:5050/money-printer/money-printer-server/mp-api
     environment:
       MP_REDIS__HOST: redis
       MP_API__HOST: pg
@@ -137,7 +140,7 @@ services:
     depends_on: [ "redis", "pg" ]
     entrypoint: [ "python", "src/task_runner.py" ]
   scheduler:
-    image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
+    image: git.gittos.net:5050/money-printer/money-printer-server/mp-api
     environment:
       MP_REDIS__HOST: "redis"
       MP_API__HOST: pg

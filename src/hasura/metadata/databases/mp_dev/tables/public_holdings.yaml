@@ -1,0 +1,15 @@
+table:
+  name: holdings
+  schema: public
+object_relationships:
+- name: account
+  using:
+    foreign_key_constraint_on: account_id
+array_relationships:
+- name: holding_balances
+  using:
+    foreign_key_constraint_on:
+      column: holding_id
+      table:
+        name: holding_balances
+        schema: public

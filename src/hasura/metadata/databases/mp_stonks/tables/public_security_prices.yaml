@@ -1,0 +1,7 @@
+table:
+  name: security_prices
+  schema: public
+object_relationships:
+- name: security
+  using:
+    foreign_key_constraint_on: symbol
