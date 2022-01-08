@@ -16,16 +16,17 @@ import core.actions.account.crud as account_crud
 from core.actions.profile.crud import get_profile_by_id
 from core.actions.plaid.crud import get_plaid_item_by_id
 
-
 class AccountRepository:
 
     logger = get_logger(__name__)
-    db = Database()
     plaid_repo = PlaidRepository()
     scheduled_job_repo = ScheduledJobRepository()
     plaid_accounts_api = PlaidAccounts(PlaidAccountsConfig(
         plaid_config=plaid_config
     ))
+
+    def __init__(self, db):
+        self.db = db
 
     def get_account_by_id(self, profile_id: int, account_id: int) -> RepositoryResponse:
         """

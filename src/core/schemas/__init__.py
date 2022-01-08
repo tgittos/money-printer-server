@@ -8,4 +8,3 @@ from .investment_schemas import *
 from .plaid_item_schemas import *
 from .profile_schemas import *
 from .scheduler_schemas import *
-from .security_schemas import *

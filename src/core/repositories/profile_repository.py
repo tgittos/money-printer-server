@@ -14,10 +14,10 @@ from core.actions.plaid.crud import get_plaid_items_by_profile_id, get_plaid_ite
 import core.actions.profile.crud as crud
 import core.actions.profile.auth as auth
 
+from api.app import db
 
 class ProfileRepository:
 
-    db = Database()
     logger = get_logger(__name__)
     account_repo = AccountRepository()
     holdings_repo = HoldingRepository()
@@ -30,49 +30,49 @@ class ProfileRepository:
         """
         Retrieves a profile by it's primary key ID
         """
-        return crud.get_profile_by_id(self.db, profile_id)
+        return crud.get_profile_by_id(db, profile_id)
 
     def create_profile(self, request: CreateProfileSchema) -> RepositoryResponse:
         """
         Creates a new profile with the requested details
         """
-        return crud.create_profile(self.db, request)
+        return crud.create_profile(db, request)
 
     def update_profile(self, request: UpdateProfileSchema) -> RepositoryResponse:
         """
         Updates a profile's details for the requested profile
         """
-        return crud.update_profile(self.db, request)
+        return crud.update_profile(db, request)
 
     def register(self, request: RegisterProfileSchema) -> RepositoryResponse:
         """
         Register a new profile - functionally similar to `create_profile`
         """
-        return crud.register(self.db, request)
+        return crud.register(db, request)
 
     def login(self, request: LoginSchema) -> RepositoryResponse:
         """
         Authenticate profile credentials
         """
-        return auth.login(self.db, request)
+        return auth.login(db, request)
 
     def reset_password(self, email: str) -> RepositoryResponse:
         """
         Start the reset password process for the given profile
         """
-        return auth.reset_password(self.db, email)
+        return auth.reset_password(db, email)
 
     def continue_reset_password(self, request: ResetPasswordSchema) -> RepositoryResponse:
         """
         Finalize the password reset with the secret token and the profile's new password
         """
-        return auth.continue_reset_password(self.db, request)
+        return auth.continue_reset_password(db, request)
 
     def schedule_profile_sync(self, profile_id: int) -> RepositoryResponse:
         """
         Schedules an InstantJob to perform a full sync for a given account
         """
-        profile_result = crud.get_profile_by_id(self.db, profile_id)
+        profile_result = crud.get_profile_by_id(db, profile_id)
         if not profile_result.success:
             self.logger.error("cannot schedule profile sync without Profile")
             return RepositoryResponse(
@@ -81,7 +81,7 @@ class ProfileRepository:
             )
 
         plaid_result = get_plaid_items_by_profile_id(
-            self.db, profile_result.data.id)
+            db, profile_result.data.id)
         if not plaid_result.success or len(plaid_result.data) == 0:
             self.logger.error(
                 "scheduled account sync for Profile, but no PlaidItems found")
@@ -108,7 +108,7 @@ class ProfileRepository:
           - account balances
           - investment holdings
         """
-        plaid_result = get_plaid_item_by_id(self.db, profile_id, plaid_item_id)
+        plaid_result = get_plaid_item_by_id(db, profile_id, plaid_item_id)
         if not plaid_result.success:
             self.logger.warning(
                 "Sync all accounts requested without PlaidItem")
@@ -121,7 +121,7 @@ class ProfileRepository:
             "updating account state for PlaidItem {0}".format(plaid_item_id))
 
         profile_result = crud.get_profile_by_id(
-            self.db, plaid_result.data.profile_id)
+            db, plaid_result.data.profile_id)
 
         if not profile_result.success or profile_result.data is None:
             self.logger.warning(
@@ -142,7 +142,7 @@ class ProfileRepository:
             if 'account_id' in account_dict:
                 self.logger.info("updating account details for profile {0}, account {1}"
                                  .format(profile_result.data.id, account_dict['account_id']))
-                account_result = create_or_update_account(self.db,
+                account_result = create_or_update_account(db,
                                                           profile_id=profile_result.data.id,
                                                           plaid_link_id=plaid_result.data.id,
                                                           account_dict=account_dict)

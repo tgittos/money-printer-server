@@ -16,7 +16,7 @@ services:
       - prometheus
       - hasura
       - api
-      # - stonks
+      - stonks
   ngrok:
     image: "wernight/ngrok"
     env_file:
@@ -45,8 +45,6 @@ services:
     restart: always
     volumes:
       - pg-data:/var/lib/posgresql/data
-    environment:
-      POSTGRES_PASSWORD: MP_DB__PASSWORD
     env_file:
       - .env.dev
     ports:
@@ -89,11 +87,11 @@ services:
       - ./logs:/app/logs
     environment:
       MP_REDIS__HOST: redis
-      MP_DB__HOST: pg
+      MP_API__HOST: pg
       MP_WEBHOOK_HOST: ngrok
     env_file:
       - .env.dev
-    depends_on: [ "redis", "pg", "ngrok", "matomo", "prometheus" ]
+    depends_on: [ "redis", "pg", "ngrok", "matomo", "prometheus", "stonks" ]
     image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
     entrypoint:
       [
@@ -108,7 +106,12 @@ services:
     image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
     environment:
       MP_REDIS__HOST: redis
-      MP_DB__HOST: pg
+      MP_STONKS__HOST: pg
+    volumes:
+      - ./docs:/app/docs
+      - ./src:/app/src
+      - ./bin:/app/bin
+      - ./logs:/app/logs
     env_file:
       - .env.dev
     depends_on: [ "redis", "pg" ]
@@ -125,18 +128,26 @@ services:
     image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
     environment:
       MP_REDIS__HOST: redis
-      MP_DB__HOST: pg
+      MP_API__HOST: pg
     env_file:
       - .env.dev
+    volumes:
+      - ./src:/app/src
+      - ./bin:/app/bin
+      - ./logs:/app/logs
     depends_on: [ "redis", "pg" ]
     entrypoint: [ "python", "src/task_runner.py" ]
   scheduler:
     image: "git.gittos.net:5050/money-printer/money-printer-server/mp-api"
     environment:
       MP_REDIS__HOST: "redis"
-      MP_DB__HOST: pg
+      MP_API__HOST: pg
     env_file:
       - .env.dev
+    volumes:
+      - ./src:/app/src
+      - ./bin:/app/bin
+      - ./logs:/app/logs
     depends_on: [ "redis", "pg" ]
     entrypoint:
       [

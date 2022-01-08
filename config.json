@@ -4,9 +4,6 @@
   "mailgun": {
     "domain": "mg.moneyprintergobrr.io"
   },
-  "iex": {
-    "publishable": "pk_3394e9ba369a45d2b3efdd6c0bbb168f"
-  },
   "plaid": {
     "client_id": "610b0a72aed5de0015d334ed",
     "version": "2020-09-14",

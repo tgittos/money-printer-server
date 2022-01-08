@@ -3,7 +3,7 @@ from flask import Blueprint, request, redirect, abort, send_from_directory
 from datetime import datetime, timezone, timedelta
 
 from core.repositories import StockRepository
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 from auth import authed
 
 prices_bp = Blueprint('prices', __name__)

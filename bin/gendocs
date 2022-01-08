@@ -3,14 +3,18 @@
 import os
 from sqlalchemy.orm import declarative_base
 
-from api.lib.apispec import write_apispec
-from api.app import create_app
+from api.apispec import write_apispec as write_api_spec
+from api.app import create_app as create_api_app
+from stonks.app import create_app as create_stonks_app
+from stonks.apispec import write_apispec as write_stonks_spec
 
 if __name__ == '__main__':
     # create the app
-    app, ma, cb, ws = create_app()
+    api_app = create_api_app().head()
+    stonks_app = create_stonks_app().head()
 
     print("Writing updated OpenAPI spec file")
     doc_path = os.path.dirname(__file__) + "/../../docs/swagger/"
-    write_apispec(doc_path + "swagger.json", app)
+    write_api_spec(doc_path + "swagger.api.json", api_app)
+    write_stonks_spec(doc_path + "swagger.stonks.json", stonks_app)
     print("Done")

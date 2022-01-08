@@ -9,24 +9,25 @@ from core.apis.mailgun import MailGun
 from core.stores.database import Database
 from core.models import ScheduledJob, JobResult
 from core.schemas import CreateScheduledJobSchema, CreateInstantJobSchema
-from core.lib.constants import WORKER_QUEUE
 from core.repositories.repository_response import RepositoryResponse
-from config import redis_config, mailgun_config
 
+from constants import WORKER_QUEUE
+from config import config
+
+from api.app import db
 
 class ScheduledJobRepository:
 
-    db = Database()
     redis = redis.Redis(
-        host=redis_config['host'], port=redis_config['port'], db=0)
-    mailgun_client = MailGun(mailgun_config)
+        host=config.redis.host, port=config.redis.port, db=0)
+    mailgun_client = MailGun(config.mailgun)
     queues = []
 
     def get_scheduled_jobs(self) -> RepositoryResponse:
         """
         Gets all ScheduledJobs
         """
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             jobs = session.query(ScheduledJob).all()
 
         return RepositoryResponse(
@@ -39,7 +40,7 @@ class ScheduledJobRepository:
         """
         Gets a ScheduledJob by it's primary key
         """
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             job = session.query(ScheduledJob).where(
                 ScheduledJob.id == id).first()
 
@@ -74,7 +75,7 @@ class ScheduledJobRepository:
         job.queue = WORKER_QUEUE
         job.timestamp = datetime.utcnow()
 
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             session.add(job)
             session.commit()
 
@@ -89,7 +90,7 @@ class ScheduledJobRepository:
     def update_scheduled_job(self, job) -> RepositoryResponse:
         self.unschedule_job(job.queue, job)
 
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             session.add(job)
             session.commit()
 
@@ -98,7 +99,7 @@ class ScheduledJobRepository:
     def delete_scheduled_job(self, job) -> RepositoryResponse:
         self.unschedule_job(job.queue, job)
 
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             session.delete(job)
             session.commit()
 
@@ -132,7 +133,7 @@ class ScheduledJobRepository:
         job.last_run = datetime.utcnow()
         job.timestamp = datetime.utcnow()
 
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             session.add(job)
             session.commit()
 
@@ -190,7 +191,7 @@ class ScheduledJobRepository:
         result.queue = job.queue
         result.timestamp = datetime.utcnow()
 
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             session.add(result)
             session.commit()
 
@@ -202,6 +203,6 @@ class ScheduledJobRepository:
         result.queue = job.queue
         result.timestamp = datetime.utcnow()
 
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             session.add(result)
             session.commit()

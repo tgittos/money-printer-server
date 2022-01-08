@@ -8,9 +8,8 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from prometheus_client import make_wsgi_app
 from flask_marshmallow import Marshmallow
 
-from core.repositories.profile_repository import ProfileRepository
-from core.schemas.auth_schemas import RegisterProfileSchema
 from core.lib.logger import init_logger, get_logger
+from core.stores.database import Database
 
 from api.apispec import write_apispec
 from api.views import register_api, register_swagger
@@ -28,6 +27,7 @@ if 'MP_ENVIRONMENT' in os.environ:
 logger.debug("* initializing Flask, Marshmallow and Client Bus")
 app = Flask(__name__)
 ma = Marshmallow(app)
+db = Database(config.api)
 
 configured = False
 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
         os.environ['FLASK_ENV'] = os.environ['MP_ENVIRONMENT']
         if os.environ['MP_ENVIRONMENT'] == "development" or os.environ['MP_ENVIRONMENT'] == "staging":
             doc_path = os.path.dirname(__file__) + "/../../docs/swagger/"
-            write_apispec(doc_path + "swagger.json", app)
+            write_apispec(doc_path + "swagger.api.json", app)
 
     print(" * Starting money-printer api/ws application", flush=True)
     app.run(host=config.host, port=config.port)

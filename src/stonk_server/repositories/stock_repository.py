@@ -1,25 +1,24 @@
 import os
 from typing import Union, Optional
 from marshmallow import Schema, fields, EXCLUDE
-
+from datetime import timedelta
 import pandas as pd
 
-from core.stores.database import Database
-from core.lib.logger import get_logger
-from core.lib.types import StringList
-from config import iex_config
 from core.repositories.repository_response import RepositoryResponse
-from core.schemas import ReadSecurityPriceSchema, RequestStockPriceSchema, RequestStockPriceListSchema
+from core.lib.logger import get_logger
+from core.lib.utilities import get_last_bus_day
 
-# import all the actions so that consumers of the repo can access everything
-from core.actions.stock.crud import *
-from core.actions.stock.fetch import *
 
+from stonk_server.models import Security, SecurityPrice
+from stonk_server.schemas import ReadSecurityPriceSchema, RequestStockPriceSchema, RequestStockPriceListSchema
+from stonk_server.actions.security.crud import *
+from stonk_server.app import db
+
+from config import iex_config
 
 class StockRepository:
 
     logger = get_logger(__name__)
-    db = Database()
 
     def __init__(self):
         # pull the IEX config and store the token in the IEX_TOKEN env var
@@ -156,7 +155,7 @@ class StockRepository:
                                 "symbol: {0}, start: {1}" .format(symbol, start))
             # ok, so we can't fetch the price for today, and we dont have todays price in the db
             # so just return the latest price for this symbol that we do have
-            with self.db.get_session() as session:
+            with db.get_session() as session:
                 last = session.query(SecurityPrice).where(
                     SecurityPrice.symbol == symbol).order_by(
                         SecurityPrice.date.desc()).first()
@@ -175,7 +174,7 @@ class StockRepository:
         """
         Does this symbol have any price data?
         """
-        with self.db.get_session() as session:
+        with db.get_session() as session:
             return session.query(SecurityPrice).filter(SecurityPrice.symbol == symbol).count() > 0
 
     def _to_dataframe(self, data: Union[SecurityPrice, list]) -> pd.DataFrame:

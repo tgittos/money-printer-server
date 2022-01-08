@@ -15,14 +15,14 @@ class Database(object):
     sm = None
     context = None
 
-    def __init__(self):
+    def __init__(self, config):
         if not Database.engine or not Database.sm:
             conn_str = "postgresql://{0}:{1}@{2}:{3}/{4}".format(
-                config.db.username,
-                config.db.password,
-                config.db.host,
-                config.db.port,
-                config.db.schema
+                config.username,
+                config.password,
+                config.host,
+                config.port,
+                config.schema
             )
             Database.engine = create_engine(conn_str, echo=config.db.debug.lower()=='true')
             Database.sm = sessionmaker(

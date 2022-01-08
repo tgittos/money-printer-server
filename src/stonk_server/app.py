@@ -9,12 +9,14 @@ from flask_socketio import SocketIO
 from flask_marshmallow import Marshmallow
 
 from core.lib.logger import init_logger, get_logger
+from core.stores.database import Database
 from config import config, env
 
 from core.lib.client_bus import ClientBus
 
-from .blueprints import prices_bp
-from .sse_client import SSEClient
+from stonk_server.blueprints import prices_bp
+from stonk_server.sse_client import SSEClient
+from stonk_server.apispec import write_apispec
 
 log_path = os.path.dirname(__file__) + "/../../logs/"
 init_logger(log_path)
@@ -26,6 +28,7 @@ if 'MP_ENVIRONMENT' in os.environ:
 logger.debug("* initializing Flask, Marshmallow and Client Bus")
 app = Flask(__name__)
 ma = Marshmallow(app)
+db = Database(config.api)
 cb = ClientBus()
 sse_client = SSEClient(env, config.iex.secret)
 
@@ -62,4 +65,12 @@ def run():
 
 if __name__ == '__main__':
     create_app()
+
+    # generate docs when running in dev and staging
+    if 'MP_ENVIRONMENT' in os.environ:
+        os.environ['FLASK_ENV'] = os.environ['MP_ENVIRONMENT']
+        if os.environ['MP_ENVIRONMENT'] == "development" or os.environ['MP_ENVIRONMENT'] == "staging":
+            doc_path = os.path.dirname(__file__) + "/../../docs/swagger/"
+            write_apispec(doc_path + "swagger.api.json", app)
+
     run()
