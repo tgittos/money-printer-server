@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 
-from core.models import Security, SecurityPrice, IexBlacklist
-from api.app import ma
+from stonk_server.models import Security, SecurityPrice, IexBlacklist
+from stonk_server.app import ma
 
 
 class ReadSecurityApiSchema(ma.SQLAlchemyAutoSchema):

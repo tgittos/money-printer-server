@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.expression import null
 
-from core.models.base import Base
+from stonk_server.models.base import Base
 
 
 class Security(Base):

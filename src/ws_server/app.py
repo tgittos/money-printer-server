@@ -11,6 +11,7 @@ from core.lib.client_bus import ClientBus
 from auth.decorators import decode_jwt
 
 from constants import BACKBONE_WS_CHANNEL, BACKBONE_STONKS_CHANNEL
+import config
 
 log_path = os.path.dirname(__file__) + "/../../logs/"
 init_logger(log_path)

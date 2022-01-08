@@ -12,9 +12,10 @@ from core.repositories.profile_repository import ProfileRepository
 from core.schemas.auth_schemas import RegisterProfileSchema
 from core.lib.logger import init_logger, get_logger
 
-from api.lib.constants import API_PREFIX
-from api.lib.apispec import write_apispec
+from api.apispec import write_apispec
 from api.views import register_api, register_swagger
+
+from constants import API_PREFIX
 from config import config
 
 log_path = os.path.dirname(__file__) + "/../../logs/"
@@ -91,21 +92,7 @@ def _configure_prometheus(app):
     })
 
 
-def run():
-    print(" * Starting money-printer api/ws application", flush=True)
-    app.run(host=config.host, port=config.port)
-
-
-def init(first_name, last_name, email):
-    repo = ProfileRepository()
-    result = repo.register(RegisterProfileSchema(
-        email=email, first_name=first_name, last_name=last_name
-    ))
-    return result
-
-
 if __name__ == '__main__':
-
     # create the app
     app, ma = create_app()
 
@@ -115,6 +102,6 @@ if __name__ == '__main__':
         if os.environ['MP_ENVIRONMENT'] == "development" or os.environ['MP_ENVIRONMENT'] == "staging":
             doc_path = os.path.dirname(__file__) + "/../../docs/swagger/"
             write_apispec(doc_path + "swagger.json", app)
-    
-    # always run on the public port, cause we're in a container
-    app.run(host='0.0.0.0')
+
+    print(" * Starting money-printer api/ws application", flush=True)
+    app.run(host=config.host, port=config.port)

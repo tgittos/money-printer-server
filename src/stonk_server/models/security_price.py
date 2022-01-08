@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
-from core.models.base import Base
+from stonk_server.models.base import Base
 
 
 class SecurityPrice(Base):

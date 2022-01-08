@@ -18,17 +18,17 @@ config = context.config
 env = 'development'
 if 'MP_ENVIRONMENT' in os.environ:
     env = os.environ['MP_ENVIRONMENT']
-f1 = open('./../config.json',)
+f1 = open('./../../config.json',)
 config_json = json.loads(f1.read())
 f1.close()
 
 config.set_main_option('sqlalchemy.url',
                        "postgresql://{0}:{1}@{2}:{3}/{4}".format(
-                           os.environ['MP_DB__USERNAME'],
-                           os.environ['MP_DB__PASSWORD'],
-                           os.environ['MP_DB__HOST'],
-                           config_json[env]['db']['port'],
-                           config_json[env]['db']['schema']
+                           config_json[env]['api']['username'],
+                           config_json[env]['api']['password'],
+                           config_json[env]['api']['host'],
+                           config_json[env]['api']['port'],
+                           config_json[env]['api']['schema']
                        ))
 
 # Interpret the config file for Python logging.

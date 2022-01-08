@@ -13,6 +13,9 @@ docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q mysql) /bin/b
 echo "Creating user $MP_DB__USERNAME in pg with pw $MP_DB__PASSWORD"
 docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE USER $MP_DB__USERNAME WITH PASSWORD '$MP_DB__PASSWORD'\""
 
+echo "Creating db mp_stonks in pg"
+docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE DATABASE mp_stonks;\""
+
 echo "Creating db mp_dev in pg"
 docker exec --tty $(docker-compose -f docker-compose.dev.yml ps -q pg) /bin/bash -c "psql -U postgres -c \"CREATE DATABASE mp_dev;\""
 

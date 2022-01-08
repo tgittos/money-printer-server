@@ -12,9 +12,9 @@ from core.lib.logger import init_logger, get_logger
 from config import config, env
 
 from core.lib.client_bus import ClientBus
-from .lib.sse_client import SSEClient
-from .lib.historical_client import HistoricalClient
-from .rest.blueprints import prices_bp
+
+from .blueprints import prices_bp
+from .sse_client import SSEClient
 
 log_path = os.path.dirname(__file__) + "/../../logs/"
 init_logger(log_path)
@@ -28,44 +28,38 @@ app = Flask(__name__)
 ma = Marshmallow(app)
 cb = ClientBus()
 sse_client = SSEClient(env, config.iex.secret)
-historical_client = HistoricalClient()
 
 
 def create_app(flask_config={}):
+
+    # configure the app
+    app.config['CORS_HEADERS'] = 'Content-Type'
+    app.config['SECRET_KEY'] = config.secret
+    CORS(app)
 
     logger.debug("registering prices endpoints")
     app.register_blueprint(prices_bp)
 
     logger.debug("intercepting sigints for graceful shutdown")
-    signal.signal(signal.SIGINT, sigint_handler({
-        "sse_client": sse_client,
-        "historical_client": historical_client
-    }))
+    signal.signal(signal.SIGINT, sigint_handler)
 
 
 def sigint_handler(signal, frame):
-    print("requested data-server shutdown", flush=True)
+    print(" * requested stonk server shutdown", flush=True)
     if sse_client:
-        print("shutting down sse client", flush=True)
+        logger.info("shutting down sse client")
         sse_client.stop()
-    if historical_client:
-        print("shutting down historical client", flush=True)
-        historical_client.stop()
     sys.exit(0)
 
 
 def run():
-    print(" * Starting money-printer data server", flush=True)
+    print(" * Starting money-printer stonk server", flush=True)
     logger.info("starting sse client")
     sse_client.start()
-    logger.info("starting historical client")
-    historical_client.start()
-    # block until a stop is requested, sigint handler should handle the
-    # all thread shutdowns
-    while True:
-        time.sleep(1)
+    logger.info("starting client bus")
+    app.start(host=config.host, port=config.port)
 
 
 if __name__ == '__main__':
-    app, ma, ws = create_app()
-    app.run()
+    create_app()
+    run()
