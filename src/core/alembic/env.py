@@ -15,20 +15,15 @@ config = context.config
 
 # this will overwrite the ini-file sqlalchemy.url path
 # with the path given in the config of the main code
-env = 'development'
-if 'MP_ENVIRONMENT' in os.environ:
-    env = os.environ['MP_ENVIRONMENT']
-f1 = open('./../../config.json',)
-config_json = json.loads(f1.read())
-f1.close()
+from config import config as mp_config
 
 config.set_main_option('sqlalchemy.url',
                        "postgresql://{0}:{1}@{2}:{3}/{4}".format(
-                           config_json[env]['api']['username'],
-                           config_json[env]['api']['password'],
-                           config_json[env]['api']['host'],
-                           config_json[env]['api']['port'],
-                           config_json[env]['api']['schema']
+                           mp_config['api']['username'],
+                           mp_config['api']['password'],
+                           mp_config['api']['host'],
+                           mp_config['api']['port'],
+                           mp_config['api']['schema']
                        ))
 
 # Interpret the config file for Python logging.

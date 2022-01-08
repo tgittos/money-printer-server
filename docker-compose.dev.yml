@@ -61,13 +61,12 @@ services:
       - 3306:3306
   hasura:
     image: hasura/graphql-engine
-    # image: fedormelexin/graphql-engine-arm64
     restart: always
     env_file:
       - .env.dev
     environment:
       ## postgres database to store Hasura metadata
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:MP_DB__PASSWORD@pg:5432/postgres
+      HASURA_GRAPHQL_DATABASE_URL: postgres://$MP_API__USERNAME:$MP_API__PASSWORD@pg:5432/postgres
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       ## enable debugging mode. It is recommended to disable this in production

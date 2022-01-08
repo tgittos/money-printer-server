@@ -9,7 +9,7 @@ from sqlalchemy.orm import declarative_base
 from core.stores.database import Database
 from core.models import Base
 
-from config import mysql_config
+from config import config
 
 def run_test():
     test_cmd = ["pytest", "-n", "auto", "--cov-config=.coveragerc",
@@ -22,7 +22,7 @@ def run_test():
 
 
 if __name__ == '__main__':
-    db = Database()
+    db = Database(config.api)
     print("Refreshing db table set...")
     Base.metadata.drop_all(bind=db.engine)
     Base.metadata.create_all(bind=db.engine)

@@ -53,7 +53,7 @@ test:
       echo "Initializing db for test run"
       npm run db:init
       echo "Starting test run"
-      npm run test:ci
+      npm run tests:ci
       set status=$?
       echo "Downing test run containers"
       npm run down
