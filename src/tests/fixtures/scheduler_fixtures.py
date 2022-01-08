@@ -1,5 +1,6 @@
 import pytest
 import random
+import json
 
 from core.models import ScheduledJob
 from core.schemas.scheduler_schemas import CreateScheduledJobSchema, CreateInstantJobSchema,\
@@ -23,7 +24,7 @@ def scheduled_job_factory(db, faker):
             job.id = random.randint(1, 99999999)
             job.job_name = job_name
             job.cron = cron
-            job.json_args = json_args
+            job.json_args = json.dumps(json_args)
             job.active = active
             job.queue = queue
 

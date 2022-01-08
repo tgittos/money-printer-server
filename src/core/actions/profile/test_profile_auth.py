@@ -10,8 +10,8 @@ import core.actions.profile.auth as auth
 from core.actions.action_response import ActionResponse
 from core.actions.profile.auth import login, get_unauthenticated_user, reset_password,\
     continue_reset_password, get_reset_token
-from core.lib.jwt import check_password
 from core.lib.utilities import id_generator
+from auth.jwt import check_password
 
 from tests.fixtures import *
 

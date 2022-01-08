@@ -256,26 +256,6 @@ def create_holding_balance(db, profile_id: int, request: CreateHoldingBalanceSch
         data=holding_balance
     )
 
-def create_holding(db, request: CreateHoldingSchema) -> ActionResponse:
-    holding = Holding()
-
-    holding.account_id = request['account.id']
-    holding.symbol = request['symbol']
-    holding.cost_basis = request['cost_basis']
-    holding.quantity = request['quantity']
-    holding.iso_currency_code = request['iso_currency_code']
-    holding.timestamp = datetime.utcnow()
-
-    with db.get_session() as session:
-        session.add(holding)
-        session.commit()
-
-    return ActionResponse(
-        success=True,
-        data=holding
-    )
-
-
 def update_holding_balance(db, request: UpdateHoldingSchema) -> ActionResponse:
     holding_balance = HoldingBalance()
 
