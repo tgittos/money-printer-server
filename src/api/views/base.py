@@ -1,7 +1,7 @@
 from flask import abort
 from flask.views import MethodView
 
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 
 
 class BaseApi(MethodView):
@@ -21,7 +21,7 @@ class BaseApi(MethodView):
             self.add_url(app, f"/<{pk_type}:{pk}>", endpoint=f"delete_{self.name}" ,methods=['DELETE',])
 
     def add_url(self, app, url, view_func=None, endpoint=None, methods=['GET',]):
-        
+
         final_view_func = view_func or self.as_view(self.name)
         final_endpoint = endpoint or final_view_func.__name__
         final_url = f"{self.url_base}{url}"

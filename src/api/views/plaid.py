@@ -6,14 +6,14 @@ from core.repositories.plaid_repository import PlaidRepository, PLAID_PRODUCTS_S
 from auth.decorators import authed, get_identity
 from api.metrics.plaid_metrics import *
 from api.views.base import BaseApi
-from app import db
+from flask_app import db
 
 
 class PlaidApi(BaseApi):
 
     def __init__(self):
         super().__init__("/plaid", 'plaid')
-    
+
     def register_api(self, app):
         self.add_url(app, "/info", self.info)
         self.add_url(app, "/link", self.create_link_token, methods=['POST',])
@@ -145,7 +145,7 @@ class PlaidApi(BaseApi):
             tags:
                 - Plaid
         """
-        
+
         profile = get_identity()
         public_token = request.json['public_token']
 

@@ -6,7 +6,7 @@ from config import config
 
 from stonk_server.flask_app import app, sse
 from stonk_server.views import prices_bp
-from stonk_server.api import write_apispec
+from stonk_server.openapi import write_apispec
 
 from stonk_server import logger
 

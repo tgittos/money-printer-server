@@ -4,7 +4,7 @@ from core.repositories import HoldingRepository
 from auth.decorators import Authed, get_identity
 from api.schemas import read_holdings_schema, read_holding_schema, read_holding_balances_schema
 from api.views.base import BaseApi
-from app import db
+from flask_app import db
 
 
 class HoldingsApi(BaseApi):

@@ -6,7 +6,7 @@ from core.repositories.scheduled_job_repository import ScheduledJobRepository
 from auth.decorators import Authed, admin, get_identity
 from api.schemas import read_scheduled_jobs_schema, read_scheduled_job_schema
 from api.views.base import BaseApi
-from app import db
+from flask_app import db
 
 
 class SchedulerApi(BaseApi):

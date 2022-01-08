@@ -8,7 +8,7 @@ from core.schemas import ReadAuthSchema, ResetPasswordSchema, RegisterProfileSch
 from auth.decorators import authed, get_identity
 from api.metrics.auth_metrics import *
 from api.views.base import BaseApi
-from app import db
+from flask_app import db
 
 class AuthApi(BaseApi):
 
