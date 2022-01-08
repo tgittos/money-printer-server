@@ -1,19 +1,23 @@
-from core.repositories.stock_repository import StockRepository
-from core.repositories.security_repository import SecurityRepository
 from core.lib.logger import get_logger
+from core.repositories import StockRepository
+from core.stores.database import Database
+from stonk_server.repositories import SecurityRepository
 from api.metrics.job_metrics import PERF_JOB_SYNC_SECURITIES
 
+
+from config import config
 
 class SyncSecurities:
 
     symbol = None
+    db = Database(config.api)
 
     def __init__(self, redis_message=None):
         self.logger = get_logger(__name__)
         if redis_message is not None and 'symbol' in redis_message['args']:
             self.symbol = redis_message['args']['symbol']
-        self.stock_repo = StockRepository()
-        self.security_repo = SecurityRepository()
+        self.stock_repo = StockRepository(self.db)
+        self.security_repo = SecurityRepository(self.db)
 
     @PERF_JOB_SYNC_SECURITIES.time()
     def run(self):

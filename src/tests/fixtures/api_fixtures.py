@@ -4,7 +4,7 @@ import random
 
 from core.models import ApiToken, ApiTokenPolicy
 from core.schemas.api_schemas import *
-from core.lib.jwt import generate_temp_password, hash_password
+from auth.jwt import generate_temp_password, hash_password
 
 from tests.fixtures import *
 

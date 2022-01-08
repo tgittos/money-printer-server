@@ -4,8 +4,8 @@ import random
 
 from core.models import ResetToken
 from core.schemas.auth_schemas import RegisterProfileSchema, LoginSchema, ResetPasswordSchema
-from core.lib.jwt import encode_jwt
 from core.lib.utilities import id_generator
+from auth.jwt import encode_jwt
 
 from tests.fixtures.core import db
 from tests.fixtures.profile_fixtures import profile_factory

@@ -6,12 +6,12 @@ from core.stores.database import Database
 from core.models import Base
 from api.app import app, create_app
 
-
+from config import config
 
 # one DB for the whole test session so that we can parallelize it
 @pytest.fixture(scope='session')
 def db():
-    db = Database()
+    db = Database(config.api)
     inspector = inspect(db.engine)
     created = False
     if not inspector.has_table('profiles'):
