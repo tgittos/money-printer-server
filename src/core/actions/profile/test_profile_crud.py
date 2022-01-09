@@ -123,7 +123,7 @@ def test_get_profile_by_email_returns_profile(db, profile_factory):
 def test_get_profile_by_email_fails_with_missing_profile(db):
     profile_response = get_profile_by_id(db, "foo@bar.com")
     assert not profile_response.success
-    assert profile_response.data is None
+    assert isinstance(profile_response.data, Exception)
 
 
 def test_get_all_profiles_returns_all_profiles(db, profile_factory):

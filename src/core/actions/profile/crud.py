@@ -1,4 +1,6 @@
+from sqlalchemy.exc import DBAPIError
 from datetime import datetime
+import json
 
 from core.models.profile import Profile
 from core.schemas import RegisterProfileSchema, CreateProfileSchema, UpdateProfileSchema
@@ -14,15 +16,20 @@ def get_profile_by_id(db, profile_id: int) -> ActionResponse:
     """
     Gets a profile from the DB by its primary key
     """
-    with db.get_session() as session:
-        profile = session.query(Profile).where(
-            Profile.id == profile_id).first()
+    try:
+        with db.get_session() as session:
+            profile = session.query(Profile).where(
+                Profile.id == profile_id).first()
 
-    return ActionResponse(
-        success=profile is not None,
-        data=profile,
-        message=f"No profile found with ID {profile_id}" if profile is None else None
-    )
+            return ActionResponse(
+                success=profile is not None,
+                data=profile,
+                message=f"No profile found with ID {profile_id}" if profile is None else None
+            )
+
+    except DBAPIError as err:
+        print(f"Error while running SQL:", err.statement, json.dumps(err.params))
+        return ActionResponse(success=False,data=err)
 
 
 def get_profile_by_email(db, email: str) -> ActionResponse:

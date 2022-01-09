@@ -11,25 +11,23 @@ from tests.fixtures import *
 
 
 @pytest.fixture
-def holding_factory(db, faker, account_factory, security_factory):
+def holding_factory(db, faker, account_factory):
     def __holding_factory(
         account_id=None,
-        security_symbol=None,
+        symbol=id_generator(4, chars=string.ascii_uppercase),
         cost_basis=random.random() * 5,
         quantity=random.randint(1, 500),
         iso_currency_code='USD'
     ):
         if account_id is None:
             account_id = account_factory().id
-        if security_symbol is None:
-            security_symbol = security_factory().symbol
 
         with db.get_session() as session:
             holding = Holding()
 
             holding.id = random.randint(1, 99999999)
             holding.account_id = account_id
-            holding.security_symbol = security_symbol
+            holding.symbol = symbol
             holding.cost_basis = cost_basis
             holding.quantity = quantity
             holding.iso_currency_code = iso_currency_code
@@ -72,19 +70,17 @@ def holding_balance_factory(db, faker, holding_factory):
 def valid_create_holding_request_factory(account_factory, security_factory):
     def __valid_create_holding_request_factory(
         account_id=None,
-        security_symbol=None,
+        symbol=id_generator(4, chars=string.ascii_uppercase),
         cost_basis=random.random() * 5,
         quantity=random.randint(1, 500),
         iso_currency_code='USD'
     ):
         if account_id is None:
             account_id = account_factory().id
-        if security_symbol is None:
-            security_symbol = security_factory().symbol
 
         return CreateHoldingSchema().load({
             'account_id': account_id,
-            'security_symbol': security_symbol,
+            'symbol': symbol,
             'cost_basis': cost_basis,
             'quantity': quantity,
             'iso_currency_code': iso_currency_code,

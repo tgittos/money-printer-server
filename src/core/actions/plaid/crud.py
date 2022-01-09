@@ -1,5 +1,7 @@
 from sqlalchemy import and_
+from sqlalchemy.exc import DBAPIError
 from datetime import datetime
+import json
 
 from core.models import Profile, PlaidItem
 from core.schemas import CreatePlaidItemSchema, UpdatePlaidItemSchema
@@ -11,18 +13,22 @@ def get_plaid_item_by_id(db, profile_id: int, id: int) -> ActionResponse:
     Gets a PlaidItem from the DB by the primary key
     This object represents a Plaid Link object
     """
-    with db.get_session() as session:
-        plaid_item = session.query(PlaidItem).filter(
-            and_(
-                PlaidItem.profile_id == profile_id,
-                PlaidItem.id == id
-            )).first()
+    try:
+        with db.get_session() as session:
+            plaid_item = session.query(PlaidItem).filter(
+                and_(
+                    PlaidItem.profile_id == profile_id,
+                    PlaidItem.id == id
+                )).first()
 
-    return ActionResponse(
-        success=plaid_item is not None,
-        data=plaid_item,
-        message=f"No plaid item found with ID {id}" if plaid_item is None else None
-    )
+        return ActionResponse(
+            success=plaid_item is not None,
+            data=plaid_item,
+            message=f"No plaid item found with ID {id}" if plaid_item is None else None
+        )
+    except DBAPIError as err:
+        print(f"Error while running SQL:", err.statement, json.dumps(err.params))
+        return ActionResponse(success=False,data=err)
 
 
 def get_plaid_item_by_plaid_item_id(db, profile_id: int, id: str) -> ActionResponse:

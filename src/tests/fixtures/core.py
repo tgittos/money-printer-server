@@ -4,9 +4,12 @@ from sqlalchemy import inspect
 
 from core.stores.database import Database
 from core.models import Base
-from api.app import app
+from api.app import create_app
 
 from config import config
+
+# create an instance of the API clients once per python process
+test_app, _ = create_app({ 'TESTING': True })
 
 # one DB for the whole test session so that we can parallelize it
 @pytest.fixture(scope='session')
@@ -25,6 +28,6 @@ def db():
 # one API for the the whole test session so that we can parallelize it
 @pytest.fixture(scope='session')
 def client(db):
-    with app.test_client() as client:
-        with app.app_context():
+    with test_app.test_client() as client:
+        with test_app.app_context():
             yield client

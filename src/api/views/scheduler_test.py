@@ -132,6 +132,7 @@ def test_update_schedule_rejects_invalid_input(client, admin_token_factory, sche
 
 
 # /v1/api/admin/schedules/1
+@pytest.mark.focus
 def test_delete_schedule_accepts_valid_input(client, admin_token_factory, scheduled_job_factory):
     token = admin_token_factory()
     job = scheduled_job_factory()

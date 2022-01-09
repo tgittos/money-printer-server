@@ -72,7 +72,7 @@ class ScheduledJobRepository:
         job = ScheduledJob()
         job.job_name = request['job_name']
         job.cron = request['cron']
-        job.json_args = request['json_args']
+        job.json_args = json.dumps(request['json_args'])
         job.last_run = None
         job.queue = WORKER_QUEUE
         job.timestamp = datetime.utcnow()

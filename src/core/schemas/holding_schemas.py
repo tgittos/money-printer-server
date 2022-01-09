@@ -5,7 +5,7 @@ from core.models import Holding
 
 class CreateHoldingSchema(Schema):
     class Meta:
-        fields = ("account_id", "security_symbol", "cost_basis",
+        fields = ("account_id", "symbol", "cost_basis",
                   "quantity", "iso_currency_code")
 
 

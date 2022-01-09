@@ -12,8 +12,6 @@ from api import logger
 from constants import API_PREFIX
 from config import config
 
-
-
 # create the app
 def create_app(flask_config={}):
     in_prod = 'MP_ENVIRONMENT' in os.environ and os.environ['MP_ENVIRONMENT'] == "production"

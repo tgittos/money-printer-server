@@ -55,7 +55,7 @@ def test_get_plaid_item_by_plaid_item_id_fails_if_item_missing(db, profile_facto
     profile = profile_factory()
     result = get_plaid_item_by_id(db, profile.id, 'fake-plaid-id')
     assert not result.success
-    assert result.data is None
+    assert isinstance(result.data, Exception)
 
 
 def test_get_plaid_item_by_profile_returns_plaid_item(db, profile_factory, plaid_item_factory):

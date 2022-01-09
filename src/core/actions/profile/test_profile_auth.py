@@ -107,7 +107,7 @@ def test_continue_reset_token_rejects_expired_token(db, expired_reset_password_r
 
 def test_continue_reset_token_rejects_missing_token(db, valid_reset_password_request_factory):
     request = valid_reset_password_request_factory()
-    request['token'] = id_generator
+    request['token'] = id_generator()
     result = continue_reset_password(db, request)
     assert not result.success
     assert result.data is None

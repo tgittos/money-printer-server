@@ -164,7 +164,7 @@ def create_holding(db, profile_id: int, account_id: int, request: CreateHoldingS
     holding = Holding()
 
     holding.account_id = account_id
-    holding.symbol = request['security_symbol']
+    holding.symbol = request['symbol']
     holding.cost_basis = request['cost_basis']
     holding.quantity = request['quantity']
     holding.iso_currency_code = request['iso_currency_code']
