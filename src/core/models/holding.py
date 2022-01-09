@@ -9,12 +9,11 @@ class Holding(Base):
 
     id = Column(Integer, primary_key=True)
     account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
-    security_symbol = Column(String(64), ForeignKey("securities.symbol"))
+    symbol = Column(String(64))
     cost_basis = Column(Float)
     quantity = Column(Float)
     iso_currency_code = Column(String(8))
     timestamp = Column(DateTime)
 
     account = relationship("Account", back_populates="holdings")
-    security = relationship("Security")
     balances = relationship("HoldingBalance", back_populates="holding")

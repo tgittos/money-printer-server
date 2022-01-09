@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 from flask_marshmallow import Marshmallow
 
 from core.models import Account
-from api.app import ma
+from api.flask_app import ma
 
 class ReadAccountApiSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

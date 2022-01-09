@@ -4,12 +4,11 @@ from flask import request, abort
 from marshmallow import ValidationError
 
 from core.repositories.profile_repository import ProfileRepository
-from api.views.decorators import authed, get_identity
 from core.schemas import ReadAuthSchema, ResetPasswordSchema, RegisterProfileSchema, LoginSchema, ReadProfileSchema
-
-from api.lib.constants import API_PREFIX
+from auth.decorators import authed, get_identity
 from api.metrics.auth_metrics import *
 from api.views.base import BaseApi
+from api.flask_app import db
 
 class AuthApi(BaseApi):
 
@@ -53,7 +52,7 @@ class AuthApi(BaseApi):
         """
         try:
             schema = RegisterProfileSchema().load(request.json)
-            repo = ProfileRepository()
+            repo = ProfileRepository(db)
             result = repo.register(schema)
             if result.success:
                 return ReadProfileSchema().dump(result.data)
@@ -68,7 +67,7 @@ class AuthApi(BaseApi):
 
 
     def get_unauthenticated_user(self):
-        repo = ProfileRepository()
+        repo = ProfileRepository(db)
         result = repo.get_unauthenticated_user()
         if result is None:
             return {
@@ -99,7 +98,7 @@ class AuthApi(BaseApi):
         """
         try:
             schema = LoginSchema().load(request.json)
-            repo = ProfileRepository()
+            repo = ProfileRepository(db)
             result = repo.login(schema)
 
             if not result.success:
@@ -132,7 +131,7 @@ class AuthApi(BaseApi):
                 - Auth
         """
         email = request.json['email']
-        repo = ProfileRepository()
+        repo = ProfileRepository(db)
         result = repo.reset_password(email=email)
         # return a 204 regardless of success for security reasons
         return '', 204
@@ -154,7 +153,7 @@ class AuthApi(BaseApi):
                 - Auth
         """
         try:
-            repo = ProfileRepository()
+            repo = ProfileRepository(db)
             result = repo.continue_reset_password(
                 ResetPasswordSchema().load(request.json))
             if not result.success:

@@ -3,8 +3,8 @@ from datetime import datetime, timedelta, timezone
 import random
 
 from core.models import Profile, PlaidItem
-from core.lib.jwt import hash_password
 from core.schemas.profile_schemas import UpdateProfileSchema
+from auth.jwt import hash_password
 
 from tests.fixtures import *
 

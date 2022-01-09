@@ -1,7 +1,7 @@
 from flask import current_app
 
 from core.models import AccountBalance
-from api.app import ma
+from api.flask_app import ma
 
 
 class ReadAccountBalanceApiSchema(ma.SQLAlchemyAutoSchema):

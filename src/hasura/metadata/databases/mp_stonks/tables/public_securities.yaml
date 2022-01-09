@@ -1,0 +1,11 @@
+table:
+  name: securities
+  schema: public
+array_relationships:
+- name: security_prices
+  using:
+    foreign_key_constraint_on:
+      column: symbol
+      table:
+        name: security_prices
+        schema: public

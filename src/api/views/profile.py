@@ -4,13 +4,11 @@ from marshmallow import ValidationError
 
 from core.repositories.profile_repository import ProfileRepository
 from core.schemas import UpdateProfileSchema
+from auth.decorators import Authed, get_identity
 from api.schemas import read_profile_schema
-
 from api.views.base import BaseApi
-from api.lib.constants import API_PREFIX
 from api.metrics.profile_metrics import *
-
-from api.views.decorators import Authed, get_identity
+from api.flask_app import db
 
 
 class ProfileApi(BaseApi):
@@ -71,7 +69,7 @@ class ProfileApi(BaseApi):
         """
 
         user = get_identity()
-        profile_repo = ProfileRepository()
+        profile_repo = ProfileRepository(db)
         try:
             update_result = profile_repo.update_profile({
                 **{'id': user['id']},
@@ -106,6 +104,6 @@ class ProfileApi(BaseApi):
                 - Profile
         """
         user = get_identity()
-        profile_repo = ProfileRepository()
+        profile_repo = ProfileRepository(db)
         profile_repo.schedule_profile_sync(profile_id=user["id"])
         return '', 204

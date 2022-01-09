@@ -3,8 +3,9 @@ import plaid
 from plaid.api import plaid_api
 from plaid.model.country_code import CountryCode
 from plaid.model.products import Products
+from os import environ
 
-from config import plaid_config
+from config import config
 
 # TODO - make this configurable via the config.json
 PLAID_PRODUCTS_STRINGS = ["investments", "transactions"]
@@ -20,16 +21,17 @@ class PlaidApiConfig:
     products = PLAID_PRODUCTS
     country_codes = PLAID_COUNTRY_CODES
     language = PLAID_DEFAULT_LANGUAGE
-    client_id = plaid_config['client_id']
-    secret = plaid_config['secret']
+    client_id = config.plaid.client_id
+    secret = config.plaid.secret
     version = "2020-09-14"
 
 
 def __get_host(config):
-    if config.env == 'production':
-        return plaid.Environment.Production
-    elif config.env == 'development':
-        return plaid.Environment.Development
+    if 'MP_ENVIRONMENT' in environ:
+        if environ['MP_ENVIRONMENT'] == 'production':
+            return plaid.Environment.Production
+        elif environ['MP_ENVIRONMENT'] == 'development':
+            return plaid.Environment.Development
 
     return plaid.Environment.Sandbox
 

@@ -1,0 +1,29 @@
+table:
+  name: accounts
+  schema: public
+object_relationships:
+- name: profile
+  using:
+    foreign_key_constraint_on: profile_id
+array_relationships:
+- name: account_balances
+  using:
+    foreign_key_constraint_on:
+      column: account_id
+      table:
+        name: account_balances
+        schema: public
+- name: holdings
+  using:
+    foreign_key_constraint_on:
+      column: account_id
+      table:
+        name: holdings
+        schema: public
+- name: investment_transactions
+  using:
+    foreign_key_constraint_on:
+      column: account_id
+      table:
+        name: investment_transactions
+        schema: public

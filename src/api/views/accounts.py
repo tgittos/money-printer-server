@@ -1,11 +1,10 @@
 from flask import abort
 
-from core.repositories import AccountRepository, SecurityRepository
+from core.repositories import AccountRepository, HoldingRepository
+from auth.decorators import Authed, get_identity
 from api.schemas import read_holdings_schema, read_accounts_schema, read_account_balances_schema
-from api.views.decorators import Authed, get_identity
-
 from api.views.base import BaseApi
-from api.lib.constants import API_PREFIX
+from api.flask_app import db
 
 
 class AccountsApi(BaseApi):
@@ -44,7 +43,7 @@ class AccountsApi(BaseApi):
                 - Account
         """
         user = get_identity()
-        account_repo = AccountRepository()
+        account_repo = AccountRepository(db)
         accounts = account_repo.get_accounts_by_profile_id(profile_id=user['id'])
         if accounts.success and accounts.data is not None:
             return {
@@ -76,7 +75,7 @@ class AccountsApi(BaseApi):
                 - Account
         """
         user = get_identity()
-        account_repo = AccountRepository()
+        account_repo = AccountRepository(db)
         result = account_repo.schedule_account_sync(user['id'], account_id)
         if result.success:
             return {
@@ -111,7 +110,7 @@ class AccountsApi(BaseApi):
                 - Account
         """
         user = get_identity()
-        account_repo = AccountRepository()
+        account_repo = AccountRepository(db)
         balance_result = account_repo.get_balances_by_account_id(
             user['id'], account_id)
         if not balance_result or balance_result is None:
@@ -147,8 +146,8 @@ class AccountsApi(BaseApi):
                 - Account
         """
         user = get_identity()
-        security_repo = SecurityRepository()
-        holding_result = security_repo.get_holdings_by_profile_id_and_account_id(
+        holding_repo = HoldingRepository(db)
+        holding_result = holding_repo.get_holdings_by_profile_id_and_account_id(
             profile_id=user['id'], account_id=account_id)
         if not holding_result.success or holding_result.data is None:
             abort(404)

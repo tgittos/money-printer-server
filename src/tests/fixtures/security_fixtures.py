@@ -3,7 +3,7 @@ import random
 import string
 from datetime import datetime, timezone
 
-from core.models import Security
+from stonk_server.models import Security
 from core.lib.utilities import id_generator
 
 

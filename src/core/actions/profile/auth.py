@@ -3,13 +3,13 @@ from dateutil.relativedelta import relativedelta
 
 from core.models import Profile, ResetToken
 from core.schemas import ReadAuthSchema, LoginSchema, ResetPasswordSchema, ReadProfileSchema
-from core.lib.jwt import encode_jwt, hash_password, check_password, generate_temp_password
 from core.lib.notifications import PasswordResetNotification, notify_password_reset
 from core.actions.action_response import ActionResponse
+from auth.jwt import encode_jwt, hash_password, check_password, generate_temp_password
 
 from .crud import get_profile_by_email, get_profile_by_id
 
-from config import mailgun_config
+from config import config
 
 
 def get_unauthenticated_user(db) -> ActionResponse:
@@ -148,7 +148,7 @@ def email_reset_token(profile, reset_token) -> ActionResponse:
     """
     Emails the reset password flow start notification to the user
     """
-    result = notify_password_reset(mailgun_config, PasswordResetNotification(
+    result = notify_password_reset(config['mailgun'], PasswordResetNotification(
         profile=profile,
         token=reset_token
     ))

@@ -1,7 +1,7 @@
 import pytest
 
 from core.repositories import RepositoryResponse
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 
 from tests.fixtures import *
 

@@ -10,8 +10,8 @@ from tests.fixtures import *
 
 
 @pytest.fixture
-def repo():
-    return PlaidRepository()
+def repo(db):
+    return PlaidRepository(db)
 
 
 @pytest.fixture

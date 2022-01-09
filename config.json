@@ -1,71 +1,13 @@
 {
-  "development": {
-    "secret": "",
-    "host": "localhost",
-    "port": "8000",
-    "mailgun": {
-      "domain": "mg.moneyprintergobrr.io",
-      "api_key": ""
-    },
-    "iex": {
-      "env": "development",
-      "publishable": "pk_3394e9ba369a45d2b3efdd6c0bbb168f",
-      "secret": ""
-    },
-    "plaid": {
-      "env": "development",
-      "client_id": "610b0a72aed5de0015d334ed",
-      "version": "2020-09-14",
-      "country_codes": "US",
-      "products": ["Link", "Investments"],
-      "secret": ""
-    },
-    "db": {
-      "host": "127.0.0.1",
-      "port": "3306",
-      "schema": "mp_dev",
-      "debug": "false",
-      "username": "",
-      "password": ""
-    },
-    "redis": {
-      "host": "localhost",
-      "port": "6379"
-    }
+  "host": "0.0.0.0",
+  "port": "5000",
+  "mailgun": {
+    "domain": "mg.moneyprintergobrr.io"
   },
-  "staging": {
-  },
-  "production": {
-  },
-  "test": {
-    "secret": "test secret",
-    "db": {
-      "host": "127.0.0.1",
-      "port": "3306",
-      "schema": "mp_test",
-      "debug": "false",
-      "username": "mp_dev",
-      "password": "mp!QAZxsw2"
-    },
-    "redis": {
-      "host": "localhost",
-      "port": "6379"
-    },
-    "iex": {
-      "secret": "",
-      "env": "test"
-    },
-    "mailgun": {
-      "api_key": "",
-      "domain": "example.org"
-    },
-    "plaid": {
-      "secret": "",
-      "env": "test",
-      "client_id": "610b0a72aed5de0015d334ed",
-      "version": "2020-09-14",
-      "country_codes": "US",
-      "products": ["Link", "Investments"]
-    }
+  "plaid": {
+    "client_id": "610b0a72aed5de0015d334ed",
+    "version": "2020-09-14",
+    "country_codes": "US",
+    "products": ["Link", "Investments"]
   }
 }

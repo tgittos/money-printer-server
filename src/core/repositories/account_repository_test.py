@@ -7,8 +7,8 @@ from tests.fixtures import *
 
 
 @pytest.fixture
-def repo():
-    return AccountRepository()
+def repo(db):
+    return AccountRepository(db)
 
 
 @pytest.fixture

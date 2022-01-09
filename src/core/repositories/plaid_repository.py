@@ -1,7 +1,7 @@
 from prometheus_client import metrics
 
 from core.lib.logger import get_logger
-from core.stores.mysql import MySql
+from core.stores.database import Database
 from core.apis.plaid.oauth import PlaidOauth
 from core.apis.plaid.common import PLAID_PRODUCTS_STRINGS
 from core.models import PlaidItem
@@ -11,14 +11,14 @@ from core.schemas import CreatePlaidItemSchema
 import core.actions.plaid.crud as crud
 from core.repositories.repository_response import RepositoryResponse
 
-from config import mysql_config
-
 
 class PlaidRepository:
 
-    db = MySql(mysql_config)
     logger = get_logger(__name__)
     api = PlaidOauth()
+
+    def __init__(self, db):
+        self.db = db
 
     def info(self, profile_id: int) -> RepositoryResponse:
         """

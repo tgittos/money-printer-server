@@ -1,28 +1,35 @@
+from sqlalchemy.exc import DBAPIError
 from datetime import datetime
+import json
 
 from core.models.profile import Profile
 from core.schemas import RegisterProfileSchema, CreateProfileSchema, UpdateProfileSchema
-from core.lib.jwt import generate_temp_password, hash_password
 from core.lib.notifications import ProfileCreatedNotification, notify_profile_created
 from core.lib.utilities import is_valid_email
 from core.actions.action_response import ActionResponse
+from auth.jwt import generate_temp_password, hash_password
 
-from config import mailgun_config
+from config import config
 
 
 def get_profile_by_id(db, profile_id: int) -> ActionResponse:
     """
     Gets a profile from the DB by its primary key
     """
-    with db.get_session() as session:
-        profile = session.query(Profile).where(
-            Profile.id == profile_id).first()
+    try:
+        with db.get_session() as session:
+            profile = session.query(Profile).where(
+                Profile.id == profile_id).first()
 
-    return ActionResponse(
-        success=profile is not None,
-        data=profile,
-        message=f"No profile found with ID {profile_id}" if profile is None else None
-    )
+            return ActionResponse(
+                success=profile is not None,
+                data=profile,
+                message=f"No profile found with ID {profile_id}" if profile is None else None
+            )
+
+    except DBAPIError as err:
+        print(f"Error while running SQL:", err.statement, json.dumps(err.params))
+        return ActionResponse(success=False,data=err)
 
 
 def get_profile_by_email(db, email: str) -> ActionResponse:
@@ -85,7 +92,7 @@ def create_profile(db, request: CreateProfileSchema) -> ActionResponse:
     with db.get_session() as session:
         session.add(new_profile)
 
-        notify_result = notify_profile_created(mailgun_config, ProfileCreatedNotification(
+        notify_result = notify_profile_created(config['mailgun'], ProfileCreatedNotification(
             profile=new_profile,
             password=new_pw
         ))

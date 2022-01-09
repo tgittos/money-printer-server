@@ -3,12 +3,10 @@ from marshmallow import ValidationError
 
 from core.schemas import CreateScheduledJobSchema, UpdateScheduledJobSchema
 from core.repositories.scheduled_job_repository import ScheduledJobRepository
-
+from auth.decorators import Authed, admin, get_identity
 from api.schemas import read_scheduled_jobs_schema, read_scheduled_job_schema
-from api.lib.constants import API_PREFIX
 from api.views.base import BaseApi
-
-from api.views.decorators import Authed, admin, get_identity
+from api.flask_app import db
 
 
 class SchedulerApi(BaseApi):
@@ -47,7 +45,7 @@ class SchedulerApi(BaseApi):
             - Scheduling
             - Admin
         """
-        repo = ScheduledJobRepository()
+        repo = ScheduledJobRepository(db)
         response = repo.get_scheduled_jobs()
         if response.success:
             return {
@@ -89,7 +87,7 @@ class SchedulerApi(BaseApi):
             - Admin
         """
         try:
-            repo = ScheduledJobRepository()
+            repo = ScheduledJobRepository(db)
             schema = CreateScheduledJobSchema().load(request.json)
             response = repo.create_scheduled_job(schema)
 
@@ -138,7 +136,7 @@ class SchedulerApi(BaseApi):
         try:
             schema = UpdateScheduledJobSchema().load(request.json)
 
-            repo = ScheduledJobRepository()
+            repo = ScheduledJobRepository(db)
             response = repo.get_scheduled_job_by_id(id)
 
             if response.success:
@@ -195,7 +193,7 @@ class SchedulerApi(BaseApi):
                 'message': 'ID of scheduled job required'
             }, 400
 
-        repo = ScheduledJobRepository()
+        repo = ScheduledJobRepository(db)
         result = repo.get_scheduled_job_by_id(id)
 
         if result.success and result.data is not None:
@@ -220,7 +218,7 @@ class SchedulerApi(BaseApi):
     @Authed
     @admin
     def list_historical_instants(self):
-        repo = ScheduledJobRepository()
+        repo = ScheduledJobRepository(db)
         return {
             'success': False
         }

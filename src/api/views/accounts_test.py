@@ -1,6 +1,6 @@
 import pytest
 
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 
 from tests.fixtures import *
 

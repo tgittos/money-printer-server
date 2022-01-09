@@ -10,8 +10,8 @@ import core.actions.profile.auth as auth
 from core.actions.action_response import ActionResponse
 from core.actions.profile.auth import login, get_unauthenticated_user, reset_password,\
     continue_reset_password, get_reset_token
-from core.lib.jwt import check_password
 from core.lib.utilities import id_generator
+from auth.jwt import check_password
 
 from tests.fixtures import *
 
@@ -107,7 +107,7 @@ def test_continue_reset_token_rejects_expired_token(db, expired_reset_password_r
 
 def test_continue_reset_token_rejects_missing_token(db, valid_reset_password_request_factory):
     request = valid_reset_password_request_factory()
-    request['token'] = id_generator
+    request['token'] = id_generator()
     result = continue_reset_password(db, request)
     assert not result.success
     assert result.data is None

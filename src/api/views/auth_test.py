@@ -5,9 +5,9 @@ from core.repositories.repository_response import RepositoryResponse
 import core.actions.profile.crud as profile_crud
 import core.actions.profile.auth as profile_auth
 from core.actions.profile.crud import get_profile_by_email
-from core.lib.jwt import check_password, decode_jwt
+from auth.jwt import check_password, decode_jwt
 
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 
 from tests.fixtures import *
 

@@ -5,7 +5,7 @@ from flask import Blueprint, request
 from core.repositories import PlaidRepository, AccountRepository, HoldingRepository, ProfileRepository
 from core.lib.logger import get_logger
 
-from api.lib.constants import API_PREFIX
+from constants import API_PREFIX
 
 webhooks_bp = Blueprint('webhooks', __name__)
 

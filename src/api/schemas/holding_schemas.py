@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields
 
 from core.models import Holding
-from api.app import ma
+from api.flask_app import ma
 
 
 class ReadHoldingApiSchema(ma.SQLAlchemyAutoSchema):

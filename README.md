@@ -129,7 +129,36 @@ Matomo is available at `http://localhost:8080/` when running.
 - install Docker Desktop
 - install any recent-ish version of Node for task management (optional)
 - ensure you've build the docker images in `money-printer-infrastructure`
+- edit hosts file (below) to access services through the reverse proxy
 - either run `npm run start` or `docker compose -f docker-compose.dev.yml up -d`
+
+#### Hosts
+
+* Windows *
+
+In an Administrator privilleged text editor, open the `C:\Windows32\drives\etc\hosts` file and add the following entries:
+
+```
+127.0.0.1 mp-ngrok.local
+127.0.0.1 mp-matomo.local
+127.0.0.1 mp-prometheus.local
+127.0.0.1 mp-hasura.local
+127.0.0.1 mp-api.local
+127.0.0.1 mp-stonks.local
+```
+
+* Unix/Mac OS*
+
+In a `sudo` text editor, open `/etc/hosts` and add the following entries:
+
+```
+127.0.0.1 mp-ngrok.local
+127.0.0.1 mp-matomo.local
+127.0.0.1 mp-prometheus.local
+127.0.0.1 mp-hasura.local
+127.0.0.1 mp-api.local
+127.0.0.1 mp-stonks.local
+```
 
 ### Available npm commands
 

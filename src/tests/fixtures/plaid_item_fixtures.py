@@ -6,8 +6,7 @@ from core.models import PlaidItem
 from core.schemas.plaid_item_schemas import CreatePlaidItemSchema, UpdatePlaidItemSchema
 from core.lib.utilities import id_generator
 
-from tests.fixtures.core import db
-from tests.fixtures.profile_fixtures import profile_factory
+from tests.fixtures import *
 
 
 @pytest.fixture
