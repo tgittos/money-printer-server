@@ -30,13 +30,9 @@ COPY pytest.ini pytest.ini
 RUN mkdir logs
 
 # Expose the port that the app runs on
-EXPOSE 80
-EXPOSE 443
+EXPOSE 5000
 
 # If an environment _wasn't_ passed in, default to development
 ENV MP_ENVIRONMENT=development
-# Bind to the public IP of the container
-ENV MP_HOST=0.0.0.0
-ENV MP_PORT=80
 # Add our current path to the Python path
 ENV PYTHONPATH=$PYTHONPATH:src

@@ -7,6 +7,8 @@ from core.lib.client_bus import ClientBus
 from config import config
 from .sse_client import SSEClient
 
+if 'MP_ENVIRONMENT' in os.environ:
+    os.environ['FLASK_ENV'] = os.environ['MP_ENVIRONMENT']
 
 app = Flask(__name__)
 ma = Marshmallow(app)

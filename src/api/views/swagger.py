@@ -23,7 +23,7 @@ def serve_swagger(path=None):
     if 'MP_ENVIRONMENT' in os.environ and \
         os.environ['MP_ENVIRONMENT'] == "development" or os.environ['MP_ENVIRONMENT'] == "staging":
         doc_path = os.path.dirname(__file__) + \
-            "/../../../docs/swagger/"
+            "/../docs/swagger/"
         if path is None or path == "":
             return send_from_directory(doc_path, "index.html")
         return send_from_directory(doc_path, path)

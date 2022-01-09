@@ -1,3 +1,5 @@
+version: '3.5'
+
 services:
   rproxy:
     image: git.gittos.net:5050/money-printer/money-printer-infrastructure/mp-rproxy
@@ -83,7 +85,6 @@ services:
       dockerfile: Dockerfile
       context: .
     volumes:
-      - ./docs:/app/docs
       - ./src:/app/src
       - ./bin:/app/bin
       - ./logs:/app/logs
@@ -110,7 +111,6 @@ services:
       MP_REDIS__HOST: redis
       MP_STONKS__HOST: pg
     volumes:
-      - ./docs:/app/docs
       - ./src:/app/src
       - ./bin:/app/bin
       - ./logs:/app/logs
@@ -163,6 +163,6 @@ services:
       ]
 
 volumes:
-  mysql-data: null
-  pg-data: null
-  matomo-config: null
+  mysql-data:
+  pg-data:
+  matomo-config:

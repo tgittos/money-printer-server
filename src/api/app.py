@@ -55,8 +55,8 @@ if __name__ == '__main__':
     if 'MP_ENVIRONMENT' in os.environ:
         os.environ['FLASK_ENV'] = os.environ['MP_ENVIRONMENT']
         if os.environ['MP_ENVIRONMENT'] == "development" or os.environ['MP_ENVIRONMENT'] == "staging":
-            doc_path = os.path.dirname(__file__) + "/../../docs/swagger/"
-            write_apispec(doc_path + "swagger.api.json", app)
+            doc_path = os.path.dirname(__file__) + "/docs/swagger/"
+            write_apispec(doc_path + "swagger.json", app)
 
     print(" * Starting money-printer api/ws application", flush=True)
     app.run(host=config.host, port=config.port)
