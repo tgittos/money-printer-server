@@ -6,7 +6,7 @@ Flask-SQLAlchemy==2.5.1
 graphene==2.1.9
 jupyter-core==4.9.1
 Twisted==21.7.0
-Werkzeug==2.0.2
+Werkzeug==2.3.8
 SQLAlchemy==1.4.29
 sqlalchemy-orm==1.2.2
 dynaconf==3.1.7
